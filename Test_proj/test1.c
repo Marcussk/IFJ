@@ -2,13 +2,12 @@
  * test1.c
  *
  *  Created on: 28. 9. 2014
- *      Author: Milan
+ *      Author: Marek
  */
 
 #include <stdio.h>
 
 int main(void) {
-	printf("Hello World\n");
-	printf("This is line two.\n");
+	printf("Ahoj Milan kradnem ti program\n");
 	return 0;
 }
