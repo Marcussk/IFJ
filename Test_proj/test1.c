@@ -10,5 +10,6 @@
 int main(void) {
 	printf("Ahoj Milan kradnem ti program\n");
 	printf("Marek, pojdme si spolu zazpivat.\n");
+	printf("Zuzanka sa prida a Marek a Milan sa musia tiez: A teraz vsedcia spolu Ja sem GEY sem GEY sem tepleeeej, ja sem GEY sem GEY sem uuuuplne teplej");
 	return 0;
 }
