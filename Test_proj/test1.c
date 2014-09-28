@@ -9,5 +9,6 @@
 
 int main(void) {
 	printf("Ahoj Milan kradnem ti program\n");
+	printf("Marek, pojdme si spolu zazpivat.\n");
 	return 0;
 }
