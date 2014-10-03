@@ -1,2 +1,11 @@
+#ignore project and hidden files
+.*
+#two exceptions not to ignore
+!.gitignore
+!.gitattributes
 
-#Test_proj/
+#ignore all text files and documentation
+*.pdf
+*.txt
+*.doc
+
