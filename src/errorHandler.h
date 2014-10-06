@@ -1,4 +1,3 @@
-
 #ifndef ERROR_HANDLER_h
 #define ERROR_HANDLER_h
 /*

@@ -16,7 +16,7 @@
 #include "defs.h"
 
 int main(int argc, char *argv[]) {
-	LexParser lp = LexParser__init__(LEX_BUFF_SIZE, NULL);
+	LexParser lp = LexParser__init__(NULL);
 	//TokenMap_vizualize(lp.tParser.map, 0);
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);

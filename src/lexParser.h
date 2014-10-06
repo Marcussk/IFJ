@@ -20,7 +20,7 @@ typedef struct {
 	int lineNum;
 } LexParser;
 
-LexParser LexParser__init__(int buffSize, void (*newTokenEv)(int));
+LexParser LexParser__init__( void (*newTokenEv)(int));
 void LexParser_push(LexParser * p, char ch);
 void LexParser__dell__(LexParser * p);
 void LexParser_clear(LexParser * p);

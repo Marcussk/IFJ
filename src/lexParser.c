@@ -1,6 +1,6 @@
 #include "lexParser.h"
 
-LexParser LexParser__init__(int buffSize, void (*newTokenEv)(int)) {
+LexParser LexParser__init__(void (*newTokenEv)(int)) {
 	LexParser p;
 	String__init__(&p.str, 32);
 	p.newTokenEv = newTokenEv;
