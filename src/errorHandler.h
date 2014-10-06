@@ -1,21 +1,21 @@
 #ifndef ERROR_HANDLER_h
 #define ERROR_HANDLER_h
 /*
- • 1 - chyba v programu v rámci lexikální analýzy (chybná struktura aktuálního lexé-
+ • 1 - chyba v programu v ramci lexikalni analyzy (chybna struktura aktualniho lexe-
  mu).
- • 2 - chyba v programu v rámci syntaktické analýzy (chybná syntaxe struktury pro-
+ • 2 - chyba v programu v ramci syntakticke analyzy (chybna syntaxe struktury pro-
  gramu).
- • 3 - sémantická chyba v programu – nedefinovaná funkce/promˇenná, pokus o redefi-
- nici funkce/promˇenné, atd.
- • 4 - sémantická chyba typové kompatibility v aritmetických, ˇretˇezcových a relaˇcních
- výrazech, pˇríp. špatný poˇcet c ˇ i typ parametr ̊u u volání funkce.
- • 5 - ostatní sémantické chyby.
- • 6 - bˇehová chyba pˇri naˇcítání c ˇ íselné hodnoty ze vstupu.
- • 7 - bˇehová chyba pˇri práci s neinicializovanou promˇennou.
- • 8 - bˇehová chyba dˇelení nulou.
- • 9 - ostatní bˇehové chyby.
- • 99 - interní chyba interpretu tj. neovlivnˇená vstupním programem (napˇr. chyba a-
- lokace pamˇeti, chyba p
+ • 3 - samanticka chyba v programu – nedefinovana funkce/promenna, pokus o redefi-
+ nici funkce/promenne, atd.
+ • 4 - semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich
+ vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
+ • 5 - ostatni semanticke chyby.
+ • 6 - behová chyba pri nacitani ciselne hodnoty ze vstupu.
+ • 7 - behová chyba pri praci s neinicializovanou promennou.
+ • 8 - behová chyba deleni nulou.
+ • 9 - ostatní beehové chyby.
+ • 99 - interni chyba interpretu tj. neovlivnená vstupnim programem (napr. chyba a-
+ lokace pameti, chyba p
  */
 #include <stdio.h>
 #include <stdlib.h>
