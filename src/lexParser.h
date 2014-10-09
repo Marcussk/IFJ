@@ -9,7 +9,7 @@
 #include "tokenMap.h"
 
 typedef enum {
-	lp_read, lp_comment
+	lp_read, lp_comment, lp_string
 } LexParserStates;
 
 typedef struct {

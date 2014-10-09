@@ -15,8 +15,14 @@ void LexParser_push(LexParser * p, char ch) {
 	char * tokenStr = NULL;
 	switch (p->state) {
 	case lp_read:
-		if (ch == '{')
+		switch (ch) {
+		case '{':
 			p->state = lp_comment;
+			break;
+		case '\'':
+			p->state = lp_string;
+			break;
+		}
 		if (p->state == lp_read) {
 			t = TokenParser_feed(&(p->tParser), tolower(ch));
 		}
@@ -24,6 +30,12 @@ void LexParser_push(LexParser * p, char ch) {
 	case lp_comment:
 		if (ch == '}')
 			p->state = lp_read;
+		break;
+	case lp_string:
+		if (ch == '\''){
+			p->state = lp_read;
+			printf("<str:'%s'>", p->str.buff);
+		}
 		break;
 	}
 	if (ch == '\n')
@@ -38,7 +50,6 @@ void LexParser_push(LexParser * p, char ch) {
 			String_clear(&(p->str));
 		}
 	}
-
 }
 
 void LexParser_clear(LexParser * p) {
