@@ -9,3 +9,6 @@
 *.txt
 *.doc
 
+#ignore build files
+*.o
+*.out
