@@ -6,7 +6,6 @@
 
 #ignore all text files and documentation
 *.pdf
-*.txt
 *.doc
 
 #ignore build files
