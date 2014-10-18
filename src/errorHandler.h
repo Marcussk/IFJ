@@ -5,7 +5,7 @@
  mu).
  • 2 - chyba v programu v ramci syntakticke analyzy (chybna syntaxe struktury pro-
  gramu).
- • 3 - samanticka chyba v programu – nedefinovana funkce/promenna, pokus o redefi-
+ • 3 - semanticka chyba v programu – nedefinovana funkce/promenna, pokus o redefi-
  nici funkce/promenne, atd.
  • 4 - semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich
  vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
@@ -21,5 +21,7 @@
 #include <stdlib.h>
 
 void memoryError(char * str);
+void syntaxError(char * str, int lineNum);
+
 
 #endif

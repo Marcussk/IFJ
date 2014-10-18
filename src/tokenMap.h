@@ -57,7 +57,9 @@ typedef enum {
 	t_lcBracket, //others
 	t_rcBracket,
 	t_num_int,
-	t_num_real
+	t_num_real,
+	t_id
+
 } Token;
 
 typedef struct {
@@ -78,11 +80,14 @@ typedef struct {
 
 TokenParser TokenParser__init__();
 void TokenParser__dell__(TokenParser * p);
-Token TokenParser_feed(TokenParser * p, char ch);
+Token TokenParser_push(TokenParser * p, char ch);
 void TokenParser_reset(TokenParser * p);
+
 bool isKeyword(Token t);
+bool canContinueWithNonWordChar(Token t);
 
 char * getTokenStr(Token t);
 void TokenMap_vizualize(TokenMapElement * map, int indent);
+
 
 #endif

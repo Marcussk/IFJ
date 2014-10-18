@@ -12,7 +12,7 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_func, "function" },
 		(TokenMeaning ) { t_if,"if" },
 		(TokenMeaning ) { t_integer,"integer" },
-		(TokenMeaning ) {t_readln, "readln" },
+		(TokenMeaning ) { t_readln, "readln" },
 		(TokenMeaning ) { t_real, "real" },
 		(TokenMeaning ) { t_sort,"sort" },
 		(TokenMeaning ) { t_string, "string" },
@@ -23,8 +23,8 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_write, "write" },
 		(TokenMeaning ) { t_plus, "+" }, // operators
 		(TokenMeaning ) { t_minus, "-" },
-		(TokenMeaning ) {t_asterisk, "*" },
-		(TokenMeaning ) {t_slash, "/" },
+		(TokenMeaning ) { t_asterisk, "*" },
+		(TokenMeaning ) { t_slash, "/" },
 		(TokenMeaning ) { t_eqv, "=" },
 		(TokenMeaning ) { t_less, "<" },
 		(TokenMeaning ) { t_greater, ">" },
@@ -37,14 +37,19 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_pointer,"^" },
 		(TokenMeaning ) { t_lParenthessis, "(" },
 		(TokenMeaning ) { t_rParenthessis, ")" },
-		(TokenMeaning ) {t_notEqv, "<>" },
+		(TokenMeaning ) { t_notEqv, "<>" },
 		(TokenMeaning ) { t_lessOrEqv,"<=" },
-		(TokenMeaning ) {t_greaterOrEqv, ">=" },
+		(TokenMeaning ) { t_greaterOrEqv, ">=" },
 		(TokenMeaning ) { t_asigment, ":=" },
-		(TokenMeaning ) {t_doubleDot, ".." },
-		(TokenMeaning ) {t_lcBracket, "{" } , //others
-		(TokenMeaning ) {t_rcBracket, "}"}
+		(TokenMeaning ) { t_doubleDot, ".." },
+		(TokenMeaning ) { t_lcBracket, "{" } , //others
+		(TokenMeaning ) { t_rcBracket, "}"}
 		};
+
+bool canContinueWithNonWordChar(Token t){
+	return t == t_less || t == t_greater || t == t_period
+			|| t == t_colon;
+}
 
 char * getTokenStr(Token t) {
 	int ti;
@@ -170,7 +175,7 @@ void TokenParser_reset(TokenParser * p) {
 	p->possition = p->map;
 }
 
-Token TokenParser_feed(TokenParser * p, char ch) {
+Token TokenParser_push(TokenParser * p, char ch) {
 	TokenMapElement m;
 	if (p->possition)
 		m = p->possition[(int) ch];

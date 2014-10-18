@@ -9,19 +9,21 @@
 #include "tokenMap.h"
 
 typedef enum {
-	lp_read, lp_comment, lp_string
+	lp_read, lp_string, lp_comment, lp_escape, lp_error
 } LexParserStates;
 
-typedef struct {
-	void (*newTokenEv)(int);
+typedef struct sLexParser {
+	void (*newTokenEv)(struct sLexParser * p, Token t);
 	String str;
 	LexParserStates state;
 	TokenParser tParser;
 	int lineNum;
+	Token lastToken;
 } LexParser;
 
-LexParser LexParser__init__( void (*newTokenEv)(int));
+LexParser LexParser__init__(void (*newTokenEv)(LexParser * p, Token t));
 void LexParser_push(LexParser * p, char ch);
+void LexParser_flush(LexParser * p);
 void LexParser__dell__(LexParser * p);
 void LexParser_clear(LexParser * p);
 

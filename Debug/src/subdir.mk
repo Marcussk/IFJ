@@ -3,6 +3,13 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/errorHandler.o \
+../src/ifj.o \
+../src/lexParser.o \
+../src/strRoutines.o \
+../src/tokenMap.o 
+
 C_SRCS += \
 ../src/errorHandler.c \
 ../src/hashTable.c \
