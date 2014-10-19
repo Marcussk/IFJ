@@ -11,14 +11,10 @@ LexParser LexParser__init__(void (*newTokenEv)(LexParser * p, Token t)) {
 	return p;
 }
 
-bool endOfId(int idLen, char ch) {
+bool endOfIdOrNum(int idLen, char ch) {
 	if (ch == '_')
 		return false; // _ can be anywhere
-	if (idLen == 0) {
-		return !isalpha(ch);
-	} else {
-		return !isalnum(ch);
-	}
+	return !isalnum(ch);
 }
 
 void LexParser_push(LexParser * p, char ch) {
@@ -38,7 +34,7 @@ void LexParser_push(LexParser * p, char ch) {
 			break;
 		}
 
-		if (endOfId(p->str.len, ch)) {
+		if (endOfIdOrNum(p->str.len, ch)) {
 			if (p->str.len > 0) {
 				if (p->lastToken != t_empty) {
 					p->newTokenEv(p, p->lastToken);
