@@ -1,3 +1,4 @@
+BinDir=./bin/
 
 #compiler
 CC=gcc
