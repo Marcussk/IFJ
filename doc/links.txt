@@ -1,5 +1,11 @@
 Lex analyzer:
 http://forum.codecall.net/topic/41287-design-and-implement-a-lexical-analyzer-written-in-c/
 
-Minulorocny project:
+Minule projekty:
 https://github.com/metthal/IFJ-Projekt
+https://github.com/sEnergy/IFJ
+https://github.com/fossilmfc/proj-ifj
+https://github.com/jirdano/IFJ13
+https://github.com/honza889/IFJ12
+https://github.com/Pitel/IFJ2007
+https://github.com/vokracko/IFJ--Interpret
