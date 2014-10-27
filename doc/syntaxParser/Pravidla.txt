@@ -1,0 +1,53 @@
+S   	-> stmt 
+		-> id : typ
+		-> begin
+		-> terminus
+		-> function id(params): typ;
+
+terminus-> end.
+		-> end;
+
+typ 	-> int
+		-> real
+		-> string
+		-> bool
+
+stmt    -> id
+		-> typ
+		-> (bracket stmt
+		-> )               
+		-> while cond do stmt
+		-> id := stmt
+		-> compif
+		-> begin stmtlist
+		-> id (params
+		-> stmt; stmtlist 
+
+bracket -> stmt
+
+params  -> )
+		-> , params		!!!
+		-> exprparams   !!!
+		-> id(params
+
+cond    -> stmt	
+		-> id
+	 	-> int
+
+stmtlist-> end
+		-> stmt			  
+
+compif  -> if cond then compif            !!!Left refactor nejednoznacnost
+		-> if cond then innerif else compif
+		-> stmt 
+
+innerif	-> if cond then innerif else innerif
+		-> if cond then innerif
+		-> stmt
+
+equ 	-> <
+	 	-> >
+		-> <>
+		-> >=
+		-> <=
+		-> =
