@@ -11,15 +11,18 @@ SOURCES=$(wildcard *.c )
 #object files
 OBJECTS= $(SOURCES:.c=.o)
 
-#executable filename
-EXECUTABLE=ifj.run
+EXECUTABLE=ifj.exe
+EXECUTABLE_WIN=ifj.run
 
-
-all: $(EXECUTABLE)
+all: $(EXECUTABLE) $(EXECUTABLE_WIN)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(LINK.o) $^ -o $@ $(LIBS)
 
+
+$(EXECUTABLE_WIN): $(OBJECTS)
+	$(LINK.o) $^ -o $@ $(LIBS)
+
 clean:
-	rm $(EXECUTABLE) $(OBJECTS)
+	rm $(EXECUTABLE) $(OBJECTS) $(EXECUTABLE_WIN)
 

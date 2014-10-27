@@ -15,3 +15,6 @@ http://www.quora.com/What-are-the-best-books-about-compilers
 
 Jak na projekt prirucka
 https://www.facebook.com/groups/1495488704060590/1499237593685701/
+
+"Dragon book" Implementacia kompilatorov v c a metody
+https://www.facebook.com/groups/1495488704060590/1499374987005295/
