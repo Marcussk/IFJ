@@ -1,53 +1,85 @@
-S   	-> stmt 
-		-> id : typ
+S   	-> STMT 
+		-> id : TYP
 		-> begin
-		-> terminus
-		-> function id(params): typ;
+		-> TERMINUS
+		-> function id(PARAMS
 
-terminus-> end.
+TERMINUS-> end.
 		-> end;
 
-typ 	-> int
-		-> real
-		-> string
-		-> bool
+STMT    -> id
+		-> TYP
+		-> (BRACKET STMT
+		-> )
+		-> STMT)               
+		-> while COND do STMTLIST
+		-> id := STMT
+		-> A
+		-> begin STMTLIST
+		-> CALL
+		-> STMT STMTLIST
+		-> function CALL
+		-> LSIDE > STMT
+		-> LSIDE < STMT           ?prio operacii?
+		-> LSIDE <= STMT
+		-> LSIDE >= STMT
+		-> LSIDE = STMT
+		-> LSIDE <> STMT
+		-> LSIDE	
 
-stmt    -> id
-		-> typ
-		-> (bracket stmt
-		-> )               
-		-> while cond do stmt
-		-> id := stmt
-		-> compif
-		-> begin stmtlist
-		-> id (params
-		-> stmt; stmtlist 
+LSIDE	-> OPR + STMT
+		-> OPR - STMT
+		-> OPR
 
-bracket -> stmt
+OPR 	-> MID * OPR
+		-> MID / OPR
+		-> MID
 
-params  -> )
-		-> , params		!!!
-		-> exprparams   !!!
-		-> id(params
+MID		-> (STMT
+		-> id
+		-> TYP
 
-cond    -> stmt	
+CALL    -> id (PARAMS             ?zbytocnost?
+
+BRACKET -> STMT
+
+PARAMS  -> )
+		-> PARAM
+		-> PARAM , PARAMS		
+		-> id(PARAMS               ???vnorene volania?
+		-> ): TYP; SUFFIX
+
+SUFFIX  -> forward
+		-> epsilon
+
+PARAM   -> id
+		-> TYP	
+
+COND    -> STMT	
 		-> id
 	 	-> int
 
-stmtlist-> end
-		-> stmt			  
+STMTLIST-> end
+		-> STMT
+		-> STMT; STMLIST			  
 
-compif  -> if cond then compif            !!!Left refactor nejednoznacnost
-		-> if cond then innerif else compif
-		-> stmt 
+A  		-> IFBLOCK B else A     ?If!
+		-> STMT 
 
-innerif	-> if cond then innerif else innerif
-		-> if cond then innerif
-		-> stmt
+IFBLOCK -> if COND then
 
-equ 	-> <
+B		-> A
+		-> STMT
+		-> epsilon
+
+EQU 	-> <
 	 	-> >
 		-> <>
 		-> >=
 		-> <=
 		-> =
+
+TYP 	-> int
+		-> real
+		-> string
+		-> bool
