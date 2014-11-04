@@ -1,65 +1,61 @@
 # http://mdaines.github.io/grammophone/#/
+# TYP -> integer, real ...
+#
+#########################################################################################
 
-###########################################################################################
 START -> var VARINIT .
 START -> FUNCDECLARE PROGRAM .
 VARINIT -> VARDECLARE VARDECLARES .
-VARDECLARE -> id : TYP; .
+VARDECLARE -> id : TYP ; .
 VARDECLARES -> .
 PROGRAM -> begin S endbodka .
 
 #############################################################################################
 
-S -> STMT .
 S -> IF .
 S -> WHILE .
-S -> id := RSIDE .
+S -> id := EXPR  . #volani funkce je EXPR
 S -> STMTLIST .
-S -> readln ( id ) .
-S -> write ( TERMS ) .
-RSIDE -> STMT .
-RSIDE -> functionid ( PARAMS ) .
+#S -> readln ( id ) .
+#S -> write ( TERMS ) . #volani vstavenych funkci
 TERMS -> .
-TERMS -> TERM, TERMS .
+TERMS -> TERM , TERMS .
 TERM -> id .
 TERM -> TYP .
-TYP -> int .
-TYP -> real .
-TYP -> string .
-TYP -> boolean .
+
+#########
+VYRAZ -> id := EXPR .
+VYRAZ -> EXPR .
 
 ################################################################################################
 
 STMTLIST -> begin INIT end .
 
 INIT -> VYRAZ POSTVYRAZ .
-INIT -> BLOCK INIT.
+INIT -> BLOCK INIT .
 INIT -> .
-
-POSTVYRAZ -> .
-POSTVYRAZ -> STREDNIK POSTSTREDNIK .
-
-POSTSTREDNIK -> BLOCK INIT .
-POSTSTREDNIK -> VYRAZ POSTVYRAZ .
-
-STREDNIK -> ; .
 
 BLOCK -> IF .
 BLOCK -> WHILE .
 
-IF -> if COND then STMTLIST else STMTLIST .
-WHILE -> while COND do STMTLIST .
+POSTVYRAZ -> .
+POSTVYRAZ -> ; POSTSTREDNIK .
+
+POSTSTREDNIK -> BLOCK INIT .
+POSTSTREDNIK -> VYRAZ POSTVYRAZ .
+
+IF -> if EXPR then STMTLIST else STMTLIST .
+WHILE -> while EXPR do STMTLIST .
 
 #################################################################################
 
 FUNCDECLARE -> .
 FUNCDECLARE -> FUNC FUNCDECLARE .
-FUNC -> functionid ( PARAMS ) : TYP; VARINIT FLIST .
-PARAMS -> PARAM PARAMBODY .
-PARAMBODY -> ; PARAM PARAMBODY .
-PARAMBODY -> .
+FUNC -> functionid ( PARAMS ) : TYP ; VARINIT FLIST .
+PARAMS -> .
+PARAMS -> VARINIT .
+
 
 FLIST -> begin INIT end; .
 
 #######################################################################################
-
