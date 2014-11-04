@@ -3,18 +3,19 @@
 #
 #########################################################################################
 
-START -> var VARINIT .
+START -> var VARINIT FUNCDECLARE PROGRAM .
 START -> FUNCDECLARE PROGRAM .
-VARINIT -> VARDECLARE VARDECLARES .
+VARINIT -> VARDECLARE VARDECLARES  .
 VARDECLARE -> id : TYP ; .
 VARDECLARES -> .
+VARDECLARES -> VARDECLARE VARDECLARES .
 PROGRAM -> begin S endbodka .
 
 #############################################################################################
 
 S -> IF .
 S -> WHILE .
-S -> id := EXPR  . #volani funkce je EXPR
+S -> id := EXPR  . #volani funkce je EXPR #check for forward
 S -> STMTLIST .
 #S -> readln ( id ) .
 #S -> write ( TERMS ) . #volani vstavenych funkci
