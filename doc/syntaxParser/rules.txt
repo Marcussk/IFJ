@@ -1,0 +1,65 @@
+# http://mdaines.github.io/grammophone/#/
+
+###########################################################################################
+START -> var VARINIT .
+START -> FUNCDECLARE PROGRAM .
+VARINIT -> VARDECLARE VARDECLARES .
+VARDECLARE -> id : TYP; .
+VARDECLARES -> .
+PROGRAM -> begin S endbodka .
+
+#############################################################################################
+
+S -> STMT .
+S -> IF .
+S -> WHILE .
+S -> id := RSIDE .
+S -> STMTLIST .
+S -> readln ( id ) .
+S -> write ( TERMS ) .
+RSIDE -> STMT .
+RSIDE -> functionid ( PARAMS ) .
+TERMS -> .
+TERMS -> TERM, TERMS .
+TERM -> id .
+TERM -> TYP .
+TYP -> int .
+TYP -> real .
+TYP -> string .
+TYP -> boolean .
+
+################################################################################################
+
+STMTLIST -> begin INIT end .
+
+INIT -> VYRAZ POSTVYRAZ .
+INIT -> BLOCK INIT.
+INIT -> .
+
+POSTVYRAZ -> .
+POSTVYRAZ -> STREDNIK POSTSTREDNIK .
+
+POSTSTREDNIK -> BLOCK INIT .
+POSTSTREDNIK -> VYRAZ POSTVYRAZ .
+
+STREDNIK -> ; .
+
+BLOCK -> IF .
+BLOCK -> WHILE .
+
+IF -> if COND then STMTLIST else STMTLIST .
+WHILE -> while COND do STMTLIST .
+
+#################################################################################
+
+FUNCDECLARE -> .
+FUNCDECLARE -> FUNC FUNCDECLARE .
+FUNC -> functionid ( PARAMS ) : TYP; VARINIT FLIST .
+PARAMS -> PARAM PARAMBODY .
+PARAMBODY -> ; PARAM PARAMBODY .
+PARAMBODY -> .
+
+FLIST -> begin INIT end; .
+
+#######################################################################################
+
