@@ -1,5 +1,5 @@
 
-       +	-	*	/	<	>	<=	>=	=  <>	(	)  func ,   $   var
+       +	-	*	/	<	>	<=	>=	=	<>	(	)	func	,	$	var
    +   S	S	R	R	S	S	S	S	S	S	R	S	R	S	S	R 
    -   S	S	R	R	S	S	S	S	S	S	R	S	R	S	S	R
    *   S	S	S	S	S	S	S	S	S	S	R	S	R	S	S	R
