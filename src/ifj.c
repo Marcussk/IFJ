@@ -14,6 +14,10 @@
 #include "lexParser.h"
 #include "tokenMap.h"
 #include "defs.h"
+#include "hashTable.h"
+
+hashTable * ht;
+
 
 void printToken(LexParser * p, Token t) {
 	char * str;
@@ -22,6 +26,9 @@ void printToken(LexParser * p, Token t) {
 		printf("Line %d:<str:'%s'>\n", p->lineNum, p->str.buff);
 		break;
 	case t_id:
+		if( HashTable_insert(ht, strdup(p->str.buff)) ==2){
+			printf("Line %d:<id:'%s', already in table >\n", p->lineNum, p->str.buff);
+		}
 		printf("Line %d:<id:'%s'>\n", p->lineNum, p->str.buff);
 		break;
 	case t_num_int:
@@ -37,11 +44,11 @@ void printToken(LexParser * p, Token t) {
 		} else {
 			printf("Line %d: <tokenWithoutStr: %d>\n", p->lineNum, t);
 		}
-
 	}
 }
 
 int main(int argc, char *argv[]) {
+	ht = HashTable__init__(128);
 	LexParser lp = LexParser__init__(&printToken);
 	//TokenMap_vizualize(lp.tParser.map, 0);
 	if (argc != 2) {
@@ -59,6 +66,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-
+	HashTable_print(ht);
 	return EXIT_SUCCESS;
 }

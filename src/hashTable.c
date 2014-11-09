@@ -80,3 +80,17 @@ void HashTable__dell__(hashTable *hashtable) {
 	free(hashtable->table);
 	free(hashtable);
 }
+
+void HashTable_print(hashTable *self) {
+	int hash;
+	printf("<hashTable:%p>\n", (void *) self);
+	hashTableItem *list, *temp;
+	for (hash = 0; hash < self->size; hash++) {
+		list = self->table[hash];
+		while (list != NULL) {
+			temp = list;
+			list = list->next;
+			printf("<item hash: %d, pointer: %p val: %s>\n",hash, temp, temp->str);
+		}
+	}
+}
