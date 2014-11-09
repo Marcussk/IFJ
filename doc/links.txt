@@ -1,6 +1,18 @@
 Lex analyzer:
 http://forum.codecall.net/topic/41287-design-and-implement-a-lexical-analyzer-written-in-c/
 
+Syntax analyzer:
+http://www.codeproject.com/Articles/10421/Crafting-an-interpreter-Part-Parse-Trees-and-Syn
+http://www.cs.columbia.edu/~sedwards/classes/2003/w4115f/ast.9up.pdf
+http://www.algoritmy.net/article/100/Konstrukce-prekladace
+
+LL:
+http://cs.wikipedia.org/wiki/LL_syntaktick%C3%BD_analyz%C3%A1tor
+http://cs.wikipedia.org/wiki/Transformace_na_LL(1)
+http://dudka.cz/ifj05/files/src/expr.c
+
+
+
 Minule projekty:
 https://github.com/metthal/IFJ-Projekt
 https://github.com/sEnergy/IFJ
@@ -9,6 +21,8 @@ https://github.com/jirdano/IFJ13
 https://github.com/honza889/IFJ12
 https://github.com/Pitel/IFJ2007
 https://github.com/vokracko/IFJ--Interpret
+http://dudka.cz/ifj05
+
 
 Best books about compilers
 http://www.quora.com/What-are-the-best-books-about-compilers

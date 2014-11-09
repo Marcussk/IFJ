@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /*
  * very similar with http://www.sparknotes.com/cs/searching/hashtables/section3.rhtml
@@ -24,5 +25,6 @@ hashTable * HashTable__init__(int size);
 hashTableItem * HashTable_lookup(hashTable *hashtable, char *str);
 int HashTable_insert(hashTable *hashtable, char *str);
 void HashTable__dell__(hashTable *hashtable);
+void HashTable_print(hashTable *hashtable);
 
 #endif

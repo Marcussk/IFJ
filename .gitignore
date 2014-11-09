@@ -12,6 +12,7 @@
 *.o
 *.out
 *.run
+*.exe
 
 #ignore gedit temp files
 *~
