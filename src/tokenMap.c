@@ -149,7 +149,7 @@ void TokenParser__dell__(TokenParser * p) {
 	TokenMapElement map;
 	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
 		map = p->map[i];
-		if (map.token != t_num_int)
+		if (map.token != t_num_int && map.next)
 			TokenMap__dell__(map.next);
 	}
 	TokenMapElement * intMap = p->map['0'].next;

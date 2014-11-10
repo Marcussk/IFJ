@@ -58,7 +58,8 @@ typedef enum {
 	t_rcBracket,
 	t_num_int,
 	t_num_real,
-	t_id
+	t_id,
+	t_eof
 
 } Token;
 

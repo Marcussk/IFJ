@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "ifjTypes.h"
+
 
 /*
  * very similar with http://www.sparknotes.com/cs/searching/hashtables/section3.rhtml
@@ -12,7 +14,8 @@
  */
 
 typedef struct hashTableItem_ {
-	char *str;
+	//char *str;
+	iVar * var;
 	struct hashTableItem_ *next;
 } hashTableItem;
 
@@ -23,7 +26,7 @@ typedef struct {
 
 hashTable * HashTable__init__(int size);
 hashTableItem * HashTable_lookup(hashTable *hashtable, char *str);
-int HashTable_insert(hashTable *hashtable, char *str);
+int HashTable_insert(hashTable *hashtable, char *str, iVar ** newItem);
 void HashTable__dell__(hashTable *hashtable);
 void HashTable_print(hashTable *hashtable);
 

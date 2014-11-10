@@ -36,24 +36,25 @@ hashTableItem *HashTable_lookup(hashTable *hashtable, char *str) {
 	unsigned int hashval = HashTable_hash(hashtable, str);
 
 	for (list = hashtable->table[hashval]; list != NULL; list = list->next)
-		if (strcmp(str, list->str) == 0)
+		if (strcmp(str, list->var->name) == 0)
 			return list;
 
 	return NULL;
 }
 
-int HashTable_insert(hashTable *hashtable, char *str) {
+int HashTable_insert(hashTable *hashtable, char *str, iVar ** newItem) {
 	hashTableItem *new_list;
 	hashTableItem *current_list;
 	unsigned int hashval = HashTable_hash(hashtable, str);
 
-	if ((new_list = malloc(sizeof(hashTableItem))) == NULL)
-		return 1;
+	new_list = malloc(sizeof(hashTableItem)); // [TODO] check for null
 
 	current_list = HashTable_lookup(hashtable, str);
 	if (current_list != NULL)
 		return 2; // already exists
-	new_list->str = strdup(str);
+	new_list->var = iVar__init__(strdup(str));
+	*newItem = new_list->var;
+
 	new_list->next = hashtable->table[hashval];
 	hashtable->table[hashval] = new_list;
 
@@ -64,15 +65,12 @@ void HashTable__dell__(hashTable *hashtable) {
 	int i;
 	hashTableItem *list, *temp;
 
-	if (hashtable == NULL)
-		return;
-
 	for (i = 0; i < hashtable->size; i++) {
 		list = hashtable->table[i];
 		while (list != NULL) {
 			temp = list;
 			list = list->next;
-			free(temp->str);
+			iVar__dell__(temp->var);
 			free(temp);
 		}
 	}
@@ -90,7 +88,8 @@ void HashTable_print(hashTable *self) {
 		while (list != NULL) {
 			temp = list;
 			list = list->next;
-			printf("<item hash: %d, pointer: %p val: %s>\n",hash, temp, temp->str);
+			printf("<item hash: %d, pointer: %p val: %s>\n", hash, temp,
+					temp->var->name);
 		}
 	}
 }

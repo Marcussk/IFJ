@@ -1,8 +1,8 @@
-{ Program 1: Vypocet faktorialu (iterativne) }
 var
 	a : integer;
 	vysl : integer;
 begin
+	{ Program 1: Vypocet faktorialu (iterativne) }
 	write('Zadejte cislo pro vypocet faktorialu: ');
 	readln(a);
 	if a < 0 then
