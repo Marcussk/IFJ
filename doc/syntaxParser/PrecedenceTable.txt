@@ -1,21 +1,21 @@
 
        +	-	*	/	<	>	<=	>=	=	<>	(	)	func	,	$	var
-   +   S	S	R	R	S	S	S	S	S	S	R	S	R	S	S	R 
-   -   S	S	R	R	S	S	S	S	S	S	R	S	R	S	S	R
-   *   S	S	S	S	S	S	S	S	S	S	R	S	R	S	S	R
-   /   S	S	S	S	S	S	S	S	S	S	R	S	R	S	S	R
-   <   R	R	R	R	S	S	S	S	S	S	R	S	R	S	S	R
-   >   R	R	R	R	S	S	S	S	S	S	R	S	R	S	S	R
-  <=   R	R	R	R	S	S	S	S	S	S	R	S	R	S	S	R
-  >=   R	R	R	R	S	S	S	S	S	S	R	S	R	S	S	R
-  =    R	R	R	R	R	R	R	R	S	S	R	S	R	S	S	R
-  <>   R	R	R	R	R	R	R	R	S	S	R	S	R	S	S	R
-  (    R	R	R	R	R	R	R	R	R	R	R	E	R	E	X	R
-  )    S	S	S	S	S	S	S	S	S	X	S	X	S	S	X	X
-func   X	X	X	X	X	X	X	X	X	X	X	X	X	X	X	X
-  ,    R	R	R	R	R	R	R	R	R	R	R	E	R	E	X	R
-  $    R	R	R	R	R	R	R	R	R	R	R	X	R	X	X	R
-var    S	S	S	S	S	S	S	S	S	S	X	S	X	S	S	X
+   +   R	R	S	S	R	R	R	R	R	R	S	R	S	R	R	S 
+   -   R	R	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+   *   R	R	R	R	R	R	R	R	R	R	S	R	S	R	R	S
+   /   R	R	R	R	R	R	R	R	R	R	S	R	S	R	R	S
+   <   S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+   >   S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+  <=   S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+  >=   S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+  =    S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+  <>   S	S	S	S	R	R	R	R	R	R	S	R	S	R	R	S
+  (    S	S	S	S	S	S	S	S	S	S	S	E	S	E	X	S
+  )    R	R	R	R	R	R	R	R	R	R	E	R	R	R	R	X
+func   X	X	X	X	X	X	X	X	X	X	E	X	X	X	X	X
+  ,    S	S	S	S	S	S	S	S	S	S	S	E	S	E	X	S
+  $    S	S	S	S	S	S	S	S	S	S	S	X	S	X	X	S
+var    R	R	R	R	R	R	R	R	R	R	X	R	X	R	R	X
 
 S = Shift
 R = Reduce
