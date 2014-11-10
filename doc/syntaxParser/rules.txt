@@ -19,10 +19,10 @@ S -> id := EXPR  . #volani funkce je EXPR #check for forward
 S -> STMTLIST .
 #S -> readln ( id ) .
 #S -> write ( TERMS ) . #volani vstavenych funkci
-TERMS -> .
-TERMS -> TERM , TERMS .
-TERM -> id .
-TERM -> TYP .
+#TERMS -> .
+#TERMS -> TERM , TERMS .
+#TERM -> id .
+#TERM -> TYP .
 
 #########
 VYRAZ -> id := EXPR .
