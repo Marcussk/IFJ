@@ -1,5 +1,5 @@
 #Default behaviour
-* text=auto
+* text eol=lf
 
 #Code
 *.c text eol=lf
