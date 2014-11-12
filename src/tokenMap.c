@@ -69,7 +69,9 @@ char * getTokenStr(Token t) {
 TokenMapElement * TokenMap_newLevel(){
 	int i;
 	TokenMapElement * newArr= malloc(TOKENMAP_NODESIZE* sizeof(TokenMapElement));
-	//[TODO] check allocation
+	if(!newArr)
+		memoryError("Cant allocate new level of tokenMap");
+
 	for(i=0; i<TOKENMAP_NODESIZE; i++){
 		newArr[i].next = NULL;
 		newArr[i].token = t_empty;

@@ -28,8 +28,12 @@ typedef enum {
 	t_eof,
 	t_id,
 
-	t_begin = 15, //keywords
-	t_boolean,
+	t_boolean =15,
+	t_integer,
+	t_real,
+	t_string,
+
+	t_begin, //keywords
 	t_do,
 	t_else,
 	t_end,
@@ -38,11 +42,8 @@ typedef enum {
 	t_forward,
 	t_func,
 	t_if,
-	t_integer = 25,
 	t_readln,
-	t_real = 27,
 	t_sort,
-	t_string = 29,
 	t_then,
 	t_true,
 	t_var,

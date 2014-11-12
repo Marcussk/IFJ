@@ -19,9 +19,21 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include "ifjTypes.h"
 
 void memoryError(char * str);
+
+void lexError(char * str, int lineNum);
+
 void syntaxError(char * str, int lineNum);
 
+void sem_definitionError(char * varName, int lineNum);
+void sem_TypeError(iVar * var);
+void sem_Error(char * str);
+
+void rt_readlnNumError(iVar * var);
+void rt_notInitError(iVar * var);
+void rt_zeroDivisionError();
+void rt_error(char * str);
 
 #endif

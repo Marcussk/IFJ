@@ -1,9 +1,10 @@
 #include "strRoutines.h"
 
-
-
 void String__init__(String * self, int prealocatedLen) {
-	self->buff = calloc(prealocatedLen, sizeof(char)); // [TODO] check for null
+	self->buff = calloc(prealocatedLen, sizeof(char));
+	if (!self->buff)
+		memoryError("Can't alloc memory for string");
+
 	self->len = 0;
 	self->prealloc = prealocatedLen;
 }
@@ -22,7 +23,10 @@ void String_append(String * self, char ch) {
 		//realloc
 		int i;
 		int newPrealloc = self->prealloc * 2;
-		self->buff = realloc(self->buff, newPrealloc); // [TODO] check for null
+		self->buff = realloc(self->buff, newPrealloc);
+		if (!self->buff)
+			memoryError("Can't realloc string buffer while appending char");
+
 		for (i = self->prealloc; i < newPrealloc; i++)
 			self->buff[i] = 0;
 		self->prealloc = newPrealloc;
@@ -31,9 +35,9 @@ void String_append(String * self, char ch) {
 	}
 }
 
-void String_appendStr(String* a, String *b){
+void String_appendStr(String* a, String *b) {
 	int i;
-	for(i=0; i< b->len; i++){
+	for (i = 0; i < b->len; i++) {
 		String_append(a, b->buff[i]);
 	}
 }

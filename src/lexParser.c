@@ -57,7 +57,8 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 							HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
 							YIELD(LexParser_gen, t_id);
 						}else{
-							YIELD(LexParser_gen, t_invalid);
+							lexError("probably invalid identificator\n", p->lineNum);
+							//YIELD(LexParser_gen, t_invalid);
 						}
 					}
 					String_clear(&(p->str));
@@ -114,7 +115,7 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 			break;
 		case lp_error:
 		default:
-			syntaxError("Lex parser in unknown state.", p->lineNum);
+			lexError("Lex parser in unknown state.", p->lineNum);
 		}
 		if (ch == '\n')
 			p->lineNum += 1;

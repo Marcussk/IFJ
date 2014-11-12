@@ -8,10 +8,10 @@ HashTable *HashTable__init__(int size) {
 		return NULL;
 
 	if ((new_table = malloc(sizeof(HashTable))) == NULL)
-		return NULL;
+		memoryError("Cannot allocate hash table\n");
 
 	if ((new_table->table = malloc(sizeof(hashTableItem *) * size)) == NULL)
-		return NULL;
+		memoryError("Cannot allocate content of hash table\n");
 
 	for (i = 0; i < size; i++)
 		new_table->table[i] = NULL;
@@ -57,7 +57,8 @@ int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem) {
 		*newItem = current_list->var;
 		return 2;
 	}
-	new_list = malloc(sizeof(hashTableItem)); // [TODO] check for null
+	if((new_list = malloc(sizeof(hashTableItem))) == NULL)
+		memoryError("Cannot allocate new item to hash table\n");
 	new_list->var = iVar__init__(strdup(str));
 	*newItem = new_list->var;
 

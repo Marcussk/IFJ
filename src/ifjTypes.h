@@ -5,8 +5,9 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+// !!compatible!! with tokens
 typedef enum {
-	iUnknown, iVoid, iInt =25, iString=29, iReal =27, iFn
+	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iFn
 } tIFJ;
 
 // alias function body
@@ -40,5 +41,7 @@ typedef struct {
 iVar * iVar__init__(char * name);
 void iVar_debug(iVar * v);
 void iVar__dell__(iVar * self);
+
+char * iVar_type2str(tIFJ t);
 
 #endif
