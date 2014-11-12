@@ -61,8 +61,8 @@ typedef enum {
 	t_lcBracket, //others
 	t_rcBracket,
 	t_num_int,
-	t_num_real
-
+	t_num_real,
+	t_invalid
 } Token;
 
 typedef struct {
@@ -90,6 +90,6 @@ bool isKeyword(Token t);
 bool canContinueWithNonWordChar(Token t);
 
 char * getTokenStr(Token t);
-void TokenMap_debug(TokenMapElement * map, int indent);
+void TokenMap_debug(TokenMapElement map[], int indent);
 
 #endif

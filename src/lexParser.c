@@ -16,6 +16,10 @@ bool endOfIdOrNum(int idLen, char ch) {
 	return !isalnum(ch);
 }
 
+// name have to be longerr than 0
+bool isValidId(char * name){
+	return isalpha(name[0]) || name[0]== '_';
+}
 
 /*generates Tokens, name is LexParser_iterator, accepts  LexParser * p, return t_eof as a default return type
  *
@@ -49,8 +53,12 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 					if (p->lastToken != t_empty) {
 						YIELD(LexParser_gen, p->lastToken);
 					} else {
-						HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
-						YIELD(LexParser_gen, t_id);
+						if(isValidId(p->str.buff)){
+							HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
+							YIELD(LexParser_gen, t_id);
+						}else{
+							YIELD(LexParser_gen, t_invalid);
+						}
 					}
 					String_clear(&(p->str));
 					TokenParser_reset(&(p->tParser));

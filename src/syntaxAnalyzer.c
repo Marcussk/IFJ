@@ -19,6 +19,9 @@ void printToken(LexParser * p, Token t) {
 	case t_num_real:
 		printf("Line %d:<real:'%s'>\n", p->lineNum, p->str.buff);
 		break;
+	case t_invalid:
+		printf("Line %d:<invalid token str: \"%s\">\n",p->lineNum, p->str.buff);
+		break;
 	case t_eof:
 		printf("Line %d:<EOF>\n", p->lineNum);
 		break;
