@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
+	printf("%d\n", t_boolean);
 	HashTable_print(symbolTable);
 	HashTable__dell__(symbolTable);
 	return EXIT_SUCCESS;

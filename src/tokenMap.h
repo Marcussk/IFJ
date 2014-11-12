@@ -24,10 +24,11 @@ typedef enum {
 	t_eqv,
 	t_lBracket,
 	t_rBracket,
-	t_func,
 	t_comma,
+	t_eof,
+	t_id,
 
-	t_begin, //keywords
+	t_begin=15, //keywords
 	t_boolean,
 	t_do,
 	t_else,
@@ -35,7 +36,7 @@ typedef enum {
 	t_false,
 	t_find,
 	t_forward,
-
+	t_func,
 	t_if,
 	t_integer,
 	t_readln,
@@ -60,9 +61,9 @@ typedef enum {
 	t_lcBracket, //others
 	t_rcBracket,
 	t_num_int,
-	t_num_real,
-	t_id,
-	t_eof
+	t_num_real
+
+
 
 } Token;
 
