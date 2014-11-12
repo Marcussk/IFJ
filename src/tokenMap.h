@@ -28,7 +28,7 @@ typedef enum {
 	t_eof,
 	t_id,
 
-	t_begin=15, //keywords
+	t_begin = 15, //keywords
 	t_boolean,
 	t_do,
 	t_else,
@@ -38,11 +38,11 @@ typedef enum {
 	t_forward,
 	t_func,
 	t_if,
-	t_integer,
+	t_integer = 25,
 	t_readln,
-	t_real,
+	t_real = 27,
 	t_sort,
-	t_string,
+	t_string = 29,
 	t_then,
 	t_true,
 	t_var,
@@ -62,8 +62,6 @@ typedef enum {
 	t_rcBracket,
 	t_num_int,
 	t_num_real
-
-
 
 } Token;
 
@@ -92,7 +90,6 @@ bool isKeyword(Token t);
 bool canContinueWithNonWordChar(Token t);
 
 char * getTokenStr(Token t);
-void TokenMap_vizualize(TokenMapElement * map, int indent);
-
+void TokenMap_debug(TokenMapElement * map, int indent);
 
 #endif

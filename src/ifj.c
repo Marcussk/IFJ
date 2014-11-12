@@ -21,13 +21,13 @@ HashTable * symbolTable;
 int main(int argc, char *argv[]) {
     LexParser lexParser;
     SyntaxAnalyzer synAnalyzer;
-	symbolTable = HashTable__init__(128);
+	symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
 	} else {
 		FILE *file = fopen(argv[1], "r");
 		if (file == 0) {
-			printf("Could not open file\n");
+			printf("ERROR: Could not open file!\n");
 		} else {
 			LexParser__init__(&lexParser,file);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
@@ -35,8 +35,7 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-	printf("%d\n", t_boolean);
-	HashTable_print(symbolTable);
+	//HashTable_debug(symbolTable);
 	HashTable__dell__(symbolTable);
 	return EXIT_SUCCESS;
 

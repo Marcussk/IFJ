@@ -28,6 +28,6 @@ HashTable * HashTable__init__(int size);
 hashTableItem * HashTable_lookup(HashTable *hashtable, char *str);
 int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem);
 void HashTable__dell__(HashTable *hashtable);
-void HashTable_print(HashTable *hashtable);
+void HashTable_debug(HashTable *hashtable);
 
 #endif

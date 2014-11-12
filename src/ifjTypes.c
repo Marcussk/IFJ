@@ -3,7 +3,8 @@
 iVar * iVar__init__(char * name) {
 	iVar * self = malloc(sizeof(iVar));
 	if (!self) {
-	} //[TODO] error
+		//[TODO] error
+	}
 	self->isInitialied = false;
 	self->name = name;
 	self->type = iUnknown;

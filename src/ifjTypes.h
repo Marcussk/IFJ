@@ -6,7 +6,7 @@
 #include "stdio.h"
 
 typedef enum {
-	iUnknown, iVoid, iInt, iString, iReal, iFn
+	iUnknown, iVoid, iInt =25, iString=29, iReal =27, iFn
 } tIFJ;
 
 // alias function body
@@ -21,7 +21,7 @@ typedef struct {
 typedef struct {
 	tIFJ retType;
 	ParamsList params;
-	CodeStack body;
+	CodeStack * body;
 } iFunction;
 
 // basic variable can represet everythink, even function *

@@ -21,6 +21,7 @@ HashTable *HashTable__init__(int size) {
 	return new_table;
 }
 
+//returns hash key
 unsigned int HashTable_hash(HashTable *hashtable, char *str) {
 	unsigned int hashval = 0;
 
@@ -31,6 +32,7 @@ unsigned int HashTable_hash(HashTable *hashtable, char *str) {
 	return hashval % hashtable->size;
 }
 
+// = search in table
 hashTableItem *HashTable_lookup(HashTable *hashtable, char *str) {
 	hashTableItem *list;
 	unsigned int hashval = HashTable_hash(hashtable, str);
@@ -42,6 +44,7 @@ hashTableItem *HashTable_lookup(HashTable *hashtable, char *str) {
 	return NULL;
 }
 
+//insert string as iVar reference is gained thru newItem
 int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem) {
 	hashTableItem *new_list;
 	hashTableItem *current_list;

@@ -1,5 +1,6 @@
 #include "tokenMap.h"
 
+//describes string form of token
 TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_begin, "begin" }, //keywords
 		(TokenMeaning ) { t_boolean, "boolean" },
@@ -46,11 +47,13 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_rcBracket, "}"}
 		};
 
+// alias can be double char operator?
 bool canContinueWithNonWordChar(Token t){
 	return t == t_less || t == t_greater || t == t_period
 			|| t == t_colon;
 }
 
+// reverz function, can get string form of token
 char * getTokenStr(Token t) {
 	int ti;
 	int tokensCnt = STATIC_ARR_LEN(tokenMeanings);
@@ -64,6 +67,7 @@ char * getTokenStr(Token t) {
 	return NULL;
 }
 
+// include token rule in token map
 TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 	int i;
 	char ch;
@@ -89,6 +93,7 @@ TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 
 }
 
+//include rules for numbers in token map
 void TokenParser_addNumbers(TokenMapElement map[]) {
 	int i;
 	TokenMapElement * elm;
@@ -162,19 +167,11 @@ void TokenParser__dell__(TokenParser * p) {
 	p->possition = NULL;
 }
 
-bool isKeyword(Token t) {
-	return t == t_empty || t == t_begin || t == t_boolean || t == t_do
-			|| t == t_else || t == t_end || t == t_false || t == t_find
-			|| t == t_forward || t == t_func || t == t_if || t == t_integer
-			|| t == t_readln || t == t_real || t == t_sort || t == t_string
-			|| t == t_then || t == t_true || t == t_var || t == t_while
-			|| t == t_write;
-}
-
 void TokenParser_reset(TokenParser * p) {
 	p->possition = p->map;
 }
 
+// parse another char
 Token TokenParser_push(TokenParser * p, char ch) {
 	TokenMapElement m;
 	if (p->possition)
@@ -187,7 +184,7 @@ Token TokenParser_push(TokenParser * p, char ch) {
 	return m.token;
 }
 
-void TokenMap_vizualize(TokenMapElement * map, int indent) {
+void TokenMap_debug(TokenMapElement * map, int indent) {
 	int i;
 	int ii;
 	TokenMapElement elm;
@@ -201,7 +198,7 @@ void TokenMap_vizualize(TokenMapElement * map, int indent) {
 				printf("< %c(%d) , %s, next: %p>\n",(char)i, i, getTokenStr(elm.token),
 						elm.next);
 				if (elm.next)
-					TokenMap_vizualize(elm.next, indent + 4);
+					TokenMap_debug(elm.next, indent + 4);
 			}
 		}
 	}

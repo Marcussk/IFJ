@@ -9,14 +9,21 @@ void LexParser__init__(LexParser * p, FILE * inFile) {
 	p->lastToken = t_empty;
 	p->lastSymbol = NULL;
 }
+
 bool endOfIdOrNum(int idLen, char ch) {
 	if (ch == '_')
 		return false; // _ can be anywhere
 	return !isalnum(ch);
 }
 
-// generates Tokens, name is LexParser_iterator, accepts  LexParser * p, return t_eof as a default return type
-GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
+
+/*generates Tokens, name is LexParser_iterator, accepts  LexParser * p, return t_eof as a default return type
+ *
+ * when token is id name is in p->str.buff and variable is pushed in symboltable and reference is p->lastSymbol
+ * when token is some constant (string, int, real) string value is in p->str.buff and this value is parsed to iVar an can be accessed
+ * trough the  p->lastSymbol
+ * */
+GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 	static LexParser * p;
 	static char ch;
 	static Token tokBackup = t_empty;
@@ -40,10 +47,10 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 			if (endOfIdOrNum(p->str.len, ch)) {
 				if (p->str.len > 0) {
 					if (p->lastToken != t_empty) {
-						YIELD(LexParser_iterator, p->lastToken);
+						YIELD(LexParser_gen, p->lastToken);
 					} else {
 						HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
-						YIELD(LexParser_iterator, t_id);
+						YIELD(LexParser_gen, t_id);
 					}
 					String_clear(&(p->str));
 					TokenParser_reset(&(p->tParser));
@@ -57,7 +64,7 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 				p->lastToken = TokenParser_push(&(p->tParser), tolower(ch));
 				if (p->str.len == 0 && tokBackup != t_empty
 						&& p->lastToken == t_empty) {
-					YIELD(LexParser_iterator, tokBackup);
+					YIELD(LexParser_gen, tokBackup);
 				}
 			} else {
 				p->lastToken = t_empty;
@@ -72,7 +79,7 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 		case lp_string:
 			if (ch == '\'') {
 				p->state = lp_read;
-				YIELD(LexParser_iterator, t_string);
+				YIELD(LexParser_gen, t_string);
 				String_clear(&(p->str));
 			} else {
 				String_append(&(p->str), ch);
@@ -86,7 +93,7 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 				char escp = atoi(p->str.buff);
 				String_clear(&(p->str));
 				String_append(&(p->str), escp);
-				YIELD(LexParser_iterator, t_string);
+				YIELD(LexParser_gen, t_string);
 				String_clear(&(p->str));
 				TokenParser_reset(&(p->tParser));
 				if (ch == '\'')
@@ -105,13 +112,7 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 			p->lineNum += 1;
 
 	}
-	YIELD(LexParser_iterator, t_eof);
-}
-
-
-void LexParser_clear(LexParser * p) {
-	String_clear(&(p->str));
-	p->lineNum = 0;
+	YIELD(LexParser_gen, t_eof);
 }
 
 void LexParser__dell__(LexParser * p) {

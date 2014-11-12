@@ -36,23 +36,10 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
 }
 
-tIFJ token2Type(Token t) {
-	switch (t) {
-	case t_string:
-		return iString;
-	case t_integer:
-		return iInt;
-	case t_real:
-		return iReal;
-	default:
-		return iUnknown;
-	}
-}
-
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
 
-	while ((tok = LexParser_iterator(self->lp)) != t_eof) {
+	while ((tok = LexParser_gen(self->lp)) != t_eof) {
 		if (tok == t_id)
 			iVar_debug(self->lp->lastSymbol);
 	}

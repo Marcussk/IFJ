@@ -26,7 +26,7 @@ typedef struct {
 } LexParser;
 
 void LexParser__init__(LexParser * p, FILE * inFile);
-Token LexParser_iterator(LexParser * p);
+Token LexParser_gen(LexParser * p);
 void LexParser__dell__(LexParser * p);
 void LexParser_clear(LexParser * p);
 
