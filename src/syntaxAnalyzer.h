@@ -7,9 +7,10 @@
 #include "stack.h"
 
 typedef struct {
-	Token lastToken;
 	LexParser * lp;
 } SyntaxAnalyzer;
+
+extern HashTable * symbolTable;
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp);
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self);

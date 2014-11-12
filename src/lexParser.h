@@ -6,8 +6,10 @@
 #include <ctype.h>
 #include "strRoutines.h"
 #include "yield.h"
-
+#include "hashTable.h"
 #include "tokenMap.h"
+
+extern HashTable * symbolTable;
 
 typedef enum {
 	lp_read, lp_string, lp_comment, lp_escape, lp_error
@@ -20,6 +22,7 @@ typedef struct {
 	TokenParser tParser;
 	int lineNum;
 	Token lastToken;
+	iVar * lastSymbol;
 } LexParser;
 
 void LexParser__init__(LexParser * p, FILE * inFile);

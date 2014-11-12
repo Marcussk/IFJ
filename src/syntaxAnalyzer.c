@@ -1,7 +1,5 @@
 #include "syntaxAnalyzer.h"
 
-hashTable * ht;
-
 void printToken(LexParser * p, Token t) {
 	char * str;
 	switch (t) {
@@ -52,11 +50,13 @@ tIFJ token2Type(Token t) {
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
-	ht = HashTable__init__(128);
-	while ((self->lastToken = LexParser_iterator(self->lp)) != t_eof) {
+	Token tok;
 
+	while ((tok = LexParser_iterator(self->lp)) != t_eof) {
+		if (tok == t_id)
+			iVar_debug(self->lp->lastSymbol);
 	}
-	HashTable__dell__(ht);
+
 }
 
 void SyntaxAnalyzer__dell__(SyntaxAnalyzer * self) {

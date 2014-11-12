@@ -7,6 +7,7 @@ void LexParser__init__(LexParser * p, FILE * inFile) {
 	p->lineNum = 0;
 	p->tParser = TokenParser__init__();
 	p->lastToken = t_empty;
+	p->lastSymbol = NULL;
 }
 bool endOfIdOrNum(int idLen, char ch) {
 	if (ch == '_')
@@ -41,6 +42,7 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 					if (p->lastToken != t_empty) {
 						YIELD(LexParser_iterator, p->lastToken);
 					} else {
+						HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
 						YIELD(LexParser_iterator, t_id);
 					}
 					String_clear(&(p->str));
@@ -106,12 +108,6 @@ GENERATOR(Token, LexParser_iterator, LexParser *, pa, t_eof) {
 	YIELD(LexParser_iterator, t_eof);
 }
 
-//GENERATOR(Token, LexParser_iterator_var,  LexParser *, pa, t_eof){
-//	while(true){
-//
-//		YIELD(LexParser_iterator_var, )
-//	}
-//}
 
 void LexParser_clear(LexParser * p) {
 	String_clear(&(p->str));

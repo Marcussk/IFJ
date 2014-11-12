@@ -12,7 +12,21 @@
 #define TOKENMAP_NODESIZE 128
 
 typedef enum {
-	t_empty, // nodes witch have no meaning are empty
+	t_empty = -1, // nodes witch have no meaning are empty
+	t_plus, // operators
+	t_minus,
+	t_asterisk,
+	t_slash,
+	t_less,
+	t_greater,
+	t_lessOrEqv,
+	t_greaterOrEqv,
+	t_eqv,
+	t_lBracket,
+	t_rBracket,
+	t_func,
+	t_comma,
+
 	t_begin, //keywords
 	t_boolean,
 	t_do,
@@ -21,7 +35,7 @@ typedef enum {
 	t_false,
 	t_find,
 	t_forward,
-	t_func,
+
 	t_if,
 	t_integer,
 	t_readln,
@@ -33,25 +47,14 @@ typedef enum {
 	t_var,
 	t_while,
 	t_write,
-	t_plus, // operators
-	t_minus,
-	t_asterisk,
-	t_slash,
-	t_eqv,
-	t_less,
-	t_greater,
-	t_lBracket,
-	t_rBracket,
+
 	t_period,
-	t_comma,
 	t_colon,
 	t_scolon,
 	t_pointer,
 	t_lParenthessis,
 	t_rParenthessis,
 	t_notEqv,
-	t_lessOrEqv,
-	t_greaterOrEqv,
 	t_asigment,
 	t_doubleDot,
 	t_lcBracket, //others

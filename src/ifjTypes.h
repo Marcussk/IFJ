@@ -3,6 +3,7 @@
 
 #include "stdbool.h"
 #include "stdlib.h"
+#include "stdio.h"
 
 typedef enum {
 	iUnknown, iVoid, iInt, iString, iReal, iFn
@@ -37,6 +38,7 @@ typedef struct {
 } iVar;
 
 iVar * iVar__init__(char * name);
+void iVar_debug(iVar * v);
 void iVar__dell__(iVar * self);
 
 #endif

@@ -22,12 +22,12 @@ typedef struct hashTableItem_ {
 typedef struct {
 	int size;
 	hashTableItem **table;
-} hashTable;
+} HashTable;
 
-hashTable * HashTable__init__(int size);
-hashTableItem * HashTable_lookup(hashTable *hashtable, char *str);
-int HashTable_insert(hashTable *hashtable, char *str, iVar ** newItem);
-void HashTable__dell__(hashTable *hashtable);
-void HashTable_print(hashTable *hashtable);
+HashTable * HashTable__init__(int size);
+hashTableItem * HashTable_lookup(HashTable *hashtable, char *str);
+int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem);
+void HashTable__dell__(HashTable *hashtable);
+void HashTable_print(HashTable *hashtable);
 
 #endif

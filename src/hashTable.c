@@ -1,13 +1,13 @@
 #include "hashTable.h"
 
-hashTable *HashTable__init__(int size) {
-	hashTable *new_table;
+HashTable *HashTable__init__(int size) {
+	HashTable *new_table;
 	int i;
 
 	if (size < 1)
 		return NULL;
 
-	if ((new_table = malloc(sizeof(hashTable))) == NULL)
+	if ((new_table = malloc(sizeof(HashTable))) == NULL)
 		return NULL;
 
 	if ((new_table->table = malloc(sizeof(hashTableItem *) * size)) == NULL)
@@ -21,7 +21,7 @@ hashTable *HashTable__init__(int size) {
 	return new_table;
 }
 
-unsigned int HashTable_hash(hashTable *hashtable, char *str) {
+unsigned int HashTable_hash(HashTable *hashtable, char *str) {
 	unsigned int hashval = 0;
 
 	for (; *str != '\0'; str++)
@@ -31,7 +31,7 @@ unsigned int HashTable_hash(hashTable *hashtable, char *str) {
 	return hashval % hashtable->size;
 }
 
-hashTableItem *HashTable_lookup(hashTable *hashtable, char *str) {
+hashTableItem *HashTable_lookup(HashTable *hashtable, char *str) {
 	hashTableItem *list;
 	unsigned int hashval = HashTable_hash(hashtable, str);
 
@@ -42,16 +42,19 @@ hashTableItem *HashTable_lookup(hashTable *hashtable, char *str) {
 	return NULL;
 }
 
-int HashTable_insert(hashTable *hashtable, char *str, iVar ** newItem) {
+int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem) {
 	hashTableItem *new_list;
 	hashTableItem *current_list;
 	unsigned int hashval = HashTable_hash(hashtable, str);
 
-	new_list = malloc(sizeof(hashTableItem)); // [TODO] check for null
-
 	current_list = HashTable_lookup(hashtable, str);
-	if (current_list != NULL)
-		return 2; // already exists
+
+	if (current_list){
+		// already exists
+		*newItem = current_list->var;
+		return 2;
+	}
+	new_list = malloc(sizeof(hashTableItem)); // [TODO] check for null
 	new_list->var = iVar__init__(strdup(str));
 	*newItem = new_list->var;
 
@@ -61,7 +64,7 @@ int HashTable_insert(hashTable *hashtable, char *str, iVar ** newItem) {
 	return 0;
 }
 
-void HashTable__dell__(hashTable *hashtable) {
+void HashTable__dell__(HashTable *hashtable) {
 	int i;
 	hashTableItem *list, *temp;
 
@@ -79,7 +82,7 @@ void HashTable__dell__(hashTable *hashtable) {
 	free(hashtable);
 }
 
-void HashTable_print(hashTable *self) {
+void HashTable_print(HashTable *self) {
 	int hash;
 	printf("<hashTable:%p>\n", (void *) self);
 	hashTableItem *list, *temp;

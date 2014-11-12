@@ -10,7 +10,6 @@
 //func##_gen_jmp -- name of
 #define YIELD(func, n) if (! setjmp(func##_gen_jmp)) {  \
     func##_ret = n;                                     \
-    printf("<longjmp YIELD>\n");					    \
 	longjmp(func##_caller_jmp, 1);                      \
   }
 
@@ -22,7 +21,6 @@
 												\
 												\
   void func##_reNew(){ 	                        \
-	    printf("renew\n");                      \
 		func##_continue = false;     			\
   }												\
   	  	  	  	  	  	  	  	  	  	  	  	\
@@ -30,15 +28,12 @@
   ret func(argt argv){                          \
     if (!func##_continue){                      \
       func##_continue=true; 					\
-	  printf("setJmp\n");						\
       if (!setjmp(func##_caller_jmp)) {         \
-    	printf("<real fn call>\n");				\
         func##__real(argv);                     \
       }else{                                    \
         return func##_ret;                      \
       }                                         \
     }else {                                     \
-      printf("<longjmp>\n");	                \
       longjmp(func##_gen_jmp,1);                \
     }											\
 	return stopIterationVal;                    \
