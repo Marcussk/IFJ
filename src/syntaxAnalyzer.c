@@ -40,9 +40,9 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
 
 	while ((tok = LexParser_gen(self->lp)) != t_eof) {
-		if (tok == t_id)
-			iVar_debug(self->lp->lastSymbol);
+		printToken(self->lp, tok);
 	}
+	printToken(self->lp, tok);
 
 }
 

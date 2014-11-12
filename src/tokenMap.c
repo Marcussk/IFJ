@@ -3,54 +3,46 @@
 //describes string form of token
 TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_begin, "begin" }, //keywords
-		(TokenMeaning ) { t_boolean, "boolean" },
+				(TokenMeaning ) { t_boolean, "boolean" },
 		(TokenMeaning ) { t_do, "do" },
 		(TokenMeaning ) { t_else, "else" },
-		(TokenMeaning ) { t_end, "end" },
-		(TokenMeaning ) { t_false,"false" },
-		(TokenMeaning ) { t_find, "find" },
-		(TokenMeaning ) { t_forward, "forward" },
-		(TokenMeaning ) { t_func, "function" },
-		(TokenMeaning ) { t_if,"if" },
-		(TokenMeaning ) { t_integer,"integer" },
-		(TokenMeaning ) { t_readln, "readln" },
-		(TokenMeaning ) { t_real, "real" },
-		(TokenMeaning ) { t_sort,"sort" },
-		(TokenMeaning ) { t_string, "string" },
-		(TokenMeaning ) { t_then,"then" },
-		(TokenMeaning ) { t_true, "true" },
-		(TokenMeaning ) { t_var, "var" },
-		(TokenMeaning ) { t_while,"while" },
-		(TokenMeaning ) { t_write, "write" },
+		(TokenMeaning ) { t_end, "end" }, (TokenMeaning ) { t_false,
+								"false" }, (TokenMeaning ) { t_find, "find" },
+		(TokenMeaning ) { t_forward, "forward" }, (TokenMeaning ) {
+								t_func, "function" }, (TokenMeaning ) { t_if,
+										"if" }, (TokenMeaning ) { t_integer,
+												"integer" }, (TokenMeaning ) {
+														t_readln, "readln" },
+		(TokenMeaning ) { t_real, "real" }, (TokenMeaning ) { t_sort,
+								"sort" },
+		(TokenMeaning ) { t_string, "string" }, (TokenMeaning ) { t_then,
+								"then" }, (TokenMeaning ) { t_true, "true" },
+		(TokenMeaning ) { t_var, "var" }, (TokenMeaning ) { t_while,
+								"while" }, (TokenMeaning ) { t_write, "write" },
 		(TokenMeaning ) { t_plus, "+" }, // operators
-		(TokenMeaning ) { t_minus, "-" },
-		(TokenMeaning ) { t_asterisk, "*" },
-		(TokenMeaning ) { t_slash, "/" },
-		(TokenMeaning ) { t_eqv, "=" },
-		(TokenMeaning ) { t_less, "<" },
-		(TokenMeaning ) { t_greater, ">" },
-		(TokenMeaning ) { t_lBracket,"[" },
-		(TokenMeaning ) { t_rBracket, "]" },
+				(TokenMeaning ) { t_minus, "-" }, (TokenMeaning ) {
+										t_asterisk, "*" }, (TokenMeaning ) {
+												t_slash, "/" },
+		(TokenMeaning ) { t_eqv, "=" }, (TokenMeaning ) { t_less, "<" },
+		(TokenMeaning ) { t_greater, ">" }, (TokenMeaning ) { t_lBracket,
+								"[" }, (TokenMeaning ) { t_rBracket, "]" },
 		(TokenMeaning ) { t_period, "." },
 		(TokenMeaning ) { t_comma, "," },
 		(TokenMeaning ) { t_colon, ":" },
-		(TokenMeaning ) { t_scolon, ";" },
-		(TokenMeaning ) { t_pointer,"^" },
-		(TokenMeaning ) { t_lParenthessis, "(" },
-		(TokenMeaning ) { t_rParenthessis, ")" },
-		(TokenMeaning ) { t_notEqv, "<>" },
-		(TokenMeaning ) { t_lessOrEqv,"<=" },
-		(TokenMeaning ) { t_greaterOrEqv, ">=" },
-		(TokenMeaning ) { t_asigment, ":=" },
-		(TokenMeaning ) { t_doubleDot, ".." },
-		(TokenMeaning ) { t_lcBracket, "{" } , //others
-		(TokenMeaning ) { t_rcBracket, "}"}
-		};
+		(TokenMeaning ) { t_scolon, ";" }, (TokenMeaning ) { t_pointer,
+								"^" }, (TokenMeaning ) { t_lParenthessis, "(" },
+		(TokenMeaning ) { t_rParenthessis, ")" }, (TokenMeaning ) {
+								t_notEqv, "<>" }, (TokenMeaning ) { t_lessOrEqv,
+										"<=" }, (TokenMeaning ) {
+												t_greaterOrEqv, ">=" },
+		(TokenMeaning ) { t_asigment, ":=" }, (TokenMeaning ) {
+								t_doubleDot, ".." }, (TokenMeaning ) {
+										t_lcBracket, "{" }, //others
+		(TokenMeaning ) { t_rcBracket, "}" } };
 
 // alias can be double char operator?
-bool canContinueWithNonWordChar(Token t){
-	return t == t_less || t == t_greater || t == t_period
-			|| t == t_colon;
+bool canContinueWithNonWordChar(Token t) {
+	return t == t_less || t == t_greater || t == t_period || t == t_colon;
 }
 
 // reverz function, can get string form of token
@@ -62,7 +54,7 @@ char * getTokenStr(Token t) {
 		if (tm.token == t)
 			return tm.str;
 	}
-	if(t == t_empty)
+	if (t == t_empty)
 		return "<EmptyToken>";
 	return NULL;
 }
@@ -70,6 +62,7 @@ char * getTokenStr(Token t) {
 // include token rule in token map
 TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 	int i;
+	int i2;
 	char ch;
 	for (i = 0; str[i]; i++) { //foreach char
 		ch = str[i];
@@ -79,6 +72,9 @@ TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 				if (!map->next) {
 					map->next = calloc(TOKENMAP_NODESIZE,
 							sizeof(TokenMapElement));
+					for (i2 = 0; i2 < TOKENMAP_NODESIZE; i2++) {
+						map->next[i2].token = t_empty;
+					}
 					if (!map->next)
 						memoryError("could't allocate token map");
 				}
@@ -103,6 +99,12 @@ void TokenParser_addNumbers(TokenMapElement map[]) {
 			sizeof(TokenMapElement));
 	TokenMapElement * realMap = calloc(TOKENMAP_NODESIZE,
 			sizeof(TokenMapElement));
+	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
+		intMap[i].token = t_empty;
+		realMap[i].token = t_empty;
+	}
+
+	realMap->token = t_empty;
 
 	for (i = '0'; i <= '9'; i++) {
 		elm = &(map[i]);
@@ -192,11 +194,11 @@ void TokenMap_debug(TokenMapElement * map, int indent) {
 	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
 		if (i < '0' || i > '9') { // skip numbers because cyclic structure
 			elm = map[i];
-			if (elm.token!= t_empty || elm.next) {
+			if (elm.token != t_empty || elm.next) {
 				for (ii = 0; ii < indent; ii++)
 					putchar(' ');
-				printf("< %c(%d) , %s, next: %p>\n",(char)i, i, getTokenStr(elm.token),
-						elm.next);
+				printf("< %c(%d) , %s, next: %p>\n", (char) i, i,
+						getTokenStr(elm.token), elm.next);
 				if (elm.next)
 					TokenMap_debug(elm.next, indent + 4);
 			}
