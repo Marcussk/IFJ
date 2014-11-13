@@ -52,6 +52,10 @@ bool canContinueWithNonWordChar(Token t) {
 	return t == t_less || t == t_greater || t == t_period || t == t_colon;
 }
 
+bool Token_isType(Token t){
+	return t == t_integer || t == t_real || t == t_string;
+}
+
 // reverz function, can get string form of token
 char * getTokenStr(Token t) {
 	int ti;

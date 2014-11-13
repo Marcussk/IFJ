@@ -115,7 +115,7 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 			break;
 		case lp_error:
 		default:
-			lexError("Lex parser in unknown state.", p->lineNum);
+			lexError("Lex parser in unknown state.\n", p->lineNum);
 		}
 		if (ch == '\n')
 			p->lineNum += 1;

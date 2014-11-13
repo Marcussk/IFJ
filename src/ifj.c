@@ -19,8 +19,8 @@
 HashTable * symbolTable;
 
 int main(int argc, char *argv[]) {
-    LexParser lexParser;
-    SyntaxAnalyzer synAnalyzer;
+	LexParser lexParser;
+	SyntaxAnalyzer synAnalyzer;
 	symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 		if (file == 0) {
 			printf("ERROR: Could not open file!\n");
 		} else {
-			LexParser__init__(&lexParser,file);
+			LexParser__init__(&lexParser, file);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
 			SyntaxAnalyzer_parse(&synAnalyzer);
 			fclose(file);

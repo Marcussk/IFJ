@@ -87,7 +87,7 @@ void TokenParser__dell__(TokenParser * p);
 Token TokenParser_push(TokenParser * p, char ch);
 void TokenParser_reset(TokenParser * p);
 
-bool isKeyword(Token t);
+bool Token_isType(Token t);
 bool canContinueWithNonWordChar(Token t);
 
 char * getTokenStr(Token t);
