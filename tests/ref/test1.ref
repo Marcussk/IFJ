@@ -1,0 +1,13 @@
+Line 0: [var]
+Line 1:<id:'a'>
+Line 1: [:]
+Line 1: [integer]
+Line 1: [;] 
+Line 2:<id:'b'>
+Line 2: [:]
+Line 2: [integer]
+Line 2: [;]
+Line 4: [begin]
+Line 5: [end]
+Line 5: [.]
+Line 5:<EOF>
