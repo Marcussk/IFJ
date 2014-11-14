@@ -1,4 +1,4 @@
-#include "func.h"
+#include "builtins.h"
 
 // to make this use: gcc func.c errorHandler.c ifjTypes.h ifjTypes.c
 
@@ -26,18 +26,4 @@ char * func_copy(char *f_str, int i, int n) {
 	}
 	newStr[strIndex] = '\0';
 	return newStr;
-}
-
-int main() {
-
-	char retazec[] = "1234567890";
-	printf("retazec je: %s \n", retazec);
-	printf("Dlzka retazca je: %d \n", func_len(retazec));
-
-	char* copy = func_copy(retazec, 2, 5);
-	printf("kopirovany ratazec je : %s \n", copy);
-	printf("povodny retazec je: %s \n", retazec);
-
-	return 0;
-
 }

@@ -7,7 +7,7 @@ typedef enum {
 
 
 //keep synergyc with tokenMap.h/Token
-precedenceRule prTable[][] =
+precedenceRule prTable[16][16] =
  //+       -       *       /       <       >       <=      >=      =       <>      (      )       ,       $       var    fn
 {{ reduce, reduce, shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // +
  { reduce, reduce, shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // -

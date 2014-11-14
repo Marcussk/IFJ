@@ -13,6 +13,7 @@
 *.out
 *.run
 *.exe
+*.gch
 
 #ignore gedit temp files
 *~

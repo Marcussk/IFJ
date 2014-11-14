@@ -5,8 +5,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/buffFile.c \
+../src/builtins.c \
 ../src/errorHandler.c \
-../src/func.c \
 ../src/hashTable.c \
 ../src/ifj.c \
 ../src/ifjTypes.c \
@@ -18,8 +18,8 @@ C_SRCS += \
 
 OBJS += \
 ./src/buffFile.o \
+./src/builtins.o \
 ./src/errorHandler.o \
-./src/func.o \
 ./src/hashTable.o \
 ./src/ifj.o \
 ./src/ifjTypes.o \
@@ -31,8 +31,8 @@ OBJS += \
 
 C_DEPS += \
 ./src/buffFile.d \
+./src/builtins.d \
 ./src/errorHandler.d \
-./src/func.d \
 ./src/hashTable.d \
 ./src/ifj.d \
 ./src/ifjTypes.d \

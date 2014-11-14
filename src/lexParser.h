@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "strRoutines.h"
-#include "yield.h"
 #include "hashTable.h"
 #include "tokenMap.h"
 #include "buffFile.h"
