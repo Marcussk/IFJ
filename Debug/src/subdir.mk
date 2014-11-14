@@ -6,6 +6,7 @@
 C_SRCS += \
 ../src/buffFile.c \
 ../src/errorHandler.c \
+../src/func.c \
 ../src/hashTable.c \
 ../src/ifj.c \
 ../src/ifjTypes.c \
@@ -18,6 +19,7 @@ C_SRCS += \
 OBJS += \
 ./src/buffFile.o \
 ./src/errorHandler.o \
+./src/func.o \
 ./src/hashTable.o \
 ./src/ifj.o \
 ./src/ifjTypes.o \
@@ -30,6 +32,7 @@ OBJS += \
 C_DEPS += \
 ./src/buffFile.d \
 ./src/errorHandler.d \
+./src/func.d \
 ./src/hashTable.d \
 ./src/ifj.d \
 ./src/ifjTypes.d \
