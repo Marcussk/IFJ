@@ -50,23 +50,21 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
-	printf("not implemented/SyntaxAnalyzer_parseExpr\n");
 	if (self->lastToken == t_scolon
 			|| (secondToken && *secondToken == t_scolon))
 		return;
-	printf("<expr>\n");
-	self->lastToken = LexParser_gen(self->lp);
-	printf("1\n");
-	self->lastToken = LexParser_gen(self->lp);
-	printf("1\n");
+
 	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-		printf("1\n");
+		if(self->lastToken == t_end){ // because expr can ends without ; (it ends with end of block or if ...)
+			LexParser_pushBack(self->lp, self->lastToken);
+		}
 	}
-	printf("</expr>\n");
+	//[TODO]
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	SyntaxAnalyzer_parseExpr(self, NULL);
+	//[TODO]
 }
 
 void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
@@ -94,6 +92,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 			return;
 		}
 	}
+	//[TODO]
 }
 
 //(begin ... end) ("begin" already found)
@@ -123,6 +122,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 					self->lp->lineNum);
 		}
 	}
+	//[TODO]
 
 }
 
@@ -140,6 +140,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {
 	if (self->lastToken == t_else) {
 		SyntaxAnalyzer_parse_block(self);
 	}
+	//[TODO]
 }
 
 //"while" already found
@@ -151,10 +152,16 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);
+	//[TODO]
 }
 
+// ( - already found ; (args are in function call)
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	printf("not implemented/ SyntaxAnalyzer_parse_argList\n");
+	//[TODO]
+}
+// ( - already found ;( params are in function declarations)
+void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self){
+	//[TODO]
 }
 
 //"function" already found
@@ -163,6 +170,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	if (self->lastToken != t_id) {
 		syntaxError("id of function expected\n", self->lp->lineNum);
 	}
+	SyntaxAnalyzer_parse_paramList(self);
+	//[TODO]
+	self->lastToken = LexParser_gen(self->lp);
+	self->lastToken = LexParser_gen(self->lp);
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
@@ -175,30 +186,30 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			tok = self->lastToken;
 			self->lastToken = t_empty;
 		}
-		printToken(self->lp, tok);
+		//printToken(self->lp, tok);
 		switch (tok) {
-		//case t_var:
-		//	SyntaxAnalyzer_parse_varDeclr(self);
-		//	break;
-		//case t_begin:
-		//	SyntaxAnalyzer_parse_block(self);
-		//	break;
-		//case t_func:
-		//	SyntaxAnalyzer_parse_func(self);
-		//	break;
-		//case t_period:
-		//	tok = LexParser_gen(self->lp);
-		//	if (tok == t_eof)
-		//		return;
-		//	else {
-		//		syntaxError("No input expected\n", self->lp->lineNum);
-		//		return;
-		//	}
+		case t_var:
+			SyntaxAnalyzer_parse_varDeclr(self);
+			break;
+		case t_begin:
+			SyntaxAnalyzer_parse_block(self);
+			break;
+		case t_func:
+			SyntaxAnalyzer_parse_func(self);
+			break;
+		case t_period:
+			tok = LexParser_gen(self->lp);
+			if (tok == t_eof)
+				return;
+			else {
+				syntaxError("No input expected\n", self->lp->lineNum);
+				return;
+			}
 		case t_eof:
 			syntaxError("Expected \".\"\n", self->lp->lineNum);
 			return;
-			//default:
-			//	syntaxError("syntax corrupted\n", self->lp->lineNum);
+		default:
+			syntaxError("syntax corrupted\n", self->lp->lineNum);
 		}
 	}
 }

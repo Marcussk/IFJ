@@ -14,7 +14,7 @@
 /*this implementation support only one instance of generator at same time so you can't call generator on multiple places or on yield it jumps
  * back to first caller
  */
-
+/*
 typedef struct {
 	jmp_buf * callerFn;
 	jmp_buf * genFn;
@@ -50,8 +50,8 @@ if (! setjmp(*fn##_iter.genFn)) { \
   } \
  } \
 void fn##__real(argt argv)\
+*/
 
-/*
  static const jmp_buf clr_jmp_buf;
 
  typedef struct {
@@ -93,7 +93,7 @@ void fn##__real(argt argv)\
   	}                                                   \
   }                                                     \
   void fn##__real(argt argv)\
-  */
+
 /*
  #define GENERATOR(ret, func, argt, argv, stopIterationVal)\
   static jmp_buf func##_caller_jmp;    \

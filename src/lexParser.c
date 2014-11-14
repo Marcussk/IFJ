@@ -6,6 +6,9 @@ void LexParser__init__(LexParser * p, FILE * inFile) {
 	p->lineNum = 0;
 	p->tParser = TokenParser__init__();
 	p->lastToken = t_empty;
+	p->preLastToken = t_empty;
+	p->planedJob = j_continue;
+	p->pushBackTok = t_empty;
 //	p->lastSymbol = NULL;
 }
 
@@ -15,6 +18,8 @@ void LexParser_readString(LexParser * p) {
 		if (ch == EOF)
 			lexError("String missing right ' (end of string).\n", p->str.buff,
 					p->lineNum);
+		if (ch == '\n')
+			p->lineNum = p->lineNum + 1;
 		String_append(&(p->str), ch);
 	}
 	p->lastToken = t_str_val;
@@ -26,7 +31,8 @@ void LexParser_readComment(LexParser * p) {
 		if (ch == EOF)
 			lexError("String missing right } (end of comment).\n", p->str.buff,
 					p->lineNum);
-		String_append(&(p->str), ch);
+		else if (ch == '\n')
+			p->lineNum = p->lineNum + 1;
 	}
 }
 void LexParser_readEscape(LexParser * p) {
@@ -45,17 +51,50 @@ void LexParser_readEscape(LexParser * p) {
 	String_append(&(p->str), (char) escp);
 	p->lastToken = t_str_val;
 }
-/*generates Tokens, name is LexParser_iterator, accepts  LexParser * p, return t_eof as a default return type
- *
- * when token is id name is in p->str.buff and variable is pushed in symboltable and reference is p->lastSymbol
+
+void LexParser_pushBack(LexParser * p, Token t){
+	if(	p->pushBackTok != t_empty)
+		syntaxError("Can push back to lex parser only one token needs more\n", p->lineNum);
+	p->pushBackTok = t;
+}
+
+
+/* when token is id name is in p->str.buff and variable is pushed in symbol table (not jet) and  reference is p->lastSymbol (not jet)
  * when token is some constant (string, int, real) string value is in p->str.buff and this value is parsed to iVar an can be accessed
  * trough the  p->lastSymbol
  * */
-GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
-	static LexParser * p;
-	static char ch;
-	static Token tokBackup = t_empty;
-	p = pa;
+Token LexParser_gen(LexParser *p) {
+	char ch;
+	Token tokPushBackBackup;
+
+	if(p->pushBackTok != t_empty){
+		tokPushBackBackup = p->pushBackTok;
+		p->pushBackTok = t_empty;
+		return tokPushBackBackup;
+	}
+
+	switch (p->planedJob) {
+	case j_continue:
+		break;
+	case j_reset:
+		p->planedJob = j_continue;
+		String_clear(&(p->str));
+		p->lastToken = t_empty;
+		TokenParser_reset(&(p->tParser));
+		break;
+	case j_readStr:
+		String_clear(&(p->str));
+		LexParser_readString(p);
+		p->planedJob = j_reset;
+		return p->lastToken;
+	case j_readEscape:
+		String_clear(&(p->str));
+		p->lastToken = t_empty;
+		LexParser_readEscape(p);
+		p->planedJob = j_reset;
+		return p->lastToken;
+
+	}
 
 	while ((ch = BuffFile_get(&(p->input))) != EOF) {
 		if (ch == '{') {
@@ -63,38 +102,37 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 			String_clear(&(p->str));
 			TokenParser_reset(&(p->tParser));
 		} else if (ch == '\'') {
-			if (p->lastToken != t_empty)
-				YIELD(LexParser_gen, p->lastToken);
+			if (p->lastToken != t_empty) {
+				p->planedJob = j_readStr;
+				return p->lastToken;
+			}
 			String_clear(&(p->str));
 			LexParser_readString(p);
-			YIELD(LexParser_gen, p->lastToken);
-			String_clear(&(p->str));
-			p->lastToken = t_empty;
-			TokenParser_reset(&(p->tParser));
+			p->planedJob = j_reset;
+			return p->lastToken;
+
 		} else if (ch == '#') {
 			if (p->lastToken != t_empty) {
-				YIELD(LexParser_gen, p->lastToken);
-				String_clear(&(p->str));
-				p->lastToken = t_empty;
+				p->planedJob = j_readEscape;
+				return p->lastToken;
 			}
-			LexParser_readEscape(p);
-			YIELD(LexParser_gen, p->lastToken);
 			String_clear(&(p->str));
 			p->lastToken = t_empty;
-			TokenParser_reset(&(p->tParser));
+			LexParser_readEscape(p);
+			p->planedJob = j_reset;
+			return p->lastToken;
 		} else {
 			ch = tolower(ch);
-			tokBackup = p->lastToken;
+			p->preLastToken = p->lastToken;
 			p->lastToken = TokenParser_push(&(p->tParser), ch);
 			if (p->lastToken == t_invalid)
 				lexError("syntax does not fit\n", p->str.buff, p->lineNum);
 
-			if (p->lastToken == t_empty && tokBackup != t_empty) {
-				YIELD(LexParser_gen, tokBackup);
-				String_clear(&(p->str));
-				TokenParser_reset(&(p->tParser));
+			if (p->lastToken == t_empty && p->preLastToken != t_empty) {
 				if (ch != '\'' && ch != '{' && ch != '#')
 					BuffFile_pushBack(&(p->input), ch);
+				p->planedJob = j_reset;
+				return p->preLastToken;
 			} else {
 				if (p->lastToken == t_empty) {
 					String_clear(&(p->str));
@@ -107,8 +145,9 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 		if (ch == '\n')
 			p->lineNum += 1;
 	}
-	YIELD(LexParser_gen, t_eof);
+	return t_eof;
 }
+
 
 void LexParser__dell__(LexParser * p) {
 	String__dell_(&(p->str));
