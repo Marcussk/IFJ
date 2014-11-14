@@ -20,7 +20,7 @@ char * func_copy(char *f_str, int i, int n) {
 	if (strlen(f_str) < (offset + n)) {
 		rt_error("Builtin function copy cano't be performed because original string is too short\n");
 	}
-	char * newStr = calloc(i+1, sizeof(char));
+	char * newStr = malloc(i+1, sizeof(char));
 	for(strIndex = 0; strIndex < n; strIndex++){
 		newStr[strIndex] = f_str[strIndex + offset];
 	}
