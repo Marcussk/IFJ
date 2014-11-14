@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/buffFile.c \
 ../src/errorHandler.c \
 ../src/hashTable.c \
 ../src/ifj.c \
@@ -15,6 +16,7 @@ C_SRCS += \
 ../src/tokenMap.c 
 
 OBJS += \
+./src/buffFile.o \
 ./src/errorHandler.o \
 ./src/hashTable.o \
 ./src/ifj.o \
@@ -26,6 +28,7 @@ OBJS += \
 ./src/tokenMap.o 
 
 C_DEPS += \
+./src/buffFile.d \
 ./src/errorHandler.d \
 ./src/hashTable.d \
 ./src/ifj.d \

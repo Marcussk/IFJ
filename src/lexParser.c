@@ -2,25 +2,49 @@
 
 void LexParser__init__(LexParser * p, FILE * inFile) {
 	String__init__(&p->str, 32);
-	p->input = inFile;
-	p->state = lp_read;
+	BuffFile__init__(&(p->input), inFile);
 	p->lineNum = 0;
 	p->tParser = TokenParser__init__();
 	p->lastToken = t_empty;
-	p->lastSymbol = NULL;
+//	p->lastSymbol = NULL;
 }
 
-bool endOfIdOrNum(int idLen, char ch) {
-	if (ch == '_')
-		return false; // _ can be anywhere
-	return !isalnum(ch);
+void LexParser_readString(LexParser * p) {
+	char ch;
+	while ((ch = BuffFile_get(&(p->input))) != '\'') {
+		if (ch == EOF)
+			lexError("String missing right ' (end of string).\n", p->str.buff,
+					p->lineNum);
+		String_append(&(p->str), ch);
+	}
+	p->lastToken = t_str_val;
 }
 
-// name have to be longerr than 0
-bool isValidId(char * name){
-	return isalpha(name[0]) || name[0]== '_';
+void LexParser_readComment(LexParser * p) {
+	char ch;
+	while ((ch = BuffFile_get(&(p->input))) != '}') {
+		if (ch == EOF)
+			lexError("String missing right } (end of comment).\n", p->str.buff,
+					p->lineNum);
+		String_append(&(p->str), ch);
+	}
 }
-
+void LexParser_readEscape(LexParser * p) {
+	char ch = '0';
+	while (isdigit(ch)) {
+		ch = BuffFile_get(&(p->input));
+		String_append(&(p->str), ch);
+	}
+	BuffFile_pushBack(&(p->input), ch);
+	if (p->str.len < 1)
+		lexError("Uncomplet escape sequention.\n", p->str.buff, p->lineNum);
+	int escp = atoi(p->str.buff);
+	if (escp > 255)
+		lexError("Unknown escape sequention.\n", p->str.buff, p->lineNum);
+	String_clear(&(p->str));
+	String_append(&(p->str), (char) escp);
+	p->lastToken = t_str_val;
+}
 /*generates Tokens, name is LexParser_iterator, accepts  LexParser * p, return t_eof as a default return type
  *
  * when token is id name is in p->str.buff and variable is pushed in symboltable and reference is p->lastSymbol
@@ -33,93 +57,55 @@ GENERATOR(Token, LexParser_gen, LexParser *, pa, t_eof) {
 	static Token tokBackup = t_empty;
 	p = pa;
 
-	while ((ch = fgetc(p->input)) != EOF) {
-		switch (p->state) {
-		case lp_read:
-			switch (ch) {
-			case '{':
-				p->state = lp_comment;
-				break;
-			case '\'':
-				p->state = lp_string;
-				break;
-			case '#':
-				p->state = lp_escape;
-				break;
-			}
-
-			if (endOfIdOrNum(p->str.len, ch)) {
-				if (p->str.len > 0) {
-					if (p->lastToken != t_empty) {
-						YIELD(LexParser_gen, p->lastToken);
-					} else {
-						if(isValidId(p->str.buff)){
-							HashTable_insert(symbolTable, p->str.buff, &(p->lastSymbol));
-							YIELD(LexParser_gen, t_id);
-						}else{
-							lexError("probably invalid identificator\n", p->lineNum);
-							//YIELD(LexParser_gen, t_invalid);
-						}
-					}
-					String_clear(&(p->str));
-					TokenParser_reset(&(p->tParser));
-					p->lastToken = t_empty;
-				}
-			} else {
-				String_append(&(p->str), ch);
-			}
-			if (p->state == lp_read) {
-				tokBackup = p->lastToken;
-				p->lastToken = TokenParser_push(&(p->tParser), tolower(ch));
-				if (p->str.len == 0 && tokBackup != t_empty
-						&& p->lastToken == t_empty) {
-					YIELD(LexParser_gen, tokBackup);
-				}
-			} else {
+	while ((ch = BuffFile_get(&(p->input))) != EOF) {
+		if (ch == '{') {
+			LexParser_readComment(p);
+			String_clear(&(p->str));
+			TokenParser_reset(&(p->tParser));
+		} else if (ch == '\'') {
+			if (p->lastToken != t_empty)
+				YIELD(LexParser_gen, p->lastToken);
+			String_clear(&(p->str));
+			LexParser_readString(p);
+			YIELD(LexParser_gen, p->lastToken);
+			String_clear(&(p->str));
+			p->lastToken = t_empty;
+			TokenParser_reset(&(p->tParser));
+		} else if (ch == '#') {
+			if (p->lastToken != t_empty) {
+				YIELD(LexParser_gen, p->lastToken);
+				String_clear(&(p->str));
 				p->lastToken = t_empty;
 			}
-			break;
-		case lp_comment:
-			if (ch == '}') {
-				p->state = lp_read;
-				String_clear(&(p->str));
-			}
-			break;
-		case lp_string:
-			if (ch == '\'') {
-				p->state = lp_read;
-				YIELD(LexParser_gen, t_string);
-				String_clear(&(p->str));
-			} else {
-				String_append(&(p->str), ch);
-			}
-			break;
-		case lp_escape:
-			if (isdigit(ch)) {
-				String_append(&(p->str), ch);
-			} else {
-				//end of escape, send escaped character as a string
-				char escp = atoi(p->str.buff);
-				String_clear(&(p->str));
-				String_append(&(p->str), escp);
-				YIELD(LexParser_gen, t_string);
+			LexParser_readEscape(p);
+			YIELD(LexParser_gen, p->lastToken);
+			String_clear(&(p->str));
+			p->lastToken = t_empty;
+			TokenParser_reset(&(p->tParser));
+		} else {
+			ch = tolower(ch);
+			tokBackup = p->lastToken;
+			p->lastToken = TokenParser_push(&(p->tParser), ch);
+			if (p->lastToken == t_invalid)
+				lexError("syntax does not fit\n", p->str.buff, p->lineNum);
+
+			if (p->lastToken == t_empty && tokBackup != t_empty) {
+				YIELD(LexParser_gen, tokBackup);
 				String_clear(&(p->str));
 				TokenParser_reset(&(p->tParser));
-				if (ch == '\'')
-					p->state = lp_string;
-				else if (ch == '#')
-					p->state = lp_escape;
-				else
-					p->state = lp_error;
+				if (ch != '\'' && ch != '{' && ch != '#')
+					BuffFile_pushBack(&(p->input), ch);
+			} else {
+				if (p->lastToken == t_empty) {
+					String_clear(&(p->str));
+					TokenParser_reset(&(p->tParser));
+				} else {
+					String_append(&(p->str), ch);
+				}
 			}
-			break;
-		case lp_error:
-		default:
-			lexError("Lex parser in unknown state.\n", p->lineNum);
 		}
 		if (ch == '\n')
 			p->lineNum += 1;
-
 	}
 	YIELD(LexParser_gen, t_eof);
 }

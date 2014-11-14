@@ -28,7 +28,7 @@ typedef enum {
 	t_eof,
 	t_id,
 
-	t_boolean =15,
+	t_boolean = 15,
 	t_integer,
 	t_real,
 	t_string,
@@ -39,16 +39,13 @@ typedef enum {
 	t_end,
 	t_false,
 	t_find,
-	t_forward,
 	t_func,
 	t_if,
-	t_readln,
 	t_sort,
 	t_then,
 	t_true,
 	t_var,
 	t_while,
-	t_write,
 
 	t_period,
 	t_colon,
@@ -63,6 +60,7 @@ typedef enum {
 	t_rcBracket,
 	t_num_int,
 	t_num_real,
+	t_str_val,
 	t_invalid
 } Token;
 

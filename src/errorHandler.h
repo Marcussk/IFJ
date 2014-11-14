@@ -23,7 +23,7 @@
 
 void memoryError(char * str);
 
-void lexError(char * str, int lineNum);
+void lexError(char * str,char * lexBuff, int lineNum);
 
 void syntaxError(char * str, int lineNum);
 

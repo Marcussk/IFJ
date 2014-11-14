@@ -1,7 +1,8 @@
 #include "errorHandler.h"
 
-void lexError(char * str, int lineNum) {
-	fprintf(stderr, "ERROR(Lexical) Line %d: %s", lineNum, str);
+void lexError(char * str, char * lexBuff, int lineNum) {
+	fprintf(stderr, "ERROR(Lexical) Line %d: last readed = \"%s\" %s", lineNum,
+			lexBuff, str);
 	exit(1);
 }
 
@@ -30,29 +31,35 @@ void sem_Error(char * str) {
 	exit(5);
 }
 
-void rt_readlnNumError(iVar * var){
-	if(var->name){
-		fprintf(stderr, "ERROR(Runtime/readln): Error while reading value for variable %s from user input.\n", var->name);
-	}else{
-		fprintf(stderr, "ERROR(Runtime/readln): Error while reading value for unnamed variable from user input.\n");
+void rt_readlnNumError(iVar * var) {
+	if (var->name) {
+		fprintf(stderr,
+				"ERROR(Runtime/readln): Error while reading value for variable %s from user input.\n",
+				var->name);
+	} else {
+		fprintf(stderr,
+				"ERROR(Runtime/readln): Error while reading value for unnamed variable from user input.\n");
 	}
 	exit(6);
 }
 
-void rt_notInitError(iVar * var){
-	if(var->name){
-		fprintf(stderr, "ERROR(Runtime/notInit): Variable %s have to be initialized before is used.\n", var->name);
-	}else{
-		fprintf(stderr, "ERROR(Runtime/notInit): Attempt to use not itialized unnamed variable.\n");
+void rt_notInitError(iVar * var) {
+	if (var->name) {
+		fprintf(stderr,
+				"ERROR(Runtime/notInit): Variable %s have to be initialized before is used.\n",
+				var->name);
+	} else {
+		fprintf(stderr,
+				"ERROR(Runtime/notInit): Attempt to use not itialized unnamed variable.\n");
 	}
 	exit(7);
 }
 
-void rt_zeroDivisionError(){
+void rt_zeroDivisionError() {
 	fprintf(stderr, "ERROR(Runtime/zeroDivision):.");
 	exit(8);
 }
-void rt_error(char * str){
+void rt_error(char * str) {
 	fprintf(stderr, "ERROR(Runtime): Undescribed runtime error.");
 	exit(9);
 }

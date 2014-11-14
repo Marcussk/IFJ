@@ -8,18 +8,15 @@
 #include "yield.h"
 #include "hashTable.h"
 #include "tokenMap.h"
+#include "buffFile.h"
+
 
 extern HashTable * symbolTable;
 
-typedef enum {
-	lp_read, lp_string, lp_comment, lp_escape, lp_error
-} LexParserStates;
-
 typedef struct {
-	FILE * input;
-	String str;
-	LexParserStates state;
+	BuffFile input;
 	TokenParser tParser;
+	String str;// alias buffer
 	int lineNum;
 	Token lastToken;
 	iVar * lastSymbol;
