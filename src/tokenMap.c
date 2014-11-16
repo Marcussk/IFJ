@@ -13,6 +13,7 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_if,"if" },
 		(TokenMeaning ) { t_integer, "integer" },
 		(TokenMeaning ) { t_real, "real" },
+		(TokenMeaning ) { t_char, "char" },
 		(TokenMeaning ) { t_sort,"sort" },
 		(TokenMeaning ) { t_string,"string" },
 		(TokenMeaning ) { t_then, "then" },

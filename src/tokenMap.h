@@ -32,6 +32,7 @@ typedef enum {
 	t_integer,
 	t_real,
 	t_string,
+	t_char,
 
 	t_begin, //keywords
 	t_do,
