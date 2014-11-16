@@ -64,6 +64,11 @@ void rt_error(char * str) {
 	exit(9);
 }
 
+void unimplementedError(char * str){
+	fprintf(stderr, "ERROR(Not implemented): %s .\n", str);
+	exit(99);
+}
+
 void memoryError(char * str) {
 	fprintf(stderr, "ERROR(MemoryAllocation): %s .\n", str);
 	exit(99);

@@ -1,6 +1,6 @@
 #include "../src/builtins.h"
 
-
+/*
 int main() {
 
 	char retazec[] = "1234567890";
@@ -14,3 +14,4 @@ int main() {
 	return 0;
 
 }
+*/

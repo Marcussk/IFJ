@@ -22,6 +22,7 @@
 #include "ifjTypes.h"
 
 void memoryError(char * str);
+void unimplementedError(char * str);
 
 void lexError(char * str,char * lexBuff, int lineNum);
 
