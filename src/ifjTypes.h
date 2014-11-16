@@ -7,21 +7,23 @@
 
 // !!compatible!! with tokens
 typedef enum {
-	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iFn
+	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iChar, iFn, iAny
 } tIFJ;
 
 // alias function body
 typedef int CodeStack;
 
 //list of parameters for function
-typedef struct {
+/*typedef struct {
 	int size;
 	struct iVar ** list;
-} ParamsList;
+} ParamsList;*/
 
+//first n iVars in
 typedef struct {
 	tIFJ retType;
-	ParamsList params;
+	int paramsCnt;
+	struct iVar * scope;
 	CodeStack * body;
 } iFunction;
 
