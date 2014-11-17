@@ -159,9 +159,46 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	//[TODO]
 }
 
-// ( - already found ; (args are in function call)
+// "("  already found (args are in function call)
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	//[TODO]
+	self->lastToken = LexParser_gen(self->lp);
+		if (self->lastToken == t_rParenthessis) {            //empty
+			return;
+		}
+	while (true) {
+		if (self->lastToken != t_id) {						//id
+			syntaxError("expected id in argument list\n", self->lp->lineNum);
+			return;
+		}
+
+		self->lastToken = LexParser_gen(self->lp);			//:
+		if (self->lastToken != t_colon) {
+			syntaxError("expected \":\"\n", self->lp->lineNum);
+			return;
+		}
+
+		self->lastToken = LexParser_gen(self->lp);			//typ
+		if (!Token_isType(self->lastToken)) {
+			syntaxError("expected type name\n", self->lp->lineNum);
+			return;
+		}
+		
+		self->lastToken = LexParser_gen(self->lp);
+		if (self->lastToken != t_scolon) {
+			if (self->lastToken == t_rBracket) {			// )
+			return;
+			}
+			syntaxError("expected \";\" or \")\" at the end of \n", self->lp->lineNum);
+			return;
+		}
+		else {											 // ;
+			self->lastToken = LexParser_gen(self->lp);
+			if (self->lastToken != t_id) {						//id
+				syntaxError("expected id after semicolon\n", self->lp->lineNum);
+				return;
+			}
+		}
+	}
 }
 // ( - already found ;( params are in function declarations)
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self){
