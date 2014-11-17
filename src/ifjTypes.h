@@ -8,7 +8,7 @@
 
 // !!compatible!! with tokens
 typedef enum {
-	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iFn, iAny
+	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iChar, iFn, iAny
 } tIFJ;
 
 // alias function body

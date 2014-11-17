@@ -77,7 +77,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 		self->lastToken = LexParser_gen(self->lp);
 		if (self->lastToken != t_colon) {
-			syntaxError("expected :\n", self->lp->lineNum);
+			syntaxError("expected \":\"\n", self->lp->lineNum);
 			return;
 		}
 
@@ -127,31 +127,35 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 }
 
 //"if" already found
-void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {
-	SyntaxAnalyzer_parseExpr(self, NULL);
-	self->lastToken = LexParser_gen(self->lp);
+void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
+	SyntaxAnalyzer_parseExpr(self, NULL);              //COND
+
+	self->lastToken = LexParser_gen(self->lp);			//then
 	if (self->lastToken != t_then) {
 		syntaxError("expected then\n", self->lp->lineNum);
 		return;
 	}
-	SyntaxAnalyzer_parse_block(self);
+	SyntaxAnalyzer_parse_block(self);					//STMTLIST
 
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken == t_else) {
-		SyntaxAnalyzer_parse_block(self);
+	self->lastToken = LexParser_gen(self->lp);			//else
+	if (self->lastToken != t_else) {
+		syntaxError("expected else\n", self->lp->lineNum);
+		return;
 	}
+	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
+	return;
 	//[TODO]
 }
 
 //"while" already found
-void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {
-	SyntaxAnalyzer_parseExpr(self, NULL);
+void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
+	SyntaxAnalyzer_parseExpr(self, NULL);					//COND
 	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken != t_do) {
+	if (self->lastToken != t_do) {							//do
 		syntaxError("expected id\n", self->lp->lineNum);
 		return;
 	}
-	SyntaxAnalyzer_parse_block(self);
+	SyntaxAnalyzer_parse_block(self);						//STMTLIST
 	//[TODO]
 }
 

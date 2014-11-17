@@ -1,4 +1,6 @@
 #include "builtins.h"
+#include "ifjTypes.h"
+#include "errorHandler.h"
 
 // to make this use: gcc func.c errorHandler.c ifjTypes.h ifjTypes.c
 
@@ -26,4 +28,28 @@ char * func_copy(char *f_str, int i, int n) {
 	}
 	newStr[strIndex] = '\0';
 	return newStr;
+}
+
+int readLn(iVar *var){
+	switch (var->type) {
+	case iInt:
+		scanf("%d", &var->val.iInt);
+		break;
+	case iReal:
+		scanf("%f", &var->val.iReal);
+		break;
+	case iString:
+		scanf("%s", var->val.iString);
+		break;
+	case iChar:
+		scanf("%d", &var->val.iInt);
+		break;		
+	case iBool:
+		sem_TypeError(var);
+		return 0;						
+	default:
+		rt_readlnNumError(var);
+		return 0;
+		}
+	return 1;
 }
