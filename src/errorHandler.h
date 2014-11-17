@@ -1,6 +1,7 @@
 #ifndef ERROR_HANDLER_h
 #define ERROR_HANDLER_h
 /*
+ *
  • 1 - chyba v programu v ramci lexikalni analyzy (chybna struktura aktualniho lexe-
  mu).
  • 2 - chyba v programu v ramci syntakticke analyzy (chybna syntaxe struktury pro-
@@ -16,6 +17,7 @@
  • 9 - ostatní beehové chyby.
  • 99 - interni chyba interpretu tj. neovlivnená vstupnim programem (napr. chyba a-
  lokace pameti, chyba p
+
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,11 +31,11 @@ void lexError(char * str,char * lexBuff, int lineNum);
 void syntaxError(char * str, int lineNum);
 
 void sem_definitionError(char * varName, int lineNum);
-void sem_TypeError(iVar * var);
+void sem_TypeError(char * varName, char * nameOfType);
 void sem_Error(char * str);
 
-void rt_readlnNumError(iVar * var);
-void rt_notInitError(iVar * var);
+void rt_readlnNumError(char * varName);
+void rt_notInitError(char * varName);
 void rt_zeroDivisionError();
 void rt_error(char * str);
 

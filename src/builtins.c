@@ -45,10 +45,10 @@ int readLn(iVar *var){
 		scanf("%d", &var->val.iInt);
 		break;		
 	case iBool:
-		sem_TypeError(var);
+		sem_TypeError(var->name, iVar_type2str(var->type));
 		return 0;						
 	default:
-		rt_readlnNumError(var);
+		rt_readlnNumError(var->name);
 		return 0;
 		}
 	return 1;

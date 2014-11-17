@@ -18,11 +18,13 @@ void sem_definitionError(char * varName, int lineNum) {
 	exit(3);
 }
 /*semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich
- vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.*/
-void sem_TypeError(iVar * var) {
+ vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
+  dont forget about char * iVar_type2str(type)
+ */
+void sem_TypeError(char * varName, char * nameOfType) {
 	fprintf(stderr,
 			"ERROR(Semantic/Type): Variable or function \"%s\" of type %s does not fit to expression or function have bad parameters.\n",
-			var->name, iVar_type2str(var->type));
+			varName, nameOfType);
 	exit(4);
 }
 
@@ -31,11 +33,11 @@ void sem_Error(char * str) {
 	exit(5);
 }
 
-void rt_readlnNumError(iVar * var) {
-	if (var->name) {
+void rt_readlnNumError(char * varName) {
+	if (varName) {
 		fprintf(stderr,
 				"ERROR(Runtime/readln): Error while reading value for variable %s from user input.\n",
-				var->name);
+				varName);
 	} else {
 		fprintf(stderr,
 				"ERROR(Runtime/readln): Error while reading value for unnamed variable from user input.\n");
@@ -43,11 +45,11 @@ void rt_readlnNumError(iVar * var) {
 	exit(6);
 }
 
-void rt_notInitError(iVar * var) {
-	if (var->name) {
+void rt_notInitError(char * varName) {
+	if (varName) {
 		fprintf(stderr,
 				"ERROR(Runtime/notInit): Variable %s have to be initialized before is used.\n",
-				var->name);
+				varName);
 	} else {
 		fprintf(stderr,
 				"ERROR(Runtime/notInit): Attempt to use not itialized unnamed variable.\n");
@@ -64,7 +66,7 @@ void rt_error(char * str) {
 	exit(9);
 }
 
-void unimplementedError(char * str){
+void unimplementedError(char * str) {
 	fprintf(stderr, "ERROR(Not implemented): %s .\n", str);
 	exit(99);
 }

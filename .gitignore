@@ -14,6 +14,7 @@
 *.run
 *.exe
 *.gch
+*.d
 
 #ignore gedit temp files
 *~

@@ -4,6 +4,7 @@
 #include "stdbool.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include "errorHandler.h"
 
 // !!compatible!! with tokens
 typedef enum {
