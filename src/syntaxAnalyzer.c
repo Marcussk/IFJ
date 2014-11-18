@@ -160,7 +160,21 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 }
 
 // "("  already found (args are in function call)
+/*
+paramaters during function call
+id := f(args)
+args -> seznam termu
+*/
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
+	
+}
+
+// ( - already found ;( params are in function declarations)
+/*
+During definition of user function
+f(params) -> f(id : typ; id : typ)
+*/
+void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self){
 	self->lastToken = LexParser_gen(self->lp);
 		if (self->lastToken == t_rParenthessis) {            //empty
 			return;
@@ -199,10 +213,6 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 			}
 		}
 	}
-}
-// ( - already found ;( params are in function declarations)
-void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self){
-	//[TODO]
 }
 
 //"function" already found
