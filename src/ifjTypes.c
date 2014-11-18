@@ -24,6 +24,8 @@ char * iVar_type2str(tIFJ t) {
 		return "int";
 	case iString:
 		return "string";
+	case iChar:
+		return "char";
 	case iReal:
 		return "real";
 	case iFn:

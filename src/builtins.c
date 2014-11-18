@@ -33,17 +33,13 @@ char * func_copy(char *f_str, int i, int n) {
 int readLn(iVar *var){
 	switch (var->type) {
 	case iInt:
-		scanf("%d", &var->val.iInt);
-		break;
+		return scanf("%d", &var->val.iInt);
 	case iReal:
-		scanf("%f", &var->val.iReal);
-		break;
+		return scanf("%f", &var->val.iReal);
 	case iString:
-		scanf("%s", var->val.iString);
-		break;
+		return scanf("%s", var->val.iString);
 	case iChar:
-		scanf("%d", &var->val.iInt);
-		break;		
+		return scanf("%d", &var->val.iInt);
 	case iBool:
 		sem_TypeError(var->name, iVar_type2str(var->type));
 		return 0;						
@@ -51,5 +47,4 @@ int readLn(iVar *var){
 		rt_readlnNumError(var->name);
 		return 0;
 		}
-	return 1;
 }
