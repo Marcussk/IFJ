@@ -28,7 +28,7 @@ typedef struct {
 	CodeStack * body;
 } iFunction;
 
-// basic variable can represet everythink, even function *
+// basic variable can represets everything, even function *
 typedef struct {
 	tIFJ type;
 	char * name;
