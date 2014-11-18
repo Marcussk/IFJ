@@ -3,7 +3,7 @@
 iVar * iVar__init__(char * name) {
 	iVar * self = malloc(sizeof(iVar));
 	if (!self) {
-		memoryError("Cant alloc memory for iVar");
+		memoryError("Can't allocate memory for iVar");
 	}
 	self->isInitialied = false;
 	self->name = name;
