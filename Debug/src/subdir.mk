@@ -11,6 +11,7 @@ C_SRCS += \
 ../src/hashTable.c \
 ../src/ifj.c \
 ../src/ifjTypes.c \
+../src/instruction.c \
 ../src/interpret.c \
 ../src/lexParser.c \
 ../src/stack.c \
@@ -26,6 +27,7 @@ OBJS += \
 ./src/hashTable.o \
 ./src/ifj.o \
 ./src/ifjTypes.o \
+./src/instruction.o \
 ./src/interpret.o \
 ./src/lexParser.o \
 ./src/stack.o \
@@ -41,6 +43,7 @@ C_DEPS += \
 ./src/hashTable.d \
 ./src/ifj.d \
 ./src/ifjTypes.d \
+./src/instruction.d \
 ./src/interpret.d \
 ./src/lexParser.d \
 ./src/stack.d \
