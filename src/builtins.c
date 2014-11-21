@@ -30,7 +30,7 @@ char * func_copy(char *f_str, int i, int n) {
 	return newStr;
 }
 
-int readLn(iVar *var){
+int readLn(iVar *var) {
 	switch (var->type) {
 	case iInt:
 		return scanf("%d", &var->val.iInt);
@@ -42,56 +42,56 @@ int readLn(iVar *var){
 		return scanf("%d", &var->val.iInt);
 	case iBool:
 		sem_TypeError(var->name, iVar_type2str(var->type));
-		return 0;						
+		return 0;
 	default:
 		rt_readlnNumError(var->name);
 		return 0;
 	}
 }
 
-void change(char *str, int RIGHT){
+void change(char *str, int RIGHT) {
 	char h = str[0];
 	str[0] = str[RIGHT];
 	str[RIGHT] = h;
 	return;
 }
 
-void Sift(char *str, int LEFT, int RIGHT){
+void Sift(char *str, int LEFT, int RIGHT) {
 	int i = LEFT;
-	int j = (2*i) + 1;
+	int j = (2 * i) + 1;
 	char tmp = str[i];
 	bool cond = j <= RIGHT;
 
-	while(cond){
-		if( j<RIGHT )
-			if( str[j] < str[j+1] )
+	while (cond) {
+		if (j < RIGHT)
+			if (str[j] < str[j + 1])
 				j++;
-		if( tmp >= str[j] )
-				cond = false;
+		if (tmp >= str[j])
+			cond = false;
 		else {
 			str[i] = str[j];
 			i = j;
-			j= 2*i+1;
-			cond = j<=RIGHT;
+			j = 2 * i + 1;
+			cond = j <= RIGHT;
 		}
 	}
 	str[i] = tmp;
 	return;
 }
 
-char *func_sort ( char *str ){
+char * func_sort(char *str) {
 	int str_len = strlen(str);
 
 	int i;
-	int LEFT = str_len / 2 -1;
-	int RIGHT = str_len-1;
+	int LEFT = str_len / 2 - 1;
+	int RIGHT = str_len - 1;
 
-	for( i=LEFT ; i>=0 ; i-- ){
+	for (i = LEFT; i >= 0; i--) {
 		Sift(str, i, RIGHT);
 	}
-	for( RIGHT=str_len-1 ; RIGHT>=1 ; RIGHT-- ){
-		change( str, RIGHT );
-		Sift( str, 0, RIGHT-1 );
+	for (RIGHT = str_len - 1; RIGHT >= 1; RIGHT--) {
+		change(str, RIGHT);
+		Sift(str, 0, RIGHT - 1);
 	}
 
 	return str;

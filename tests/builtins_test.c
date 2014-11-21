@@ -2,6 +2,9 @@
 
 /*
 int main() {
+	char str[] = "sdfaefsa13546dsaf456ARSAS" ;
+	func_sort(str);
+	printf("%s\n",str);
 
 	char retazec[] = "1234567890";
 	printf("retazec je: %s \n", retazec);
@@ -13,5 +16,5 @@ int main() {
 
 	return 0;
 
-}
-*/
+}*/
+
