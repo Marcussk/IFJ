@@ -41,9 +41,9 @@ typedef enum
 
 typedef struct
 {
-    Instructions code;
-    int type;
-    void *a1;   //adresy, a3 je cilova adr., a1 a a2 jsou zdrojove
-    void *a2;
-    void *a3;
+    Instructions code;  //klucove slovo instrukcie
+    int tIFJ;           //datovy typ
+    void *a1;           //operand1
+    void *a2;           //operand2
+    void *a3;           //medzivysledok
 } Instruction;
