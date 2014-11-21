@@ -16,30 +16,33 @@
 #include "tokenMap.h"
 #include "defs.h"
 #include "interpret.h"
+#include "instruction.h"
 #include "stack.h"
 
-
 int main(int argc, char *argv[]) {
-	Stack s = Stack__init__();
-	//Stack_push()
+	int a = 8;
+	int b = 5;
+	int c = 9;
+	Stack * s = Stack__init__();
+	Stack_push(s, (Instruction ) { WRITE, iInt, &a, &b, &c });
 
-
-
+	interpretRun(s);
+	printf("interpret end \n");
 	/*LexParser lexParser;
-	SyntaxAnalyzer synAnalyzer;
-	if (argc != 2) {
-		printf("usage: %s filename\n", argv[0]);
-	} else {
-		FILE *file = fopen(argv[1], "r");
-		if (file == 0) {
-			printf("ERROR: Could not open file!\n");
-		} else {
-			LexParser__init__(&lexParser, file);
-			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
-			SyntaxAnalyzer_parse(&synAnalyzer);
-			fclose(file);
-		}
-	}
-*/
+	 SyntaxAnalyzer synAnalyzer;
+	 if (argc != 2) {
+	 printf("usage: %s filename\n", argv[0]);
+	 } else {
+	 FILE *file = fopen(argv[1], "r");
+	 if (file == 0) {
+	 printf("ERROR: Could not open file!\n");
+	 } else {
+	 LexParser__init__(&lexParser, file);
+	 SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
+	 SyntaxAnalyzer_parse(&synAnalyzer);
+	 fclose(file);
+	 }
+	 }
+	 */
 	return EXIT_SUCCESS;
 }
