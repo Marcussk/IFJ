@@ -18,7 +18,11 @@
 
 
 int main(int argc, char *argv[]) {
-	LexParser lexParser;
+
+
+
+
+	/*LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
@@ -33,6 +37,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-
+*/
 	return EXIT_SUCCESS;
 }

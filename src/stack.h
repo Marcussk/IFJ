@@ -4,8 +4,9 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "errorHandler.h"
+#include "instruction.h"
 
-typedef int * stackElementT;
+typedef Instruction stackElementT;
 
 typedef struct stackTag {
 	stackElementT data;
