@@ -10,6 +10,11 @@
 int readLn(iVar * var);
 
 int func_len (char * str);
+
 char *func_copy (char *f_str, int i, int n);
+
+void Sift(char *str, int LEFT, int RIGHT);
+void change(char *str, int RIGHT);
+char *func_sort ( char *str );
 
 #endif

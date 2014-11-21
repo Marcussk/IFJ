@@ -46,5 +46,53 @@ int readLn(iVar *var){
 	default:
 		rt_readlnNumError(var->name);
 		return 0;
+	}
+}
+
+void change(char *str, int RIGHT){
+	char h = str[0];
+	str[0] = str[RIGHT];
+	str[RIGHT] = h;
+	return;
+}
+
+void Sift(char *str, int LEFT, int RIGHT){
+	int i = LEFT;
+	int j = (2*i) + 1;
+	char tmp = str[i];
+	bool cond = j <= RIGHT;
+
+	while(cond){
+		if( j<RIGHT )
+			if( str[j] < str[j+1] )
+				j++;
+		if( tmp >= str[j] )
+				cond = false;
+		else {
+			str[i] = str[j];
+			i = j;
+			j= 2*i+1;
+			cond = j<=RIGHT;
 		}
+	}
+	str[i] = tmp;
+	return;
+}
+
+char *func_sort ( char *str ){
+	int str_len = strlen(str);
+
+	int i;
+	int LEFT = str_len / 2 -1;
+	int RIGHT = str_len-1;
+
+	for( i=LEFT ; i>=0 ; i-- ){
+		Sift(str, i, RIGHT);
+	}
+	for( RIGHT=str_len-1 ; RIGHT>=1 ; RIGHT-- ){
+		change( str, RIGHT );
+		Sift( str, 0, RIGHT-1 );
+	}
+
+	return str;
 }
