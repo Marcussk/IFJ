@@ -8,7 +8,12 @@
 #include "ifjTypes.h"
 #include "hashTable.h"
 
- typedef enum { readLn, write, func_len, func_copy, func_sort } builtins;// dont forget add func_find
+ typedef enum { readLn, 
+ 				write, 
+ 				func_len, 
+ 				func_copy, 
+ 				func_sort 
+ 	} builtins; 			// dont forget add func_find
 
  void registrBuiltins(HashTable * ht);
 
