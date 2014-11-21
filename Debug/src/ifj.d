@@ -1,7 +1,8 @@
 src/ifj.d: ../src/ifj.c ../src/lexParser.h ../src/strRoutines.h \
  ../src/errorHandler.h ../src/ifjTypes.h ../src/hashTable.h \
  ../src/tokenMap.h ../src/buffFile.h ../src/defs.h \
- ../src/syntaxAnalyzer.h ../src/stack.h ../src/instruction.h
+ ../src/syntaxAnalyzer.h ../src/stack.h ../src/instruction.h \
+ ../src/interpret.h ../src/builtins.h
 
 ../src/lexParser.h:
 
@@ -24,3 +25,7 @@ src/ifj.d: ../src/ifj.c ../src/lexParser.h ../src/strRoutines.h \
 ../src/stack.h:
 
 ../src/instruction.h:
+
+../src/interpret.h:
+
+../src/builtins.h:

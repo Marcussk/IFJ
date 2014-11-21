@@ -16,16 +16,19 @@
 #include "tokenMap.h"
 #include "defs.h"
 #include "interpret.h"
+#include "instruction.h"
 #include "stack.h"
 
-
 int main(int argc, char *argv[]) {
-	Stack s = Stack__init__();
-	//Stack_push()
+	/*int a = 8;
+	 char * str = " from interpret\n";
+	 Stack * s = Stack__init__();
+	 Stack_push(s, (Instruction ) { WRITE, iInt, &a, NULL, NULL});
+	 Stack_push(s, (Instruction ) { WRITE, iString, &str, NULL, NULL});
+	 interpretRun(s);
+	 printf("interpret end \n");*/
 
-
-
-	/*LexParser lexParser;
+	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
@@ -40,6 +43,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-*/
+
 	return EXIT_SUCCESS;
 }
