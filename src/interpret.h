@@ -3,6 +3,7 @@
 
 #include "instruction.h"
 #include "stack.h"
+#include "builtins.h"
 
 
 void interpretRun(Stack * s);

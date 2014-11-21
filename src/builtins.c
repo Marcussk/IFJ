@@ -1,6 +1,4 @@
 #include "builtins.h"
-#include "ifjTypes.h"
-#include "errorHandler.h"
 
 // to make this use: gcc func.c errorHandler.c ifjTypes.h ifjTypes.c
 
@@ -9,11 +7,13 @@ int func_len(char *str) {
 	return strlen(str);
 }
 
-
-void write(tIFJ type, void* a1, void* a2, void*a3){
-	switch(type){
-	case t_num_int:
-		printf("%d%d%d", *((int) a1),*((int) a2),*((int) a3));
+void write(tIFJ type, void* a1, void* a2, void*a3) {
+	switch (type) {
+	case iInt:
+		printf("%d%d%d", *((int *) a1), *((int *) a2), *((int *) a3));
+		break;
+	default:
+		printf("error");
 	}
 }
 
@@ -49,7 +49,7 @@ int readLn(iVar *var) {
 	case iChar:
 		return scanf("%d", &var->val.iInt);
 	case iBool:
-		sem_TypeError( iVar_type2str(var->type));
+		sem_TypeError(iVar_type2str(var->type));
 		return 0;
 	default:
 		rt_readlnNumError();

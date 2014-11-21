@@ -2,9 +2,12 @@
 
 void interpretRun(Stack * s) {
 	Instruction i = Stack_pop(s);
-	switch (i) {
+	switch (i.code) {
 	case WRITE:
-		write(i.a1, i.a2, i.a3);
+		write(i.type, i.a1, i.a2, i.a3);
+		break;
+	default:
+		printf("inter. err.\n");
 	}
 
 }

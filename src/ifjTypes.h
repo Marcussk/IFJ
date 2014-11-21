@@ -30,8 +30,6 @@ typedef enum {
 // alias function body
 typedef int CodeStack;
 
-
-
 typedef union {
 	float iReal;
 	int iInt;

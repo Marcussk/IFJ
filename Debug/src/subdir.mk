@@ -3,6 +3,11 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/errorHandler.o \
+../src/gerator3AC.o \
+../src/lexParser.o 
+
 C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \

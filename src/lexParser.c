@@ -63,6 +63,7 @@ void LexParser_pushBack(LexParser * self, Token t) {
 }
 
 void LexParser_syncLastVar(LexParser * self, Token t) {
+	HashTableItem * i;
 	if (t == t_id) {
 		switch (self->idMode) {
 		case lp_insertOnly:
@@ -72,7 +73,8 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			break;
 		case lp_searchOnly:
-			self->lastSymbol = HashTable_lookupEverywhere(self->symbolTable, self->str.buff );
+			i= HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+			self->lastSymbol = i->var;
 			if(self->lastSymbol){
 				sem_definitionError(self->lineNum);
 			}
