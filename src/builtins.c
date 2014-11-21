@@ -9,6 +9,14 @@ int func_len(char *str) {
 	return strlen(str);
 }
 
+
+void write(tIFJ type, void* a1, void* a2, void*a3){
+	switch(type){
+	case t_num_int:
+		printf("%d%d%d", *((int) a1),*((int) a2),*((int) a3));
+	}
+}
+
 /*
  * params: i- start of substring +1
  * 		   n - len of substring

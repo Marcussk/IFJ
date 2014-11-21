@@ -1,3 +1,5 @@
+#ifndef INSTRUCTION_h
+#define INSTRUCTION_h
 
 #define T_IS_INT 0				// type used via instruction
 #define T_IS_DOUBLE 1
@@ -34,8 +36,6 @@ typedef enum
     LENGTH,
     SORT
 
-
-
 } Instructions;
 
 
@@ -47,3 +47,6 @@ typedef struct
     void *a2;
     void *a3;
 } Instruction;
+
+
+#endif
