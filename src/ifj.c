@@ -15,10 +15,13 @@
 #include "syntaxAnalyzer.h"
 #include "tokenMap.h"
 #include "defs.h"
+#include "interpret.h"
+#include "stack.h"
 
 
 int main(int argc, char *argv[]) {
-
+	Stack s = Stack__init__();
+	//Stack_push()
 
 
 

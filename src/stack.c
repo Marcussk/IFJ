@@ -1,5 +1,10 @@
 #include "stack.h"
 
+Stack * Stack__init__(){
+	Stack * s = calloc(sizeof(Stack));
+	return s;
+}
+
 void Stack_push(Stack * s, stackElementT data) {
 	stackNodeT * tmp = malloc(sizeof(stackNodeT));
 	if (tmp)
