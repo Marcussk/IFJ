@@ -10,7 +10,7 @@ HashTable * HashTable__init__(int size) {
 	if ((new_table = malloc(sizeof(HashTable))) == NULL)
 		memoryError("Cannot allocate hash table\n");
 
-	if ((new_table->table = malloc(sizeof(hashTableItem *) * size)) == NULL)
+	if ((new_table->table = malloc(sizeof(HashTableItem *) * size)) == NULL)
 		memoryError("Cannot allocate content of hash table\n");
 
 	for (i = 0; i < size; i++)
@@ -32,16 +32,16 @@ unsigned int HashTable_hash(HashTable *self, char *str) {
 	return hashval % self->size;
 }
 
-hashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str){
-	hashTableItem * found = HashTable_lookup(self, str);
+HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str){
+	HashTableItem * found = HashTable_lookup(self, str);
 	if(!found && self->masterTable)
 		return HashTable_lookup(self->masterTable, str);
 	return found;
 }
 
 // = search in table
-hashTableItem *HashTable_lookup(HashTable *self, char *str) {
-	hashTableItem *list;
+HashTableItem *HashTable_lookup(HashTable *self, char *str) {
+	HashTableItem *list;
 	unsigned int hashval = HashTable_hash(self, str);
 
 	for (list = self->table[hashval]; list != NULL; list = list->next)
@@ -53,8 +53,8 @@ hashTableItem *HashTable_lookup(HashTable *self, char *str) {
 
 //insert string as iVar reference is gained thru newItem
 int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
-	hashTableItem *new_list;
-	hashTableItem *current_list;
+	HashTableItem *new_list;
+	HashTableItem *current_list;
 	unsigned int hashval = HashTable_hash(self, str);
 
 	current_list = HashTable_lookup(self, str);
@@ -65,7 +65,7 @@ int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
 		*newItem = current_list->var;
 		return 2;
 	}
-	if ((new_list = malloc(sizeof(hashTableItem))) == NULL)
+	if ((new_list = malloc(sizeof(HashTableItem))) == NULL)
 		memoryError("Cannot allocate new item to hash table\n");
 	new_list->var = iVar__init__();
 	new_list->str = strdup(str);
@@ -80,7 +80,7 @@ int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
 
 void HashTable__dell__(HashTable *self) {
 	int i;
-	hashTableItem *list, *temp;
+	HashTableItem *list, *temp;
 
 	for (i = 0; i < self->size; i++) {
 		list = self->table[i];
@@ -101,7 +101,7 @@ void HashTable__dell__(HashTable *self) {
 void HashTable_print(HashTable *self) {
 	int hash;
 	printf("<hashTable:%p>\n", (void *) self);
-	hashTableItem *list, *temp;
+	HashTableItem *list, *temp;
 	for (hash = 0; hash < self->size; hash++) {
 		list = self->table[hash];
 		while (list != NULL) {

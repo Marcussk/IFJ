@@ -16,17 +16,17 @@ typedef struct hashTableItem_ {
 	char * str;
 	iVar * var;
 	struct hashTableItem_ * next;
-} hashTableItem;
+} HashTableItem;
 
 typedef struct sHashTable {
 	int size;
-	hashTableItem **table;
+	HashTableItem **table;
 	struct sHashTable * masterTable;
 	iVar * masterItem;
 } HashTable;
 
 HashTable * HashTable__init__(int size);
-hashTableItem * HashTable_lookup(HashTable *hashtable, char *str);
+HashTableItem * HashTable_lookup(HashTable *hashtable, char *str);
 int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem);
 void HashTable__dell__(HashTable *hashtable);
 void HashTable_debug(HashTable *hashtable);
