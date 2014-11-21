@@ -57,6 +57,7 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
 		if(self->lastToken == t_end){ // because expr can ends without ; (it ends with end of block or if ...)
 			LexParser_pushBack(self->lp, self->lastToken);
+			return;
 		}
 	}
 	//[TODO]

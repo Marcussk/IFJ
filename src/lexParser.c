@@ -78,7 +78,7 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			break;
 		default:
-			lexError("LexParser dont know if search or insert new id\n",
+			lexError("LexParser don't know if search or insert new id\n",
 					self->str.buff, self->lineNum);
 		}
 	}

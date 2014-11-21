@@ -18,6 +18,8 @@ HashTable * HashTable__init__(int size) {
 
 	new_table->size = size;
 
+	new_table->masterTable = NULL;
+	new_table->masterItem = NULL;
 	return new_table;
 }
 
