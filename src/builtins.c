@@ -104,3 +104,14 @@ char * func_sort(char *str) {
 
 	return str;
 }
+
+void registrBuiltins(HashTable * ht){
+	HashTableItem * item;
+//pro všechny jmena HashTable_insert(ht, jmeno, &item);
+	HashTable_insert(ht, "readLn", &item->var);
+	HashTable_insert(ht, "write", &item->var);
+	HashTable_insert(ht, "func_len", &item->var);
+	HashTable_insert(ht, "func_copy", &item->var);
+	HashTable_insert(ht, "func_sort", &item->var);
+	//HashTable_insert(ht, "func_find", &item->var);
+}
