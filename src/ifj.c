@@ -21,13 +21,13 @@
 
 int main(int argc, char *argv[]) {
 	int a = 8;
-	int b = 5;
-	int c = 9;
+	char * str = " from interpret\n";
 	Stack * s = Stack__init__();
-	Stack_push(s, (Instruction ) { WRITE, iInt, &a, &b, &c });
-
+	Stack_push(s, (Instruction ) { WRITE, iInt, &a, NULL, NULL});
+	Stack_push(s, (Instruction ) { WRITE, iString, &str, NULL, NULL});
 	interpretRun(s);
 	printf("interpret end \n");
+
 	/*LexParser lexParser;
 	 SyntaxAnalyzer synAnalyzer;
 	 if (argc != 2) {

@@ -8,7 +8,7 @@
 #include "ifjTypes.h"
 
 int readLn(iVar * var);
-void write(tIFJ type, void* a1, void* a2, void*a3);
+void write(tIFJ type, void* a1);
 int func_len(char * str);
 
 char *func_copy(char *f_str, int i, int n);

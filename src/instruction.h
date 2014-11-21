@@ -37,7 +37,7 @@ typedef struct {
 	tIFJ type;           //datovy typ
 	void *a1;           //operand1
 	void *a2;           //operand2
-	void *a3;           //medzivysledok
+	void *dest;           //medzivysledok
 } Instruction;
 
 #endif
