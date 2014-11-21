@@ -41,10 +41,10 @@ int readLn(iVar *var) {
 	case iChar:
 		return scanf("%d", &var->val.iInt);
 	case iBool:
-		sem_TypeError(var->name, iVar_type2str(var->type));
+		sem_TypeError( iVar_type2str(var->type));
 		return 0;
 	default:
-		rt_readlnNumError(var->name);
+		rt_readlnNumError();
 		return 0;
 	}
 }

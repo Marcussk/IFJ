@@ -1,155 +1,185 @@
 #include "lexParser.h"
 
-void LexParser__init__(LexParser * p, FILE * inFile) {
-	String__init__(&p->str, 32);
-	BuffFile__init__(&(p->input), inFile);
-	p->lineNum = 0;
-	p->tParser = TokenParser__init__();
-	p->lastToken = t_empty;
-	p->preLastToken = t_empty;
-	p->planedJob = j_continue;
-	p->pushBackTok = t_empty;
-//	p->lastSymbol = NULL;
+void LexParser__init__(LexParser * self, FILE * inFile) {
+	String__init__(&self->str, 32);
+	BuffFile__init__(&(self->input), inFile);
+	self->lineNum = 0;
+	self->tParser = TokenParser__init__();
+	self->lastToken = t_empty;
+	self->preLastToken = t_empty;
+	self->planedJob = j_continue;
+	self->pushBackTok = t_empty;
+	self->lastSymbol = NULL;
+	self->symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 }
 
-void LexParser_readString(LexParser * p) {
+void LexParser_readString(LexParser * self) {
 	char ch;
-	while ((ch = BuffFile_get(&(p->input))) != '\'') {
+	while ((ch = BuffFile_get(&(self->input))) != '\'') {
 		if (ch == EOF)
-			lexError("String missing right ' (end of string).\n", p->str.buff,
-					p->lineNum);
+			lexError("String missing right ' (end of string).\n",
+					self->str.buff, self->lineNum);
 		if (ch == '\n')
-			p->lineNum = p->lineNum + 1;
-		String_append(&(p->str), ch);
+			self->lineNum = self->lineNum + 1;
+		String_append(&(self->str), ch);
 	}
-	p->lastToken = t_str_val;
+	self->lastToken = t_str_val;
 }
 
-void LexParser_readComment(LexParser * p) {
+void LexParser_readComment(LexParser * self) {
 	char ch;
-	while ((ch = BuffFile_get(&(p->input))) != '}') {
+	while ((ch = BuffFile_get(&(self->input))) != '}') {
 		if (ch == EOF)
-			lexError("String missing right } (end of comment).\n", p->str.buff,
-					p->lineNum);
+			lexError("String missing right } (end of comment).\n",
+					self->str.buff, self->lineNum);
 		else if (ch == '\n')
-			p->lineNum = p->lineNum + 1;
+			self->lineNum = self->lineNum + 1;
 	}
 }
-void LexParser_readEscape(LexParser * p) {
+void LexParser_readEscape(LexParser * self) {
 	char ch = '0';
 	while (isdigit(ch)) {
-		ch = BuffFile_get(&(p->input));
-		String_append(&(p->str), ch);
+		ch = BuffFile_get(&(self->input));
+		String_append(&(self->str), ch);
 	}
-	BuffFile_pushBack(&(p->input), ch);
-	if (p->str.len < 1)
-		lexError("Uncomplet escape sequention.\n", p->str.buff, p->lineNum);
-	int escp = atoi(p->str.buff);
+	BuffFile_pushBack(&(self->input), ch);
+	if (self->str.len < 1)
+		lexError("Uncomplet escape sequention.\n", self->str.buff,
+				self->lineNum);
+	int escp = atoi(self->str.buff);
 	if (escp > 255)
-		lexError("Unknown escape sequention.\n", p->str.buff, p->lineNum);
-	String_clear(&(p->str));
-	String_append(&(p->str), (char) escp);
-	p->lastToken = t_str_val;
+		lexError("Unknown escape sequention.\n", self->str.buff, self->lineNum);
+	String_clear(&(self->str));
+	String_append(&(self->str), (char) escp);
+	self->lastToken = t_str_val;
 }
 
-void LexParser_pushBack(LexParser * p, Token t){
-	if(	p->pushBackTok != t_empty)
-		syntaxError("Can push back to lex parser only one token needs more\n", p->lineNum);
-	p->pushBackTok = t;
+void LexParser_pushBack(LexParser * self, Token t) {
+	if (self->pushBackTok != t_empty)
+		syntaxError("Can push back to lex parser only one token needs more\n",
+				self->lineNum);
+	self->pushBackTok = t;
 }
-
 
 /* when token is id name is in p->str.buff and variable is pushed in symbol table (not jet) and  reference is p->lastSymbol (not jet)
  * when token is some constant (string, int, real) string value is in p->str.buff and this value is parsed to iVar an can be accessed
  * trough the  p->lastSymbol
  * */
-Token LexParser_gen(LexParser *p) {
+Token LexParser_gen(LexParser *self) {
 	char ch;
 	Token tokPushBackBackup;
 
-	if(p->pushBackTok != t_empty){
-		tokPushBackBackup = p->pushBackTok;
-		p->pushBackTok = t_empty;
+	if (self->pushBackTok != t_empty) {
+		tokPushBackBackup = self->pushBackTok;
+		self->pushBackTok = t_empty;
 		return tokPushBackBackup;
 	}
 
-	switch (p->planedJob) {
+	switch (self->planedJob) {
 	case j_continue:
 		break;
 	case j_reset:
-		p->planedJob = j_continue;
-		String_clear(&(p->str));
-		p->lastToken = t_empty;
-		TokenParser_reset(&(p->tParser));
+		self->planedJob = j_continue;
+		String_clear(&(self->str));
+		self->lastToken = t_empty;
+		TokenParser_reset(&(self->tParser));
 		break;
 	case j_readStr:
-		String_clear(&(p->str));
-		LexParser_readString(p);
-		p->planedJob = j_reset;
-		return p->lastToken;
+		String_clear(&(self->str));
+		LexParser_readString(self);
+		self->planedJob = j_reset;
+		return self->lastToken;
 	case j_readEscape:
-		String_clear(&(p->str));
-		p->lastToken = t_empty;
-		LexParser_readEscape(p);
-		p->planedJob = j_reset;
-		return p->lastToken;
+		String_clear(&(self->str));
+		self->lastToken = t_empty;
+		LexParser_readEscape(self);
+		self->planedJob = j_reset;
+		return self->lastToken;
 
 	}
 
-	while ((ch = BuffFile_get(&(p->input))) != EOF) {
+	while ((ch = BuffFile_get(&(self->input))) != EOF) {
 		if (ch == '{') {
-			LexParser_readComment(p);
-			String_clear(&(p->str));
-			TokenParser_reset(&(p->tParser));
+			LexParser_readComment(self);
+			String_clear(&(self->str));
+			TokenParser_reset(&(self->tParser));
 		} else if (ch == '\'') {
-			if (p->lastToken != t_empty) {
-				p->planedJob = j_readStr;
-				return p->lastToken;
+			if (self->lastToken != t_empty) {
+				self->planedJob = j_readStr;
+				return self->lastToken;
 			}
-			String_clear(&(p->str));
-			LexParser_readString(p);
-			p->planedJob = j_reset;
-			return p->lastToken;
+			String_clear(&(self->str));
+			LexParser_readString(self);
+			self->planedJob = j_reset;
+			return self->lastToken;
 
 		} else if (ch == '#') {
-			if (p->lastToken != t_empty) {
-				p->planedJob = j_readEscape;
-				return p->lastToken;
+			if (self->lastToken != t_empty) {
+				self->planedJob = j_readEscape;
+				return self->lastToken;
 			}
-			String_clear(&(p->str));
-			p->lastToken = t_empty;
-			LexParser_readEscape(p);
-			p->planedJob = j_reset;
-			return p->lastToken;
+			String_clear(&(self->str));
+			self->lastToken = t_empty;
+			LexParser_readEscape(self);
+			self->planedJob = j_reset;
+			return self->lastToken;
 		} else {
 			ch = tolower(ch);
-			p->preLastToken = p->lastToken;
-			p->lastToken = TokenParser_push(&(p->tParser), ch);
-			if (p->lastToken == t_invalid)
-				lexError("syntax does not fit\n", p->str.buff, p->lineNum);
+			self->preLastToken = self->lastToken;
+			self->lastToken = TokenParser_push(&(self->tParser), ch);
+			if (self->lastToken == t_invalid)
+				lexError("syntax does not fit\n", self->str.buff,
+						self->lineNum);
 
-			if (p->lastToken == t_empty && p->preLastToken != t_empty) {
+			if (self->lastToken == t_empty && self->preLastToken != t_empty) {
 				if (ch != '\'' && ch != '{' && ch != '#')
-					BuffFile_pushBack(&(p->input), ch);
-				p->planedJob = j_reset;
-				return p->preLastToken;
+					BuffFile_pushBack(&(self->input), ch);
+				self->planedJob = j_reset;
+				return self->preLastToken;
 			} else {
-				if (p->lastToken == t_empty) {
-					String_clear(&(p->str));
-					TokenParser_reset(&(p->tParser));
+				if (self->lastToken == t_empty) {
+					String_clear(&(self->str));
+					TokenParser_reset(&(self->tParser));
 				} else {
-					String_append(&(p->str), ch);
+					String_append(&(self->str), ch);
 				}
 			}
 		}
 		if (ch == '\n')
-			p->lineNum += 1;
+			self->lineNum += 1;
 	}
 	return t_eof;
 }
 
+bool CanAddAsParam(LexParser * self){
+	iVar * mi = self->symbolTable->masterItem;
+	return (mi && mi->type);
+}
 
-void LexParser__dell__(LexParser * p) {
-	String__dell_(&(p->str));
-	TokenParser__dell__(&(p->tParser));
+//create new Symbol table for this function, save next Ids to fn params
+void LexParser_fnParamsEnter(LexParser * self) {
+	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
+	fnSymTable->masterTable = self->symbolTable;
+	fnSymTable->masterItem = self->lastSymbol;
+	fnSymTable->masterItem->type = iFn;
+	fnSymTable->masterItem->val.fn = iFunction__init__();
+	self->symbolTable = fnSymTable;
+}
+
+// end saving ids to params, save function return type and return variable to this fn symbol table
+void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType) {
+	iVar * fn = self->symbolTable->masterItem;
+	fn->val.fn->retType = fnReturnType;
+}
+//set up symbol table back to global
+void LexParser_fnBodyLeave(LexParser * self) {
+	HashTable * st = self->symbolTable;
+	st->masterItem->isInitialied = true;
+	self->symbolTable = st->masterTable;
+}
+
+void LexParser__dell__(LexParser * self) {
+	String__dell_(&(self->str));
+	TokenParser__dell__(&(self->tParser));
+	HashTable__dell__(self->symbolTable);
 }

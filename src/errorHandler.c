@@ -11,20 +11,20 @@ void syntaxError(char * str, int lineNum) {
 	exit(2);
 }
 
-void sem_definitionError(char * varName, int lineNum) {
+void sem_definitionError(int lineNum) {
 	fprintf(stderr,
-			"ERROR(Semantic/Definition) Line %d: variable or function \"%s\" is not defined or you are atempting to redefine it.\n",
-			lineNum, varName);
+			"ERROR(Semantic/Definition) Line %d: variable or function is not defined or you are atempting to redefine it.\n",
+			lineNum);
 	exit(3);
 }
 /*semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich
  vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
-  dont forget about char * iVar_type2str(type)
+ dont forget about char * iVar_type2str(type)
  */
-void sem_TypeError(char * varName, char * nameOfType) {
+void sem_TypeError(char * nameOfType) {
 	fprintf(stderr,
-			"ERROR(Semantic/Type): Variable or function \"%s\" of type %s does not fit to expression or function have bad parameters.\n",
-			varName, nameOfType);
+			"ERROR(Semantic/Type): Variable or function of type %s does not fit to expression or function have bad parameters.\n",
+			nameOfType);
 	exit(4);
 }
 
@@ -33,15 +33,9 @@ void sem_Error(char * str) {
 	exit(5);
 }
 
-void rt_readlnNumError(char * varName) {
-	if (varName) {
-		fprintf(stderr,
-				"ERROR(Runtime/readln): Error while reading value for variable %s from user input.\n",
-				varName);
-	} else {
-		fprintf(stderr,
-				"ERROR(Runtime/readln): Error while reading value for unnamed variable from user input.\n");
-	}
+void rt_readlnNumError() {
+	fprintf(stderr,
+			"ERROR(Runtime/readln): Error while reading value from user input.\n");
 	exit(6);
 }
 

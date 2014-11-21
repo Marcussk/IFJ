@@ -30,11 +30,11 @@ void lexError(char * str,char * lexBuff, int lineNum);
 
 void syntaxError(char * str, int lineNum);
 
-void sem_definitionError(char * varName, int lineNum);
-void sem_TypeError(char * varName, char * nameOfType);
+void sem_definitionError( int lineNum);
+void sem_TypeError( char * nameOfType);
 void sem_Error(char * str);
 
-void rt_readlnNumError(char * varName);
+void rt_readlnNumError();
 void rt_notInitError(char * varName);
 void rt_zeroDivisionError();
 void rt_error(char * str);

@@ -16,12 +16,10 @@
 #include "tokenMap.h"
 #include "defs.h"
 
-HashTable * symbolTable;
 
 int main(int argc, char *argv[]) {
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
-	symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
 	} else {
@@ -35,8 +33,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-	//HashTable_debug(symbolTable);
-	HashTable__dell__(symbolTable);
-	return EXIT_SUCCESS;
 
+	return EXIT_SUCCESS;
 }

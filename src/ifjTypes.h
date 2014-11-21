@@ -6,45 +6,67 @@
 #include "stdio.h"
 #include "errorHandler.h"
 
-// !!compatible!! with tokens
+/*
+ * !!compatible!! with tokens
+ *
+ * if iVoid is used in fn. params any type is allowed (used for example for readln)
+ * IEnumerable is used for expandable parameters like in write
+ * iGreedStop is used after last parameter with argument of iEnumerable
+ *
+ * */
 typedef enum {
-	iUnknown, iVoid, iBool =15, iInt, iReal, iString, iChar, iFn, iAny
+	iUnknown =0,
+	iVoid,
+	iBool = 15,
+	iInt,
+	iReal,
+	iString,
+	iChar,
+	iFn,
+	iEnumerable,
+	iGreedStop
 } tIFJ;
 
 // alias function body
 typedef int CodeStack;
 
-//list of parameters for function
-/*typedef struct {
-	int size;
-	struct iVar ** list;
-} ParamsList;*/
+
+
+typedef union {
+	float iReal;
+	int iInt;
+	char * iString;
+	struct s_iFunction * fn;
+} iVal;
 
 //first n iVars in
-typedef struct {
+typedef struct s_iFunction{
 	tIFJ retType;
-	int paramsCnt;
-	struct iVar * scope;
+	struct s_ParamsListItem * params;
 	CodeStack * body;
 } iFunction;
 
-// basic variable can represets everything, even function *
-typedef struct {
+// basic variable can represents everything, even function *
+typedef struct s_iVar {
 	tIFJ type;
-	char * name;
 	bool isInitialied;
-	union {
-		float iReal;
-		int iInt;
-		char * iString;
-		iFunction * fn;
-	} val;
+	iVal val;
 } iVar;
 
-iVar * iVar__init__(char * name);
+//list of parameters for function
+typedef struct s_ParamsListItem {
+	iVar * param;
+	struct s_ParamsListItem * next;
+} ParamsListItem;
+
+iVar * iVar__init__();
 void iVar_debug(iVar * v);
 void iVar__dell__(iVar * self);
 
 char * iVar_type2str(tIFJ t);
+
+iFunction * iFunction__init__();
+void iFunction_addParam(iFunction * self, iVar * var);
+void iFunction__dell__(iFunction * self);
 
 #endif

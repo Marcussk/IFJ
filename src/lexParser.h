@@ -8,18 +8,11 @@
 #include "hashTable.h"
 #include "tokenMap.h"
 #include "buffFile.h"
+#include "defs.h"
 
-
-extern HashTable * symbolTable;
 
 typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;
-/*
-typedef struct {
-	String str;
-	Token lastToken;
-	iVar * lastSymbol;
-} Lp_PushBackBuff;
-*/
+
 typedef struct {
 	BuffFile input;
 	TokenParser tParser;
@@ -30,6 +23,7 @@ typedef struct {
 	iVar * lastSymbol;
 	LexParser_jobPlan planedJob;
 	Token pushBackTok;
+	HashTable * symbolTable;
 } LexParser;
 
 void LexParser__init__(LexParser * p, FILE * inFile);

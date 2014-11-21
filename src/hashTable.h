@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include "ifjTypes.h"
 
-
 /*
  * very similar with http://www.sparknotes.com/cs/searching/hashtables/section3.rhtml
  * but there are not better implementations, maybe we should consider changing has function
@@ -14,14 +13,16 @@
  */
 
 typedef struct hashTableItem_ {
-	//char *str;
+	char * str;
 	iVar * var;
-	struct hashTableItem_ *next;
+	struct hashTableItem_ * next;
 } hashTableItem;
 
-typedef struct {
+typedef struct sHashTable {
 	int size;
 	hashTableItem **table;
+	struct sHashTable * masterTable;
+	iVar * masterItem;
 } HashTable;
 
 HashTable * HashTable__init__(int size);
