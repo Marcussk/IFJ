@@ -12,6 +12,8 @@
 
 
 typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;
+typedef enum { lp_searchOnly, lp_insertOnly } LexParser_mode;
+
 
 typedef struct {
 	BuffFile input;
@@ -24,6 +26,7 @@ typedef struct {
 	LexParser_jobPlan planedJob;
 	Token pushBackTok;
 	HashTable * symbolTable;
+	LexParser_mode idMode;
 } LexParser;
 
 void LexParser__init__(LexParser * p, FILE * inFile);

@@ -32,6 +32,13 @@ unsigned int HashTable_hash(HashTable *self, char *str) {
 	return hashval % self->size;
 }
 
+hashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str){
+	hashTableItem * found = HashTable_lookup(self, str);
+	if(!found && self->masterTable)
+		return HashTable_lookup(self->masterTable, str);
+	return found;
+}
+
 // = search in table
 hashTableItem *HashTable_lookup(HashTable *self, char *str) {
 	hashTableItem *list;
@@ -54,6 +61,7 @@ int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
 
 	if (current_list) {
 		// already exists
+		if(newItem)
 		*newItem = current_list->var;
 		return 2;
 	}
@@ -61,6 +69,7 @@ int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
 		memoryError("Cannot allocate new item to hash table\n");
 	new_list->var = iVar__init__();
 	new_list->str = strdup(str);
+	if(newItem)
 	*newItem = new_list->var;
 
 	new_list->next = self->table[hashval];

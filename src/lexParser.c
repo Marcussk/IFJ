@@ -9,6 +9,7 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 	self->preLastToken = t_empty;
 	self->planedJob = j_continue;
 	self->pushBackTok = t_empty;
+	self->idMode = lp_searchOnly;
 	self->lastSymbol = NULL;
 	self->symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 }
@@ -61,6 +62,29 @@ void LexParser_pushBack(LexParser * self, Token t) {
 	self->pushBackTok = t;
 }
 
+void LexParser_syncLastVar(LexParser * self, Token t) {
+	if (t == t_id) {
+		switch (self->idMode) {
+		case lp_insertOnly:
+			if (HashTable_insert(self->symbolTable, self->str.buff,
+					&(self->lastSymbol)) != 0) {
+				sem_definitionError(self->lineNum); // redefinition
+			}
+			break;
+		case lp_searchOnly:
+			self->lastSymbol = HashTable_lookupEverywhere(self->symbolTable, self->str.buff );
+			if(self->lastSymbol){
+				sem_definitionError(self->lineNum);
+			}
+			break;
+		default:
+			lexError("LexParser dont know if search or insert new id\n",
+					self->str.buff, self->lineNum);
+		}
+	}
+
+}
+
 /* when token is id name is in p->str.buff and variable is pushed in symbol table (not jet) and  reference is p->lastSymbol (not jet)
  * when token is some constant (string, int, real) string value is in p->str.buff and this value is parsed to iVar an can be accessed
  * trough the  p->lastSymbol
@@ -111,6 +135,7 @@ Token LexParser_gen(LexParser *self) {
 			String_clear(&(self->str));
 			LexParser_readString(self);
 			self->planedJob = j_reset;
+
 			return self->lastToken;
 
 		} else if (ch == '#') {
@@ -132,9 +157,9 @@ Token LexParser_gen(LexParser *self) {
 						self->lineNum);
 
 			if (self->lastToken == t_empty && self->preLastToken != t_empty) {
-				if (ch != '\'' && ch != '{' && ch != '#')
-					BuffFile_pushBack(&(self->input), ch);
+				BuffFile_pushBack(&(self->input), ch);
 				self->planedJob = j_reset;
+				LexParser_syncLastVar(self, self->preLastToken);
 				return self->preLastToken;
 			} else {
 				if (self->lastToken == t_empty) {
@@ -151,7 +176,7 @@ Token LexParser_gen(LexParser *self) {
 	return t_eof;
 }
 
-bool CanAddAsParam(LexParser * self){
+bool CanAddAsParam(LexParser * self) {
 	iVar * mi = self->symbolTable->masterItem;
 	return (mi && mi->type);
 }
