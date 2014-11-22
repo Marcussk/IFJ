@@ -12,7 +12,7 @@ typedef struct  {
 	Stack stack;
 } Interpret;
 
-void Interpret__init__(Interpret * self, Stack instructions);
+void Interpret__init__(Interpret * self, InstrQueue instructions);
 void Interpret_run(Interpret * self);
 
 

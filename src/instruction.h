@@ -66,7 +66,7 @@ typedef struct {
 void InstrQueue__init__(InstrQueue * self);
 Instruction * InstrQueue_next(InstrQueue * self);
 void InstrQueue_insert(InstrQueue * self, Instruction i);
-void InstrQueue_atIndex(InstrQueue * self, int index);
+Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
 
 
 #endif

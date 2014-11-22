@@ -32,8 +32,10 @@ void InstrQueue_insert(InstrQueue * self, Instruction i) {
 		newItem->next = self->actual->next;
 		self->actual->next = newItem;
 	}
-	if (!self->first)
+	if (!self->first){
 		self->first = newItem;
+		newItem->next = NULL;
+	}
 
 	self->actual = newItem;
 }

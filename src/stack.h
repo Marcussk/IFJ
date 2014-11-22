@@ -5,8 +5,9 @@
 #include "stdio.h"
 #include "errorHandler.h"
 #include "instruction.h"
+#include "ifjTypes.h"
 
-typedef Instruction stackElementT;
+typedef iVal stackElementT;
 
 typedef struct s_stackNodeT {
 	stackElementT data;

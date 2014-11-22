@@ -20,33 +20,39 @@
 #include "stack.h"
 
 int main(int argc, char *argv[]) {
-	int a = 8;
-	char * str = " from interpret\n";
-	Stack instr;
+	InstrParam a, b;
+	a.iInt = 8;
+	b.iString = " from interpret\n";
+	InstrQueue instr;
 	Interpret intr;
-	Stack__init__(&instr);
-	Stack_push(&instr, (Instruction ) { i_push, iInt, a, NULL, NULL});
-	Stack_push(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL});
-	Stack_push(&instr, (Instruction ) { i_write, iString, NULL, NULL, NULL});
+	InstrQueue__init__(&instr);
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr,
+			(Instruction ) { i_write, iInt, NULL, NULL, NULL });
+
+	InstrQueue_insert(&instr,
+			(Instruction ) { i_push, iString, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL,
+					NULL });
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
 	printf("interpret end \n");
-/*
-	LexParser lexParser;
-	SyntaxAnalyzer synAnalyzer;
-	if (argc != 2) {
-		printf("usage: %s filename\n", argv[0]);
-	} else {
-		FILE *file = fopen(argv[1], "r");
-		if (file == 0) {
-			printf("ERROR: Could not open file!\n");
-		} else {
-			LexParser__init__(&lexParser, file);
-			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
-			SyntaxAnalyzer_parse(&synAnalyzer);
-			fclose(file);
-		}
-	}
-*/
+	/*
+	 LexParser lexParser;
+	 SyntaxAnalyzer synAnalyzer;
+	 if (argc != 2) {
+	 printf("usage: %s filename\n", argv[0]);
+	 } else {
+	 FILE *file = fopen(argv[1], "r");
+	 if (file == 0) {
+	 printf("ERROR: Could not open file!\n");
+	 } else {
+	 LexParser__init__(&lexParser, file);
+	 SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
+	 SyntaxAnalyzer_parse(&synAnalyzer);
+	 fclose(file);
+	 }
+	 }
+	 */
 	return EXIT_SUCCESS;
 }

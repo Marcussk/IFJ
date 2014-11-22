@@ -7,16 +7,16 @@ int func_len(char *str) {
 	return strlen(str);
 }
 
-void write(tIFJ type, iVal * a1) {
+void write(tIFJ type, iVal a1) {
 	switch (type) {
 	case iInt:
-		printf("%d", a1->iInt);
+		printf("%d", a1.iInt);
 		break;
 	case iString:
-		printf("%s", a1->iString);
+		printf("%s", a1.iString);
 		break;
 	case iReal:
-		printf("%f", a1->iReal);
+		printf("%f", a1.iReal);
 		break;
 	default:
 		printf("error");
