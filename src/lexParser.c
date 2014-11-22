@@ -73,11 +73,11 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			break;
 		case lp_searchOnly:
-			i= HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
-			self->lastSymbol = i->var;
-			if(self->lastSymbol){
+			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+			if (!i) {
 				sem_definitionError(self->lineNum);
 			}
+			self->lastSymbol = i->var;
 			break;
 		default:
 			lexError("LexParser don't know if search or insert new id\n",

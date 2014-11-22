@@ -8,29 +8,19 @@
 #include "ifjTypes.h"
 #include "hashTable.h"
 
-<<<<<<< HEAD
- typedef enum { readLn, 
- 				write, 
- 				func_len, 
- 				func_copy, 
- 				func_sort 
- 	} builtins; 			// dont forget add func_find
-=======
+typedef enum {
+	b_readLn, b_write, b_func_len, b_func_copy, b_func_sort
+} builtins; 			// dont forget add func_find
+
+void registrBuiltins(HashTable * ht);
+
 int readLn(iVar * var);
+
 void write(tIFJ type, void* a1);
 int func_len(char * str);
->>>>>>> 11002c0ad713172c115edbec79993fec3314546d
 
- void registrBuiltins(HashTable * ht);
+char *func_copy(char *f_str, int i, int n);
 
- int readLn(iVar * var);
- void write(tIFJ type, void* a1, void* a2, void*a3);
- int func_len(char * str);
-
- char *func_copy(char *f_str, int i, int n);
-
- void Sift(char *str, int LEFT, int RIGHT);
- void change(char *str, int RIGHT);
- char *func_sort(char *str);
+char *func_sort(char *str);
 
 #endif
