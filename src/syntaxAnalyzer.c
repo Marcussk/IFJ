@@ -42,6 +42,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
+	printf("vardecl\n");
 	while (true) {
 		self->lastToken = LexParser_gen(self->lp);
 		if (self->lastToken != t_id) {
@@ -79,7 +80,16 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 	printf("Begin block\n");
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
-	while (self->lastToken != t_end) {
+	self->lastToken = LexParser_gen(self->lp);
+	if (self->lastToken == t_end) {     
+		printf("empty block\n");
+		return;
+	}
+	else {
+		LexParser_pushBack(self->lp, self->lastToken);
+	}
+	
+	while (1) {
 		self->lastToken = LexParser_gen(self->lp);
 		switch (self->lastToken) {
 		case t_if:
@@ -98,10 +108,12 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			}
 			break;
 		case t_end:
-			break;
+			printf("break\n");
+			return;
 		default:
 			syntaxError("Unexpected syntax in code block\n", self->lp->lineNum,
 					getTokenName(self->lastToken));
+			return;
 		}
 	}
 	//[TODO]
@@ -307,6 +319,8 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			}
 		case t_eof:
 			syntaxError("Expected \".\"", self->lp->lineNum, getTokenName(tok));
+			return;
+		case t_end:
 			return;
 		default:
 			syntaxError("syntax corrupted", self->lp->lineNum,
