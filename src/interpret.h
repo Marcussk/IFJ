@@ -4,9 +4,16 @@
 #include "instruction.h"
 #include "stack.h"
 #include "builtins.h"
+#include "errorHandler.h"
 
 
-void interpretRun(Stack * s);
+typedef struct  {
+	InstrQueue instructions;
+	Stack stack;
+} Interpret;
+
+void Interpret__init__(Interpret * self, Stack instructions);
+void Interpret_run(Interpret * self);
 
 
 #endif

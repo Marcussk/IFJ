@@ -8,18 +8,20 @@
 
 typedef Instruction stackElementT;
 
-typedef struct stackTag {
+typedef struct s_stackNodeT {
 	stackElementT data;
-	struct stackTag *next;
+	struct s_stackNodeT *next;
 } stackNodeT;
 
 typedef struct {
 	stackNodeT *top;
+	int size;
 } Stack;
 
-Stack * Stack__init__();
+void Stack__init__(Stack * self);
 void Stack_push(Stack * s, stackElementT data) ;
 stackElementT Stack_pop(Stack * s);
+stackElementT * Stack_getAt(Stack * self, int index);
 //void Stack_debug(Stack * s);
 
 #endif

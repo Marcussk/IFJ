@@ -20,14 +20,18 @@
 #include "stack.h"
 
 int main(int argc, char *argv[]) {
-	/*int a = 8;
-	 char * str = " from interpret\n";
-	 Stack * s = Stack__init__();
-	 Stack_push(s, (Instruction ) { WRITE, iInt, &a, NULL, NULL});
-	 Stack_push(s, (Instruction ) { WRITE, iString, &str, NULL, NULL});
-	 interpretRun(s);
-	 printf("interpret end \n");*/
-
+	int a = 8;
+	char * str = " from interpret\n";
+	Stack instr;
+	Interpret intr;
+	Stack__init__(&instr);
+	Stack_push(&instr, (Instruction ) { i_push, iInt, a, NULL, NULL});
+	Stack_push(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL});
+	Stack_push(&instr, (Instruction ) { i_write, iString, NULL, NULL, NULL});
+	Interpret__init__(&intr, instr);
+	Interpret_run(&intr);
+	printf("interpret end \n");
+/*
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	if (argc != 2) {
@@ -43,6 +47,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 		}
 	}
-
+*/
 	return EXIT_SUCCESS;
 }
