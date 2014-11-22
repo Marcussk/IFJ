@@ -113,6 +113,82 @@ void Interpret_run(Interpret * self) {
 							}
 						}
 						break;
+		case i_mul:
+				if (i.dest != NULL) {
+								switch(i.type){
+									case iInt:
+										pomA1 = iStack_pop(&(self->stack));
+										pomA2 = iStack_pop(&(self->stack));
+										pomA3.iInt =  pomA1.iInt * pomA2.iInt;
+										*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+										break;
+									case iReal:
+										pomA1 = iStack_pop(&(self->stack));
+										pomA2 = iStack_pop(&(self->stack));
+										pomA3.iReal =  pomA1.iReal * pomA2.iReal;
+										*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+										break;
+									default:
+									// [TODO] ERROR
+										break;
+												}
+							}
+							else{
+								pomA1 = iStack_pop(&(self->stack));
+								pomA2 = iStack_pop(&(self->stack));
+								switch(i.type){
+								case iInt:
+									pomA3.iInt = (pomA1.iInt * pomA2.iInt);
+									iStack_push(&(self->stack), pomA3);
+									break;
+								case iReal:
+									pomA3.iReal = (pomA1.iReal * pomA2.iReal);
+									iStack_push(&(self->stack), pomA3);
+									break;
+								default:
+									// [TODO] ERROR
+									break;
+								}
+							}
+							break;
+		case i_div:
+				if (i.dest != NULL) {
+								switch(i.type){
+									case iInt:
+										pomA1 = iStack_pop(&(self->stack));
+										pomA2 = iStack_pop(&(self->stack));
+										pomA3.iInt =  pomA1.iInt / pomA2.iInt;
+										*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+										break;
+									case iReal:
+										pomA1 = iStack_pop(&(self->stack));
+										pomA2 = iStack_pop(&(self->stack));
+										pomA3.iReal =  pomA1.iReal / pomA2.iReal;
+										*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+										break;
+									default:
+									// [TODO] ERROR
+										break;
+												}
+							}
+							else{
+								pomA1 = iStack_pop(&(self->stack));
+								pomA2 = iStack_pop(&(self->stack));
+								switch(i.type){
+								case iInt:
+									pomA3.iInt = (pomA1.iInt / pomA2.iInt);
+									iStack_push(&(self->stack), pomA3);
+									break;
+								case iReal:
+									pomA3.iReal = (pomA1.iReal / pomA2.iReal);
+									iStack_push(&(self->stack), pomA3);
+									break;
+								default:
+									// [TODO] ERROR
+									break;
+								}
+							}
+							break;
 
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
@@ -191,7 +267,7 @@ void Interpret_test3() {
 				(Instruction ) { i_push, iInt, &a, NULL, NULL });
 
 		InstrQueue_insert(&instr,
-				(Instruction ) { i_sub, iInt, &a, &b, &c });
+				(Instruction ) { i_mul, iInt, &a, &b, &c });
 
 		Interpret__init__(&intr, instr);
 		Interpret_run(&intr);
