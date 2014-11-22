@@ -1,7 +1,9 @@
 #include "expr.h"
 
+IMPLEMENT_STACK(expr, ExprToken);
+
 HashTable *SymbolTable;
-Stack *stack;
+exprStack *stack;
 ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;
@@ -88,9 +90,9 @@ void tokenToExpr(ExprToken *Expr, Token *token)
 	Expr->datatype = getTokenType(*token);
 }
 
-ExprToken *findTopMostTerminal(Stack *s)
+ExprToken *findTopMostTerminal(exprStack *s)
 {
-	StackNodeT itr = s->top;
+	exprStackNodeT * itr = s->top;
 	while (itr != NULL){
 		if (itr->data->type == terminal)
 			return itr->data;
@@ -98,7 +100,7 @@ ExprToken *findTopMostTerminal(Stack *s)
 	}
 }
 
-void ExprInit(Stack *TMPstack, HashTable *TMPSymbolTable)
+void ExprInit(exprStack *TMPstack, HashTable *TMPSymbolTable)
 {
 	SymbolTable = TMPSymbolTable;
 	stack = TMPstack;
@@ -107,7 +109,7 @@ void ExprInit(Stack *TMPstack, HashTable *TMPSymbolTable)
 	Stack_push(stack, EndToken);
 }
 
-void expression(SyntaxAnalyzer *self, Stack *TMPstack, HashTable *TMPSymbolTable)
+void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolTable)
 {
 	ExprInit(TMPstack, TMPSymbolTable);
 	self->lastToken = LexParser_gen(self->lp);

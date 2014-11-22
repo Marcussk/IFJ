@@ -5,6 +5,7 @@
 #include "strRoutines.h"
 #include "syntaxAnalyzer.h"
 #include "tokenMap.h"
+#include "stack.h"
 
 // TODO: copy function bodies for stack
 
@@ -22,7 +23,7 @@ typedef struct exprtoken{
 	ExprDataType datatype;
 } ExprToken;
 
-
+/*
 typedef ExprToken stackElementT;
 
 typedef struct stackTag {
@@ -38,3 +39,4 @@ Stack * Stack__init__();
 void Stack_push(Stack * s, stackElementT data) ;
 stackElementT Stack_pop(Stack * s);
 
+*/
