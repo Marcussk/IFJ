@@ -16,16 +16,25 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 }
 
 void LexParser_readString(LexParser * self) {
-	char ch;
+	char ch,ch2;
 	while ((ch = BuffFile_get(&(self->input))) != '\'') {
 		if (ch == EOF)
 			lexError("String missing right ' (end of string).\n",
 					self->str.buff, self->lineNum);
-		if (ch == '\n')
+		else if (ch == '\n')
 			self->lineNum = self->lineNum + 1;
+		else if (ch == '\'')
+		{
+			ch2 =BuffFile_get(&(self->input));
+			if(ch2 != '\''){
+				BuffFile_pushBack(&(self->input), ch2);
+				self->lastToken = t_str_val;
+				return;
+			}
+		}
 		String_append(&(self->str), ch);
 	}
-	self->lastToken = t_str_val;
+
 }
 
 void LexParser_readComment(LexParser * self) {
