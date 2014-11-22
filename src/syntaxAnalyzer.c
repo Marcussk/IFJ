@@ -21,7 +21,7 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 		return;
 
 	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-		if (self->lastToken == t_end || self->lastToken == t_then) { // because expr can ends without ; (it ends with end of block or if ...)
+		if (self->lastToken == t_end || self->lastToken == t_then) { // because expr can end without ; (it ends with end of block or if ...)
 			LexParser_pushBack(self->lp, self->lastToken);
 			return;
 		}
@@ -164,7 +164,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 	while (self->lastToken != t_rParenthessis) {
 		SyntaxAnalyzer_parseExpr(self, NULL);
 		self->lastToken = LexParser_gen(self->lp);
-			if (self->lastToken == t_rParenthessis)     // ) - args are empty
+			if (self->lastToken == t_rParenthessis)     // ) - end of args
 				return;
 			else if(self->lastToken == t_comma)
 				continue;
@@ -173,7 +173,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 	}
 }
 
-// ( - already found ;( params are in function declarations)
+// "(" - already found ;( params are in function declarations)
 /*
  During definition of user function
  f(params) -> f(id : typ; id : typ)
@@ -232,7 +232,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	LexParser_fnParamsEnter(self->lp);
 	SyntaxAnalyzer_parse_paramList(self);
 
-	//[TODO] check and implement foward
+	//[TODO] check and implement forward
 	self->lastToken = LexParser_gen(self->lp); //:
 	self->lastToken = LexParser_gen(self->lp); // typ
 	LexParser_fnBodyEnter(self->lp, self->lastToken);
