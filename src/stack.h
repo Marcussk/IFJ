@@ -25,7 +25,7 @@ void namePrefix##Stack__init__(namePrefix##Stack * self) {                     \
 }                                                                              \
                                                                                \
 void namePrefix##Stack_push(namePrefix##Stack * self, stackElementT data) {    \
-	namePrefix##StackNodeT * tmp = malloc(sizeof(namePrefix##stackNodeT));     \
+	namePrefix##StackNodeT * tmp = malloc(sizeof(namePrefix##StackNodeT));     \
 	if (!tmp)                                                                  \
 		memoryError("Cano't allocate memory for stack ");                      \
 	tmp->next = self->top;                                                     \
