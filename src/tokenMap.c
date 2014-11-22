@@ -3,40 +3,45 @@
 //describes string form of token
 TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_begin, "begin" }, //keywords
-				(TokenMeaning ) { t_boolean, "boolean" },
+		(TokenMeaning ) { t_boolean, "boolean" },
 		(TokenMeaning ) { t_do, "do" },
 		(TokenMeaning ) { t_else, "else" },
-		(TokenMeaning ) { t_end, "end" }, (TokenMeaning ) { t_false,
-								"false" }, (TokenMeaning ) { t_find, "find" },
-		(TokenMeaning ) { t_func, "function" }, (TokenMeaning ) { t_if,
-								"if" },
-		(TokenMeaning ) { t_integer, "integer" }, (TokenMeaning ) {
-								t_real, "real" }, (TokenMeaning ) { t_char,
-										"char" }, (TokenMeaning ) { t_sort,
-												"sort" }, (TokenMeaning ) {
-														t_string, "string" },
-		(TokenMeaning ) { t_then, "then" }, (TokenMeaning ) { t_true,
-								"true" }, (TokenMeaning ) { t_var, "var" },
+		(TokenMeaning ) { t_end, "end" },
+		(TokenMeaning ) { t_false, "false" },
+		(TokenMeaning ) { t_find, "find" },
+		(TokenMeaning ) { t_func, "function" },
+		(TokenMeaning ) { t_if,	"if" },
+		(TokenMeaning ) { t_integer, "integer" },
+		(TokenMeaning ) { t_real, "real" },
+		(TokenMeaning ) { t_char, "char" },
+		(TokenMeaning ) { t_sort, "sort" },
+		(TokenMeaning ) { t_string, "string" },
+		(TokenMeaning ) { t_then, "then" },
+		(TokenMeaning ) { t_true, "true" },
+		(TokenMeaning ) { t_var, "var" },
 		(TokenMeaning ) { t_while, "while" },
 		(TokenMeaning ) { t_plus, "+" }, // operators
-				(TokenMeaning ) { t_minus, "-" }, (TokenMeaning ) {
-										t_asterisk, "*" }, (TokenMeaning ) {
-												t_slash, "/" },
-		(TokenMeaning ) { t_eqv, "=" }, (TokenMeaning ) { t_less, "<" },
-		(TokenMeaning ) { t_greater, ">" }, (TokenMeaning ) { t_lBracket,
-								"[" }, (TokenMeaning ) { t_rBracket, "]" },
+		(TokenMeaning ) { t_minus, "-" },
+		(TokenMeaning ) { t_asterisk, "*" },
+		(TokenMeaning ) { t_slash, "/" },
+		(TokenMeaning ) { t_eqv, "=" },
+		(TokenMeaning ) { t_less, "<" },
+		(TokenMeaning ) { t_greater, ">" },
+		(TokenMeaning ) { t_lBracket, "[" },
+		(TokenMeaning ) { t_rBracket, "]" },
 		(TokenMeaning ) { t_period, "." },
 		(TokenMeaning ) { t_comma, "," },
 		(TokenMeaning ) { t_colon, ":" },
-		(TokenMeaning ) { t_scolon, ";" }, (TokenMeaning ) { t_pointer,
-								"^" }, (TokenMeaning ) { t_lParenthessis, "(" },
-		(TokenMeaning ) { t_rParenthessis, ")" }, (TokenMeaning ) {
-								t_notEqv, "<>" }, (TokenMeaning ) { t_lessOrEqv,
-										"<=" }, (TokenMeaning ) {
-												t_greaterOrEqv, ">=" },
-		(TokenMeaning ) { t_asigment, ":=" }, (TokenMeaning ) {
-								t_doubleDot, ".." }, (TokenMeaning ) {
-										t_lcBracket, "{" }, //others
+		(TokenMeaning ) { t_scolon, ";" },
+		(TokenMeaning ) { t_pointer, "^" },
+		(TokenMeaning ) { t_lParenthessis, "(" },
+		(TokenMeaning ) { t_rParenthessis, ")" },
+		(TokenMeaning ) { t_notEqv, "<>" },
+		(TokenMeaning ) { t_lessOrEqv, "<=" },
+		(TokenMeaning ) { t_greaterOrEqv, ">=" },
+		(TokenMeaning ) { t_asigment, ":=" },
+		(TokenMeaning ) { t_doubleDot, ".." },
+		(TokenMeaning ) { t_lcBracket, "{" }, //others
 		(TokenMeaning ) { t_rcBracket, "}" } };
 
 bool Token_isType(Token t) {
@@ -69,7 +74,6 @@ char * getTokenName(Token t) {
 		return "identificator";
 	case t_num_int:
 		return "integerValue";
-		break;
 	case t_num_real:
 		return "realValue";
 	case t_invalid:
@@ -158,19 +162,39 @@ TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 
 }
 
+
+//.
+void simpleRegex(char * regex){
+
+}
+
 //include rules for numbers in token map
+/*
+ * supported: d, d.d , d.de+-d, d.de+-d.d // +- resp + or -
+ * */
 void TokenParser_addNumbers(TokenMapElement map[]) {
 	int i;
 	TokenMapElement * elm;
 	TokenMapElement * iElm;
 	TokenMapElement * rElm;
+	TokenMapElement * eFirst;
+	TokenMapElement * eRInt;
+	TokenMapElement * eRReal;
 	TokenMapElement * intMap = TokenMap_newLevel();
 	TokenMapElement * realMap = TokenMap_newLevel();
+	TokenMapElement * expFirstMap = TokenMap_newLevel();
+	TokenMapElement * expRestIntMap = TokenMap_newLevel();
+	TokenMapElement * expRestRealMap = TokenMap_newLevel();
+
 
 	for (i = '0'; i <= '9'; i++) {
 		elm = &(map[i]);
 		iElm = &(intMap[i]);
 		rElm = &(realMap[i]);
+		eFirst =  &(expFirstMap[i]);
+		eRInt = &(expRestIntMap[i]);
+		eRReal =&(expRestRealMap[i]);
+
 
 		elm->token = t_num_int;
 		elm->next = intMap;
@@ -180,9 +204,32 @@ void TokenParser_addNumbers(TokenMapElement map[]) {
 
 		rElm->token = t_num_real;
 		rElm->next = realMap;
+
+		eFirst->token = t_num_real;
+		eFirst->next = expRestIntMap;
+
+		eRInt->token = t_num_real;
+		eRInt->next = expRestIntMap;
+
+		eRReal->token = t_num_real;
+		eRReal->next = expRestRealMap;
 	}
 	intMap['.'].token = t_num_real;
 	intMap['.'].next = realMap;
+	intMap['e'].token = t_num_real;
+	intMap['e'].next = expFirstMap;
+
+	realMap['e'].token = t_num_real;
+	realMap['e'].next = expFirstMap;
+
+	expFirstMap['+'].token = t_num_real;
+	expFirstMap['+'].next =expRestIntMap;
+	expFirstMap['-'].token = t_num_real;
+	expFirstMap['-'].next =expRestIntMap;
+
+	expRestIntMap['.'].token = t_num_real;
+	expRestIntMap['.'].next =expRestRealMap;
+
 }
 
 TokenParser TokenParser__init__() {
@@ -217,15 +264,22 @@ void TokenMap__dell__(TokenMapElement * map) {
 void TokenParser__dell__(TokenParser * p) {
 	int i;
 	TokenMapElement map;
+	TokenMapElement * intMap = p->map['0'].next;
+	TokenMapElement * realMap = intMap['.'].next;
+	TokenMapElement * expFirstMap = intMap['e'].next;
+	TokenMapElement * expRestIntMap = expRestIntMap['1'].next;
+	TokenMapElement * expRestRealMap =expRestIntMap['.'].next;
 	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
 		map = p->map[i];
 		if (map.token != t_num_int && map.token != t_id && map.next)
 			TokenMap__dell__(map.next);
 	}
-	TokenMapElement * intMap = p->map['0'].next;
-	TokenMapElement * realMap = intMap['.'].next;
+
 	free(intMap);
 	free(realMap);
+    free(expFirstMap);
+    free(expRestIntMap);
+    free(expRestRealMap);
 
 	free(p->map);
 	p->map = NULL;

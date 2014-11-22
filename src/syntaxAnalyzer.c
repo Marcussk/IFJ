@@ -7,41 +7,6 @@
  }
  */
 
-void printToken(LexParser * p, Token t) {
-	char * str;
-	switch (t) {
-	case t_str_val:
-		printf("Line %d:<str:'%s'>\n", p->lineNum, p->str.buff);
-		break;
-	case t_id:
-		//if (HashTable_insert(ht, p->str.buff) == 2) {
-		//	/*printf("Line %d:<id:'%s', already in table >\n", p->lineNum,
-		//	 p->str.buff);*/
-		//}
-		printf("Line %d:<id:'%s'>\n", p->lineNum, p->str.buff);
-		break;
-	case t_num_int:
-		printf("Line %d:<int:'%s'>\n", p->lineNum, p->str.buff);
-		break;
-	case t_num_real:
-		printf("Line %d:<real:'%s'>\n", p->lineNum, p->str.buff);
-		break;
-	case t_invalid:
-		printf("Line %d:<invalid token str: \"%s\">\n", p->lineNum,
-				p->str.buff);
-		break;
-	case t_eof:
-		printf("Line %d:<EOF>\n", p->lineNum);
-		break;
-	default:
-		str = getTokenName(t);
-		if (str) {
-			printf("Line %d: [%s]\n", p->lineNum, str);
-		} else {
-			printf("Line %d: <tokenWithoutStr: %d>\n", p->lineNum, t);
-		}
-	}
-}
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
@@ -50,6 +15,7 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
+	printf("expr\n");
 	if (self->lastToken == t_scolon
 			|| (secondToken && *secondToken == t_scolon))
 		return;
@@ -64,12 +30,14 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
+	printf("asigment\n");
 	SyntaxAnalyzer_parseExpr(self, NULL);
 	//[TODO]
 }
 
 // t_var already found
 void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
+	printf("varDeclr\n");
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	while (true) {
@@ -104,6 +72,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 //(begin ... end) ("begin" already found)
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
+	printf("block\n");
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
 	while (self->lastToken != t_end) {
@@ -135,6 +104,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
+	printf("if\n");
 	SyntaxAnalyzer_parseExpr(self, NULL);              //COND
 
 	self->lastToken = LexParser_gen(self->lp);			//then
@@ -166,6 +136,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
+	printf("while\n");
 	SyntaxAnalyzer_parseExpr(self, NULL);					//COND
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_do) {							//do
@@ -183,6 +154,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
  args -> seznam termu
  */
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
+	printf("argList\n");
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken == t_rParenthessis)     // ) - args are empty
 		return;
@@ -207,6 +179,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  f(params) -> f(id : typ; id : typ)
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
+	printf("paramList\n");
 	LexParser_fnParamsEnter(self->lp);
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken == t_rParenthessis) {            // ) - params are empty
@@ -250,6 +223,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
+	printf("func\n");
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_id) {
 		syntaxError("id of function expected", self->lp->lineNum, getTokenName(self->lastToken));
