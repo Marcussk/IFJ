@@ -185,6 +185,7 @@ void  good_suffixes( char *pattern, int good_suffix[]){
 	return;
 }
 
+/*
 void bad_char(char *pattern, int bad_character[], int max_src_len ){
 
 	int pattern_len = strlen(pattern);
@@ -198,7 +199,7 @@ void bad_char(char *pattern, int bad_character[], int max_src_len ){
 	return;
 }
 
-/* funkcia na zistenie velkosti abecedy vstupneho stringu */
+// funkcia na zistenie velkosti abecedy vstupneho stringu 
  int alfabeth_len(int src_len, char *src ){
 
  	bool new_char = true; // ak true prvok sa pocita, inac uz bol zapocitany
@@ -251,7 +252,8 @@ void bad_char(char *pattern, int bad_character[], int max_src_len ){
 	return -1;
 }
 
-/////////***** KONIEC TOHOTO VELKEHO NEZMYSLU*****//////////////////////
+*/
+///////// KONIEC TOHOTO VELKEHO NEZMYSLU//////////////////////
 
 void registrBuiltins(HashTable * ht) {
 	iVar * item = NULL;
