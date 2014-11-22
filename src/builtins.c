@@ -63,49 +63,52 @@ int readLn(iVar *var) {
 	}
 }
 
-void change(char *str, int RIGHT) {
+/* changing first and last elemnts*/
+void change(char *str, int right) {
 	char h = str[0];
-	str[0] = str[RIGHT];
-	str[RIGHT] = h;
+	str[0] = str[right];
+	str[right] = h;
 	return;
 }
 
-void Sift(char *str, int LEFT, int RIGHT) {
-	int i = LEFT;
-	int j = (2 * i) + 1;
-	char tmp = str[i];
-	bool cond = j <= RIGHT;
+/* *str - zoradovany retazec */
+void Sift(char *str, int left, int right) {
+	int i = left;
+	int j = (2 * i) + 1; /* lavy syn */
+	char tmp = str[i];	
+	bool cond = j <= right; /* podmienka vymeny prvkov */
 
 	while (cond) {
-		if (j < RIGHT)
+		if (j < right) /* strom ma oboch synov */
 			if (str[j] < str[j + 1])
 				j++;
-		if (tmp >= str[j])
+		if (tmp >= str[j])  
 			cond = false;
 		else {
-			str[i] = str[j];
-			i = j;
-			j = 2 * i + 1;
-			cond = j <= RIGHT;
+			str[i] = str[j]; /* prepisanie prvku na zlom mieste */
+			i = j;			/* pokracovanie na nizsi uzol stromu */
+			j = 2 * i + 1; /* ustanovenie praveho syna */
+			cond = j <= right; /* ak j > najpravejsi prvok right, ziadny dalsi syn neexistuje => koneic pola */
 		}
 	}
 	str[i] = tmp;
 	return;
 }
 
+/* strom implementovany polom kde lavy syn je na pozici 2i+1, a pravy syn na pozicii 2i+2 */
 char * func_sort(char *str) {
 	int str_len = strlen(str);
 
 	int i;
-	int LEFT = str_len / 2 - 1;
-	int RIGHT = str_len - 1;
+	int left = str_len / 2 - 1; /* index najpravejsieho uzlu na najnizsej urovni */
+	int right = str_len - 1;  /* posleny prvok pola */
 
-	for (i = LEFT; i >= 0; i--) {
-		Sift(str, i, RIGHT);
+	for (i = left; i >= 0; i--) {
+		Sift(str, i, right);	
 	}
-	for (RIGHT = str_len - 1; RIGHT >= 1; RIGHT--) {
-		change(str, RIGHT);
-		Sift(str, 0, RIGHT - 1);
+	for (right = str_len - 1; right >= 1; right--) {
+		change(str, right); /* vymena prvkov */		 		
+		Sift(str, 0, right - 1); /* opakovane zostavenie stromu z prvkov ktore este niesu zoradene */
 	}
 
 	return str;

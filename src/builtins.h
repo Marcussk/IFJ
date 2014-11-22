@@ -23,4 +23,11 @@ char *func_copy(char *f_str, int i, int n);
 
 char *func_sort(char *str);
 
+int func_find ( char *src, char *search );
+int alfabeth_len(int src_len, char *src );
+void bad_char(char *pattern, int bad_character[], int max_src_len );
+void  good_suffixes( char *pattern, int good_suffix[]);
+void suffixes(char* pattern, int suffix[], int max_pattern_len);
+
+
 #endif
