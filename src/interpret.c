@@ -1,5 +1,7 @@
 #include "interpret.h"
 
+IMPLEMENT_STACK(i, iVal)
+
 iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	iVal v;
 	switch (type) {
@@ -22,7 +24,7 @@ iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 
 void Interpret__init__(Interpret * self, InstrQueue instructions) {
 	self->instructions = instructions;
-	Stack__init__(&(self->stack));
+	iStack__init__(&(self->stack));
 }
 
 void Interpret_run(Interpret * self) {
@@ -37,10 +39,10 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_push:
 			if (i.type == iStackRef) {
-				Stack_push(&(self->stack),
-						*Stack_getAt(&self->stack, i.a1->stackAddr));
+				iStack_push(&(self->stack),
+						*iStack_getAt(&self->stack, i.a1->stackAddr));
 			} else {
-				Stack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
+				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
 		default:

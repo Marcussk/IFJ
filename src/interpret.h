@@ -6,10 +6,11 @@
 #include "builtins.h"
 #include "errorHandler.h"
 
+DECLARE_STACK(i, iVal);
 
 typedef struct  {
 	InstrQueue instructions;
-	Stack stack;
+	iStack stack;
 } Interpret;
 
 void Interpret__init__(Interpret * self, InstrQueue instructions);

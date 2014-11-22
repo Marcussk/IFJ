@@ -9,6 +9,7 @@ O_SRCS += \
 ../src/errorHandler.o \
 ../src/gerator3AC.o \
 ../src/hashTable.o \
+../src/ifj.o \
 ../src/ifjTypes.o \
 ../src/instruction.o \
 ../src/lexParser.o \

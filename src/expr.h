@@ -23,3 +23,5 @@ typedef struct exprtoken{
 	ExprType type;
 	ExprDataType datatype;
 } ExprToken;
+
+DECLARE_STACK(expr, ExprToken);

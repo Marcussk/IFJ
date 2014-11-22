@@ -7,7 +7,7 @@
 #include "instruction.h"
 #include "ifjTypes.h"
 
-#define IMPLEMENT_STACK(namePrefix, stackElementT)                             \
+#define DECLARE_STACK(namePrefix, stackElementT)                               \
 typedef struct namePrefix##s_stackNodeT {                                      \
 	stackElementT data;                                                        \
 	struct namePrefix##s_stackNodeT *next;                                     \
@@ -17,7 +17,8 @@ typedef struct {                                                               \
 	namePrefix##StackNodeT *top;                                               \
 	int size;                                                                  \
 } namePrefix##Stack;                                                           \
-                                                                               \
+
+#define IMPLEMENT_STACK(namePrefix, stackElementT)                             \
                                                                                \
 void namePrefix##Stack__init__(namePrefix##Stack * self) {                     \
 	self->top = NULL;                                                          \
