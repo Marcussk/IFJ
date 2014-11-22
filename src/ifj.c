@@ -20,24 +20,26 @@
 #include "stack.h"
 
 int main(int argc, char *argv[]) {
-	LexParser lexParser;
-	SyntaxAnalyzer synAnalyzer;
-	Interpret interpret;
-	if (argc != 2) {
-		printf("usage: %s filename\n", argv[0]);
-	} else {
-		FILE *file = fopen(argv[1], "r");
-		if (file == 0) {
-			printf("ERROR: Could not open file!\n");
-		} else {
-			LexParser__init__(&lexParser, file);
-			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
-			SyntaxAnalyzer_parse(&synAnalyzer);
-			//Interpret__init__(&interpret, synAnalyzer.instr);
-			//Interpret_run(&interpret);
-			fclose(file);
-		}
-	}
-
+	Interpret_test1();
+	/*
+	 LexParser lexParser;
+	 SyntaxAnalyzer synAnalyzer;
+	 Interpret interpret;
+	 if (argc != 2) {
+	 printf("usage: %s filename\n", argv[0]);
+	 } else {
+	 FILE *file = fopen(argv[1], "r");
+	 if (file == 0) {
+	 printf("ERROR: Could not open file!\n");
+	 } else {
+	 LexParser__init__(&lexParser, file);
+	 SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
+	 SyntaxAnalyzer_parse(&synAnalyzer);
+	 //Interpret__init__(&interpret, synAnalyzer.instr);
+	 //Interpret_run(&interpret);
+	 fclose(file);
+	 }
+	 }
+	 */
 	return EXIT_SUCCESS;
 }

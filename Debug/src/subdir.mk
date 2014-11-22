@@ -4,15 +4,6 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 O_SRCS += \
-../src/buffFile.o \
-../src/builtins.o \
-../src/errorHandler.o \
-../src/gerator3AC.o \
-../src/hashTable.o \
-../src/ifj.o \
-../src/ifjTypes.o \
-../src/instruction.o \
-../src/lexParser.o \
 ../src/stack.o \
 ../src/strRoutines.o \
 ../src/syntaxAnalyzer.o \

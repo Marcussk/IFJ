@@ -35,7 +35,7 @@ void Interpret_run(Interpret * self) {
 
 		switch (i.code) {
 		case i_write:
-			write(i.type, Stack_pop(&(self->stack)));
+			write(i.type, iStack_pop(&(self->stack)));
 			break;
 		case i_push:
 			if (i.type == iStackRef) {
