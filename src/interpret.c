@@ -32,6 +32,7 @@ void Interpret_run(Interpret * self) {
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
+
 		iVal pomA1;
 		iVal pomA2;
 		iVal pomA3;
@@ -40,14 +41,16 @@ void Interpret_run(Interpret * self) {
 			if (i.dest != NULL) {
 				switch(i.type){
 					case iInt:
-						*(int *)(i.dest) =
-								(pomA2 = iStack_pop(&(self->stack))).iInt +
-								(pomA1 = iStack_pop(&(self->stack))).iInt;
+						pomA2 = iStack_pop(&(self->stack));
+						pomA1 = iStack_pop(&(self->stack));
+						pomA3.iInt =  pomA2.iInt + pomA1.iInt;
+						*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
 						break;
 					case iReal:
-						*(float*)(i.dest) =
-								(pomA2 = iStack_pop(&(self->stack))).iReal +
-								(pomA1 = iStack_pop(&(self->stack))).iReal;
+						pomA2 = iStack_pop(&(self->stack));
+						pomA1 = iStack_pop(&(self->stack));
+						pomA3.iReal =  pomA2.iReal + pomA1.iReal;
+						*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
 						break;
 					default:
 					// [TODO] ERROR
@@ -73,8 +76,43 @@ void Interpret_run(Interpret * self) {
 			}
 			break;
 		case i_sub:
-
-			break;
+			if (i.dest != NULL) {
+							switch(i.type){
+								case iInt:
+									pomA1 = iStack_pop(&(self->stack));
+									pomA2 = iStack_pop(&(self->stack));
+									pomA3.iInt =  pomA1.iInt - pomA2.iInt;
+									*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+									break;
+								case iReal:
+									pomA1 = iStack_pop(&(self->stack));
+									pomA2 = iStack_pop(&(self->stack));
+									pomA3.iReal =  pomA1.iReal - pomA2.iReal;
+									*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+									break;
+								default:
+								// [TODO] ERROR
+									break;
+											}
+						}
+						else{
+							pomA1 = iStack_pop(&(self->stack));
+							pomA2 = iStack_pop(&(self->stack));
+							switch(i.type){
+							case iInt:
+								pomA3.iInt = (pomA1.iInt - pomA2.iInt);
+								iStack_push(&(self->stack), pomA3);
+								break;
+							case iReal:
+								pomA3.iReal = (pomA1.iReal - pomA2.iReal);
+								iStack_push(&(self->stack), pomA3);
+								break;
+							default:
+								// [TODO] ERROR
+								break;
+							}
+						}
+						break;
 
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
@@ -138,21 +176,25 @@ void Interpret_test2() {
 void Interpret_test3() {
 
 	InstrParam a, b, c;
-		a.iReal = 8;
-		b.iReal = 2.5;
-		c.iReal = 0;
+		a.iInt = 178;
+		b.iInt = 20;
+		c.iInt = 20;
 		InstrQueue instr;
 		Interpret intr;
 		InstrQueue__init__(&instr);
-		InstrQueue_insert(&instr, (Instruction ) { i_push, iReal, &a, NULL, NULL });
 		InstrQueue_insert(&instr,
-				(Instruction ) { i_push, iReal, &b, NULL, NULL });
+						(Instruction ) { i_push, iInt, &c, NULL, NULL });
 
 		InstrQueue_insert(&instr,
-				(Instruction ) { i_add, iReal, &a, &b, &c });
+				(Instruction ) { i_push, iInt, &b, NULL, NULL });
+		InstrQueue_insert(&instr,
+				(Instruction ) { i_push, iInt, &a, NULL, NULL });
+
+		InstrQueue_insert(&instr,
+				(Instruction ) { i_sub, iInt, &a, &b, &c });
 
 		Interpret__init__(&intr, instr);
 		Interpret_run(&intr);
-		printf("%f interpret test end \n", c );
+		printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
 
 }
