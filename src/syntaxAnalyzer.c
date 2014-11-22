@@ -7,10 +7,11 @@
  }
  */
 
-
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
 	self->lastToken = t_empty;
+	InstrQueue__init__(&(self->instr));
+	self->stackIndexCntr = 0;
 }
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
@@ -66,6 +67,9 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 					getTokenName(self->lastToken));
 			return;
 		}
+		InstrQueue_insert(&self->instr, (Instruction){ i_push, self->lp->lastSymbol->type, NULL, NULL, NULL});
+		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
+		self->stackIndexCntr++;
 	}
 	//[TODO]
 }
@@ -109,24 +113,28 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 
 	self->lastToken = LexParser_gen(self->lp);			//then
 	if (self->lastToken != t_then) {
-		syntaxError("expected then", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("expected then", self->lp->lineNum,
+				getTokenName(self->lastToken));
 		return;
 	}
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_begin) {
-		syntaxError("expected begin for if block", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("expected begin for if block", self->lp->lineNum,
+				getTokenName(self->lastToken));
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
 
 	self->lastToken = LexParser_gen(self->lp);			//else
 	if (self->lastToken != t_else) {
-		syntaxError("expected else", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("expected else", self->lp->lineNum,
+				getTokenName(self->lastToken));
 		return;
 	}
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_begin) {
-		syntaxError("expected begin for if else block", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("expected begin for if else block", self->lp->lineNum,
+				getTokenName(self->lastToken));
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
@@ -140,7 +148,8 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	SyntaxAnalyzer_parseExpr(self, NULL);					//COND
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_do) {							//do
-		syntaxError("expected id\n", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("expected id\n", self->lp->lineNum,
+				getTokenName(self->lastToken));
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);						//STMTLIST
@@ -164,12 +173,13 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 	while (self->lastToken != t_rParenthessis) {
 		SyntaxAnalyzer_parseExpr(self, NULL);
 		self->lastToken = LexParser_gen(self->lp);
-			if (self->lastToken == t_rParenthessis)     // ) - end of args
-				return;
-			else if(self->lastToken == t_comma)
-				continue;
-			else
-				syntaxError("expected \",\" or \")\"", self->lp->lineNum, getTokenName(self->lastToken));
+		if (self->lastToken == t_rParenthessis)     // ) - end of args
+			return;
+		else if (self->lastToken == t_comma)
+			continue;
+		else
+			syntaxError("expected \",\" or \")\"", self->lp->lineNum,
+					getTokenName(self->lastToken));
 	}
 }
 
@@ -187,19 +197,22 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	}
 	while (true) {
 		if (self->lastToken != t_id) {						//id
-			syntaxError("expected id in argument list", self->lp->lineNum, getTokenName(self->lastToken));
+			syntaxError("expected id in argument list", self->lp->lineNum,
+					getTokenName(self->lastToken));
 			return;
 		}
 
 		self->lastToken = LexParser_gen(self->lp);			//:
 		if (self->lastToken != t_colon) {
-			syntaxError("expected \":\"", self->lp->lineNum, getTokenName(self->lastToken));
+			syntaxError("expected \":\"", self->lp->lineNum,
+					getTokenName(self->lastToken));
 			return;
 		}
 
 		self->lastToken = LexParser_gen(self->lp);			//typ
 		if (!Token_isType(self->lastToken)) {
-			syntaxError("expected type name", self->lp->lineNum, getTokenName(self->lastToken));
+			syntaxError("expected type name", self->lp->lineNum,
+					getTokenName(self->lastToken));
 			return;
 		}
 
@@ -214,7 +227,8 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 		} else {											 // ;
 			self->lastToken = LexParser_gen(self->lp);
 			if (self->lastToken != t_id) {						//id
-				syntaxError("expected id after semicolon", self->lp->lineNum, getTokenName(self->lastToken));
+				syntaxError("expected id after semicolon", self->lp->lineNum,
+						getTokenName(self->lastToken));
 				return;
 			}
 		}
@@ -223,10 +237,14 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
+	int stackCntrBackup;
+
 	printf("func\n");
+
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_id) {
-		syntaxError("id of function expected", self->lp->lineNum, getTokenName(self->lastToken));
+		syntaxError("id of function expected", self->lp->lineNum,
+				getTokenName(self->lastToken));
 	}
 
 	LexParser_fnParamsEnter(self->lp);
@@ -240,15 +258,16 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	self->lastToken = LexParser_gen(self->lp);
 	switch (self->lastToken) {
 	case t_var:
+		stackCntrBackup = self->stackIndexCntr;
 		SyntaxAnalyzer_parse_varDeclr(self);
 		SyntaxAnalyzer_parse_block(self);
+		self->stackIndexCntr = stackCntrBackup;
 		break;
 	case t_begin:
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	default:
-		syntaxError(
-				"Expected \"begin\" or \"var\" after function declaration",
+		syntaxError("Expected \"begin\" or \"var\" after function declaration",
 				self->lp->lineNum, getTokenName(self->lastToken));
 	}
 }
@@ -279,14 +298,16 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			if (tok == t_eof)
 				return;
 			else {
-				syntaxError("No input expected", self->lp->lineNum, getTokenName(tok));
+				syntaxError("No input expected", self->lp->lineNum,
+						getTokenName(tok));
 				return;
 			}
 		case t_eof:
 			syntaxError("Expected \".\"", self->lp->lineNum, getTokenName(tok));
 			return;
 		default:
-			syntaxError("syntax corrupted", self->lp->lineNum, getTokenName(tok));
+			syntaxError("syntax corrupted", self->lp->lineNum,
+					getTokenName(tok));
 		}
 	}
 }

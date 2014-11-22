@@ -6,10 +6,13 @@
 #include "ifjTypes.h"
 #include "stack.h"
 #include "errorHandler.h"
+#include "instruction.h"
 
 typedef struct {
 	LexParser * lp;
 	Token lastToken;
+	InstrQueue instr;
+	int stackIndexCntr;
 } SyntaxAnalyzer;
 
 extern HashTable * symbolTable;

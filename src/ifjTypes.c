@@ -8,6 +8,7 @@ iVar * iVar__init__() {
 	self->isInitialied = false;
 	self->type = iUnknown;
 	self->val.iInt = 0;
+	self->stackIndex = -1;
 	return self;
 }
 

@@ -3,12 +3,6 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
-O_SRCS += \
-../src/stack.o \
-../src/strRoutines.o \
-../src/syntaxAnalyzer.o \
-../src/tokenMap.o 
-
 C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \

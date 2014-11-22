@@ -47,6 +47,7 @@ typedef struct s_iFunction{
 typedef struct s_iVar {
 	tIFJ type;
 	bool isInitialied;
+	int stackIndex;
 	iVal val;
 } iVar;
 
