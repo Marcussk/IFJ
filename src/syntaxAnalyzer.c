@@ -22,7 +22,7 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 		return;
 
 	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-		if (self->lastToken == t_end || self->lastToken == t_then) { // because expr can end without ; (it ends with end of block or if ...)
+		if (self->lastToken == t_end || self->lastToken == t_then || self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
 			LexParser_pushBack(self->lp, self->lastToken);
 			return;
 		}
@@ -97,6 +97,8 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				SyntaxAnalyzer_parseExpr(self, &secTok);
 			}
 			break;
+		case t_end:
+			break;
 		default:
 			syntaxError("Unexpected syntax in code block\n", self->lp->lineNum,
 					getTokenName(self->lastToken));
@@ -152,6 +154,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 				getTokenName(self->lastToken));
 		return;
 	}
+	self->lastToken = LexParser_gen(self->lp);
 	SyntaxAnalyzer_parse_block(self);						//STMTLIST
 	//[TODO]
 }
