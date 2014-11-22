@@ -12,7 +12,7 @@ typedef enum {
 	RETURN,
 	i_write,
 	READ,
-	ASSIGN,
+	i_assign,
 	ADD,
 	SUB,
 	MUL,

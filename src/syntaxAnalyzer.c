@@ -22,7 +22,8 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 		return;
 
 	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-		if (self->lastToken == t_end || self->lastToken == t_then || self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
+		if (self->lastToken == t_end || self->lastToken == t_then
+				|| self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
 			LexParser_pushBack(self->lp, self->lastToken);
 			return;
 		}
@@ -33,7 +34,8 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
 	SyntaxAnalyzer_parseExpr(self, NULL);
-	//InstrQueue_insert(&self->instr, )
+	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
+		 NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
 
 }
@@ -69,7 +71,9 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 					getTokenName(self->lastToken));
 			return;
 		}
-		InstrQueue_insert(&self->instr, (Instruction){ i_push, self->lp->lastSymbol->type, NULL, NULL, NULL});
+		InstrQueue_insert(&self->instr,
+				(Instruction ) { i_push, self->lp->lastSymbol->type,
+								NULL, NULL, NULL });
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}
