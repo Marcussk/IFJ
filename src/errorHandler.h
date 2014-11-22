@@ -28,9 +28,9 @@ void unimplementedError(char * str);
 
 void lexError(char * str,char * lexBuff, int lineNum);
 
-void syntaxError(char * str, int lineNum);
+void syntaxError(char * str, int lineNum, char * actualTokenName);
 
-void sem_definitionError( int lineNum);
+void sem_definitionError( int lineNum, char * varName);
 void sem_TypeError( char * nameOfType);
 void sem_Error(char * str);
 

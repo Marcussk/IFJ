@@ -12,6 +12,7 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 	self->idMode = lp_searchOnly;
 	self->lastSymbol = NULL;
 	self->symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
+	registrBuiltins(self->symbolTable);
 }
 
 void LexParser_readString(LexParser * self) {
@@ -58,7 +59,7 @@ void LexParser_readEscape(LexParser * self) {
 void LexParser_pushBack(LexParser * self, Token t) {
 	if (self->pushBackTok != t_empty)
 		syntaxError("Can push back to lex parser only one token needs more\n",
-				self->lineNum);
+				self->lineNum, NULL);
 	self->pushBackTok = t;
 }
 
@@ -69,13 +70,13 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 		case lp_insertOnly:
 			if (HashTable_insert(self->symbolTable, self->str.buff,
 					&(self->lastSymbol)) != 0) {
-				sem_definitionError(self->lineNum); // redefinition
+				sem_definitionError(self->lineNum, self->str.buff); // redefinition
 			}
 			break;
 		case lp_searchOnly:
 			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
 			if (!i) {
-				sem_definitionError(self->lineNum);
+				sem_definitionError(self->lineNum, self->str.buff);
 			}
 			self->lastSymbol = i->var;
 			break;

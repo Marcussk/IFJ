@@ -114,7 +114,7 @@ char * func_sort(char *str) {
 void registrBuiltins(HashTable * ht) {
 	iVar * item = NULL;
 	//pro všechny jmena HashTable_insert(ht, jmeno, &item);
-	HashTable_insert(ht, "readLn", &item);
+	HashTable_insert(ht, "readln", &item);
 	HashTable_insert(ht, "write", &item);
 	HashTable_insert(ht, "length", &item);
 	HashTable_insert(ht, "copy", &item);
