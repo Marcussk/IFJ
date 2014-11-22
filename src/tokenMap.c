@@ -3,45 +3,40 @@
 //describes string form of token
 TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_begin, "begin" }, //keywords
-		(TokenMeaning ) { t_boolean, "boolean" },
+				(TokenMeaning ) { t_boolean, "boolean" },
 		(TokenMeaning ) { t_do, "do" },
 		(TokenMeaning ) { t_else, "else" },
-		(TokenMeaning ) { t_end, "end" },
-		(TokenMeaning ) { t_false,"false" },
-		(TokenMeaning ) { t_find, "find" },
-		(TokenMeaning ) { t_func, "function" },
-		(TokenMeaning ) { t_if,"if" },
-		(TokenMeaning ) { t_integer, "integer" },
-		(TokenMeaning ) { t_real, "real" },
-		(TokenMeaning ) { t_char, "char" },
-		(TokenMeaning ) { t_sort,"sort" },
-		(TokenMeaning ) { t_string,"string" },
-		(TokenMeaning ) { t_then, "then" },
-		(TokenMeaning ) { t_true, "true" },
-		(TokenMeaning ) { t_var,"var" },
+		(TokenMeaning ) { t_end, "end" }, (TokenMeaning ) { t_false,
+								"false" }, (TokenMeaning ) { t_find, "find" },
+		(TokenMeaning ) { t_func, "function" }, (TokenMeaning ) { t_if,
+								"if" },
+		(TokenMeaning ) { t_integer, "integer" }, (TokenMeaning ) {
+								t_real, "real" }, (TokenMeaning ) { t_char,
+										"char" }, (TokenMeaning ) { t_sort,
+												"sort" }, (TokenMeaning ) {
+														t_string, "string" },
+		(TokenMeaning ) { t_then, "then" }, (TokenMeaning ) { t_true,
+								"true" }, (TokenMeaning ) { t_var, "var" },
 		(TokenMeaning ) { t_while, "while" },
 		(TokenMeaning ) { t_plus, "+" }, // operators
-		(TokenMeaning ) { t_minus, "-" },
-		(TokenMeaning ) { t_asterisk, "*" },
-		(TokenMeaning ) { t_slash, "/" },
-		(TokenMeaning ) { t_eqv, "=" },
-		(TokenMeaning ) { t_less, "<" },
-		(TokenMeaning ) { t_greater, ">" },
-		(TokenMeaning ) { t_lBracket, "[" },
-		(TokenMeaning ) { t_rBracket, "]" },
+				(TokenMeaning ) { t_minus, "-" }, (TokenMeaning ) {
+										t_asterisk, "*" }, (TokenMeaning ) {
+												t_slash, "/" },
+		(TokenMeaning ) { t_eqv, "=" }, (TokenMeaning ) { t_less, "<" },
+		(TokenMeaning ) { t_greater, ">" }, (TokenMeaning ) { t_lBracket,
+								"[" }, (TokenMeaning ) { t_rBracket, "]" },
 		(TokenMeaning ) { t_period, "." },
 		(TokenMeaning ) { t_comma, "," },
 		(TokenMeaning ) { t_colon, ":" },
-		(TokenMeaning ) { t_scolon, ";" },
-		(TokenMeaning ) { t_pointer, "^" },
-		(TokenMeaning ) { t_lParenthessis, "(" },
-		(TokenMeaning ) { t_rParenthessis, ")" },
-		(TokenMeaning ) { t_notEqv, "<>" },
-		(TokenMeaning ) { t_lessOrEqv, "<=" },
-		(TokenMeaning ) { t_greaterOrEqv, ">=" },
-		(TokenMeaning ) { t_asigment, ":=" },
-		(TokenMeaning ) { t_doubleDot, ".." },
-		(TokenMeaning ) { t_lcBracket, "{" }, //others
+		(TokenMeaning ) { t_scolon, ";" }, (TokenMeaning ) { t_pointer,
+								"^" }, (TokenMeaning ) { t_lParenthessis, "(" },
+		(TokenMeaning ) { t_rParenthessis, ")" }, (TokenMeaning ) {
+								t_notEqv, "<>" }, (TokenMeaning ) { t_lessOrEqv,
+										"<=" }, (TokenMeaning ) {
+												t_greaterOrEqv, ">=" },
+		(TokenMeaning ) { t_asigment, ":=" }, (TokenMeaning ) {
+								t_doubleDot, ".." }, (TokenMeaning ) {
+										t_lcBracket, "{" }, //others
 		(TokenMeaning ) { t_rcBracket, "}" } };
 
 bool Token_isType(Token t) {
@@ -64,6 +59,26 @@ char * getTokenStr(Token t) {
 	if (t == t_empty)
 		return "<EmptyToken>";
 	return NULL;
+}
+
+char * getTokenName(Token t) {
+	switch (t) {
+	case t_str_val:
+		return "stringValue";
+	case t_id:
+		return "identificator";
+	case t_num_int:
+		return "integerValue";
+		break;
+	case t_num_real:
+		return "realValue";
+	case t_invalid:
+		return "invalidToken";
+	case t_eof:
+		return "EOF";
+	default:
+		return getTokenStr(t);
+	}
 }
 
 void TokenMap_forAllIdChars(TokenMapElement map[], TokenMapElement idsMap[],
@@ -228,9 +243,8 @@ Token TokenParser_push(TokenParser * p, char ch) {
 		m = p->possition[(int) ch];
 		p->possition = m.next;
 		return m.token;
-	}else
+	} else
 		return t_empty;
-
 
 }
 void TokenMap_debug_rec(TokenMapElement map[], int indent,

@@ -16,7 +16,7 @@ void registrBuiltins(HashTable * ht);
 
 int readLn(iVar * var);
 
-void write(tIFJ type, void* a1);
+void write(tIFJ type, iVal a1);
 int func_len(char * str);
 
 char *func_copy(char *f_str, int i, int n);

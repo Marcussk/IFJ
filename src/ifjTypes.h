@@ -23,8 +23,7 @@ typedef enum {
 	iString,
 	iChar,
 	iFn,
-	iEnumerable,
-	iGreedStop
+	iStackRef,
 } tIFJ;
 
 // alias function body

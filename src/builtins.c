@@ -7,16 +7,16 @@ int func_len(char *str) {
 	return strlen(str);
 }
 
-void write(tIFJ type, void* a1) {
+void write(tIFJ type, iVal a1) {
 	switch (type) {
 	case iInt:
-		printf("%d", *((int *) a1));
+		printf("%d", a1.iInt);
 		break;
 	case iString:
-		printf("%s", *(char **) a1);
+		printf("%s", a1.iString);
 		break;
 	case iReal:
-		printf("%f", *(float *) a1);
+		printf("%f", a1.iReal);
 		break;
 	default:
 		printf("error");
@@ -114,7 +114,7 @@ char * func_sort(char *str) {
 void registrBuiltins(HashTable * ht) {
 	iVar * item = NULL;
 	//pro všechny jmena HashTable_insert(ht, jmeno, &item);
-	HashTable_insert(ht, "readLn", &item);
+	HashTable_insert(ht, "readln", &item);
 	HashTable_insert(ht, "write", &item);
 	HashTable_insert(ht, "length", &item);
 	HashTable_insert(ht, "copy", &item);

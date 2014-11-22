@@ -22,8 +22,8 @@ typedef enum {
 	t_lessOrEqv,
 	t_greaterOrEqv,
 	t_eqv,
-	t_lBracket,
-	t_rBracket,
+	t_lParenthessis,
+	t_rParenthessis,
 	t_comma,
 	t_eof,
 	t_id,
@@ -52,8 +52,8 @@ typedef enum {
 	t_colon,
 	t_scolon,
 	t_pointer,
-	t_lParenthessis,
-	t_rParenthessis,
+	t_lBracket,
+	t_rBracket,
 	t_notEqv,
 	t_asigment,
 	t_doubleDot,
@@ -89,7 +89,7 @@ void TokenParser_reset(TokenParser * p);
 bool Token_isType(Token t);
 bool canContinueWithNonWordChar(Token t);
 
-char * getTokenStr(Token t);
+char * getTokenName(Token t);
 void TokenMap_debug(TokenMapElement map[], int indent);
 
 #endif

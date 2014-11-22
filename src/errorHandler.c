@@ -6,15 +6,21 @@ void lexError(char * str, char * lexBuff, int lineNum) {
 	exit(1);
 }
 
-void syntaxError(char * str, int lineNum) {
-	fprintf(stderr, "ERROR(Syntax) Line %d: %s", lineNum, str);
+
+
+void syntaxError(char * str, int lineNum,char * actualTokenName) {
+	if (actualTokenName)
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s , got %s\n", lineNum, str,
+				actualTokenName);
+	else
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s\n", lineNum, str);
 	exit(2);
 }
 
-void sem_definitionError(int lineNum) {
+void sem_definitionError(int lineNum, char * varName) {
 	fprintf(stderr,
-			"ERROR(Semantic/Definition) Line %d: variable or function is not defined or you are atempting to redefine it.\n",
-			lineNum);
+			"ERROR(Semantic/Definition) Line %d: variable \"%s\" or function is not defined or you are atempting to redefine it.\n",
+			lineNum, varName);
 	exit(3);
 }
 /*semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich

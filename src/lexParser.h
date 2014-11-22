@@ -8,6 +8,7 @@
 #include "hashTable.h"
 #include "tokenMap.h"
 #include "buffFile.h"
+#include "builtins.h"
 #include "defs.h"
 
 
@@ -34,5 +35,9 @@ Token LexParser_gen(LexParser * p);
 void LexParser__dell__(LexParser * p);
 void LexParser_pushBack(LexParser * p, Token t);
 void LexParser_clear(LexParser * p);
+void LexParser_fnParamsEnter(LexParser * self);
+void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType);
+void LexParser_fnBodyLeave(LexParser * self);
+
 
 #endif
