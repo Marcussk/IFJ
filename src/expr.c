@@ -48,7 +48,7 @@ int getTokenType(Token token)
 			return token;
 		default:
 			return none;
-	}
+	};
 }
 
 void ExprTokenInit(ExprToken *token)
@@ -58,11 +58,11 @@ void ExprTokenInit(ExprToken *token)
 	token->datatype = none;
 }
 
-void tokenToExpr(ExprToken *Expr, Token *token)
+void tokenToExpr(ExprToken *Expr, Token token)
 {
-	Expr->content = tokenToChar(*token);
+	Expr->content = tokenToChar(token);
 	Expr->type = terminal;
-	Expr->datatype = getTokenType(*token);
+	Expr->datatype = getTokenType(token);
 }
 
 ExprToken *findTopMostTerminal(exprStack *s)
@@ -80,9 +80,9 @@ void ExprInit(exprStack *TMPstack, HashTable *TMPSymbolTable)
 {
 	SymbolTable = TMPSymbolTable;
 	stack = TMPstack;
-	ExprTokenInit(EndToken);
-	ExprTokenInit(LastToken);
-	Stack_push(stack, EndToken);
+	ExprTokenInit(ExprEndToken);
+	ExprTokenInit(ExprLastToken);
+	Stack_push(stack, ExprEndToken);
 }
 
 void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolTable)
@@ -91,10 +91,10 @@ void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolT
 	self->lastToken = LexParser_gen(self->lp);
 
 	do{
-		tokenToExpr(ExprLastToken, self->LastToken); // "copy" content of LastToken to ExprLastToken
-		topMostTerminal = findTopMostTerminal(stack)
+		tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
+		TopMostTerminal = findTopMostTerminal(stack);
 
-		switch(prTable[topMostTerminal][ExprLastToken])
+		switch(prTable[TopMostTerminal->content][ExprLastToken->content])
 		{
 			case shift:
 				// Vloz zacatek handle
@@ -106,10 +106,11 @@ void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolT
 				// a zredukuj
 				break;
 			case error:
+				;
 				// Zahlas syntaktickou chybu
-		}
+		};
 
-	self->lastToken = LexParser_gen(self->lp));
+	self->lastToken = LexParser_gen(self->lp);
 
-	} while (stack->top != EndToken->content || (self->LastToken != t_end || self->LastToken != t_scolon)
+	} while (stack->top != ExprEndToken->content || (self->lastToken != t_end || self->lastToken != t_scolon));
 }
