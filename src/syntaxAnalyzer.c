@@ -76,7 +76,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 //(begin ... end) ("begin" already found)
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
-	printf("block\n");
+	printf("Begin block\n");
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
 	while (self->lastToken != t_end) {
@@ -105,7 +105,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		}
 	}
 	//[TODO]
-
+	printf("End block\n");
 }
 
 //"if" already found
