@@ -6,6 +6,7 @@
 #include "syntaxAnalyzer.h"
 #include "tokenMap.h"
 #include "stack.h"
+#include "parserTables.h"
 
 // TODO: copy function bodies for stack
 

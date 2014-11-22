@@ -8,31 +8,6 @@ ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;
 
-typedef enum {
-	shift, reduce, error, equal
-} precedenceRule;
-
-//keep synergyc with tokenMap.h/Token
-precedenceRule prTable[16][16] =
- //+       -       *       /       <       >       <=      >=      =       <>      (      )       ,       $       var    fn
-{{ reduce, reduce, shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // +
- { reduce, reduce, shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // -
- { reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // *
- { reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // /
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // <
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // >
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // <
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // >
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // =
- { shift,  shift,  shift,  shift,  reduce, reduce, reduce, reduce, reduce, reduce, shift, reduce, reduce, reduce, shift, shift   },   // <
- { shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift, equal,  equal,  error,  shift, shift   },   // (
- { reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, equal, reduce, reduce, reduce, error, reduce  },   // )
- { shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift, equal,  equal,  error,  shift, shift   },   // ,
- { shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift,  shift, error,  error,  error,  shift, shift   },   // $
- { reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, reduce, error, reduce, reduce, reduce, error, error   },   //var
- { error,  error,  error,  error,  error,  error,  error,  error,  error,  error,  equal, error,  error,  error,  error, error   }    //fn
-};
-
 char terminals[] = {['+']=0, ['-']=1, ['*']=2, ['/']=3,
 					['<']=4, ['>']=5, ['L']=6, ['G']=7,
 					['=']=8, ['!']=9, ['(']=10, [')']=11,
@@ -94,10 +69,11 @@ ExprToken *findTopMostTerminal(exprStack *s)
 {
 	exprStackNodeT * itr = s->top;
 	while (itr != NULL){
-		if (itr->data->type == terminal)
-			return itr->data;
+		if (itr->data.type == terminal)
+			return &(itr->data);
 		itr = itr->next;
 	}
+	return NULL;
 }
 
 void ExprInit(exprStack *TMPstack, HashTable *TMPSymbolTable)
