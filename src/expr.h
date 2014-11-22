@@ -1,3 +1,6 @@
+#ifndef EXPR_h
+#define EXPR_h
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "errorHandler.h"
@@ -25,3 +28,4 @@ typedef struct exprtoken{
 } ExprToken;
 
 DECLARE_STACK(expr, ExprToken);
+#endif
