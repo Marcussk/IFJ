@@ -12,8 +12,9 @@ iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	case iReal:
 		v.iReal = a->iReal;
 		break;
-	default :
-		unimplementedError("Unimplemented cast in InstrP2iVal for the interpret\n");
+	default:
+		unimplementedError(
+				"Unimplemented cast in InstrP2iVal for the interpret\n");
 	}
 
 	return v;
@@ -47,4 +48,24 @@ void Interpret_run(Interpret * self) {
 		}
 		InstrQueue_next(&(self->instructions));
 	}
+}
+
+void Interpret_test1() {
+	InstrParam a, b;
+	a.iInt = 8;
+	b.iString = " from interpret\n";
+	InstrQueue instr;
+	Interpret intr;
+	InstrQueue__init__(&instr);
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr,
+			(Instruction ) { i_write, iInt, NULL, NULL, NULL });
+
+	InstrQueue_insert(&instr,
+			(Instruction ) { i_push, iString, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL,
+			NULL });
+	Interpret__init__(&intr, instr);
+	Interpret_run(&intr);
+	printf("interpret test end \n");
 }
