@@ -82,7 +82,7 @@ void ExprInit(exprStack *TMPstack, HashTable *TMPSymbolTable)
 	stack = TMPstack;
 	ExprTokenInit(ExprEndToken);
 	ExprTokenInit(ExprLastToken);
-	Stack_push(stack, ExprEndToken);
+	exprStack_push(stack, *ExprEndToken);
 }
 
 void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolTable)
