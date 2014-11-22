@@ -20,6 +20,6 @@ typedef struct {
 Stack * Stack__init__();
 void Stack_push(Stack * s, stackElementT data) ;
 stackElementT Stack_pop(Stack * s);
-void Stack_debug(Stack * s);
+//void Stack_debug(Stack * s);
 
 #endif

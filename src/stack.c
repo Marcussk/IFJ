@@ -23,7 +23,7 @@ stackElementT Stack_pop(Stack * s) {
 	free(tmp);
 	return data;
 }
-
+/*
 void Stack_debug(Stack * s) {
 	stackNodeT *temp = s->top;
 	if (temp)
@@ -35,3 +35,4 @@ void Stack_debug(Stack * s) {
 		printf("\nThe stack is empty!");
 	}
 }
+*/
