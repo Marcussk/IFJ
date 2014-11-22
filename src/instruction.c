@@ -49,5 +49,5 @@ Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 		}
 		self->actual = self->actual->next;
 	}
-	return &self->actual;
+	return &(self->actual)->val;
 }
