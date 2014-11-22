@@ -112,5 +112,5 @@ void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolT
 
 	self->lastToken = LexParser_gen(self->lp);
 
-	} while (stack->top != ExprEndToken->content || (self->lastToken != t_end || self->lastToken != t_scolon));
+	} while (stack->top->data.content != ExprEndToken->content || (self->lastToken != t_end || self->lastToken != t_scolon));
 }
