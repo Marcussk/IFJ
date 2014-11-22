@@ -31,14 +31,15 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
-	printf("asigment\n");
+	iVar * asigmentTo = self->lp->lastSymbol;
 	SyntaxAnalyzer_parseExpr(self, NULL);
-	//[TODO]
+	//InstrQueue_insert(&self->instr, )
+	asigmentTo->isInitialied = true;
+
 }
 
 // t_var already found
 void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
-	printf("varDeclr\n");
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	while (true) {
@@ -71,7 +72,6 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}
-	//[TODO]
 }
 
 //(begin ... end) ("begin" already found)
@@ -254,10 +254,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	SyntaxAnalyzer_parse_paramList(self);
 
 	//[TODO] check and implement forward
-	self->lastToken = LexParser_gen(self->lp); //:
-	self->lastToken = LexParser_gen(self->lp); // typ
+	self->lastToken = LexParser_gen(self->lp);       // :
+	self->lastToken = LexParser_gen(self->lp);       // typ
 	LexParser_fnBodyEnter(self->lp, self->lastToken);
-	self->lastToken = LexParser_gen(self->lp); // ;
+	self->lastToken = LexParser_gen(self->lp);       // ;
 	self->lastToken = LexParser_gen(self->lp);
 	switch (self->lastToken) {
 	case t_var:
