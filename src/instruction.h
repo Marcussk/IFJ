@@ -4,32 +4,32 @@
 #include "ifjTypes.h"
 
 typedef enum {
-	STOP = 0, NOOP,		// does nothing
-	JMP,  //skok pri pravdive podmince
-	JMPZ, // skok pri nepravdive podmince
+	i_stop = 0,
+	i_noop,		// does nothing
+	i_jmp,  //skok pri pravdive podmince
+	i_jmpz, // skok pri nepravdive podmince
 	i_push,
-	CALL,
-	RETURN,
+	i_call,
 	i_write,
-	READ,
+	i_read,
 	i_assign,
-	ADD,
-	SUB,
-	MUL,
-	DIV,
-	CONCAT, //only string!!
-	EQUAL,
-	NOT_EQUAL,
-	LESS,
-	MORE,
-	LESS_or_EQUAL,
-	MORE_or_EQUAL,
+	i_add,
+	i_sub,
+	i_mul,
+	i_div,
+	i_concat, //only string!!
+	i_equal,
+	i_nequal,
+	i_less,
+	i_more,
+	i_loreq,
+	i_moreq,
 
 	//funkce ze zadani
-	FIND,
-	COPY,
-	LENGTH,
-	SORT
+	i_find,
+	i_copy,
+	i_len,
+	i_sort
 
 } InstrCode;
 

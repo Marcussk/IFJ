@@ -16,7 +16,6 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
-	printf("expr\n");
 	if (self->lastToken == t_scolon
 			|| (secondToken && *secondToken == t_scolon))
 		return;
@@ -80,10 +79,17 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 //(begin ... end) ("begin" already found)
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
-	printf("Begin block\n");
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
-	while (self->lastToken != t_end) {
+	self->lastToken = LexParser_gen(self->lp);
+	if (self->lastToken == t_end) {     
+		return;
+	}
+	else {
+		LexParser_pushBack(self->lp, self->lastToken);
+	}
+	
+	while (1) {
 		self->lastToken = LexParser_gen(self->lp);
 		switch (self->lastToken) {
 		case t_if:
@@ -102,19 +108,18 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			}
 			break;
 		case t_end:
-			break;
+			return;
 		default:
 			syntaxError("Unexpected syntax in code block\n", self->lp->lineNum,
 					getTokenName(self->lastToken));
+			return;
 		}
 	}
 	//[TODO]
-	printf("End block\n");
 }
 
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
-	printf("if\n");
 	SyntaxAnalyzer_parseExpr(self, NULL);              //COND
 
 	self->lastToken = LexParser_gen(self->lp);			//then
@@ -150,7 +155,6 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
-	printf("while\n");
 	SyntaxAnalyzer_parseExpr(self, NULL);					//COND
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_do) {							//do
@@ -170,7 +174,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
  args -> seznam termu
  */
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	printf("argList\n");
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken == t_rParenthessis)     // ) - args are empty
 		return;
@@ -196,7 +199,6 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  f(params) -> f(id : typ; id : typ)
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
-	printf("paramList\n");
 	LexParser_fnParamsEnter(self->lp);
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken == t_rParenthessis) {            // ) - params are empty
@@ -245,8 +247,6 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup;
-
-	printf("func\n");
 
 	self->lastToken = LexParser_gen(self->lp);
 	if (self->lastToken != t_id) {
@@ -311,6 +311,8 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			}
 		case t_eof:
 			syntaxError("Expected \".\"", self->lp->lineNum, getTokenName(tok));
+			return;
+		case t_end:
 			return;
 		default:
 			syntaxError("syntax corrupted", self->lp->lineNum,
