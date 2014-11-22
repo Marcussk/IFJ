@@ -17,9 +17,9 @@ typedef enum {
 } ExprDataType;
 
 typedef struct exprtoken{
-	char content, // contains terminal converted to a single char - terminal or E
-	ExprType type,
-	ExprDataType datatype
+	char content; // contains terminal converted to a single char - terminal or E
+	ExprType type;
+	ExprDataType datatype;
 } ExprToken;
 
 

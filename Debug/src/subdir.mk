@@ -7,6 +7,7 @@ C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \
 ../src/errorHandler.c \
+../src/expr.c \
 ../src/gerator3AC.c \
 ../src/hashTable.c \
 ../src/ifj.c \
@@ -23,6 +24,7 @@ OBJS += \
 ./src/buffFile.o \
 ./src/builtins.o \
 ./src/errorHandler.o \
+./src/expr.o \
 ./src/gerator3AC.o \
 ./src/hashTable.o \
 ./src/ifj.o \
@@ -39,6 +41,7 @@ C_DEPS += \
 ./src/buffFile.d \
 ./src/builtins.d \
 ./src/errorHandler.d \
+./src/expr.d \
 ./src/gerator3AC.d \
 ./src/hashTable.d \
 ./src/ifj.d \
