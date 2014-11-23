@@ -17,13 +17,15 @@ Token TokenBuff_next(TokenBuff * self) {
 	return LexParser_gen(self->lp);
 }
 void TokenBuff_pushBack(TokenBuff * self, Token t) {
-	if (self->next1 == t_empty) {
-		self->next1 = t;
-	} else if (self->next2 == t_empty) {
-		self->next2 = t;
+	if (self->next1 != t_empty) {
+		if (self->next2 == t_empty) {
+			self->next2 = self->next1;
+			self->next1 = t;
+		} else
+			syntaxError("Cann't bushback so many tockens", self->lp->lineNum,
+					getTokenName(t));
 	} else {
-		syntaxError("Cann't bushback so many tockens", self->lp->lineNum,
-				getTokenName(t));
+		self->next1 = t;
 	}
 }
 void TokenBuff__dell__(TokenBuff * self) {
