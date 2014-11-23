@@ -134,7 +134,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		};
 		printStack(stack);
 		lastToken = TokenBuff_next(tokenBuff);
-	} while (!Token_isKeyword(lastToken));
+	} while (!Token_isKeyword(lastToken) && lastToken != t_scolon);
 	if (stack->top->data.content != ExprEndToken->content) {
 		printf("Syntax error in expression\n");
 	}
