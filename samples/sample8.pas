@@ -4,7 +4,7 @@ var
 	b : integer;
 	c : integer;
 	d : integer;
-	vysl : integer;
+	e : integer;
 begin
 	a := 0010;
 	write('Hodnota a je: ', a, ''#10'');
@@ -14,4 +14,6 @@ begin
 	write('Hodnota c je: ', c, ''#10'');	
 	d := 0010e+4;
 	write('Hodnota d je: ', d, ''#10'');
+	e := 1.5e4;
+	write('Hodnota e je: ', d, ''#10'')
 end.
