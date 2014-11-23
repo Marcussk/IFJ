@@ -87,7 +87,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				SyntaxAnalyzer_parseAsigment(self, varForLastId);
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, secTok);
-				TokenBuff_pushBack(&self->tokBuff, t_id);
+				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 				SyntaxAnalyzer_parseExpr(self);
 			}
 			break;
@@ -236,10 +236,12 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
+	self->lp->idMode = lp_debug;
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
+
 		/*
-		 printf("%s \n", getTokenName(tok));
+		 printf("line %d: %s\n",self->lp->lineNum, getTokenName(tok));
 		 if(tok == t_eof){
 		 return;
 		 }*/

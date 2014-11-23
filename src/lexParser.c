@@ -34,7 +34,7 @@ void LexParser_readString(LexParser * self) {
 		}
 		String_append(&(self->str), ch);
 	}
-
+	self->lastToken = t_str_val;
 }
 
 void LexParser_readComment(LexParser * self) {
@@ -65,13 +65,6 @@ void LexParser_readEscape(LexParser * self) {
 	self->lastToken = t_str_val;
 }
 
-void LexParser_pushBack(LexParser * self, Token t) {
-	if (self->pushBackTok != t_empty)
-		syntaxError("Can push back to lex parser only one token needs more\n",
-				self->lineNum, NULL);
-	self->pushBackTok = t;
-}
-
 void LexParser_syncLastVar(LexParser * self, Token t) {
 	HashTableItem * i;
 	if (t == t_id) {
@@ -89,6 +82,12 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			self->lastSymbol = i->var;
 			break;
+		case lp_debug:
+			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+			if(i)
+				self->lastSymbol = i->var;
+
+			break;
 		default:
 			lexError("LexParser don't know if search or insert new id\n",
 					self->str.buff, self->lineNum);
@@ -103,13 +102,6 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
  * */
 Token LexParser_gen(LexParser *self) {
 	char ch;
-	Token tokPushBackBackup;
-
-	if (self->pushBackTok != t_empty) {
-		tokPushBackBackup = self->pushBackTok;
-		self->pushBackTok = t_empty;
-		return tokPushBackBackup;
-	}
 
 	switch (self->planedJob) {
 	case j_continue:
@@ -127,7 +119,6 @@ Token LexParser_gen(LexParser *self) {
 		return self->lastToken;
 	case j_readEscape:
 		String_clear(&(self->str));
-		self->lastToken = t_empty;
 		LexParser_readEscape(self);
 		self->planedJob = j_reset;
 		return self->lastToken;
@@ -144,6 +135,7 @@ Token LexParser_gen(LexParser *self) {
 				self->planedJob = j_readStr;
 				return self->lastToken;
 			}
+			self->lastToken = t_str_val;
 			String_clear(&(self->str));
 			LexParser_readString(self);
 			self->planedJob = j_reset;
@@ -172,6 +164,7 @@ Token LexParser_gen(LexParser *self) {
 				BuffFile_pushBack(&(self->input), ch);
 				self->planedJob = j_reset;
 				LexParser_syncLastVar(self, self->preLastToken);
+			//	self->lastToken = t_empty;
 				return self->preLastToken;
 			} else {
 				if (self->lastToken == t_empty) {

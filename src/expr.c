@@ -113,6 +113,11 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions)
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
+	/*while(lastToken  != t_eof){
+		printf("%s\n" ,getTokenName(lastToken));
+		lastToken = TokenBuff_next(tokenBuff);
+	}*/
+
 	do{
 			tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
 			TopMostTerminal = findTopMostTerminal(stack);

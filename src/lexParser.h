@@ -13,7 +13,7 @@
 
 
 typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;
-typedef enum { lp_searchOnly, lp_insertOnly } LexParser_mode;
+typedef enum { lp_searchOnly, lp_insertOnly, lp_debug } LexParser_mode;
 
 
 typedef struct {
@@ -33,7 +33,6 @@ typedef struct {
 void LexParser__init__(LexParser * p, FILE * inFile);
 Token LexParser_gen(LexParser * p);
 void LexParser__dell__(LexParser * p);
-void LexParser_pushBack(LexParser * p, Token t);
 void LexParser_clear(LexParser * p);
 void LexParser_fnParamsEnter(LexParser * self);
 void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType);
