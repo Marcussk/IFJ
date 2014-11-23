@@ -85,6 +85,7 @@ Token TokenParser_push(TokenParser * p, char ch);
 void TokenParser_reset(TokenParser * p);
 
 bool Token_isType(Token t);
+bool Token_isKeyword(Token t);
 bool canContinueWithNonWordChar(Token t);
 
 char * getTokenName(Token t);
