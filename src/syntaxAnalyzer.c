@@ -100,6 +100,8 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
 			}
 			break;
+		case t_scolon:
+			continue;
 		case t_end:
 			return;
 		default:
