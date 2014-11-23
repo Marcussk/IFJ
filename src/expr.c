@@ -76,7 +76,7 @@ void ExprInit(exprStack *stack) {
 }
 
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
-	printf("--Calling expression--\n");
+	printf("--Calling expression-- Line: %d\n", tokenBuff->lp->lineNum);
 
 	exprStack *stack;
 	stack = malloc(sizeof(exprStack));
