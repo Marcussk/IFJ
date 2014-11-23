@@ -8,33 +8,13 @@ ExprToken *TopMostTerminal;
 
 int tokenToChar(Token token) {
 	switch ((int) token) {
-	case t_num_int:
-	case t_num_real:
-	case t_str_val:
-		return t_id;
-	default:
-		return (int) token;
+		case t_num_int:
+		case t_num_real:
+		case t_str_val:
+			return t_id;
+		default:
+			return (int) token;
 	}
-	/*
-	 switch(token)
-	 {
-	 case t_notEqv:
-	 return '!';
-	 case t_lessOrEqv:
-	 return 'L';
-	 case t_greaterOrEqv:
-	 return 'G';
-	 case t_func:
-	 return 'f';
-	 case t_id:
-	 case t_num_int:
-	 case t_num_real:
-	 case t_str_val:
-	 return 'i';
-	 default:
-	 return token;
-	 }
-	 */
 }
 
 int getTokenType(Token token) {
@@ -135,119 +115,14 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		printStack(stack);
 		lastToken = TokenBuff_next(tokenBuff);
 	} while (!Token_isKeyword(lastToken) && lastToken != t_scolon);
-	if (stack->top->data.content != ExprEndToken->content) {
+
+	// There is some terminal on stack - error
+	if (findTopMostTerminal(stack) != ExprEndToken->content) {
 		printf("Syntax error in expression\n");
 	}
+
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
 			getTokenName(lastToken));
 
 	TokenBuff_pushBack(tokenBuff, lastToken);
-
-	/*
-	 printf("-------\n%d\n-------\n", self->lastToken);
-
-	 tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
-	 TopMostTerminal = findTopMostTerminal(stack);
-
-	 exprStack_push(stack, *ExprLastToken);
-
-
-	 ExprToken *token = ExprTokenInit(token);
-	 ExprToken *token2 = ExprTokenInit(token2);
-	 token2->content = 'b';
-	 token2->type=nonterminal;
-
-	 exprStack_push(stack, *token);
-	 exprStack_push(stack, *token2);
-
-	 printStack(stack);
-
-	 TopMostTerminal = findTopMostTerminal(stack);
-	 printf("%c, %d, %d", TopMostTerminal->content, TopMostTerminal->type, TopMostTerminal->datatype);
-	 */
-	//printf("--Exiting expression--\n");
 }
-
-/*
-
-
- char terminals[] = {['+']=0, ['-']=1, ['*']=2, ['/']=3,
- ['<']=4, ['>']=5, ['L']=6, ['G']=7,
- ['=']=8, ['!']=9, ['(']=10, [')']=11,
- [',']=12, ['$']=13, ['i']=14, ['f']=15};
-
- char tokenToChar(Token token)
- {
- switch(token)
- {
- case t_notEqv:
- return '!';
- case t_lessOrEqv:
- return 'L';
- case t_greaterOrEqv:
- return 'G';
- case t_func:
- return 'f';
- case t_id:
- case t_num_int:
- case t_num_real:
- case t_str_val:
- return 'i';
- default:
- return token;
- }
- }
-
- int getTokenType(Token token)
- {
- switch (token)
- {
- case t_true:
- case t_false:
- return boolean;
- case t_num_int:
- case t_num_real:
- case t_str_val:
- return token;
- default:
- return none;
- };
- }
-
- void tokenToExpr(ExprToken *Expr, Token token)
- {
- Expr->content = tokenToChar(token);
- Expr->type = terminal;
- Expr->datatype = getTokenType(token);
- }
-
- void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolTable)
- {
- ExprInit(TMPstack, TMPSymbolTable);
- self->lastToken = LexParser_gen(self->lp);
-
- do{
- tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
- TopMostTerminal = findTopMostTerminal(stack);
-
- switch(prTable[(int)TopMostTerminal->content][(int)ExprLastToken->content])
- {
- case shift:
- // Vloz zacatek handle
- case equal:
- // push ExprLastToken
- break;
- case reduce:
- // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
- // a zredukuj
- break;
- case error:
- ;
- // Zahlas syntaktickou chybu
- };
-
- self->lastToken = LexParser_gen(self->lp);
-
- } while (stack->top->data.content != ExprEndToken->content || (self->lastToken != t_end || self->lastToken != t_scolon));
- }
- */
