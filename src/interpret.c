@@ -40,6 +40,144 @@ void Interpret_run(Interpret * self) {
 		switch (i.code) {
 		case i_noop:
 			break;
+		case i_jmp:
+
+			break;
+		case i_jmpz:
+
+			break;
+		case i_equal:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+			switch (i.type) {
+				case iInt:
+					if(pomA2.iInt == pomA1.iInt){pomA3.iInt = 1;}
+					else{pomA3.iInt = 0;}
+					break;
+				case iReal:
+					if(pomA2.iReal == pomA1.iReal){pomA3.iInt = 1;}
+					else{pomA3.iInt = 0;}
+					break;
+				case iString:
+					if(pomA2.iString == pomA1.iString){pomA3.iInt = 1;}
+					else{pomA3.iInt = 0;}
+					break;
+				default:
+					unimplementedError("Instr. add is not implemented for this type\n");
+					break;
+			}
+			iStack_push(&(self->stack), pomA3);
+			break;
+		case i_nequal:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+				switch (i.type) {
+					case iInt:
+						if(pomA2.iInt != pomA1.iInt){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iReal:
+						if(pomA2.iReal != pomA1.iReal){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iString:
+						if(pomA2.iString != pomA1.iString){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					default:
+						unimplementedError("Instr. add is not implemented for this type\n");
+						break;
+				}
+		iStack_push(&(self->stack), pomA3);
+		break;
+		case i_more:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+				switch (i.type) {
+					case iInt:
+						if(pomA1.iInt > pomA2.iInt){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iReal:
+						if(pomA1.iReal > pomA2.iReal){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iString:
+						if(pomA1.iString > pomA2.iString){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					default:
+						unimplementedError("Instr. add is not implemented for this type\n");
+						break;
+				}
+		iStack_push(&(self->stack), pomA3);
+		break;
+		case i_less:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+				switch (i.type) {
+					case iInt:
+						if((pomA1.iInt) < (pomA2.iInt)){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iReal:
+						if(pomA1.iReal < pomA2.iReal){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iString:
+						if(pomA1.iString < pomA2.iString){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					default:
+						unimplementedError("Instr. add is not implemented for this type\n");
+						break;
+				}
+			iStack_push(&(self->stack), pomA3);
+			break;
+		case i_moreq:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+				switch (i.type) {
+					case iInt:
+						if(pomA1.iInt >= pomA2.iInt){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iReal:
+						if(pomA1.iReal >= pomA2.iReal){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iString:
+						if(pomA1.iString >= pomA2.iString){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					default:
+						unimplementedError("Instr. add is not implemented for this type\n");
+						break;
+				}
+		iStack_push(&(self->stack), pomA3);
+		break;
+		case i_loreq:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+				switch (i.type) {
+					case iInt:
+						if(pomA1.iInt <= pomA2.iInt){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iReal:
+						if(pomA1.iReal <= pomA2.iReal){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					case iString:
+						if(pomA1.iString <= pomA2.iString){pomA3.iInt = 1;}
+						else{pomA3.iInt = 0;}
+						break;
+					default:
+						unimplementedError("Instr. add is not implemented for this type\n");
+						break;
+				}
+		iStack_push(&(self->stack), pomA3);
+		break;
 		case i_stop:
 			return;
 		case i_add:
@@ -242,17 +380,17 @@ void Interpret_test2() {
 void Interpret_test3() {
 
 	InstrParam a, b, c;
-	a.iInt = 180;
-	b.iInt = 20;
+	a.iString = "kanon";
+	b.iString = "kanon";
 	c.iInt = 20;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
+	//InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_div, iInt, &a, &b, &c });
+	InstrQueue_insert(&instr, (Instruction ) { i_nequal, iString, &a, &b, NULL });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
