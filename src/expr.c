@@ -6,8 +6,18 @@ ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;
 
-char tokenToChar(Token token)
+int tokenToChar(Token token)
 {
+	switch((int)token)
+	{
+		case t_num_int:
+		case t_num_real:
+		case t_str_val:
+			return t_id;
+		default:
+			return (int)token;
+	}
+	/*
 	switch(token)
 	{
 	case t_notEqv:
@@ -26,6 +36,7 @@ char tokenToChar(Token token)
 	default:
 		return token;
 	}
+ */
 }
 
 int getTokenType(Token token)
@@ -38,7 +49,7 @@ int getTokenType(Token token)
 		case t_num_int:
 		case t_num_real:
 		case t_str_val:
-			return token;
+			return (int)token;
 		default:
 			return none;
 	};
@@ -47,7 +58,7 @@ int getTokenType(Token token)
 
 void tokenToExpr(ExprToken *Expr, Token token)
 {
-	Expr->content = token;//tokenToChar(token);
+	Expr->content = tokenToChar(token);//tokenToChar(token);
 	Expr->type = terminal;
 	Expr->datatype = getTokenType(token);
 }
@@ -114,6 +125,8 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions)
 				case shift:
 					printf("shift\n");
 					TopMostTerminal->shifted = true;
+					exprStack_push(stack, *ExprLastToken);
+					break;
 					// Vloz zacatek handle
 				case equal:
 					printf("equal\n");
