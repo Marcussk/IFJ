@@ -29,5 +29,4 @@ void bad_char(char *pattern, int bad_character[], int max_src_len );
 void  good_suffixes( char *pattern, int good_suffix[]);
 void suffixes(char* pattern, int suffix[], int max_pattern_len);
 
-
 #endif

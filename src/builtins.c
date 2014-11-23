@@ -253,6 +253,7 @@ int func_find(char *src, char *search) {
 	return -1;
 }
 
+
 ///////// KONIEC TOHOTO VELKEHO NEZMYSLU//////////////////////
 
 void registrBuiltins(HashTable * ht) {
