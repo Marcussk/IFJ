@@ -5,8 +5,8 @@ IMPLEMENT_STACK(i, iVal)
 iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	iVal v;
 	if (!a) {
-		a->iInt = 0;
-		return a;
+		v.iInt = 0;
+		return v;
 	}
 	switch (type) {
 	case iInt:
