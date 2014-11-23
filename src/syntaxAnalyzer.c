@@ -1,11 +1,10 @@
 #include "syntaxAnalyzer.h"
-/*
- #define ldAndCheck(expected, errMsg)\
- self->lastToken = LexParser_gen(self->lp);	\
- if(self->lastToken != expected){\
-	 syntaxError(errMsg,self->lp.lineNum);\
+
+#define NEXT_TOK(expected, errMsg)                                 \
+ lastToken = TokenBuff_next(&self->tokBuff);                         \
+ if(lastToken != expected){                                          \
+	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));  \
  }
- */
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
@@ -39,13 +38,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 			TokenBuff_pushBack(&self->tokBuff, lastToken);
 			return;
 		}
-
-		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken != t_colon) {
-			syntaxError("expected \":\"\n", self->lp->lineNum,
-					getTokenName(lastToken));
-			return;
-		}
+		NEXT_TOK(t_colon, "expected \":\"\n");
 
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (!Token_isType(lastToken)) {
@@ -53,12 +46,9 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 					getTokenName(lastToken));
 			return;
 		}
-		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken != t_scolon) {
-			syntaxError("expected id\n", self->lp->lineNum,
-					getTokenName(lastToken));
-			return;
-		}
+
+		NEXT_TOK(t_scolon, "expected id\n");
+
 		InstrQueue_insert(&self->instr,
 				(Instruction ) { i_push, self->lp->lastSymbol->type,
 						NULL, NULL, NULL });
@@ -114,33 +104,12 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
 	SyntaxAnalyzer_parseExpr(self);              //COND
 
-	lastToken = TokenBuff_next(&self->tokBuff);			//then
-	if (lastToken != t_then) {
-		syntaxError("expected then", self->lp->lineNum,
-				getTokenName(lastToken));
-		return;
-	}
-
-	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken != t_begin) {
-		syntaxError("expected begin for if block", self->lp->lineNum,
-				getTokenName(lastToken));
-		return;
-	}
+	NEXT_TOK(t_then, "expected then")
+	NEXT_TOK(t_begin, "expected begin for if block")
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
+	NEXT_TOK(t_else, "expected else")
+	NEXT_TOK(t_begin, "expected begin for if else block")
 
-	lastToken = TokenBuff_next(&self->tokBuff);			//else
-	if (lastToken != t_else) {
-		syntaxError("expected else", self->lp->lineNum,
-				getTokenName(lastToken));
-		return;
-	}
-	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken != t_begin) {
-		syntaxError("expected begin for if else block", self->lp->lineNum,
-				getTokenName(lastToken));
-		return;
-	}
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	return;
 	//[TODO]
@@ -150,12 +119,9 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
 	SyntaxAnalyzer_parseExpr(self);					//COND
-	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken != t_do) {							//do
-		syntaxError("expected id\n", self->lp->lineNum,
-				getTokenName(lastToken));
-		return;
-	}
+
+	NEXT_TOK(t_do, "expected do")
+
 	lastToken = TokenBuff_next(&self->tokBuff);
 	SyntaxAnalyzer_parse_block(self);						//STMTLIST
 	//[TODO]
@@ -200,18 +166,8 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 		return;
 	}
 	while (true) {
-		if (lastToken != t_id) {						//id
-			syntaxError("expected id in argument list", self->lp->lineNum,
-					getTokenName(lastToken));
-			return;
-		}
-
-		lastToken = TokenBuff_next(&self->tokBuff);			//:
-		if (lastToken != t_colon) {
-			syntaxError("expected \":\"", self->lp->lineNum,
-					getTokenName(lastToken));
-			return;
-		}
+		NEXT_TOK(t_id, "expected id in argument list")
+		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
 		if (!Token_isType(lastToken)) {
@@ -222,48 +178,48 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (lastToken != t_scolon) {
-			if (lastToken == t_rParenthessis) {			// )
-				return;
+			if (lastToken != t_rParenthessis) {			// )
+				syntaxError("expected \";\" or \")\" at the end of ",
+						self->lp->lineNum, getTokenName(lastToken));
 			}
-			syntaxError("expected \";\" or \")\" at the end of ",
-					self->lp->lineNum, getTokenName(lastToken));
 			return;
 		} else {											 // ;
 			lastToken = TokenBuff_next(&self->tokBuff);
-			if (lastToken != t_id) {						//id
-				syntaxError("expected id after semicolon", self->lp->lineNum,
-						getTokenName(lastToken));
-				return;
-			}
+			NEXT_TOK(t_id, "expected id in argument list after semicolon")
 		}
 	}
 }
 
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
-	int stackCntrBackup;
-	Token lastToken ;
-	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken != t_id) {
-		syntaxError("id of function expected", self->lp->lineNum,
-				getTokenName(lastToken));
-	}
+	int stackCntrBackup = self->stackIndexCntr;
+	Token lastToken;
+	iVar * fn;
+
+	NEXT_TOK(t_id, "id of function expected")
+	fn = self->lp->lastSymbol;
+	fn->type = iFn;
+	fn->val.fn = iFunction__init__();
 
 	LexParser_fnParamsEnter(self->lp);
 	SyntaxAnalyzer_parse_paramList(self);
 
 	//[TODO] check and implement forward
-	lastToken = TokenBuff_next(&self->tokBuff);       // :
+	NEXT_TOK(t_colon, "expected \":\"")
+
 	lastToken = TokenBuff_next(&self->tokBuff);       // typ
+
 	LexParser_fnBodyEnter(self->lp, lastToken);
-	lastToken = TokenBuff_next(&self->tokBuff);       // ;
+	fn->val.fn->retType = lastToken;
+
+	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
+
 	lastToken = TokenBuff_next(&self->tokBuff);
 	switch (lastToken) {
 	case t_var:
-		stackCntrBackup = self->stackIndexCntr;
 		SyntaxAnalyzer_parse_varDeclr(self);
 		SyntaxAnalyzer_parse_block(self);
-		self->stackIndexCntr = stackCntrBackup;
+
 		break;
 	case t_begin:
 		SyntaxAnalyzer_parse_block(self);
@@ -272,6 +228,8 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Expected \"begin\" or \"var\" after function declaration",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
+	fn->isInitialied = true;
+	self->stackIndexCntr = stackCntrBackup;
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
@@ -299,12 +257,13 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			if (tok == t_eof)
 				return;
 			else {
-				syntaxError("No input expected", self->lp->lineNum,
-						getTokenName(tok));
+				syntaxError("No input expected after end of program",
+						self->lp->lineNum, getTokenName(tok));
 				return;
 			}
 		case t_eof:
-			syntaxError("Expected \".\"", self->lp->lineNum, getTokenName(tok));
+			syntaxError("Expected \".\" on the end of program",
+					self->lp->lineNum, getTokenName(tok));
 			return;
 		case t_end:
 			return;
@@ -317,4 +276,5 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer__dell__(SyntaxAnalyzer * self) {
 	LexParser__dell__(self->lp);
+	TokenBuff__dell__(&self->tokBuff);
 }
