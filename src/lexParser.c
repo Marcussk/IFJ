@@ -3,7 +3,7 @@
 void LexParser__init__(LexParser * self, FILE * inFile) {
 	String__init__(&self->str, 32);
 	BuffFile__init__(&(self->input), inFile);
-	self->lineNum = 0;
+	self->lineNum = 1;
 	self->tParser = TokenParser__init__();
 	self->lastToken = t_empty;
 	self->preLastToken = t_empty;
