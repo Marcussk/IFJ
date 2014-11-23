@@ -141,6 +141,11 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	}
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
 			getTokenName(lastToken));
+
+	if (Token_isKeyword(lastToken) || lastToken == t_scolon){
+		TokenBuff_pushBack(tokenBuff, lastToken);
+	}
+
 	/*
 	 printf("-------\n%d\n-------\n", self->lastToken);
 

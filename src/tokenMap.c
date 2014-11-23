@@ -43,7 +43,11 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_rcBracket, "}" } };
 
 bool Token_isType(Token t) {
-	return t == t_integer || t == t_real || t == t_string;
+	return t >= t_boolean && t <= t_string;
+}
+
+bool Token_isKeyword(Token t) {
+	return  (t >= t_begin && t <= t_while);
 }
 
 // reverz function, can get string form of token
