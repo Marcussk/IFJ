@@ -17,7 +17,7 @@
 typedef enum {
 	iUnknown =0,
 	iVoid,
-	iBool = 15,
+	iBool = 16,
 	iInt,
 	iReal,
 	iString,
