@@ -49,6 +49,7 @@ int getTokenType(Token token)
 		default:
 			return none;
 	};
+	return none;
 }
 
 void ExprTokenInit(ExprToken *token)
@@ -94,7 +95,7 @@ void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolT
 		tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
 		TopMostTerminal = findTopMostTerminal(stack);
 
-		switch(prTable[TopMostTerminal->content][ExprLastToken->content])
+		switch(prTable[(int)TopMostTerminal->content][(int)ExprLastToken->content])
 		{
 			case shift:
 				// Vloz zacatek handle
