@@ -29,7 +29,6 @@ int getTokenType(Token token) {
 	default:
 		return none;
 	};
-	return none;
 }
 
 void tokenToExpr(ExprToken *Expr, Token token) {
@@ -91,24 +90,24 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content,
 				ExprLastToken->content);
 		switch (prTable[TopMostTerminal->content][ExprLastToken->content]) {
-		case shift:
-			printf("shift\n");
-			TopMostTerminal->shifted = true;
-			exprStack_push(stack, *ExprLastToken);
-			break;
-			// Vloz zacatek handle
-		case equal:
-			printf("equal\n");
-			exprStack_push(stack, *ExprLastToken);
-			// push ExprLastToken
-			break;
-		case reduce:
-			// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
-			// a zredukuj
-			printf("reduce\n");
-			break;
-		case error:
-			printf("error\n");
+			case shift:
+				printf("shift\n");
+				TopMostTerminal->shifted = true;
+				exprStack_push(stack, *ExprLastToken);
+				break;
+				// Vloz zacatek handle
+			case equal:
+				printf("equal\n");
+				exprStack_push(stack, *ExprLastToken);
+				// push ExprLastToken
+				break;
+			case reduce:
+				// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
+				// a zredukuj
+				printf("reduce\n");
+				break;
+			case error:
+				printf("error\n");
 
 			// Zahlas syntaktickou chybu
 		};
@@ -116,8 +115,9 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		lastToken = TokenBuff_next(tokenBuff);
 	} while (!Token_isKeyword(lastToken) && lastToken != t_scolon);
 
+	TopMostTerminal = findTopMostTerminal(stack);
 	// There is some terminal on stack - error
-	if (findTopMostTerminal(stack) != ExprEndToken->content) {
+	if (TopMostTerminal->content != ExprEndToken->content) {
 		printf("Syntax error in expression\n");
 	}
 
