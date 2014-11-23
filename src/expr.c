@@ -2,11 +2,171 @@
 
 IMPLEMENT_STACK(expr, ExprToken);
 
-HashTable *SymbolTable;
-exprStack *stack;
+//HashTable *SymbolTable;
 ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;
+
+char tokenToChar(Token token)
+{
+	switch(token)
+	{
+	case t_notEqv:
+		return '!';
+	case t_lessOrEqv:
+		return 'L';
+	case t_greaterOrEqv:
+		return 'G';
+ 	case t_func:
+ 		return 'f';
+	case t_id:
+	case t_num_int:
+	case t_num_real:
+	case t_str_val:
+		return 'i';
+	default:
+		return token;
+	}
+}
+
+int getTokenType(Token token)
+{
+	switch (token)
+	{
+		case t_true:
+		case t_false:
+			return boolean;
+		case t_num_int:
+		case t_num_real:
+		case t_str_val:
+			return token;
+		default:
+			return none;
+	};
+	return none;
+}
+
+void tokenToExpr(ExprToken *Expr, Token token)
+{
+	Expr->content = token;//tokenToChar(token);
+	Expr->type = terminal;
+	Expr->datatype = getTokenType(token);
+}
+
+ExprToken *findTopMostTerminal(exprStack *s)
+{
+	exprStackNodeT * itr = s->top;
+	while (itr != NULL){
+		if (itr->data.type == terminal)
+			return &(itr->data);
+		itr = itr->next;
+	}
+	return NULL;
+}
+ExprToken *ExprTokenInit(ExprToken *token)
+{
+	token = malloc(sizeof(ExprToken));
+
+	if (!token){
+		printf("internal error\n");
+		//return -1;
+	}
+	token->content = t_eof;
+	token->shifted = false;
+	token->type = terminal;
+	token->datatype = none;
+	return token;
+}
+
+void printStack(exprStack *self)
+{
+	exprStackNodeT *itr = self->top;
+	while (itr != NULL)
+	{
+		printf("----content - %d, type - %d, datatype - %d, shifted - %d\n", itr->data.content, itr->data.type, itr->data.datatype, itr->data.shifted);
+		itr = itr->next;
+	}
+}
+
+void ExprInit(exprStack *stack)
+{
+	//SymbolTable = TMPSymbolTable;
+	exprStack__init__(stack);
+	ExprEndToken = ExprTokenInit(ExprEndToken);
+	ExprLastToken = ExprTokenInit(ExprLastToken);
+	exprStack_push(stack, *ExprEndToken);
+}
+void expression(SyntaxAnalyzer *self)
+{
+	printf("--Calling expression--\n");
+
+	exprStack *stack;
+	stack = malloc(sizeof(exprStack));
+	ExprInit(stack);
+
+	self->lastToken = LexParser_gen(self->lp);
+	do{
+			tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
+			TopMostTerminal = findTopMostTerminal(stack);
+			printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content, ExprLastToken->content);
+			switch(prTable[TopMostTerminal->content][ExprLastToken->content])
+			{
+				case shift:
+					printf("shift\n");
+					TopMostTerminal->shifted = true;
+					// Vloz zacatek handle
+				case equal:
+					printf("equal\n");
+					exprStack_push(stack, *ExprLastToken);
+					// push ExprLastToken
+					break;
+				case reduce:
+					// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
+					// a zredukuj
+					printf("reduce\n");
+					break;
+				case error:
+					printf("error\n");
+
+					// Zahlas syntaktickou chybu
+			};
+		printStack(stack);
+		self->lastToken = LexParser_gen(self->lp);
+		} while (self->lastToken != t_eof && self->lastToken != t_end &&
+				 self->lastToken != t_scolon && self->lastToken != t_do &&
+				 self->lastToken != t_then);
+	if (stack->top->data.content != ExprEndToken->content)
+	{
+		printf("Syntax error in expression\n");
+	}
+	printf("Last token - %d\n--Returning from expression\n\n", self->lastToken);
+/*
+	printf("-------\n%d\n-------\n", self->lastToken);
+
+	tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
+	TopMostTerminal = findTopMostTerminal(stack);
+
+	exprStack_push(stack, *ExprLastToken);
+
+
+	ExprToken *token = ExprTokenInit(token);
+	ExprToken *token2 = ExprTokenInit(token2);
+	token2->content = 'b';
+	token2->type=nonterminal;
+
+	exprStack_push(stack, *token);
+	exprStack_push(stack, *token2);
+
+	printStack(stack);
+
+	TopMostTerminal = findTopMostTerminal(stack);
+	printf("%c, %d, %d", TopMostTerminal->content, TopMostTerminal->type, TopMostTerminal->datatype);
+	*/
+		//printf("--Exiting expression--\n");
+}
+
+/*
+
 
 char terminals[] = {['+']=0, ['-']=1, ['*']=2, ['/']=3,
 					['<']=4, ['>']=5, ['L']=6, ['G']=7,
@@ -49,14 +209,6 @@ int getTokenType(Token token)
 		default:
 			return none;
 	};
-	return none;
-}
-
-void ExprTokenInit(ExprToken *token)
-{
-	token->content = '$';
-	token->type = terminal;
-	token->datatype = none;
 }
 
 void tokenToExpr(ExprToken *Expr, Token token)
@@ -64,26 +216,6 @@ void tokenToExpr(ExprToken *Expr, Token token)
 	Expr->content = tokenToChar(token);
 	Expr->type = terminal;
 	Expr->datatype = getTokenType(token);
-}
-
-ExprToken *findTopMostTerminal(exprStack *s)
-{
-	exprStackNodeT * itr = s->top;
-	while (itr != NULL){
-		if (itr->data.type == terminal)
-			return &(itr->data);
-		itr = itr->next;
-	}
-	return NULL;
-}
-
-void ExprInit(exprStack *TMPstack, HashTable *TMPSymbolTable)
-{
-	SymbolTable = TMPSymbolTable;
-	stack = TMPstack;
-	ExprTokenInit(ExprEndToken);
-	ExprTokenInit(ExprLastToken);
-	exprStack_push(stack, *ExprEndToken);
 }
 
 void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolTable)
@@ -115,3 +247,4 @@ void expression(SyntaxAnalyzer *self, exprStack *TMPstack, HashTable *TMPSymbolT
 
 	} while (stack->top->data.content != ExprEndToken->content || (self->lastToken != t_end || self->lastToken != t_scolon));
 }
+*/

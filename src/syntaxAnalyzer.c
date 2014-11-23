@@ -16,6 +16,8 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
+	expression(self);
+	/*
 	if (self->lastToken == t_scolon
 			|| (secondToken && *secondToken == t_scolon))
 		return;
@@ -27,6 +29,7 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 			return;
 		}
 	}
+	*/
 	//[TODO]
 }
 
