@@ -236,7 +236,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
-	self->lp->idMode = lp_debug;
+	//self->lp->idMode = lp_debug;
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
 
