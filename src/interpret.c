@@ -41,44 +41,26 @@ void Interpret_run(Interpret * self) {
 		case i_noop:
 			break;
 		case i_stop:
-
 			return;
 		case i_add:
-			if (i.dest != NULL) {
-				switch (i.type) {
-				case iInt:
-					pomA2 = iStack_pop(&(self->stack));
-					pomA1 = iStack_pop(&(self->stack));
-					pomA3.iInt = pomA2.iInt + pomA1.iInt;
-					*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
-					break;
-				case iReal:
-					pomA2 = iStack_pop(&(self->stack));
-					pomA1 = iStack_pop(&(self->stack));
-					pomA3.iReal = pomA2.iReal + pomA1.iReal;
-					*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
-					break;
-				default:
-					// [TODO] ERROR
-					break;
-				}
-			} else {
-				pomA2 = iStack_pop(&(self->stack));
-				pomA1 = iStack_pop(&(self->stack));
-				switch (i.type) {
-				case iInt:
-					pomA3.iInt = (pomA1.iInt + pomA2.iInt);
-					iStack_push(&(self->stack), pomA3);
-					break;
-				case iReal:
-					pomA3.iReal = (pomA1.iReal + pomA2.iReal);
-					iStack_push(&(self->stack), pomA3);
-					break;
-				default:
-					// [TODO] ERROR
-					break;
-				}
+			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
+			switch (i.type) {
+			case iInt:
+				pomA3.iInt = pomA2.iInt + pomA1.iInt;
+				break;
+			case iReal:
+				pomA3.iReal = pomA2.iReal + pomA1.iReal;
+				break;
+			default:
+				unimplementedError("Unimplemented type for instr. add\n");
+				break;
 			}
+			if (i.dest != NULL)
+				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+			else
+				iStack_push(&(self->stack), pomA3);
+
 			break;
 		case i_sub:
 			if (i.dest != NULL) {
@@ -230,7 +212,8 @@ void Interpret_test1() {
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL,
+					NULL });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
