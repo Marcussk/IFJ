@@ -134,17 +134,14 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		};
 		printStack(stack);
 		lastToken = TokenBuff_next(tokenBuff);
-	} while (lastToken != t_eof && lastToken != t_end && lastToken != t_scolon
-			&& lastToken != t_do && lastToken != t_then);
+	} while (!Token_isKeyword(lastToken));
 	if (stack->top->data.content != ExprEndToken->content) {
 		printf("Syntax error in expression\n");
 	}
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
 			getTokenName(lastToken));
 
-	if (Token_isKeyword(lastToken) || lastToken == t_scolon){
-		TokenBuff_pushBack(tokenBuff, lastToken);
-	}
+	TokenBuff_pushBack(tokenBuff, lastToken);
 
 	/*
 	 printf("-------\n%d\n-------\n", self->lastToken);
