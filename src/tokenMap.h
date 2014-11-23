@@ -40,10 +40,8 @@ typedef enum {
 	t_else,
 	t_end,
 	t_false,
-	t_find,
 	t_func,
 	t_if,
-	t_sort,
 	t_then, //30
 	t_true, 
 	t_var,

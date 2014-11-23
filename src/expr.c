@@ -76,10 +76,8 @@ ExprToken *findTopMostTerminal(exprStack *s)
 ExprToken *ExprTokenInit(ExprToken *token)
 {
 	token = malloc(sizeof(ExprToken));
-
 	if (!token){
-		printf("internal error\n");
-		//return -1;
+		memoryError("ExprTokenInit cann't alloc memory\n");
 	}
 	token->content = t_eof;
 	token->shifted = false;
@@ -100,7 +98,6 @@ void printStack(exprStack *self)
 
 void ExprInit(exprStack *stack)
 {
-	//SymbolTable = TMPSymbolTable;
 	exprStack__init__(stack);
 	ExprEndToken = ExprTokenInit(ExprEndToken);
 	ExprLastToken = ExprTokenInit(ExprLastToken);

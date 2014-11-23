@@ -8,13 +8,11 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_else, "else" },
 		(TokenMeaning ) { t_end, "end" },
 		(TokenMeaning ) { t_false, "false" },
-		(TokenMeaning ) { t_find, "find" },
 		(TokenMeaning ) { t_func, "function" },
 		(TokenMeaning ) { t_if,	"if" },
 		(TokenMeaning ) { t_integer, "integer" },
 		(TokenMeaning ) { t_real, "real" },
 		(TokenMeaning ) { t_char, "char" },
-		(TokenMeaning ) { t_sort, "sort" },
 		(TokenMeaning ) { t_string, "string" },
 		(TokenMeaning ) { t_then, "then" },
 		(TokenMeaning ) { t_true, "true" },
@@ -293,6 +291,8 @@ void TokenParser_reset(TokenParser * p) {
 // parse another char
 Token TokenParser_push(TokenParser * p, char ch) {
 	TokenMapElement m;
+	if(ch > TOKENMAP_NODESIZE -1)
+		lexError("Unknown char", NULL, -1);
 	if (p->possition) {
 		m = p->possition[(int) ch];
 		p->possition = m.next;
