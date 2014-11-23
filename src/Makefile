@@ -3,7 +3,7 @@
 CC=gcc
 
 #compiler options
-OPTS=-c -Wall
+OPTS=-c -Wall -Wextra -std=c99
 
 #source files
 SOURCES=$(wildcard *.c )
