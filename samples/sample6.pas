@@ -1,3 +1,4 @@
+{Test na prazdny begin end}
 var
 	a : integer;
 	vysl : integer;
