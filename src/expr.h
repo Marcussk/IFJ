@@ -18,7 +18,7 @@ typedef enum {
 } ExprType;
 
 typedef enum {
-	none, boolean = 15, integer, real, string // none is for '$' and initialized ExprTokens
+	none, boolean = 16, integer, real, string // none is for '$' and initialized ExprTokens
 } ExprDataType;
 
 typedef struct exprtoken{

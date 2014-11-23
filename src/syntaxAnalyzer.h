@@ -1,6 +1,7 @@
 #ifndef SYNTAX_ANALYZER_h
 #define SYNTAX_ANALYZER_h
 
+#include "expr.h"
 #include "lexParser.h"
 #include "hashTable.h"
 #include "ifjTypes.h"

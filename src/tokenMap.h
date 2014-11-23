@@ -55,8 +55,8 @@ typedef enum {
 	t_pointer,
 	t_lBracket,
 	t_rBracket,
-	t_asigment,
-	t_doubleDot, //40
+	t_asigment, //40
+	t_doubleDot,
 	t_lcBracket, //others
 	t_rcBracket,
 	t_num_int,
