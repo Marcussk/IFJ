@@ -5,6 +5,8 @@
  if(lastToken != expected){                                          \
 	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));  \
  }
+#define NEW_INSTR(code, types, a1, a2, dest)\
+	InstrQueue_insert(&self->instr,	(Instruction ) { code, types, a1, a2, dest});
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
@@ -13,7 +15,7 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->stackIndexCntr = 0;
 }
 
-void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
+inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 	expression(&self->tokBuff, &self->instr);
 }
 
