@@ -1,3 +1,4 @@
+{premenna nemoze zacinat znakom 3}
 var
 	3aba : integer;
 	vysl : integer;

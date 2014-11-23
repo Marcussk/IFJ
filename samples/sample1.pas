@@ -1,3 +1,4 @@
+{Strednik naviac za endom}
 var
 	a : integer;
 	vysl : integer;

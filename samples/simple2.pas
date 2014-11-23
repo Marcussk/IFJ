@@ -1,13 +1,13 @@
-Program Lesson1_Program3;
-Var       
+{zretazena inicializacia premennych}
+var       
     Num1, Num2, Sum : Integer;
 
-Begin {no semicolon}
- Write('Input number 1:'); 
- Readln(Num1);
- Writeln('Input number 2:');
- Readln(Num2);
+begin {no semicolon}
+ write('Input number 1:'); 
+ readln(Num1);
+ write('Input number 2:');
+ readln(Num2);
  Sum := Num1 + Num2; {addition} 
- Writeln(Sum);
- Readln;
-End.
+ write(Sum);
+ readln;
+end.

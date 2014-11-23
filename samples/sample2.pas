@@ -1,4 +1,4 @@
-{ coment }
+{ Jednoduchy test na write }
 
 begin
 	write(5)
