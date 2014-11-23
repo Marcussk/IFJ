@@ -46,17 +46,17 @@ void Interpret_run(Interpret * self) {
 		case i_noop:
 			break;
 		case i_jmp:
-
+			unimplementedError("JMP is not implemented yet");
 			break;
 		case i_jmpz:
-
+			unimplementedError("JMPZ is not implemented yet");
 			break;
 		case i_equal:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
-				pomA3.iInt =( pomA2.iInt == pomA1.iInt);
+				pomA3.iInt = (pomA2.iInt == pomA1.iInt);
 				break;
 			case iReal:
 				pomA3.iInt = (pomA2.iReal == pomA1.iReal);
