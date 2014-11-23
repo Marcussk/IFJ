@@ -14,23 +14,8 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->stackIndexCntr = 0;
 }
 
-//one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 	expression(&self->tokBuff, &self->instr);
-	/*
-	 if (self->lastToken == t_scolon
-	 || (secondToken && *secondToken == t_scolon))
-	 return;
-
-	 while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-	 if (self->lastToken == t_end || self->lastToken == t_then
-	 || self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
-	 LexParser_pushBack(self->lp, self->lastToken);
-	 return;
-	 }
-	 }
-	 */
-	//[TODO]
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
@@ -51,6 +36,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (lastToken != t_id) {
 			self->lp->idMode = lp_searchOnly;
+			TokenBuff_pushBack(&self->tokBuff, lastToken);
 			return;
 		}
 
@@ -87,6 +73,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
 	lastToken = TokenBuff_next(&self->tokBuff);
+
 	if (lastToken == t_end)
 		return;
 	else
@@ -108,6 +95,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				SyntaxAnalyzer_parseAsigment(self, varForLastId);
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, secTok);
+				TokenBuff_pushBack(&self->tokBuff, t_id);
 				SyntaxAnalyzer_parseExpr(self);
 			}
 			break;
@@ -119,7 +107,6 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			return;
 		}
 	}
-	//[TODO]
 }
 
 //"if" already found
@@ -133,6 +120,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 				getTokenName(lastToken));
 		return;
 	}
+
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken != t_begin) {
 		syntaxError("expected begin for if block", self->lp->lineNum,

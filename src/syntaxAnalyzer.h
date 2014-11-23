@@ -28,8 +28,4 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
 
-
-
-
-
 #endif
