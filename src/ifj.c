@@ -30,9 +30,10 @@ int main(int argc, char *argv[]) {
 			LexParser__init__(&lexParser, file);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
 			SyntaxAnalyzer_parse(&synAnalyzer);
+			fclose(file);
 			Interpret__init__(&interpret, synAnalyzer.instr);
 			Interpret_run(&interpret);
-			fclose(file);
+			Interpret__dell__(&interpret);
 		}
 	}
 

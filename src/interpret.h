@@ -15,6 +15,6 @@ typedef struct  {
 
 void Interpret__init__(Interpret * self, InstrQueue instructions);
 void Interpret_run(Interpret * self);
-void Interpret_test1();
+void Interpret__dell__(Interpret * self);
 
 #endif

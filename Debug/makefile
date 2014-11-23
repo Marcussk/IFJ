@@ -11,7 +11,6 @@ RM := rm -rf
 -include tests/subdir.mk
 -include src/bin/subdir.mk
 -include src/subdir.mk
--include doc/BoyerMoore/subdir.mk
 -include subdir.mk
 -include objects.mk
 

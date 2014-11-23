@@ -62,7 +62,7 @@ void rt_zeroDivisionError() {
 	exit(8);
 }
 void rt_error(char * str) {
-	fprintf(stderr, "ERROR(Runtime): Undescribed runtime error.");
+	fprintf(stderr, "ERROR(Runtime): %s\n", str);
 	exit(9);
 }
 

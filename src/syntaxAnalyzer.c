@@ -49,6 +49,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 					getTokenName(lastToken));
 			return;
 		}
+		self->lp->lastSymbol->type = lastToken;
 
 		NEXT_TOK(t_scolon, "expected id\n");
 
