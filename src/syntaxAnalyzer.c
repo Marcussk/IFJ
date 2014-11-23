@@ -84,13 +84,20 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			break;
 		case t_id:
 			varForLastId = self->lp->lastSymbol;
-			secTok = LexParser_gen(self->lp);
+			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_asigment) {
 				SyntaxAnalyzer_parseAsigment(self, varForLastId);
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 				SyntaxAnalyzer_parseExpr(self);
+			}
+			lastToken = TokenBuff_next(&self->tokBuff);
+			if (lastToken == t_end)
+				return;
+			else if (lastToken == t_scolon) {
+			} else {
+				TokenBuff_pushBack(&self->tokBuff, lastToken);
 			}
 			break;
 		case t_end:
@@ -146,7 +153,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 
 	while (lastToken != t_rParenthessis) {
 		SyntaxAnalyzer_parseExpr(self);
-		lastToken = LexParser_gen(self->lp);
+		lastToken = TokenBuff_next(&self->tokBuff);
 		if (lastToken == t_rParenthessis)     // ) - end of args
 			return;
 		else if (lastToken == t_comma)
@@ -259,7 +266,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_func(self);
 			break;
 		case t_period:
-			tok = LexParser_gen(self->lp);
+			tok = TokenBuff_next(&self->tokBuff);
 			if (tok == t_eof)
 				return;
 			else {
