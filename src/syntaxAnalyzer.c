@@ -124,7 +124,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	return;
-	//[TODO]
+	//[TODO] instructions
 }
 
 //"while" already found
@@ -135,8 +135,8 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	NEXT_TOK(t_do, "expected do")
 
 	lastToken = TokenBuff_next(&self->tokBuff);
-	SyntaxAnalyzer_parse_block(self);						//STMTLIST
-	//[TODO]
+	SyntaxAnalyzer_parse_block(self);				//STMTLIST
+	//[TODO] instructions
 }
 
 // "("  already found (args are in function call)
@@ -216,10 +216,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	LexParser_fnParamsEnter(self->lp);
 	SyntaxAnalyzer_parse_paramList(self);
 
-	//[TODO] check and implement forward
+	// [TODO] check and implement forward
 	NEXT_TOK(t_colon, "expected \":\"")
 
-	lastToken = TokenBuff_next(&self->tokBuff);       // typ
+	lastToken = TokenBuff_next(&self->tokBuff); // typ
 
 	LexParser_fnBodyEnter(self->lp, lastToken);
 	fn->val.fn->retType = lastToken;
@@ -231,7 +231,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
 		SyntaxAnalyzer_parse_block(self);
-
 		break;
 	case t_begin:
 		SyntaxAnalyzer_parse_block(self);
@@ -246,15 +245,16 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
-	//self->lp->idMode = lp_debug;
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
 
 		/*
+		 self->lp->idMode = lp_debug;
 		 printf("line %d: %s\n",self->lp->lineNum, getTokenName(tok));
 		 if(tok == t_eof){
 		 return;
-		 }*/
+		 }
+		 */
 
 		switch (tok) {
 		case t_var:
@@ -278,8 +278,6 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_eof:
 			syntaxError("Expected \".\" on the end of program",
 					self->lp->lineNum, getTokenName(tok));
-			return;
-		case t_end:
 			return;
 		default:
 			syntaxError("syntax corrupted", self->lp->lineNum,
