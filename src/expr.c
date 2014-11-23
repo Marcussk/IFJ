@@ -113,8 +113,8 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions)
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
-	/*do{
-			tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
+	do{
+			tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
 			TopMostTerminal = findTopMostTerminal(stack);
 			printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content, ExprLastToken->content);
 			switch(prTable[TopMostTerminal->content][ExprLastToken->content])
@@ -141,15 +141,15 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions)
 					// Zahlas syntaktickou chybu
 			};
 		printStack(stack);
-		self->lastToken = LexParser_gen(self->lp);
-		} while (self->lastToken != t_eof && self->lastToken != t_end &&
-				 self->lastToken != t_scolon && self->lastToken != t_do &&
-				 self->lastToken != t_then);
+		lastToken = TokenBuff_next(tokenBuff);
+		} while (lastToken != t_eof && lastToken != t_end &&
+				 lastToken != t_scolon && lastToken != t_do &&
+				 lastToken != t_then);
 	if (stack->top->data.content != ExprEndToken->content)
 	{
 		printf("Syntax error in expression\n");
 	}
-	printf("Last token - %d\n--Returning from expression\n\n", self->lastToken);
+	printf("Last token - %d\n--Returning from expression\n\n", lastToken);
 /*
 	printf("-------\n%d\n-------\n", self->lastToken);
 
