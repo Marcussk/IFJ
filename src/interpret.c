@@ -37,6 +37,11 @@ void Interpret_run(Interpret * self) {
 		iVal pomA2;
 		iVal pomA3;
 		switch (i.code) {
+		case i_noop:
+								break;
+		case i_stop:
+
+								return;
 		case i_add:
 			if (i.dest != NULL) {
 				switch(i.type){
@@ -189,6 +194,11 @@ void Interpret_run(Interpret * self) {
 								}
 							}
 							break;
+		case i_assign:
+
+						pomA1 = iStack_pop(&(self->stack));
+						*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
+						break;
 
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
@@ -252,7 +262,7 @@ void Interpret_test2() {
 void Interpret_test3() {
 
 	InstrParam a, b, c;
-		a.iInt = 178;
+		a.iInt = 180;
 		b.iInt = 20;
 		c.iInt = 20;
 		InstrQueue instr;
@@ -267,10 +277,34 @@ void Interpret_test3() {
 				(Instruction ) { i_push, iInt, &a, NULL, NULL });
 
 		InstrQueue_insert(&instr,
-				(Instruction ) { i_mul, iInt, &a, &b, &c });
+				(Instruction ) { i_div, iInt, &a, &b, &c });
 
 		Interpret__init__(&intr, instr);
 		Interpret_run(&intr);
 		printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
+
+}
+void Interpret_test4() {
+
+	InstrParam a, b, c;
+		a.iString = "fsdfsd";
+		b.iInt = 20;
+		c.iString;
+		InstrQueue instr;
+		Interpret intr;
+		InstrQueue__init__(&instr);
+		InstrQueue_insert(&instr,
+						(Instruction ) { i_push, iString, &c, NULL, NULL });
+
+		InstrQueue_insert(&instr,
+				(Instruction ) { i_push, iString, &a, NULL, NULL });
+
+
+		InstrQueue_insert(&instr,
+				(Instruction ) { i_assign, iString, &a, &b, &c });
+
+		Interpret__init__(&intr, instr);
+		Interpret_run(&intr);
+		printf("%s  \n", (iStack_pop(&(intr.stack))).iString);
 
 }
