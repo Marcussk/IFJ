@@ -3,6 +3,23 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/buffFile.o \
+../src/builtins.o \
+../src/errorHandler.o \
+../src/expr.o \
+../src/gerator3AC.o \
+../src/hashTable.o \
+../src/ifj.o \
+../src/ifjTypes.o \
+../src/instruction.o \
+../src/interpret.o \
+../src/lexParser.o \
+../src/stack.o \
+../src/strRoutines.o \
+../src/syntaxAnalyzer.o \
+../src/tokenMap.o 
+
 C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \
@@ -15,6 +32,7 @@ C_SRCS += \
 ../src/instruction.c \
 ../src/interpret.c \
 ../src/lexParser.c \
+../src/parserTables.c \
 ../src/stack.c \
 ../src/strRoutines.c \
 ../src/syntaxAnalyzer.c \
@@ -32,6 +50,7 @@ OBJS += \
 ./src/instruction.o \
 ./src/interpret.o \
 ./src/lexParser.o \
+./src/parserTables.o \
 ./src/stack.o \
 ./src/strRoutines.o \
 ./src/syntaxAnalyzer.o \
@@ -49,6 +68,7 @@ C_DEPS += \
 ./src/instruction.d \
 ./src/interpret.d \
 ./src/lexParser.d \
+./src/parserTables.d \
 ./src/stack.d \
 ./src/strRoutines.d \
 ./src/syntaxAnalyzer.d \

@@ -7,6 +7,7 @@
 #include "stack.h"
 #include "errorHandler.h"
 #include "instruction.h"
+#include "expr.h"
 
 typedef struct {
 	LexParser * lp;

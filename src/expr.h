@@ -11,7 +11,6 @@
 #include "stack.h"
 #include "parserTables.h"
 
-// TODO: copy function bodies for stack
 
 typedef enum {
 	terminal, nonterminal
@@ -28,5 +27,7 @@ typedef struct exprtoken{
 	ExprDataType datatype;
 } ExprToken;
 
+
 DECLARE_STACK(expr, ExprToken);
+
 #endif

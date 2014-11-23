@@ -13,11 +13,8 @@
 #include <stdlib.h>
 #include "lexParser.h"
 #include "syntaxAnalyzer.h"
-#include "tokenMap.h"
 #include "defs.h"
 #include "interpret.h"
-#include "instruction.h"
-#include "stack.h"
 
 int main(int argc, char *argv[]) {
 
