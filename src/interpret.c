@@ -264,7 +264,7 @@ void Interpret_test4() {
 	InstrParam a, b, c;
 	a.iString = "fsdfsd";
 	b.iInt = 20;
-	c.iString;
+
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
