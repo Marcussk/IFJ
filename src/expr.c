@@ -2,7 +2,6 @@
 
 IMPLEMENT_STACK(expr, ExprToken);
 
-//HashTable *SymbolTable;
 ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;

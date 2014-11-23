@@ -18,18 +18,18 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 	expression(self);
 	/*
-	if (self->lastToken == t_scolon
-			|| (secondToken && *secondToken == t_scolon))
-		return;
+	 if (self->lastToken == t_scolon
+	 || (secondToken && *secondToken == t_scolon))
+	 return;
 
-	while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
-		if (self->lastToken == t_end || self->lastToken == t_then
-				|| self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
-			LexParser_pushBack(self->lp, self->lastToken);
-			return;
-		}
-	}
-	*/
+	 while ((self->lastToken = LexParser_gen(self->lp)) != t_scolon) {
+	 if (self->lastToken == t_end || self->lastToken == t_then
+	 || self->lastToken == t_do) { // because expr can end without ; (it ends with end of block or if ...)
+	 LexParser_pushBack(self->lp, self->lastToken);
+	 return;
+	 }
+	 }
+	 */
 	//[TODO]
 }
 
@@ -37,7 +37,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
 	SyntaxAnalyzer_parseExpr(self, NULL);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
-		 NULL, (InstrParam*) &(asigmentTo->stackIndex) });
+			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
 
 }
@@ -74,7 +74,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		}
 		InstrQueue_insert(&self->instr,
 				(Instruction ) { i_push, self->lp->lastSymbol->type,
-								NULL, NULL, NULL });
+						NULL, NULL, NULL });
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}
@@ -85,13 +85,12 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
 	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken == t_end) {     
+	if (self->lastToken == t_end) {
 		return;
-	}
-	else {
+	} else {
 		LexParser_pushBack(self->lp, self->lastToken);
 	}
-	
+
 	while (1) {
 		self->lastToken = LexParser_gen(self->lp);
 		switch (self->lastToken) {
@@ -292,7 +291,12 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			tok = self->lastToken;
 			self->lastToken = t_empty;
 		}
-		//printToken(self->lp, tok);
+		/*
+		 printf("%s \n", getTokenName(tok));
+		 if(tok == t_eof){
+		 return;
+		 }*/
+
 		switch (tok) {
 		case t_var:
 			SyntaxAnalyzer_parse_varDeclr(self);
