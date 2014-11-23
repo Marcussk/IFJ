@@ -16,6 +16,7 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 }
 
 inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
+	Token lastToken;
 	expression(&self->tokBuff, &self->instr);
 }
 
