@@ -53,7 +53,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iReal = pomA2.iReal + pomA1.iReal;
 				break;
 			default:
-				unimplementedError("Unimplemented type for instr. add\n");
+				unimplementedError("Instr. add is not implemented for this type\n");
 				break;
 			}
 			if (i.dest != NULL)
