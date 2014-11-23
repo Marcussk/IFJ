@@ -22,13 +22,14 @@ typedef enum {
 	t_lessOrEqv,
 	t_greaterOrEqv,
 	t_eqv,
-	t_lParenthessis,
+	t_notEqv,
+	t_lParenthessis, //10
 	t_rParenthessis,
 	t_comma,
 	t_eof,
 	t_id,
 
-	t_boolean = 15,
+	t_boolean=16,
 	t_integer,
 	t_real,
 	t_string,
@@ -44,7 +45,7 @@ typedef enum {
 	t_if,
 	t_sort,
 	t_then,
-	t_true,
+	t_true, //30
 	t_var,
 	t_while,
 
@@ -54,9 +55,8 @@ typedef enum {
 	t_pointer,
 	t_lBracket,
 	t_rBracket,
-	t_notEqv,
 	t_asigment,
-	t_doubleDot,
+	t_doubleDot, //40
 	t_lcBracket, //others
 	t_rcBracket,
 	t_num_int,

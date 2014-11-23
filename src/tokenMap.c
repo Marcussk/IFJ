@@ -267,7 +267,7 @@ void TokenParser__dell__(TokenParser * p) {
 	TokenMapElement * intMap = p->map['0'].next;
 	TokenMapElement * realMap = intMap['.'].next;
 	TokenMapElement * expFirstMap = intMap['e'].next;
-	TokenMapElement * expRestIntMap = expRestIntMap['1'].next;
+	TokenMapElement * expRestIntMap = expFirstMap['1'].next;
 	TokenMapElement * expRestRealMap =expRestIntMap['.'].next;
 	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
 		map = p->map[i];
