@@ -2,7 +2,7 @@
 #define INSTRUCTION_h
 
 #include "ifjTypes.h"
-
+#include <string.h>
 typedef enum {
 	i_stop = 0,
 	i_noop,		// does nothing

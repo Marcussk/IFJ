@@ -195,10 +195,15 @@ void Interpret_run(Interpret * self) {
 							}
 							break;
 		case i_assign:
-
+						if(i.type != iString){
 						pomA1 = iStack_pop(&(self->stack));
 						*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 						break;
+						}
+						else{
+							//[TODO]
+							break;
+						}
 
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
