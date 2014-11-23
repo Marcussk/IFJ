@@ -1,10 +1,11 @@
 #include "syntaxAnalyzer.h"
 
-#define NEXT_TOK(expected, errMsg)                                 \
- lastToken = TokenBuff_next(&self->tokBuff);                         \
- if(lastToken != expected){                                          \
-	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));  \
+#define NEXT_TOK(expected, errMsg)                                  \
+ lastToken = TokenBuff_next(&self->tokBuff);                        \
+ if(lastToken != expected){                                         \
+	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));\
  }
+
 #define NEW_INSTR(code, types, a1, a2, dest)\
 	InstrQueue_insert(&self->instr,	(Instruction ) { code, types, a1, a2, dest});
 
