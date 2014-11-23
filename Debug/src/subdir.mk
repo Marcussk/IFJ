@@ -3,23 +3,6 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
-O_SRCS += \
-../src/buffFile.o \
-../src/builtins.o \
-../src/errorHandler.o \
-../src/expr.o \
-../src/gerator3AC.o \
-../src/hashTable.o \
-../src/ifj.o \
-../src/ifjTypes.o \
-../src/instruction.o \
-../src/interpret.o \
-../src/lexParser.o \
-../src/stack.o \
-../src/strRoutines.o \
-../src/syntaxAnalyzer.o \
-../src/tokenMap.o 
-
 C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \
@@ -36,6 +19,7 @@ C_SRCS += \
 ../src/stack.c \
 ../src/strRoutines.c \
 ../src/syntaxAnalyzer.c \
+../src/tokenBuff.c \
 ../src/tokenMap.c 
 
 OBJS += \
@@ -54,6 +38,7 @@ OBJS += \
 ./src/stack.o \
 ./src/strRoutines.o \
 ./src/syntaxAnalyzer.o \
+./src/tokenBuff.o \
 ./src/tokenMap.o 
 
 C_DEPS += \
@@ -72,6 +57,7 @@ C_DEPS += \
 ./src/stack.d \
 ./src/strRoutines.d \
 ./src/syntaxAnalyzer.d \
+./src/tokenBuff.d \
 ./src/tokenMap.d 
 
 

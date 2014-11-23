@@ -9,14 +9,14 @@
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->lp = lp;
-	self->lastToken = t_empty;
+	TokenBuff__init__(&self->tokBuff, lp);
 	InstrQueue__init__(&(self->instr));
 	self->stackIndexCntr = 0;
 }
 
 //one token can be stored in self->lastToken, second token in secondToken when secondToken == Null there is no secondToken
-void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
-	expression(self);
+void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
+	expression(&self->tokBuff, &self->instr);
 	/*
 	 if (self->lastToken == t_scolon
 	 || (secondToken && *secondToken == t_scolon))
@@ -35,7 +35,7 @@ void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	SyntaxAnalyzer_parseExpr(self, NULL);
+	SyntaxAnalyzer_parseExpr(self);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
@@ -44,32 +44,33 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 
 // t_var already found
 void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
+	Token lastToken;
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	while (true) {
-		self->lastToken = LexParser_gen(self->lp);
-		if (self->lastToken != t_id) {
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken != t_id) {
 			self->lp->idMode = lp_searchOnly;
 			return;
 		}
 
-		self->lastToken = LexParser_gen(self->lp);
-		if (self->lastToken != t_colon) {
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken != t_colon) {
 			syntaxError("expected \":\"\n", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 
-		self->lastToken = LexParser_gen(self->lp);
-		if (!Token_isType(self->lastToken)) {
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (!Token_isType(lastToken)) {
 			syntaxError("expected type name\n", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
-		self->lastToken = LexParser_gen(self->lp);
-		if (self->lastToken != t_scolon) {
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken != t_scolon) {
 			syntaxError("expected id\n", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 		InstrQueue_insert(&self->instr,
@@ -82,18 +83,18 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 //(begin ... end) ("begin" already found)
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
+	Token lastToken;
 	Token secTok = t_empty;
 	iVar * varForLastId = NULL;
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken == t_end) {
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken == t_end)
 		return;
-	} else {
-		LexParser_pushBack(self->lp, self->lastToken);
-	}
+	else
+		TokenBuff_pushBack(&self->tokBuff, lastToken);
 
 	while (1) {
-		self->lastToken = LexParser_gen(self->lp);
-		switch (self->lastToken) {
+		lastToken = TokenBuff_next(&self->tokBuff);
+		switch (lastToken) {
 		case t_if:
 			SyntaxAnalyzer_parse_if(self);
 			break;
@@ -106,14 +107,15 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			if (secTok == t_asigment) {
 				SyntaxAnalyzer_parseAsigment(self, varForLastId);
 			} else {
-				SyntaxAnalyzer_parseExpr(self, &secTok);
+				TokenBuff_pushBack(&self->tokBuff, secTok);
+				SyntaxAnalyzer_parseExpr(self);
 			}
 			break;
 		case t_end:
 			return;
 		default:
 			syntaxError("Unexpected syntax in code block\n", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 	}
@@ -122,32 +124,33 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
-	SyntaxAnalyzer_parseExpr(self, NULL);              //COND
+	Token lastToken;
+	SyntaxAnalyzer_parseExpr(self);              //COND
 
-	self->lastToken = LexParser_gen(self->lp);			//then
-	if (self->lastToken != t_then) {
+	lastToken = TokenBuff_next(&self->tokBuff);			//then
+	if (lastToken != t_then) {
 		syntaxError("expected then", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 		return;
 	}
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken != t_begin) {
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_begin) {
 		syntaxError("expected begin for if block", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
 
-	self->lastToken = LexParser_gen(self->lp);			//else
-	if (self->lastToken != t_else) {
+	lastToken = TokenBuff_next(&self->tokBuff);			//else
+	if (lastToken != t_else) {
 		syntaxError("expected else", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 		return;
 	}
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken != t_begin) {
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_begin) {
 		syntaxError("expected begin for if else block", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 		return;
 	}
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
@@ -157,14 +160,15 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
-	SyntaxAnalyzer_parseExpr(self, NULL);					//COND
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken != t_do) {							//do
+	Token lastToken;
+	SyntaxAnalyzer_parseExpr(self);					//COND
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_do) {							//do
 		syntaxError("expected id\n", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 		return;
 	}
-	self->lastToken = LexParser_gen(self->lp);
+	lastToken = TokenBuff_next(&self->tokBuff);
 	SyntaxAnalyzer_parse_block(self);						//STMTLIST
 	//[TODO]
 }
@@ -176,22 +180,22 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
  args -> seznam termu
  */
 void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken == t_rParenthessis)     // ) - args are empty
+	Token lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken == t_rParenthessis)     // ) - args are empty
 		return;
 	else
-		LexParser_pushBack(self->lp, self->lastToken);
+		TokenBuff_pushBack(&self->tokBuff, lastToken);
 
-	while (self->lastToken != t_rParenthessis) {
-		SyntaxAnalyzer_parseExpr(self, NULL);
-		self->lastToken = LexParser_gen(self->lp);
-		if (self->lastToken == t_rParenthessis)     // ) - end of args
+	while (lastToken != t_rParenthessis) {
+		SyntaxAnalyzer_parseExpr(self);
+		lastToken = LexParser_gen(self->lp);
+		if (lastToken == t_rParenthessis)     // ) - end of args
 			return;
-		else if (self->lastToken == t_comma)
+		else if (lastToken == t_comma)
 			continue;
 		else
 			syntaxError("expected \",\" or \")\"", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 	}
 }
 
@@ -201,45 +205,46 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  f(params) -> f(id : typ; id : typ)
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
+	Token lastToken;
 	LexParser_fnParamsEnter(self->lp);
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken == t_rParenthessis) {            // ) - params are empty
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken == t_rParenthessis) {            // ) - params are empty
 		return;
 	}
 	while (true) {
-		if (self->lastToken != t_id) {						//id
+		if (lastToken != t_id) {						//id
 			syntaxError("expected id in argument list", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 
-		self->lastToken = LexParser_gen(self->lp);			//:
-		if (self->lastToken != t_colon) {
+		lastToken = TokenBuff_next(&self->tokBuff);			//:
+		if (lastToken != t_colon) {
 			syntaxError("expected \":\"", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 
-		self->lastToken = LexParser_gen(self->lp);			//typ
-		if (!Token_isType(self->lastToken)) {
+		lastToken = TokenBuff_next(&self->tokBuff);			//typ
+		if (!Token_isType(lastToken)) {
 			syntaxError("expected type name", self->lp->lineNum,
-					getTokenName(self->lastToken));
+					getTokenName(lastToken));
 			return;
 		}
 
-		self->lastToken = LexParser_gen(self->lp);
-		if (self->lastToken != t_scolon) {
-			if (self->lastToken == t_rParenthessis) {			// )
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken != t_scolon) {
+			if (lastToken == t_rParenthessis) {			// )
 				return;
 			}
 			syntaxError("expected \";\" or \")\" at the end of ",
-					self->lp->lineNum, getTokenName(self->lastToken));
+					self->lp->lineNum, getTokenName(lastToken));
 			return;
 		} else {											 // ;
-			self->lastToken = LexParser_gen(self->lp);
-			if (self->lastToken != t_id) {						//id
+			lastToken = TokenBuff_next(&self->tokBuff);
+			if (lastToken != t_id) {						//id
 				syntaxError("expected id after semicolon", self->lp->lineNum,
-						getTokenName(self->lastToken));
+						getTokenName(lastToken));
 				return;
 			}
 		}
@@ -249,23 +254,23 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup;
-
-	self->lastToken = LexParser_gen(self->lp);
-	if (self->lastToken != t_id) {
+	Token lastToken ;
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_id) {
 		syntaxError("id of function expected", self->lp->lineNum,
-				getTokenName(self->lastToken));
+				getTokenName(lastToken));
 	}
 
 	LexParser_fnParamsEnter(self->lp);
 	SyntaxAnalyzer_parse_paramList(self);
 
 	//[TODO] check and implement forward
-	self->lastToken = LexParser_gen(self->lp);       // :
-	self->lastToken = LexParser_gen(self->lp);       // typ
-	LexParser_fnBodyEnter(self->lp, self->lastToken);
-	self->lastToken = LexParser_gen(self->lp);       // ;
-	self->lastToken = LexParser_gen(self->lp);
-	switch (self->lastToken) {
+	lastToken = TokenBuff_next(&self->tokBuff);       // :
+	lastToken = TokenBuff_next(&self->tokBuff);       // typ
+	LexParser_fnBodyEnter(self->lp, lastToken);
+	lastToken = TokenBuff_next(&self->tokBuff);       // ;
+	lastToken = TokenBuff_next(&self->tokBuff);
+	switch (lastToken) {
 	case t_var:
 		stackCntrBackup = self->stackIndexCntr;
 		SyntaxAnalyzer_parse_varDeclr(self);
@@ -277,20 +282,14 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		break;
 	default:
 		syntaxError("Expected \"begin\" or \"var\" after function declaration",
-				self->lp->lineNum, getTokenName(self->lastToken));
+				self->lp->lineNum, getTokenName(lastToken));
 	}
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
 	while (true) {
-		//get new token or reuse last if is
-		if (self->lastToken == t_empty)
-			tok = LexParser_gen(self->lp);
-		else {
-			tok = self->lastToken;
-			self->lastToken = t_empty;
-		}
+		tok = TokenBuff_next(&self->tokBuff);
 		/*
 		 printf("%s \n", getTokenName(tok));
 		 if(tok == t_eof){

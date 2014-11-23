@@ -8,15 +8,15 @@
 #include "errorHandler.h"
 #include "instruction.h"
 #include "expr.h"
+#include "tokenBuff.h"
 
 typedef struct {
 	LexParser * lp;
-	Token lastToken;
+	TokenBuff tokBuff;
 	InstrQueue instr;
 	int stackIndexCntr;
 } SyntaxAnalyzer;
 
-extern HashTable * symbolTable;
 
 void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp);
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self);
@@ -25,6 +25,10 @@ void SyntaxAnalyzer_parseCond(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self);
-void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self, Token * secondToken);
+void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
+
+
+
+
 
 #endif

@@ -95,7 +95,8 @@ void ExprInit(exprStack *stack)
 	ExprLastToken = ExprTokenInit(ExprLastToken);
 	exprStack_push(stack, *ExprEndToken);
 }
-void expression(SyntaxAnalyzer *self)
+
+void expression(TokenBuff * tokenBuff, InstrQueue * istructions)
 {
 	printf("--Calling expression--\n");
 
@@ -103,8 +104,8 @@ void expression(SyntaxAnalyzer *self)
 	stack = malloc(sizeof(exprStack));
 	ExprInit(stack);
 
-	self->lastToken = LexParser_gen(self->lp);
-	do{
+	Token lastToken = TokenBuff_next(tokenBuff);
+	/*do{
 			tokenToExpr(ExprLastToken, self->lastToken); // "copy" content of LastToken to ExprLastToken
 			TopMostTerminal = findTopMostTerminal(stack);
 			printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content, ExprLastToken->content);

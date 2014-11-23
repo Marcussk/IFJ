@@ -6,10 +6,10 @@
 #include "errorHandler.h"
 #include "lexParser.h"
 #include "strRoutines.h"
-#include "syntaxAnalyzer.h"
 #include "tokenMap.h"
 #include "stack.h"
 #include "parserTables.h"
+#include "tokenBuff.h"
 
 
 typedef enum {
@@ -27,6 +27,7 @@ typedef struct exprtoken{
 	ExprDataType datatype;
 } ExprToken;
 
+void expression(TokenBuff * tokenBuff, InstrQueue * istructions);
 
 DECLARE_STACK(expr, ExprToken);
 
