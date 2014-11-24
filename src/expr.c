@@ -74,24 +74,48 @@ void ExprInit(exprStack *stack) {
 	ExprLastToken = ExprTokenInit(ExprLastToken);
 	exprStack_push(stack, *ExprEndToken);
 }
-
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
+{
+	switch (TopMostTerminal->content)
+	{
+		case t_id:
+			TopMostTerminal->type = nonterminal;
+	}
+}
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	printf("--Calling expression-- Line: %d\n", tokenBuff->lp->lineNum);
 
 	exprStack *stack;
 	stack = malloc(sizeof(exprStack));
-	if (!stack) {
+	if (!stack)
 		memoryError("expression can't allocate memory for new stack\n");
-	}
+
 	ExprInit(stack);
 
-	Token lastToken = TokenBuff_next(tokenBuff);
+	Token lastToken;
+	unsigned int endOfInput = 0;  // Flag for end of input -> when we get keyword or semicolon
 
-	do {
-		tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
+	while(1)
+	{
+		if (!endOfInput){ // get next token safely,
+			lastToken = TokenBuff_next(tokenBuff);
+			endOfInput = (Token_isKeyword(lastToken) || lastToken == t_scolon);
+			tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
+		}
+
 		TopMostTerminal = findTopMostTerminal(stack);
+
+		if (endOfInput){ // Input has ended, from now, current token will always be '$'
+			if (TopMostTerminal->content == ExprEndToken->content){ // There is no terminal on stack
+				printf("Break\n");
+				break;
+			}
+			ExprLastToken->content = ExprEndToken->content;
+		}
+
 		printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content,
 				ExprLastToken->content);
+
 		switch (prTable[TopMostTerminal->content][ExprLastToken->content]) {
 			case shift:
 				printf("shift\n");
@@ -107,16 +131,20 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			case reduce:
 				// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
 				// a zredukuj
+				reduceRule(stack, TopMostTerminal);
 				printf("reduce\n");
 				break;
 			case error:
 				printf("error\n");
+				if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
+					ExprLastToken->content == t_id)) // maybe useless condition, will be removed later
+					break;
+				syntaxError("Expression Error", tokenBuff->lp->lineNum, "s");
 
 			// Zahlas syntaktickou chybu
 		};
 		printStack(stack);
-		lastToken = TokenBuff_next(tokenBuff);
-	} while (!Token_isKeyword(lastToken) && lastToken != t_scolon);
+	}
 
 	TopMostTerminal = findTopMostTerminal(stack);
 	// There is some terminal on stack - error
@@ -126,6 +154,5 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
 			getTokenName(lastToken));
-
 	TokenBuff_pushBack(tokenBuff, lastToken);
 }
