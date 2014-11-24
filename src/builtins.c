@@ -19,7 +19,7 @@ void write(tIFJ type, iVal a1) {
 		printf("%f", a1.iReal);
 		break;
 	default:
-		printf("error");
+		printf("Function write has performed error");
 	}
 }
 
@@ -31,14 +31,14 @@ char * func_copy(char *f_str, int i, int n) {
 	int strIndex;
 	int offset = i - 1;
 	if (i < 1)
-		rt_error("Builtin function copy does not support i <1");
+		rt_error("Builtin function copy does not support i < 1");
 	if (strlen(f_str) < (offset + n)) {
 		rt_error(
-				"Builtin function copy cano't be performed because original string is too short\n");
+				"Builtin function copy can't be performed because original string is too short\n");
 	}
 	char * newStr = malloc(i + 1 * sizeof(char));
 	if (!newStr) {
-		memoryError("func_copy cann't alloc memory for newStr\n");
+		memoryError("func_copy can't alloc memory for newStr\n");
 	}
 	for (strIndex = 0; strIndex < n; strIndex++) {
 		newStr[strIndex] = f_str[strIndex + offset];
@@ -260,10 +260,10 @@ int func_find(char *src, char *search) {
 ///////// KONIEC TOHOTO VELKEHO NEZMYSLU//////////////////////
 
 void registrBuiltins(HashTable * ht) {
-	iVar * item = NULL;
+/*	iVar * item = NULL;
 	iVar * param = malloc(sizeof(iVar));
 	if (!param) {
-		memoryError("registrBuiltins cann't alloc memory for new param\n");
+		memoryError("registrBuiltins can't allocate memory for new param\n");
 	}
 	//pro vsechny jmena HashTable_insert(ht, jmeno, &item);
 	HashTable_insert(ht, "readln", &item);
@@ -273,11 +273,35 @@ void registrBuiltins(HashTable * ht) {
 	item->val.fn->retType = iVoid;
 	param->type = iVoid;
 	iFunction_addParam(item->val.fn, param);
+*/
+	//funkcia, navratova hodnota, typ parametru
+	regFn(ht,"readln", iVoid, iVoid);  
+	regFn(ht,"write", iVoid, iVoid);
+	regFn(ht,"length", iInt, iVoid);
+	regFn(ht,"copy", iString, iInt);
+	regFn(ht,"find", iInt, iString);
+	regFn(ht,"sort", iString, iVoid);
+	
 
-
-	HashTable_insert(ht, "write", &item);
+/*	HashTable_insert(ht, "write", &item);
 	HashTable_insert(ht, "length", &item);
 	HashTable_insert(ht, "copy", &item);
 	HashTable_insert(ht, "sort", &item);
 	HashTable_insert(ht, "find", &item);
+*/
+}
+
+void regFn(HashTable * ht, char * name, tIFJ retTyp, int paramsCnt) {
+	iVar * item = NULL;
+	iVar * param = malloc(sizeof(iVar));
+	if (!param) {
+		memoryError("Can't allocate memory for new parameter\n");
+	}
+	HashTable_insert(ht, name, &item);
+	item->type = iFn;
+	item->isInitialied = true;
+	item->val.fn = iFunction__init__();
+	item->val.fn->retType = retTyp;
+	param->type = paramsCnt;
+	iFunction_addParam(item->val.fn, param);
 }
