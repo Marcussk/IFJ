@@ -1,23 +1,19 @@
-{Strednik naviac za endom}
+{Test na cislicove literaly}
 var
 	a : integer;
-	vysl : integer;
+	b : integer;
+	c : integer;
+	d : integer;
+	e : integer;
 begin
-	{ Program 1: Vypocet faktorialu (iterativne) }
-	write('Zadejte cislo pro vypocet faktorialu: ');
-	readln(a);
-	if a < 0 then
-	begin
-		write('Faktorial nelze spocitat'#10'')
-	end
-	else
-	begin
-		vysl := 1;
-		while a > 0 do
-		begin
-			vysl := vysl * a;
-			a := a - 1
-		end;
-		write('Vysledek je: ', vysl, ''#10'')
-	end
+	a := 0010;
+	write('Hodnota a je: ', a, ''#10'');
+	b := 000010.00004;
+	write('Hodnota b je: ', b, ''#10'');
+	c := 0010e-4;
+	write('Hodnota c je: ', c, ''#10'');	
+	d := 0010e+4;
+	write('Hodnota d je: ', d, ''#10'');
+	e := 1.5e4;
+	write('Hodnota e je: ', d, ''#10'')
 end.
