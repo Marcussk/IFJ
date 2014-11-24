@@ -256,7 +256,7 @@ void Interpret_run(Interpret * self) {
 					break;
 				default:
 					unimplementedError(
-					"Instr. sub is not implemented for this type\n");
+					"Instr. div is not implemented for this type\n");
 					break;
 			}
 			if (i.dest != NULL)
