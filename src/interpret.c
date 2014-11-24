@@ -116,18 +116,10 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
-				if ((pomA1.iInt) < (pomA2.iInt)) {
-					pomA3.iInt = 1;
-				} else {
-					pomA3.iInt = 0;
-				}
+				pomA3.iInt = ((pomA1.iInt) < (pomA2.iInt));
 				break;
 			case iReal:
-				if (pomA1.iReal < pomA2.iReal) {
-					pomA3.iInt = 1;
-				} else {
-					pomA3.iInt = 0;
-				}
+					pomA3.iInt = (pomA1.iReal < pomA2.iReal);
 				break;
 			case iString:
 				//[TODO]
