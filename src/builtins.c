@@ -259,7 +259,7 @@ int func_find(char *src, char *search) {
 void registrBuiltins(HashTable * ht) {
 	iVar * item = NULL;
 	iVar * param = malloc(sizeof(iVar));
-	//pro všechny jmena HashTable_insert(ht, jmeno, &item);
+	//pro vsechny jmena HashTable_insert(ht, jmeno, &item);
 	HashTable_insert(ht, "readln", &item);
 	item->type = iFn;
 	item->isInitialied = true;
