@@ -8,7 +8,7 @@ void TokenBuff__init__(TokenBuff * self, LexParser * lp) {
 
 Token TokenBuff_next(TokenBuff * self) {
 	Token ret;
-	if (self->next1 != t_empffty) {
+	if (self->next1 != t_empty) {
 		ret = self->next1;
 		self->next1 = self->next2;
 		self->next2 = t_empty;

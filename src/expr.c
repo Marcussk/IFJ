@@ -49,7 +49,7 @@ ExprToken *findTopMostTerminal(exprStack *s) {
 ExprToken *ExprTokenInit(ExprToken *token) {
 	token = malloc(sizeof(ExprToken));
 	if (!token) {
-		memoryError("ExprTokenInit cann't alloc memory\n");
+		memoryError("ExprTokenInit can't allocate memory for new token\n");
 	}
 	token->content = t_eof;
 	token->shifted = false;
@@ -80,6 +80,9 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 	exprStack *stack;
 	stack = malloc(sizeof(exprStack));
+	if (!stack) {
+		memoryError("expression can't allocate memory for new stack\n");
+	}
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);

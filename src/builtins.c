@@ -37,6 +37,9 @@ char * func_copy(char *f_str, int i, int n) {
 				"Builtin function copy cano't be performed because original string is too short\n");
 	}
 	char * newStr = malloc(i + 1 * sizeof(char));
+	if (!newStr) {
+		memoryError("func_copy cann't alloc memory for newStr\n");
+	}
 	for (strIndex = 0; strIndex < n; strIndex++) {
 		newStr[strIndex] = f_str[strIndex + offset];
 	}
@@ -259,6 +262,9 @@ int func_find(char *src, char *search) {
 void registrBuiltins(HashTable * ht) {
 	iVar * item = NULL;
 	iVar * param = malloc(sizeof(iVar));
+	if (!param) {
+		memoryError("registrBuiltins cann't alloc memory for new param\n");
+	}
 	//pro vsechny jmena HashTable_insert(ht, jmeno, &item);
 	HashTable_insert(ht, "readln", &item);
 	item->type = iFn;

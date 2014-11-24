@@ -26,7 +26,10 @@ Instruction * InstrQueue_next(InstrQueue * self) {
 }
 
 void InstrQueue_insert(InstrQueue * self, Instruction i) {
-	InstrQueueNode * newItem = malloc(sizeof(InstrQueueNode)); // [TODO] check allocation
+	InstrQueueNode * newItem = malloc(sizeof(InstrQueueNode)); 
+	if (!newItem) {
+		memoryError("InstrQueue_insert can't allocate memory for newItem");
+	}
 	newItem->val = i;
 	if (self->actual) {
 		newItem->next = self->actual->next;

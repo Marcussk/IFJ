@@ -53,6 +53,9 @@ void iVar__dell__(iVar * self) {
 
 iFunction * iFunction__init__() {
 	iFunction * self = malloc(sizeof(iFunction));
+	if (!self) {
+		memoryError("Can't allocate memory for iFunction");
+	}
 	self->body = NULL;
 	self->params = NULL;
 	self->retType = iUnknown;
@@ -62,6 +65,9 @@ iFunction * iFunction__init__() {
 
 ParamsListItem * ParamsListItem__init__() {
 	ParamsListItem * self = malloc(sizeof(ParamsListItem));
+	if (!self) {
+		memoryError("Can't allocate memory for ParamsListItem");
+	}
 	self->param = NULL;
 	self->next = NULL;
 	return self;
