@@ -42,9 +42,9 @@ typedef enum {
 	t_false,
 	t_func,
 	t_if,
-	t_then, //30
+	t_then,
 	t_true, 
-	t_var,
+	t_var, //30
 	t_while,
 
 	t_period,
@@ -53,9 +53,9 @@ typedef enum {
 	t_pointer,
 	t_lBracket,
 	t_rBracket,
-	t_asigment, //40
+	t_asigment,
 	t_doubleDot,
-	t_lcBracket, //others
+	t_lcBracket, //others 40
 	t_rcBracket,
 	t_num_int,
 	t_num_real,
