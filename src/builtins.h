@@ -14,7 +14,7 @@ typedef enum {
 
 void registrBuiltins(HashTable * ht);
 
-int readLn(iVar * var);
+int readLn(iVal *a1, tIFJ type);
 
 void write(tIFJ type, iVal a1);
 int func_len(char * str);

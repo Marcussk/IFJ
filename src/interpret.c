@@ -96,7 +96,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
-					pomA3.iInt = (pomA1.iInt > pomA2.iInt);
+				pomA3.iInt = (pomA1.iInt > pomA2.iInt);
 				break;
 			case iReal:
 				pomA3.iInt = (pomA1.iReal > pomA2.iReal);
@@ -119,7 +119,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = ((pomA1.iInt) < (pomA2.iInt));
 				break;
 			case iReal:
-					pomA3.iInt = (pomA1.iReal < pomA2.iReal);
+				pomA3.iInt = (pomA1.iReal < pomA2.iReal);
 				break;
 			case iString:
 				//[TODO]
@@ -270,6 +270,10 @@ void Interpret_run(Interpret * self) {
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
+		case i_read:
+			    readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
+
+				break;
 		case i_push:
 			if (i.type == iStackRef) {
 				iStack_push(&(self->stack),
@@ -357,20 +361,20 @@ void Interpret_test4() {
 
 	InstrParam a, b, c;
 	a.iString = "fsdfsd";
-	b.iInt = 20;
-
+	b.iReal = 0;
+	c.iReal = 0;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
 	InstrQueue_insert(&instr,
-			(Instruction ) { i_push, iString, &c, NULL, NULL });
-	InstrQueue_insert(&instr,
-			(Instruction ) { i_push, iString, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_assign, iString, &a, &b, &c });
+			(Instruction ) { i_push, iReal, &c, NULL, NULL });
+	//InstrQueue_insert(&instr,
+	//		(Instruction ) { i_push, iString, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_read, iReal, NULL, NULL, &c });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("%s  \n", (iStack_pop(&(intr.stack))).iString);
+	printf("\n %d  \n", (iStack_pop(&(intr.stack))).iReal);
 
 }
