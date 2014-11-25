@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include "errorHandler.h"
 #include "ifjTypes.h"
 #include "hashTable.h"
 #include <stdarg.h>
+
 
 typedef enum {
 	b_readLn, b_write, b_func_len, b_func_copy, b_func_sort
