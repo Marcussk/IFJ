@@ -27,8 +27,6 @@ typedef struct exprtoken{
 	ExprDataType datatype;
 } ExprToken;
 
-void expression(TokenBuff * tokenBuff, InstrQueue * istructions);
-
 DECLARE_STACK(expr, ExprToken);
 
 #endif

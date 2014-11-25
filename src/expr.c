@@ -31,6 +31,27 @@ int getTokenType(Token token) {
 	};
 }
 
+ExprToken *ExprTokenInit(ExprToken *token) {
+	token = malloc(sizeof(ExprToken));
+	if (!token) {
+		memoryError("ExprTokenInit can't allocate memory for new token\n");
+	}
+	token->content = t_eof;
+	token->shifted = false;
+	token->type = terminal;
+	token->datatype = none;
+	return token;
+}
+
+void ExprInit(exprStack *stack) {
+	exprStack__init__(stack);
+	ExprEndToken = ExprTokenInit(ExprEndToken);
+	ExprLastToken = ExprTokenInit(ExprLastToken);
+	exprStack_push(stack, *ExprEndToken);
+}
+
+
+
 void tokenToExpr(ExprToken *Expr, Token token) {
 	Expr->content = tokenToChar(token); //tokenToChar(token);
 	Expr->type = terminal;
@@ -46,16 +67,47 @@ ExprToken *findTopMostTerminal(exprStack *s) {
 	}
 	return NULL;
 }
-ExprToken *ExprTokenInit(ExprToken *token) {
-	token = malloc(sizeof(ExprToken));
-	if (!token) {
-		memoryError("ExprTokenInit can't allocate memory for new token\n");
+int getStackPos(exprStack *stack, ExprToken *token)
+{
+	if(!stack->top)
+		return 0;
+	int i = 1;
+	exprStackNodeT *tmp = stack->top;
+	while(!tmp)
+		if (tmp->next == NULL)
+			return 0;
+		if (&(tmp->data) == token)
+			return i;
+		i++;
+		tmp = tmp->next;
+}
+
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
+{
+	switch (TopMostTerminal->content)
+	{
+		case t_id:
+			printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
+			TopMostTerminal->type = nonterminal;
+			//TopMostTerminal->shifted = false;
+			break;
+		case t_plus:
+		case t_minus:
+		case t_asterisk:
+		case t_slash:
+		case t_less:
+		case t_greater:
+		case t_lessOrEqv:
+		case t_greaterOrEqv:
+		case t_eqv:
+		case t_notEqv:
+			printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
+			if (getStackPos(stack, TopMostTerminal) < 3)
+				printf("syntax error - not enought operands\n");
+			getchar();
+			break;
 	}
-	token->content = t_eof;
-	token->shifted = false;
-	token->type = terminal;
-	token->datatype = none;
-	return token;
+
 }
 
 void printStack(exprStack *self) {
@@ -65,21 +117,6 @@ void printStack(exprStack *self) {
 				itr->data.content, itr->data.type, itr->data.datatype,
 				itr->data.shifted);
 		itr = itr->next;
-	}
-}
-
-void ExprInit(exprStack *stack) {
-	exprStack__init__(stack);
-	ExprEndToken = ExprTokenInit(ExprEndToken);
-	ExprLastToken = ExprTokenInit(ExprLastToken);
-	exprStack_push(stack, *ExprEndToken);
-}
-void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
-{
-	switch (TopMostTerminal->content)
-	{
-		case t_id:
-			TopMostTerminal->type = nonterminal;
 	}
 }
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
@@ -92,17 +129,13 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 	ExprInit(stack);
 
-	Token lastToken;
+	Token lastToken = TokenBuff_next(tokenBuff);
+	tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
 	unsigned int endOfInput = 0;  // Flag for end of input -> when we get keyword or semicolon
 
 	while(1)
 	{
-		if (!endOfInput){ // get next token safely,
-			lastToken = TokenBuff_next(tokenBuff);
-			endOfInput = (Token_isKeyword(lastToken) || lastToken == t_scolon);
-			tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
-		}
-
+		endOfInput = (Token_isKeyword(lastToken) || lastToken == t_scolon);
 		TopMostTerminal = findTopMostTerminal(stack);
 
 		if (endOfInput){ // Input has ended, from now, current token will always be '$'
@@ -121,24 +154,30 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 				printf("shift\n");
 				TopMostTerminal->shifted = true;
 				exprStack_push(stack, *ExprLastToken);
+				lastToken = TokenBuff_next(tokenBuff);
+				tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
 				break;
 				// Vloz zacatek handle
 			case equal:
 				printf("equal\n");
 				exprStack_push(stack, *ExprLastToken);
+				lastToken = TokenBuff_next(tokenBuff);
+				tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
 				// push ExprLastToken
 				break;
 			case reduce:
 				// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
 				// a zredukuj
 				reduceRule(stack, TopMostTerminal);
+				TopMostTerminal = findTopMostTerminal(stack);
+				TopMostTerminal->shifted = false;
 				printf("reduce\n");
 				break;
 			case error:
 				printf("error\n");
-				if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
+				/*if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
 					ExprLastToken->content == t_id)) // maybe useless condition, will be removed later
-					break;
+					break;*/
 				syntaxError("Expression Error", tokenBuff->lp->lineNum, "s");
 
 			// Zahlas syntaktickou chybu
