@@ -181,7 +181,6 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_sub:
-			iStack_debug(&self->stack);
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
@@ -247,7 +246,6 @@ void Interpret_run(Interpret * self) {
 		case i_assign:
 			if (i.type != iString) {
 				pomA1 = iStack_pop(&(self->stack));
-				//iStack_debug(&self->stack);
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 				break;
 			} else {
@@ -360,12 +358,12 @@ void Interpret_test3() {
 	InstrQueue_insert(&instr, (Instruction ) { i_jmp, iInt, NULL, NULL, &d2  });
 
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });//10
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_sub, iInt, &a, &b, &c });
 
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &f, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL }); //14
 
 
 

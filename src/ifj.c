@@ -17,8 +17,7 @@
 #include "interpret.h"
 
 int main(int argc, char *argv[]) {
-	Interpret_test3();
-	/*LexParser lexParser;
+	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	Interpret interpret;
 	if (argc != 2) {
@@ -37,6 +36,6 @@ int main(int argc, char *argv[]) {
 			Interpret__dell__(&interpret);
 		}
 	}
-*/
+
 	return EXIT_SUCCESS;
 }
