@@ -101,6 +101,6 @@ void Interpret_test4() {
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-//	printf("\n %f  \n", (iStack_pop(&(intr.stack)))->iReal);
+	printf("\n %f  \n", (iStack_pop(&(intr.stack))).iReal);
 
 }
