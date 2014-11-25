@@ -67,6 +67,7 @@ ExprToken *findTopMostTerminal(exprStack *s) {
 	}
 	return NULL;
 }
+/*
 int getStackPos(exprStack *stack, ExprToken *token)
 {
 	if(!stack->top)
@@ -81,13 +82,14 @@ int getStackPos(exprStack *stack, ExprToken *token)
 		i++;
 		tmp = tmp->next;
 }
+*/
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
 {
 	switch (TopMostTerminal->content)
 	{
 		case t_id:
-			printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
+			//printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
 			TopMostTerminal->type = nonterminal;
 			//TopMostTerminal->shifted = false;
 			break;
@@ -101,10 +103,13 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
 		case t_greaterOrEqv:
 		case t_eqv:
 		case t_notEqv:
-			printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
+			/*printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
 			if (getStackPos(stack, TopMostTerminal) < 3)
-				printf("syntax error - not enought operands\n");
-			getchar();
+				printf("syntax error - not enough operands\n");
+			*/
+			printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
+			unimplementedError(
+					"Operations with 2 operands not implemented\n");
 			break;
 	}
 
@@ -168,10 +173,10 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			case reduce:
 				// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
 				// a zredukuj
+				printf("reduce\n");
 				reduceRule(stack, TopMostTerminal);
 				TopMostTerminal = findTopMostTerminal(stack);
 				TopMostTerminal->shifted = false;
-				printf("reduce\n");
 				break;
 			case error:
 				printf("error\n");
