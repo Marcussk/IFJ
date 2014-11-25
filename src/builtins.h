@@ -28,6 +28,6 @@ int alfabeth_len(int src_len, char *src );
 void bad_char(char *pattern, int bad_character[], int max_src_len );
 void  good_suffixes( char *pattern, int good_suffix[]);
 void suffixes(char* pattern, int suffix[], int max_pattern_len);
-void regFn(HashTable * ht, char * name, tIFJ retTyp, int paramsCnt);
+void regFn(HashTable * ht, char * name, tIFJ retTyp, int paramsCnt,...);
 
 #endif
