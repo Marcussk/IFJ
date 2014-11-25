@@ -80,7 +80,7 @@ void Interpret_test3() {
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
+printf("%d interpret test end \n", (iStack_pop(&(intr.stack))));
 
 }
 void Interpret_test4() {
