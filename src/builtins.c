@@ -48,17 +48,21 @@ char * func_copy(char *f_str, int i, int n) {
 }
 
 int readLn(iVal *a1, tIFJ type) {
+	char * str;
 	switch (type) {
 	case iInt:
-		return scanf("%d", a1->iInt);
+		return scanf("%d", &(a1->iInt));
 	case iReal:
-		return scanf("%f", a1->iReal);
+		return scanf("%f", &(a1->iReal));
 	case iString:
+		str = calloc(sizeof(char), 256);
+		a1->iString = str;
+		// [TODO] 1. new string, 2. while ch != '\n'; String_append(ch); ch = getChar() // because strlen is unknown so array have to be dynamic
 		return scanf("%s", a1->iString);
 	case iChar:
-		return scanf("%d", a1->iInt);
+		return scanf("%d", &(a1->iInt));
 	case iBool:
-		//[TODO] ERROR
+		unimplementedError("readLn not implemented for bool");
 		return 0;
 	default:
 		rt_readlnNumError();
