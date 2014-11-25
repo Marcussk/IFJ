@@ -1,5 +1,5 @@
-#ifndef INSTRUCTION_h
-#define INSTRUCTION_h
+#ifndef TESTSINTERPRET_h
+#define TESTSINTERPRET_h
 
 #include "interpret.h"
 
