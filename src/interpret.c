@@ -2,28 +2,12 @@
 
 IMPLEMENT_STACK(i, iVal)
 
-iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
-	iVal v;
-	if (!a) {
-		v.iInt = 0;
-		return v;
+void iStack_debug(iStack * s){
+	int i;
+	printf("<stack %p, size: %d>\n", (void *) s, s->size);
+	for(i=0 ; i<s->size; i++){
+		printf("%d: %d\n", i , (*iStack_getAt(s, i)).iInt);
 	}
-	switch (type) {
-	case iInt:
-		v.iInt = a->iInt;
-		break;
-	case iString:
-		v.iString = a->iString;
-		break;
-	case iReal:
-		v.iReal = a->iReal;
-		break;
-	default:
-		unimplementedError(
-				"Unimplemented cast in InstrP2iVal for the interpret\n");
-	}
-
-	return v;
 }
 
 void Interpret__init__(Interpret * self, InstrQueue instructions) {
@@ -176,8 +160,6 @@ void Interpret_run(Interpret * self) {
 			}
 			iStack_push(&(self->stack), pomA3);
 			break;
-		case i_stop:
-			return;
 		case i_add:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
@@ -265,6 +247,7 @@ void Interpret_run(Interpret * self) {
 		case i_assign:
 			if (i.type != iString) {
 				pomA1 = iStack_pop(&(self->stack));
+				//iStack_debug(&self->stack);
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 				break;
 			} else {
@@ -287,6 +270,8 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
+		case i_stop:
+			return;
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}
@@ -303,6 +288,12 @@ void Interpret__dell__(Interpret * self) {
 	 iStack__dell__(&self->stack);
 	 */
 }
+
+
+
+
+
+
 
 void Interpret_test1() {
 	InstrParam a, b;
@@ -404,6 +395,6 @@ void Interpret_test4() {
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("\n %d  \n", (iStack_pop(&(intr.stack))).iReal);
+	printf("\n %f  \n", (iStack_pop(&(intr.stack))).iReal);
 
 }

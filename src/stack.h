@@ -38,18 +38,19 @@ void namePrefix##Stack_push(namePrefix##Stack * self, stackElementT data) {    \
 stackElementT namePrefix##Stack_pop(namePrefix##Stack * self) {                \
 	stackElementT data;                                                        \
 	namePrefix##StackNodeT * tmp = self->top;                                  \
+    if(!tmp) rt_error("Stack underflow");                                      \
 	data = self->top->data;                                                    \
 	self->top = self->top->next;                                               \
-	free(tmp);                                                                 \
+	self->size --;                                                             \
+    free(tmp);                                                                 \
 	return data;                                                               \
 }                                                                              \
                                                                                \
 stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index) { \
 	int i;                                                                     \
-	int offset = self->size - index -1;                                        \
 	namePrefix##StackNodeT * tmp = self->top;                                  \
-                                                                               \
-	for(i=0; i<offset; i++)                                                    \
+    if(index >= self->size)  rt_error("Stack invalid access");            \
+	for(i=self->size -1; i<index; i--)                                         \
 		tmp= tmp->next;                                                        \
 	return &(tmp->data);                                                       \
 }                                                                              \
