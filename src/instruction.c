@@ -54,3 +54,27 @@ Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 	}
 	return &(self->actual)->val;
 }
+
+iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
+	iVal v;
+	if (!a) {
+		v.iInt = 0;
+		return v;
+	}
+	switch (type) {
+	case iInt:
+		v.iInt = a->iInt;
+		break;
+	case iString:
+		v.iString = a->iString;
+		break;
+	case iReal:
+		v.iReal = a->iReal;
+		break;
+	default:
+		unimplementedError(
+				"Unimplemented cast in InstrP2iVal for the interpret\n");
+	}
+
+	return v;
+}

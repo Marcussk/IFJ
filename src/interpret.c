@@ -2,28 +2,12 @@
 
 IMPLEMENT_STACK(i, iVal)
 
-iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
-	iVal v;
-	if (!a) {
-		v.iInt = 0;
-		return v;
+void iStack_debug(iStack * s){
+	int i;
+	printf("<stack %p, size: %d>\n", (void *) s, s->size);
+	for(i=0 ; i<s->size; i++){
+		printf("%d: %d\n", i , (*iStack_getAt(s, i)).iInt);
 	}
-	switch (type) {
-	case iInt:
-		v.iInt = a->iInt;
-		break;
-	case iString:
-		v.iString = a->iString;
-		break;
-	case iReal:
-		v.iReal = a->iReal;
-		break;
-	default:
-		unimplementedError(
-				"Unimplemented cast in InstrP2iVal for the interpret\n");
-	}
-
-	return v;
 }
 
 void Interpret__init__(Interpret * self, InstrQueue instructions) {
@@ -36,7 +20,7 @@ void Interpret_run(Interpret * self) {
 	iVal pomA1;
 	iVal pomA2;
 	iVal pomA3;
-
+	bool jump = false;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
@@ -46,10 +30,15 @@ void Interpret_run(Interpret * self) {
 		case i_noop:
 			break;
 		case i_jmp:
-			unimplementedError("JMP is not implemented yet");
+			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+			jump = true;
 			break;
 		case i_jmpz:
-			unimplementedError("JMPZ is not implemented yet");
+			pomA1 = iStack_pop(&(self->stack));
+			if(pomA1.iInt){
+				InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+			}
+			jump = true;
 			break;
 		case i_equal:
 			pomA1 = iStack_pop(&(self->stack));
@@ -171,8 +160,6 @@ void Interpret_run(Interpret * self) {
 			}
 			iStack_push(&(self->stack), pomA3);
 			break;
-		case i_stop:
-			return;
 		case i_add:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
@@ -260,6 +247,7 @@ void Interpret_run(Interpret * self) {
 		case i_assign:
 			if (i.type != iString) {
 				pomA1 = iStack_pop(&(self->stack));
+				//iStack_debug(&self->stack);
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 				break;
 			} else {
@@ -282,10 +270,15 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
+		case i_stop:
+			return;
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}
+		if(!jump)
 		InstrQueue_next(&(self->instructions));
+		else
+			jump = false;
 	}
 }
 
@@ -295,6 +288,12 @@ void Interpret__dell__(Interpret * self) {
 	 iStack__dell__(&self->stack);
 	 */
 }
+
+
+
+
+
+
 
 void Interpret_test1() {
 	InstrParam a, b;
@@ -338,10 +337,13 @@ void Interpret_test2() {
 
 void Interpret_test3() {
 
-	InstrParam a, b, c;
-	a.iString = "kanonk";
-	b.iString = "kanon";
+	InstrParam a, b, c, d1, d2, f;
+	a.iInt = 20;
+	b.iInt = 15;
 	c.iInt = 20;
+	d1.iInt = 10;
+	d2.iInt = 14;
+	f.iInt = 10;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
@@ -349,12 +351,30 @@ void Interpret_test3() {
 	//InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
-	InstrQueue_insert(&instr,
-			(Instruction ) { i_moreq, iString, &a, &b, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_less, iInt, &a, &b, NULL });
+
+	InstrQueue_insert(&instr, (Instruction ) { i_jmpz, iInt, NULL, NULL, &d1  });
+
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_add, iInt, &a, &b, &c });
+
+	InstrQueue_insert(&instr, (Instruction ) { i_jmp, iInt, NULL, NULL, &d2  });
+
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_sub, iInt, &a, &b, &c });
+
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &f, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL });
+
+
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
+//	printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
 
 }
 void Interpret_test4() {
@@ -375,6 +395,6 @@ void Interpret_test4() {
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("\n %d  \n", (iStack_pop(&(intr.stack))).iReal);
+	printf("\n %f  \n", (iStack_pop(&(intr.stack))).iReal);
 
 }
