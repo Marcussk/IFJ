@@ -284,12 +284,6 @@ void Interpret__dell__(Interpret * self) {
 	 */
 }
 
-
-
-
-
-
-
 void Interpret_test1() {
 	InstrParam a, b;
 	a.iInt = 8;
