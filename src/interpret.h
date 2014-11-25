@@ -5,6 +5,7 @@
 #include "stack.h"
 #include "builtins.h"
 #include "errorHandler.h"
+#include <stdbool.h>
 
 DECLARE_STACK(i, iVal);
 
