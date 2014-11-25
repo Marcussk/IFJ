@@ -235,8 +235,6 @@ void Interpret_run(Interpret * self) {
 			}
 			iStack_push(&(self->stack), pomA3);
 			break;
-		case i_stop:
-			return;
 		case i_add:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
@@ -390,6 +388,8 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
+		case i_stop:
+			return;
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}
