@@ -16,7 +16,6 @@ C_SRCS += \
 ../src/interpret.c \
 ../src/lexParser.c \
 ../src/parserTables.c \
-../src/stack.c \
 ../src/strRoutines.c \
 ../src/syntaxAnalyzer.c \
 ../src/tokenBuff.c \
@@ -35,7 +34,6 @@ OBJS += \
 ./src/interpret.o \
 ./src/lexParser.o \
 ./src/parserTables.o \
-./src/stack.o \
 ./src/strRoutines.o \
 ./src/syntaxAnalyzer.o \
 ./src/tokenBuff.o \
@@ -54,7 +52,6 @@ C_DEPS += \
 ./src/interpret.d \
 ./src/lexParser.d \
 ./src/parserTables.d \
-./src/stack.d \
 ./src/strRoutines.d \
 ./src/syntaxAnalyzer.d \
 ./src/tokenBuff.d \
