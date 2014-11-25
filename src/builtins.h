@@ -8,6 +8,7 @@
 #include "errorHandler.h"
 #include "ifjTypes.h"
 #include "hashTable.h"
+#include <stdarg.h>
 
 
 typedef enum {

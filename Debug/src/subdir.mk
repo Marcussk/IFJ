@@ -3,6 +3,17 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/buffFile.o \
+../src/errorHandler.o \
+../src/gerator3AC.o \
+../src/hashTable.o \
+../src/ifjTypes.o \
+../src/instruction.o \
+../src/lexParser.o \
+../src/tokenBuff.o \
+../src/tokenMap.o 
+
 C_SRCS += \
 ../src/buffFile.c \
 ../src/builtins.c \

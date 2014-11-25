@@ -68,5 +68,6 @@ Instruction * InstrQueue_next(InstrQueue * self);
 void InstrQueue_insert(InstrQueue * self, Instruction i);
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
 iVal inline InstrP2iVal(InstrParam * a, tIFJ type);
+void InstrQueue_debug(InstrQueue * self);
 
 #endif

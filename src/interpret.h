@@ -18,4 +18,6 @@ void Interpret__init__(Interpret * self, InstrQueue instructions);
 void Interpret_run(Interpret * self);
 void Interpret__dell__(Interpret * self);
 
+void Interpret_test3();
+
 #endif
