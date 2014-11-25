@@ -291,17 +291,24 @@ void registrBuiltins(HashTable * ht) {
 */
 }
 
-void regFn(HashTable * ht, char * name, tIFJ retTyp, int paramsCnt) {
-	iVar * item = NULL;
-	iVar * param = malloc(sizeof(iVar));
-	if (!param) {
-		memoryError("Can't allocate memory for new parameter\n");
+void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
+	va_list valist;
+	va_start(valist, paramsCnt);
+	int i;
+	for (i = 0; i < paramsCnt; i++) {
+		iVar * item = NULL;
+		iVar * param = malloc(sizeof(iVar));
+		if (!param) {
+			memoryError("Can't allocate memory for new parameter\n");
+		}
+		HashTable_insert(ht, name, &item);
+		item->type = iFn;
+		item->isInitialied = true;
+		item->val.fn = iFunction__init__();
+		item->val.fn->retType = retTyp;
+	
+		param->type = va_arg(valist, tIFJ);
+		iFunction_addParam(item->val.fn, param);
 	}
-	HashTable_insert(ht, name, &item);
-	item->type = iFn;
-	item->isInitialied = true;
-	item->val.fn = iFunction__init__();
-	item->val.fn->retType = retTyp;
-	param->type = paramsCnt;
-	iFunction_addParam(item->val.fn, param);
+	va_end(valist);
 }
