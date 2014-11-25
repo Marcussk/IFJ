@@ -119,7 +119,7 @@ TokenMapElement * TokenMap_newLevel() {
 	TokenMapElement * newArr = malloc(
 	TOKENMAP_NODESIZE * sizeof(TokenMapElement));
 	if (!newArr)
-		memoryError("Cant allocate new level of tokenMap");
+		memoryError("Can't allocate new level of tokenMap");
 
 	for (i = 0; i < TOKENMAP_NODESIZE; i++) {
 		newArr[i].next = NULL;

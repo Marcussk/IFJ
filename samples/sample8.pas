@@ -1,19 +1,21 @@
-{Test na cislicove literaly}
+{ Program 3: Prace s retezci a vestavenymi funkcemi }
 var
-	a : integer;
-	b : integer;
-	c : integer;
-	d : integer;
-	e : integer;
+str1 : string;
+str2 : string;
+10n : integer;
 begin
-	a := 0010;
-	write('Hodnota a je: ', a, ''#10'');
-	b := 000010.00004;
-	write('Hodnota b je: ', b, ''#10'');
-	c := 0010e-4;
-	write('Hodnota c je: ', c, ''#10'');	
-	d := 0010e+4;
-	write('Hodnota d je: ', d, ''#10'');
-	e := 1.5e4;
-	write('Hodnota e je: ', d, ''#10'')
+str1 := ’Toto je nejaky text’;
+str2 := copy(str1, 9, 11);
+write(str1, ’’#10’’, str2, ’’#10’’);
+n := find(str2, ’text’);
+write(’Pozice retezce "text" v str2: ’, n, ’’#10’’);
+write(’Zadejte posloupnost vsech malych pismen a-h, ’,
+’aby se pismena v posloupnosti neopakovala:’);
+readln(str1);
+str2 := sort(str1);
+while str2 <> ’abcdefgh’ do
+begin
+write(’Spatne zadana posloupnost, zkuste znovu:’#10’’);
+readln(str1);
+str2 := sort(str1)
 end.

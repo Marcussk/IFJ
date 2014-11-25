@@ -22,7 +22,7 @@ void TokenBuff_pushBack(TokenBuff * self, Token t) {
 			self->next2 = self->next1;
 			self->next1 = t;
 		} else
-			syntaxError("Cann't bushback so many tockens", self->lp->lineNum,
+			syntaxError("Can't pushback so many tokens", self->lp->lineNum,
 					getTokenName(t));
 	} else {
 		self->next1 = t;

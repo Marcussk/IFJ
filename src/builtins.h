@@ -14,7 +14,7 @@ typedef enum {
 
 void registrBuiltins(HashTable * ht);
 
-int readLn(iVar * var);
+int readLn(iVal *a1, tIFJ type);
 
 void write(tIFJ type, iVal a1);
 int func_len(char * str);
@@ -28,5 +28,6 @@ int alfabeth_len(int src_len, char *src );
 void bad_char(char *pattern, int bad_character[], int max_src_len );
 void  good_suffixes( char *pattern, int good_suffix[]);
 void suffixes(char* pattern, int suffix[], int max_pattern_len);
+void regFn(HashTable * ht, char * name, tIFJ retTyp, int paramsCnt);
 
 #endif
