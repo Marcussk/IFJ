@@ -1,4 +1,4 @@
-#include "interpret.h"
+#include "testsinterpret.h"
 
 
 void Interpret_test1() {

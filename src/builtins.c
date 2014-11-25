@@ -307,7 +307,7 @@ void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
 	item->val.fn->retType = retTyp;
 		
 	for (i = 0; i < paramsCnt; i++) {
-		iVar * param = malloc(sizeof(iVar));
+		iVar * param =  malloc(sizeof(iVar));
 		if (!param) {
 			memoryError("Can't allocate memory for new parameter\n");
 		}

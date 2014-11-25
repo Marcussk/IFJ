@@ -17,6 +17,11 @@ typedef struct {                                                               \
 	namePrefix##StackNodeT *top;                                               \
 	int size;                                                                  \
 } namePrefix##Stack;                                                           \
+void namePrefix##Stack__init__(namePrefix##Stack * self);                      \
+void namePrefix##Stack_push(namePrefix##Stack * s, stackElementT data) ;       \
+stackElementT namePrefix##Stack_pop(namePrefix##Stack * s);                    \
+stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index);  \
+
 
 #define IMPLEMENT_STACK(namePrefix, stackElementT)                             \
                                                                                \
@@ -54,12 +59,6 @@ stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index) { \
 		tmp= tmp->next;                                                        \
 	return &(tmp->data);                                                       \
 }                                                                              \
-                                                                               \
-/*\
-void namePrefix##Stack__init__(Stack * self);          \
-void namePrefix##Stack_push(Stack * s, stackElementT data) ;       \
-stackElementT namePrefix##Stack_pop(Stack * s);                    \
-stackElementT * namePrefix##Stack_getAt(Stack * self, int index);  \
-*/
+
 
 #endif
