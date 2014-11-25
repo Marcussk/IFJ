@@ -25,8 +25,29 @@ Instruction * InstrQueue_next(InstrQueue * self) {
 	return NULL; // [TODO] we probably wont there an error
 }
 
+void InstrQueue_debug(InstrQueue * self) {
+	InstrQueueNode * item = self->actual;
+	Instruction instr;
+	int i = 0;
+	self->actual = self->first;
+
+	while (self->actual) {
+		instr = self->actual->val;
+		if (self->actual == item)
+			printf("->");
+		else
+			printf("  ");
+		printf("%d code %d type %d, a1 %p, a2 %p, dest %p\n", i, instr.code,
+				instr.type, instr.a1, instr.a2, instr.dest);
+		i++;
+		self->actual = self->actual->next;
+	}
+	self->actual = item;
+
+}
+
 void InstrQueue_insert(InstrQueue * self, Instruction i) {
-	InstrQueueNode * newItem = malloc(sizeof(InstrQueueNode)); 
+	InstrQueueNode * newItem = malloc(sizeof(InstrQueueNode));
 	if (!newItem) {
 		memoryError("InstrQueue_insert can't allocate memory for newItem");
 	}
@@ -35,7 +56,7 @@ void InstrQueue_insert(InstrQueue * self, Instruction i) {
 		newItem->next = self->actual->next;
 		self->actual->next = newItem;
 	}
-	if (!self->first){
+	if (!self->first) {
 		self->first = newItem;
 		newItem->next = NULL;
 	}
@@ -46,9 +67,9 @@ void InstrQueue_insert(InstrQueue * self, Instruction i) {
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 	int i;
 	self->actual = self->first;
-	for (i = 0; i < index; i++){
-		if(!self->actual){
-			// [TODO] InstrQueue_atIndex out of size
+	for (i = 0; i < index; i++) {
+		if (!self->actual) {
+			rt_error("InstrQueue_atIndex out of index");
 		}
 		self->actual = self->actual->next;
 	}

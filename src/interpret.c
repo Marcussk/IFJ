@@ -20,7 +20,6 @@ void Interpret_run(Interpret * self) {
 	iVal pomA1;
 	iVal pomA2;
 	iVal pomA3;
-	bool jump = false;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
@@ -31,14 +30,14 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_jmp:
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
-			jump = true;
+			continue;
 			break;
 		case i_jmpz:
 			pomA1 = iStack_pop(&(self->stack));
-			if(pomA1.iInt){
+			if(pomA1.iInt == 0){
 				InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+				continue;
 			}
-			jump = true;
 			break;
 		case i_equal:
 			pomA1 = iStack_pop(&(self->stack));
@@ -182,6 +181,7 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_sub:
+			iStack_debug(&self->stack);
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
@@ -275,10 +275,7 @@ void Interpret_run(Interpret * self) {
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}
-		if(!jump)
 		InstrQueue_next(&(self->instructions));
-		else
-			jump = false;
 	}
 }
 
@@ -340,7 +337,7 @@ void Interpret_test3() {
 	InstrParam a, b, c, d1, d2, f;
 	a.iInt = 20;
 	b.iInt = 15;
-	c.iInt = 20;
+	c.iInt = 30;
 	d1.iInt = 10;
 	d2.iInt = 14;
 	f.iInt = 10;
