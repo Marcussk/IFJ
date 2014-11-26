@@ -84,12 +84,26 @@ int getStackPos(exprStack *stack, ExprToken *token)
 }
 */
 
+int findHandle(exprStack * stack) {\
+	int i = 0;
+	exprStackNodeT * tmp = stack->top;
+	while (tmp != NULL)
+	{
+		i++;
+		if (tmp->data.shifted)
+			return i;
+		tmp = tmp->next;
+	}
+	return 0;
+
+}
+
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
 {
 	switch (TopMostTerminal->content)
 	{
 		case t_id:
-			//printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
+			printf("STACK POSITION = %d\n", findHandle(stack));
 			TopMostTerminal->type = nonterminal;
 			//TopMostTerminal->shifted = false;
 			break;
@@ -103,8 +117,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
 		case t_greaterOrEqv:
 		case t_eqv:
 		case t_notEqv:
-			/*printf("STACK POSITION = %d\n", getStackPos(stack, TopMostTerminal));
-			if (getStackPos(stack, TopMostTerminal) < 3)
+			printf("STACK POSITION = %d\n", findHandle(stack));
+			/*if (getStackPos(stack, TopMostTerminal) < 3)
 				printf("syntax error - not enough operands\n");
 			*/
 			printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
