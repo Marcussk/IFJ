@@ -169,6 +169,11 @@ void Interpret_run(Interpret * self) {
 			case iReal:
 				pomA3.iReal = pomA2.iReal + pomA1.iReal;
 				break;
+			case iString:
+				pomA3.iString = malloc((strlen(pomA1.iString) + strlen(pomA1.iString) +1)*sizeof(char));
+				strcpy(pomA3.iString, pomA1.iString);
+				strcat(pomA3.iString, pomA2.iString);
+				break;
 			default:
 				unimplementedError(
 						"Instr. add is not implemented for this type\n");
@@ -257,7 +262,7 @@ void Interpret_run(Interpret * self) {
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
-		case i_read:
+		case i_readln:
 			    readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
 
 				break;
@@ -283,20 +288,11 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
-		case i_concat:
-					pomA1=iStack_pop(&(self->stack));
-					pomA2=iStack_pop(&(self->stack));
-
-					pomA3.iString = malloc((strlen(pomA1.iString) + strlen(pomA1.iString) +1)*sizeof(char));
-
-					strcpy(pomA3.iString, pomA1.iString);
-					strcat(pomA3.iString, pomA2.iString);
-					if (i.dest != NULL)
-							 *iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
-					else
-							 iStack_push(&(self->stack), pomA3);
-
-					break;
+		case i_int2real:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2.iReal = pomA1.iInt;
+			iStack_push(&(self->stack), pomA2);
+			break;
 		case i_stop:
 			return;
 		default:

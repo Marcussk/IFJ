@@ -28,6 +28,7 @@ typedef enum {
 	t_comma,
 	t_eof,
 	t_id,
+	t_func,
 
 	t_boolean=16,
 	t_integer,
@@ -40,13 +41,12 @@ typedef enum {
 	t_else,
 	t_end,
 	t_false,
-	t_func,
+
 	t_if,
 	t_then,
 	t_true, 
 	t_var, //30
 	t_while,
-
 	t_period,
 	t_colon,
 	t_scolon,
