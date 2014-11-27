@@ -15,14 +15,16 @@ char * getExprTokenName(ExprToken t) {
 }
 
 Token getTokenContent(Token token, iVar* var) {
-	if (var->type == iFn)
-		return t_func;
-
 	switch (token) {
 	case t_num_int:
 	case t_num_real:
 	case t_str_val:
 		return t_id;
+	case t_id:
+		if (var->type == iFn)
+			return t_func;
+		else
+			return t_id;
 	default:
 		return token;
 	}
@@ -128,11 +130,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff) {
 	ExprToken operand1, operator, operand2, result;
 	Token cont = TopMostTerminal->content;
+	printf("-----%d\n", cont);
 	switch (cont) {
 	case t_id:
-		//printf("STACK POSITION = %d\n", findHandle(stack));
 		TopMostTerminal->type = nonterminal;
-		//TopMostTerminal->shifted = false;
 		// [TODO] instr pop
 		break;
 	case t_plus:
@@ -179,6 +180,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
 		break;
+	case t_rParenthessis:
+		unimplementedError("Right parenthesis not implented yet");
+		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
 	}
@@ -199,6 +203,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
 		TopMostTerminal = findTopMostTerminal(stack);
+		printf("prtable indexes [%d][%d]\n", TopMostTerminal->content, ExprLastToken.content);
 		switch (prTable[TopMostTerminal->content][ExprLastToken.content]) {
 		case shift:		// Vloz zacatek handle
 			printf("shift\n");
