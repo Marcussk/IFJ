@@ -11,6 +11,11 @@
 #include "parserTables.h"
 #include "tokenBuff.h"
 
+/*
+ *
+ * findhandle not used initialization, but use of unitialized (badly written initializer)
+ *
+ * */
 
 typedef enum {
 	terminal, nonterminal
@@ -22,7 +27,7 @@ typedef enum {
 } ExprDataType;*/
 
 typedef struct exprtoken{
-	unsigned int content; // contains terminal converted to a single char - terminal or E
+	Token content; // contains terminal converted to a single char - terminal or E
 	iVar * id; // contains variable to use or function to call
 	iVal * value;
 	bool shifted;

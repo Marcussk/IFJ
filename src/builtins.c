@@ -3,7 +3,6 @@
 // to make this use: gcc func.c errorHandler.c ifjTypes.h ifjTypes.c
 
 int func_len(char *str) {
-
 	return strlen(str);
 }
 
