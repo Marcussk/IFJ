@@ -13,4 +13,7 @@ sample6.pas: {Test na prazdny begin end}
 sample7.pas: {Test na prazdny program}
 sample8.pas: { Program 3: Prace s retezci a vestavenymi funkcemi }
 
+TODO: {Test funkce len (spravna hodnota pri escape sekvencii)}
+	  {Funkcia len vrati spravnu dlzku pri nacitavani cisel v inych sustavach}
+	  {Deformovany program (vyrazy za tokenom end.) }
 
