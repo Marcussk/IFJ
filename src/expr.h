@@ -11,6 +11,7 @@
 #include "parserTables.h"
 #include "tokenBuff.h"
 
+
 typedef enum {
 	terminal, nonterminal
 } ExprType;
@@ -24,6 +25,18 @@ typedef struct exprtoken{
 	tIFJ datatype;
 } ExprToken;
 
+#include "expr.h"
+
 DECLARE_STACK(expr, ExprToken);
+
+char * getExprTokenName(ExprToken t);
+Token getTokenContent(Token token, iVar* var);
+void printStack(exprStack *self);
+void ExprTokenInit(ExprToken *token);
+void ExprInit(exprStack *stack);
+void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp);
+ExprToken *findTopMostTerminal(exprStack *s);
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal, TokenBuff *tokenBuff);
+void expression(TokenBuff * tokenBuff, InstrQueue * istructions);
 
 #endif
