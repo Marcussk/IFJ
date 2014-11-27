@@ -139,7 +139,6 @@ char * func_sort(char *str) {
 
 // ked som pozerala ako to je napisane na nete autor tam caroval s f neviem co to tam je .... //
 void suffixes(char* pattern, int suffix[], int max_pattern_len) {
-
 	suffix[max_pattern_len - 1] = max_pattern_len;
 
 	int pattern_len = max_pattern_len - 1;
@@ -167,7 +166,6 @@ void suffixes(char* pattern, int suffix[], int max_pattern_len) {
 }
 
 void good_suffixes(char *pattern, int good_suffix[]) {
-
 	int pattern_len = strlen(pattern);
 	int suffix[pattern_len]; //dalsie pole??
 	int i, j;

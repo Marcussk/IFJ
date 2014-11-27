@@ -83,10 +83,11 @@ void Interpret_test3() {
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
+	// c=a+b;
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_add, iInt, &a, &b, &c });
+	InstrQueue_insert(&instr, (Instruction ) { i_add, iInt, NULL, NULL, 0 });
 
 
 
