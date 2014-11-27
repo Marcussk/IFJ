@@ -2,22 +2,52 @@
 
 
 void Interpret_test1() {
+
 	InstrParam a, b;
-	a.iInt = 8;
-	b.iString = " from interpret\n";
+	a.iString = "haba";
+	b.iString = "baba";
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL,
-			NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_less, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_nequal, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_more, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_equal, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+
+
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_loreq, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_moreq, iString,  &a,  &b, NULL });
+		InstrQueue_insert(&instr, (Instruction ) { i_write, iInt,  NULL,  NULL, NULL });
+
+
+
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("interpret test end \n");
+	//printf("\n %d  \n", (iStack_pop(&(intr.stack))).iInt);
 
 }
 void Interpret_test2() {
@@ -35,7 +65,7 @@ void Interpret_test2() {
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	//printf("%f interpret test end \n", (iStack_pop(&(intr.stack)))->iReal);
+	printf("%f interpret test end \n", (iStack_pop(&(intr.stack))).iReal);
 
 }
 
@@ -83,21 +113,20 @@ void Interpret_test3() {
 }
 void Interpret_test4() {
 
-	InstrParam  c;
-	//a.iString = "fsdfsd";
+	InstrParam  a,b;
+	a.iInt = 20;
+	b.iInt = 30;
 	//b.iReal = 0;
-	c.iReal = 0;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr,(Instruction ) { i_push, iReal, &c, NULL, NULL });
-	//InstrQueue_insert(&instr,
-	//		(Instruction ) { i_push, iString, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_read, iReal, NULL, NULL, &c });
+			InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+			InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
+			InstrQueue_insert(&instr, (Instruction ) { i_less, iInt,  NULL,  NULL, NULL });
+			printf("\n %d  \n", (iStack_pop(&(intr.stack))).iInt);
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("\n %f  \n", (iStack_pop(&(intr.stack))).iReal);
 
 }
