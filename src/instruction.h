@@ -26,6 +26,8 @@ typedef enum {
 	i_moreq,
 
 	//funkce ze zadani
+	i_readln,
+	i_write,
 	i_find,
 	i_copy,
 	i_len,
