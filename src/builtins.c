@@ -300,6 +300,7 @@ void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
 	va_start(valist, paramsCnt);
 	int i;
 	iVar * item = NULL;
+	item = iVar__init__();
 	HashTable_insert(ht, name, &item);
 	item->type = iFn;
 	item->isInitialied = true;
