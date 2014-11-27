@@ -26,6 +26,10 @@ typedef enum {
 	iStackRef,
 } tIFJ;
 
+typedef enum {
+	b_none, b_readLn, b_write, b_length, b_copy, b_sort, b_find
+} Builtins;
+
 // alias function body
 typedef int CodeStack;
 
@@ -41,6 +45,7 @@ typedef struct s_iFunction{
 	tIFJ retType;
 	struct s_ParamsListItem * params;
 	CodeStack * body;
+	Builtins builtin;
 } iFunction;
 
 // basic variable can represents everything, even function *

@@ -59,7 +59,7 @@ iFunction * iFunction__init__() {
 	self->body = NULL;
 	self->params = NULL;
 	self->retType = iUnknown;
-
+	self->builtin = b_none;
 	return self;
 }
 
@@ -106,6 +106,5 @@ void ParamsListItem__dell__(ParamsListItem * self) {
 void iFunction__dell__(iFunction * self) {
 	if (self->params)
 		ParamsListItem__dell__(self->params);
-
 }
 

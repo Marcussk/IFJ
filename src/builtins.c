@@ -73,16 +73,16 @@ int readLn(iVal *a1, tIFJ type) {
 
 void registrBuiltins(HashTable * ht) {
 	//funkcia, navratova hodnota, typ parametru
-	regFn(ht,"readln", iVoid, iVoid);  
-	regFn(ht,"write", iVoid, iVoid);
-	regFn(ht,"length", iInt, iString);
-	regFn(ht,"copy", iString, iString, iInt, iInt);
-	regFn(ht,"find", iInt, iString, iString);
-	regFn(ht,"sort", iString, iString);
-
+	regFn(ht, "readln", b_readLn, iVoid, iVoid);
+	regFn(ht, "write", b_write, iVoid, iVoid);
+	regFn(ht, "length", b_length, iInt, iString);
+	regFn(ht, "copy", b_copy, iString, iString, iInt, iInt);
+	regFn(ht, "find", b_find, iInt, iString, iString);
+	regFn(ht, "sort", b_sort, iString, iString);
 }
 
-void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
+void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
+		...) {
 	va_list valist;
 	va_start(valist, paramsCnt);
 	int i;
@@ -93,9 +93,10 @@ void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
 	item->isInitialied = true;
 	item->val.fn = iFunction__init__();
 	item->val.fn->retType = retTyp;
-		
+	item->val.fn->builtin = b;
+
 	for (i = 0; i < paramsCnt; i++) {
-		iVar * param =  malloc(sizeof(iVar));
+		iVar * param = malloc(sizeof(iVar));
 		if (!param) {
 			memoryError("Can't allocate memory for new parameter\n");
 		}
