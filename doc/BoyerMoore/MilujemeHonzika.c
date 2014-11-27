@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+/*
 #define MAX_SIZE 256
 
 void ComputeJumps(char P[],int CharJump[MAX_SIZE]);    //TCharJump???
@@ -82,3 +82,4 @@ int BMA(char P[],char T[],int CharJump[MAX_SIZE]){
 			return (strlen(T) + 1);
 		}
 }
+*/

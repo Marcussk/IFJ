@@ -254,8 +254,7 @@ void Interpret_run(Interpret * self) {
 			if (i.type != iString) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 			} else {
-				//realloc(&(iStack_getAt(&self->stack, i.dest->stackAddr)->iString), ((strlen(pomA1.iString)+1) * sizeof(char)));
-				//strcpy((*iStack_getAt(&self->stack, i.dest->stackAddr)).iString, pomA1.iString);
+				(*iStack_getAt(&self->stack, i.dest->stackAddr)).iString = strdup(pomA1.iString);
 			}
 			break;
 		case i_write:
