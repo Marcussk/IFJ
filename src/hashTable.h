@@ -13,7 +13,6 @@
  * but this seems to me good.
  */
 
-
 void HashTable_debug(HashTable *hashtable);
 
 #endif
