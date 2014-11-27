@@ -128,7 +128,7 @@ int findHandle(exprStack * stack) {
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff) {
-	ExprToken operand1, operator, operand2, result;
+	ExprToken operand1, operator, operand2, lastItem, result;
 	Token cont = TopMostTerminal->content;
 	printf("-----%d\n", cont);
 	switch (cont) {
@@ -181,7 +181,17 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		// [TODO] instr add, eq, etc...
 		break;
 	case t_rParenthessis:
-		unimplementedError("Right parenthesis not implented yet");
+		if (findHandle(stack) < 4)
+			syntaxError("Expression syntax error - not enough operands",
+						tokenBuff->lp->lineNum, ",");
+		if (TopMostTerminal->content != stack->top->data.content) // '(' Must be on top of stack
+			syntaxError("Expression syntax error - expected )",
+						tokenBuff->lp->lineNum, "");
+		exprStack_pop(stack); // Pop ')'
+		lastItem = stack->top->data; // Should be '(' or E
+
+		//if (stack->top->data.content == lParenthessis && )
+		unimplementedError("Right parenthesis not implemented yet");
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
