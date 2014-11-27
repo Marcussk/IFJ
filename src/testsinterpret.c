@@ -53,15 +53,15 @@ void Interpret_test1() {
 void Interpret_test2() {
 
 	InstrParam a, b, c;
-	a.iString = "ba";
-	b.iString = "a";
+	a.iString = "abc";
+	b.iString = "c";
 	c.iInt = 3;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_find, iString, &a, &b, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, &a, &b, NULL });
 
