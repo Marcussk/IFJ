@@ -184,14 +184,46 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - not enough operands",
 						tokenBuff->lp->lineNum, ",");
-		if (TopMostTerminal->content != stack->top->data.content) // '(' Must be on top of stack
+
+		if (TopMostTerminal->content != stack->top->data.content) // ')' Must be on top of stack
 			syntaxError("Expression syntax error - expected )",
 						tokenBuff->lp->lineNum, "");
 		exprStack_pop(stack); // Pop ')'
+
+		ExprTokenInit(&lastItem);
 		lastItem = stack->top->data; // Should be '(' or E
 
-		//if (stack->top->data.content == lParenthessis && )
-		unimplementedError("Right parenthesis not implemented yet");
+		ExprTokenInit(&result);
+
+		if (lastItem.content == t_lParenthessis && lastItem.type == terminal){ // '()' Function with no parameters or an empty expession
+			printf("Generate call instruction\n");								// empty expression not implemented yet
+			exprStack_pop(stack); // Pop ')'
+			result.type = nonterminal;
+		}
+
+		else if (lastItem.type == nonterminal){ // We have found E) found
+			result = exprStack_pop(stack); // might be parameter, needs to be saved later
+			lastItem = stack->top->data;
+			if (lastItem.content == t_lParenthessis && lastItem.type == terminal){ // (E) - not sure if function with 1 parameter or just an expression
+				exprStack_pop(stack);
+				lastItem = stack->top->data;
+				if (lastItem.content == t_func && lastItem.type == terminal) // got id(E)
+					unimplementedError("Found function with 1 parameter");
+				else{ // It's just (E)
+					printf("It's just normal E\n");
+					exprStack_push(stack, result);
+				}
+			}
+			else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
+				unimplementedError("Functions with more than 1 parameters not implemented");
+			else // Syntax error
+				syntaxError("Syntax Error - expected ) or function parameters", -1, "");
+		}
+
+		else
+			syntaxError("Syntax Error - expected ) or function parameters", -1, "");
+
+		//unimplementedError("Right parenthesis not implemented yet");
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -245,8 +277,10 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	}
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(stack);
-		if (stack->size == 2 && stack->top->data.type == nonterminal) // only $ and S
+		if (stack->size == 2 && stack->top->data.type == nonterminal){ // only $ and S
+			printStack(stack);
 			break;
+		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
 			printf("reduce\n");
 			reduceRule(stack, TopMostTerminal, tokenBuff);
