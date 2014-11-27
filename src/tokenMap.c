@@ -49,6 +49,10 @@ bool Token_isType(Token t) {
 bool Token_isKeyword(Token t) {
 	return  (t >= t_begin && t <= t_while);
 }
+bool Token_isValue(Token t) {
+	return t == t_num_int || t == t_num_real || t == t_str_val || t == t_true
+			|| t == t_false;
+}
 
 // reverz function, can get string form of token
 char * getTokenStr(Token t) {

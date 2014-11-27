@@ -10,7 +10,7 @@ void lexError(char * str, char * lexBuff, int lineNum) {
 
 void syntaxError(char * str, int lineNum,char * actualTokenName) {
 	if (actualTokenName)
-		fprintf(stderr, "ERROR(Syntax) Line %d: %s , got %s\n", lineNum, str,
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s, got %s\n", lineNum, str,
 				actualTokenName);
 	else
 		fprintf(stderr, "ERROR(Syntax) Line %d: %s\n", lineNum, str);
