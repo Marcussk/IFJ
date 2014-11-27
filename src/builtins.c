@@ -69,8 +69,6 @@ int readLn(iVal *a1, tIFJ type) {
 	}
 }
 
-///////// KONIEC TOHOTO VELKEHO NEZMYSLU//////////////////////
-
 void registrBuiltins(HashTable * ht) {
 	//funkcia, navratova hodnota, typ parametru
 	regFn(ht, "readln", b_readLn, iVoid, iVoid);

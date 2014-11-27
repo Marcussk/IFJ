@@ -149,7 +149,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
 		printf("STACK POSITION = %d\n", findHandle(stack));
 		if (findHandle(stack) < 4)
-			syntaxError("Expression syntax error - not enough operands",
+			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
 
 		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
@@ -207,8 +207,14 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			if (lastItem.content == t_lParenthessis && lastItem.type == terminal){ // (E) - not sure if function with 1 parameter or just an expression
 				exprStack_pop(stack);
 				lastItem = stack->top->data;
-				if (lastItem.content == t_func && lastItem.type == terminal) // got id(E)
-					unimplementedError("Found function with 1 parameter");
+				result.type = nonterminal;
+				if (lastItem.content == t_func && lastItem.type == terminal){ // got id(E)
+					// Push parameter to instruction queue here
+					//exprStack_push(stack, result); // Keep
+					result = exprStack_pop(stack);
+					result.type = nonterminal;
+					exprStack_push(stack, result); // Keep
+				}
 				else{ // It's just (E)
 					printf("It's just normal E\n");
 					exprStack_push(stack, result);
@@ -278,7 +284,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(stack);
 		if (stack->size == 2 && stack->top->data.type == nonterminal){ // only $ and S
-			printStack(stack);
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
@@ -292,6 +297,9 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 					tokenBuff->lp->lineNum, getExprTokenName(ExprLastToken));
 		}
 	}
+
+	printf("Last stack status\n");
+	printStack(stack);
 
 	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
 			getTokenName(lastToken));
