@@ -10,6 +10,7 @@ C_SRCS += \
 ../src/expr.c \
 ../src/gerator3AC.c \
 ../src/hashTable.c \
+../src/iFunction.c \
 ../src/ial.c \
 ../src/ifj.c \
 ../src/ifjTypes.c \
@@ -30,6 +31,7 @@ OBJS += \
 ./src/expr.o \
 ./src/gerator3AC.o \
 ./src/hashTable.o \
+./src/iFunction.o \
 ./src/ial.o \
 ./src/ifj.o \
 ./src/ifjTypes.o \
@@ -50,6 +52,7 @@ C_DEPS += \
 ./src/expr.d \
 ./src/gerator3AC.d \
 ./src/hashTable.d \
+./src/iFunction.d \
 ./src/ial.d \
 ./src/ifj.d \
 ./src/ifjTypes.d \

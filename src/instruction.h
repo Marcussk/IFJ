@@ -3,6 +3,8 @@
 
 #include "ifjTypes.h"
 #include <string.h>
+
+// synergy with builtins
 typedef enum {
 	i_stop = 0,
 	i_noop,		// does nothing
@@ -24,7 +26,7 @@ typedef enum {
 	i_moreq,
 
 	//funkce ze zadani
-	i_readln,
+	i_readln = 20,
 	i_write,
 	i_find,
 	i_copy,
@@ -67,7 +69,7 @@ void InstrQueue__init__(InstrQueue * self);
 Instruction * InstrQueue_next(InstrQueue * self);
 void InstrQueue_insert(InstrQueue * self, Instruction i);
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
-iVal inline InstrP2iVal(InstrParam * a, tIFJ type);
+iVal InstrP2iVal(InstrParam * a, tIFJ type);
 void InstrQueue_debug(InstrQueue * self);
 
 #endif

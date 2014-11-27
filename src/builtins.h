@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include "errorHandler.h"
 #include "ifjTypes.h"
+#include "iFunction.h"
 #include "hashTable.h"
 #include "ial.h"
 #include <stdarg.h>

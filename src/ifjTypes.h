@@ -26,13 +26,6 @@ typedef enum {
 	iStackRef,
 } tIFJ;
 
-typedef enum {
-	b_none, b_readLn, b_write, b_length, b_copy, b_sort, b_find
-} Builtins;
-
-// alias function body
-typedef int CodeStack;
-
 typedef union {
 	float iReal;
 	int iInt;
@@ -40,13 +33,6 @@ typedef union {
 	struct s_iFunction * fn;
 } iVal;
 
-//first n iVars in
-typedef struct s_iFunction{
-	tIFJ retType;
-	struct s_ParamsListItem * params;
-	CodeStack * body;
-	Builtins builtin;
-} iFunction;
 
 // basic variable can represents everything, even function *
 typedef struct s_iVar {
@@ -56,20 +42,11 @@ typedef struct s_iVar {
 	iVal val;
 } iVar;
 
-//list of parameters for function
-typedef struct s_ParamsListItem {
-	iVar * param;
-	struct s_ParamsListItem * next;
-} ParamsListItem;
 
 iVar * iVar__init__();
 void iVar_debug(iVar * v);
 void iVar__dell__(iVar * self);
 
 char * iVar_type2str(tIFJ t);
-
-iFunction * iFunction__init__();
-void iFunction_addParam(iFunction * self, iVar * var);
-void iFunction__dell__(iFunction * self);
 
 #endif
