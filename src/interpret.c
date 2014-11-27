@@ -262,7 +262,7 @@ void Interpret_run(Interpret * self) {
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
-		case i_read:
+		case i_readln:
 			    readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
 
 				break;
@@ -287,6 +287,11 @@ void Interpret_run(Interpret * self) {
 			} else {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
+			break;
+		case i_int2real:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2.iReal = pomA1.iInt;
+			iStack_push(&(self->stack), pomA2);
 			break;
 		case i_stop:
 			return;

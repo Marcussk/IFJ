@@ -10,14 +10,12 @@ typedef enum {
 	i_jmpz, // skok pri nepravdive podmince
 	i_push,
 	i_call,
-	i_write,
-	i_read,
 	i_assign,
 	i_add,
 	i_sub,
 	i_mul,
 	i_div,
-	i_concat, //only string!!
+	i_int2real, //only string!!
 	i_equal,
 	i_nequal,
 	i_less,
