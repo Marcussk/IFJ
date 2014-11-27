@@ -154,7 +154,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		operand2 = exprStack_pop(stack);
 		operator = exprStack_pop(stack);
-		operand1 = stack->top->data;
+		operand1 = exprStack_pop(stack);
 
 		if (operand2.datatype != operand1.datatype)
 			sem_Error("Incompatible operands");
@@ -171,6 +171,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		} else {
 			result.datatype = operand1.datatype;
 		}
+
+		result.type = nonterminal;
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
 		break;
@@ -233,6 +235,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {
+			printStack(stack);
 			syntaxError("Expression Error all readen and canot reduce",
 					tokenBuff->lp->lineNum, getExprTokenName(ExprLastToken));
 		}
