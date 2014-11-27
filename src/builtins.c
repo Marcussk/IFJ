@@ -75,10 +75,10 @@ void registrBuiltins(HashTable * ht) {
 	//funkcia, navratova hodnota, typ parametru
 	regFn(ht,"readln", iVoid, iVoid);  
 	regFn(ht,"write", iVoid, iVoid);
-	regFn(ht,"length", iInt, iVoid);
-	regFn(ht,"copy", iString, iInt);
-	regFn(ht,"find", iInt, iString);
-	regFn(ht,"sort", iString, iVoid);
+	regFn(ht,"length", iInt, iString);
+	regFn(ht,"copy", iString, iString, iInt, iInt);
+	regFn(ht,"find", iInt, iString, iString);
+	regFn(ht,"sort", iString, iString);
 
 }
 
