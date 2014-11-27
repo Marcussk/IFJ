@@ -20,6 +20,7 @@ void Interpret_run(Interpret * self) {
 	iVal pomA1;
 	iVal pomA2;
 	iVal pomA3;
+	iVal pomA4;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
@@ -252,19 +253,16 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			if (i.type != iString) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
-				break;
 			} else {
 				//realloc(&(iStack_getAt(&self->stack, i.dest->stackAddr)->iString), ((strlen(pomA1.iString)+1) * sizeof(char)));
 				//strcpy((*iStack_getAt(&self->stack, i.dest->stackAddr)).iString, pomA1.iString);
-				break;
 			}
-
+			break;
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
 		case i_readln:
 			    readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
-
 				break;
 		case i_sort:
 			        pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
@@ -280,6 +278,7 @@ void Interpret_run(Interpret * self) {
 				    else
 				       iStack_push(&(self->stack), pomA3);
 				    break;
+
 		case i_push:
 			if (i.type == iStackRef) {
 				iStack_push(&(self->stack),
@@ -288,10 +287,21 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
+
 		case i_int2real:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2.iReal = pomA1.iInt;
 			iStack_push(&(self->stack), pomA2);
+			break;
+		case i_copy:
+			pomA1 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+			pomA3 = iStack_pop(&(self->stack));
+			pomA4.iString = func_copy(pomA1.iString, pomA2.iInt, pomA3.iInt);
+			iStack_push(&(self->stack), pomA4);
+			break;
+		case i_find:
+
 			break;
 		case i_stop:
 			return;

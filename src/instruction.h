@@ -15,7 +15,7 @@ typedef enum {
 	i_sub,
 	i_mul,
 	i_div,
-	i_int2real, //only string!!
+	i_int2real,
 	i_equal,
 	i_nequal,
 	i_less,

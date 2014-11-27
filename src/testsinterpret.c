@@ -52,20 +52,22 @@ void Interpret_test1() {
 }
 void Interpret_test2() {
 
-	InstrParam a, b;
-	a.iReal = 8;
-	b.iReal = 2.5;
+	InstrParam a, b, c;
+	a.iString = "haba";
+	b.iInt = 1;
+	c.iInt = 3;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iReal, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iReal, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_add, iReal, &a, &b, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_copy, iString, &a, &b, NULL });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("%f interpret test end \n", (iStack_pop(&(intr.stack))).iReal);
+	printf("%s interpret test end \n", (iStack_pop(&(intr.stack))).iString);
 
 }
 
