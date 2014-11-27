@@ -111,7 +111,11 @@ int findHandle(exprStack * stack) {
 
 }
 
-void reduceRule(exprStack *stack, ExprToken *TopMostTerminal) {
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal, TokenBuff *tokenBuff) {
+	ExprToken *operand1, *operator, *operand2;
+	operand1 = ExprTokenInit(operand1);
+	operator = ExprTokenInit(operator);
+	operand2 = ExprTokenInit(operand2);
 	switch (TopMostTerminal->content) {
 	case t_id:
 		printf("STACK POSITION = %d\n", findHandle(stack));
@@ -129,11 +133,22 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal) {
 	case t_eqv:
 	case t_notEqv:
 		printf("STACK POSITION = %d\n", findHandle(stack));
-		/*if (getStackPos(stack, TopMostTerminal) < 3)
-		 printf("syntax error - not enough operands\n");
-		 */
+		if (findHandle(stack) < 4)
+			syntaxError("Expression syntax error - not enough operands", tokenBuff->lp->lineNum, ",");
+
+		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
+			syntaxError("Expression Error - Operator error", tokenBuff->lp->lineNum, ",");
+
+		*operand2 = exprStack_pop(stack);
+		*operator = exprStack_pop(stack);
+		*operand1 = stack->top->data;
+
+		if (operand2->type != nonterminal || operand1->type != nonterminal){
+			syntaxError("Expression Error - Operands error", tokenBuff->lp->lineNum, ",");
+		}
+
 		printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
-		unimplementedError("Operations with 2 operands not implemented\n");
+		//unimplementedError("Operations with 2 operands not implemented\n");
 		break;
 	}
 
@@ -201,7 +216,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
 			// a zredukuj
 			printf("reduce\n");
-			reduceRule(stack, TopMostTerminal);
+			reduceRule(stack, TopMostTerminal, tokenBuff);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 			break;
