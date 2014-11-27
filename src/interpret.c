@@ -50,7 +50,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA2.iReal == pomA1.iReal);
 				break;
 			case iString:
-			    //[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) == 0);
 				break;
 			default:
 				unimplementedError(
@@ -70,7 +70,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA2.iReal != pomA1.iReal);
 				break;
 			case iString:
-				 //[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) != 0);
 				break;
 			default:
 				unimplementedError(
@@ -90,7 +90,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA1.iReal > pomA2.iReal);
 				break;
 			case iString:
-			//[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) > 0);
 				break;
 			default:
 				unimplementedError(
@@ -110,7 +110,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA1.iReal < pomA2.iReal);
 				break;
 			case iString:
-				//[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) < 0);
 				break;
 			default:
 				unimplementedError(
@@ -130,7 +130,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA1.iReal >= pomA2.iReal);
 				break;
 			case iString:
-				//[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) >= 0);
 				break;
 			default:
 				unimplementedError(
@@ -150,7 +150,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.iInt = (pomA1.iReal <= pomA2.iReal);
 				break;
 			case iString:
-				//[TODO]
+				pomA3.iInt = (strcmp(pomA1.iString, pomA2.iString) <= 0);
 				break;
 			default:
 				unimplementedError(
@@ -295,6 +295,7 @@ void Interpret_run(Interpret * self) {
 							 *iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
 					else
 							 iStack_push(&(self->stack), pomA3);
+
 					break;
 		case i_stop:
 			return;
