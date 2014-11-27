@@ -6,7 +6,7 @@ ExprToken *ExprEndToken;
 ExprToken *ExprLastToken;
 ExprToken *TopMostTerminal;
 
-int tokenToChar(Token token) {
+int getTokenContent(Token token) {
 	switch ((int) token) {
 	case t_num_int:
 	case t_num_real:
@@ -17,20 +17,6 @@ int tokenToChar(Token token) {
 	}
 }
 
-int getTokenType(Token token) {
-	switch (token) {
-	case t_true:
-	case t_false:
-		return boolean;
-	case t_num_int:
-	case t_num_real:
-	case t_str_val:
-		return (int) token;
-	default:
-		return none;
-	};
-}
-
 ExprToken *ExprTokenInit(ExprToken *token) {
 	token = malloc(sizeof(ExprToken));
 	if (!token) {
@@ -39,7 +25,7 @@ ExprToken *ExprTokenInit(ExprToken *token) {
 	token->content = t_eof;
 	token->shifted = false;
 	token->type = terminal;
-	token->datatype = none;
+	token->datatype = iUnknown;
 	token->id = NULL;
 	token->value = NULL;
 	return token;
@@ -58,13 +44,13 @@ bool isValue(Token t) {
 }
 
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
-	Expr->content = tokenToChar(token); //tokenToChar(token);
+	Expr->content = getTokenContent(token);
 	Expr->type = terminal;
-	Expr->datatype = getTokenType(token);
 
-	if (token == t_id)
+	if (token == t_id) {
 		Expr->id = lp->lastSymbol;
-	else
+		Expr->datatype = lp->lastSymbol->type;
+	} else
 		Expr->id = NULL;
 
 	if (isValue(token))
@@ -74,23 +60,28 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	case t_num_int:
 		if (!sscanf(lp->str.buff, "%d", &(Expr->value->iInt)))
 			lexError("Cannot parse int num", lp->str.buff, lp->lineNum);
+		Expr->datatype = iInt;
 		break;
 
 	case t_num_real:
 		if (!sscanf(lp->str.buff, "%f", &(Expr->value->iReal)))
 			lexError("Cannot parse real num", lp->str.buff, lp->lineNum);
+		Expr->datatype = iReal;
 		break;
 
 	case t_str_val:
 		Expr->value->iString = strdup(lp->str.buff);
 		if (!Expr->value->iString)
 			lexError("Cannot parse string", lp->str.buff, lp->lineNum);
+		Expr->datatype = iString;
 		break;
 	case t_true:
 		Expr->value->iInt = 1;
+		Expr->datatype = iBool;
 		break;
 	case t_false:
 		Expr->value->iInt = 0;
+		Expr->datatype = iBool;
 		break;
 	default:
 		Expr->value = NULL;
@@ -106,22 +97,6 @@ ExprToken *findTopMostTerminal(exprStack *s) {
 	}
 	return NULL;
 }
-/*
- int getStackPos(exprStack *stack, ExprToken *token)
- {
- if(!stack->top)
- return 0;
- int i = 1;
- exprStackNodeT *tmp = stack->top;
- while(!tmp)
- if (tmp->next == NULL)
- return 0;
- if (&(tmp->data) == token)
- return i;
- i++;
- tmp = tmp->next;
- }
- */
 
 int findHandle(exprStack * stack) {
 	int i = 0;
@@ -180,14 +155,14 @@ bool iVar_isFn(iVar * v) {
 
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	printf("--Calling expression-- Line: %d\n", tokenBuff->lp->lineNum);
-/*
- * if iVar_isFn read '(' (and save in token '(' iVar of the fn )
- *  for all params do expression (with this stack) there mus be somethink like test
- *  on whitch param we are and if type fits (you will have pointer on param of function (iVar.fn.params ...)
- *  and if it have nex you have to read next param or throw syntaxErr .. )
- *
- * Do it, do it now !!! :-D
- * */
+	/*
+	 * if iVar_isFn read '(' (and save in token '(' iVar of the fn )
+	 *  for all params do expression (with this stack) there mus be somethink like test
+	 *  on whitch param we are and if type fits (you will have pointer on param of function (iVar.fn.params ...)
+	 *  and if it have nex you have to read next param or throw syntaxErr .. )
+	 *
+	 * Do it, do it now !!! :-D
+	 * */
 	exprStack *stack;
 	stack = malloc(sizeof(exprStack));
 	if (!stack)
@@ -197,23 +172,11 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 	Token lastToken = TokenBuff_next(tokenBuff);
 	tokenToExpr(ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
-	unsigned int endOfInput = 0; // Flag for end of input -> when we get keyword or semicolon
 
 	while (1) {
-		endOfInput = (Token_isKeyword(lastToken) || lastToken == t_scolon);
+		if (Token_isKeyword(lastToken) || lastToken == t_scolon)
+			break;
 		TopMostTerminal = findTopMostTerminal(stack);
-
-		if (endOfInput) { // Input has ended, from now, current token will always be '$'
-			if (TopMostTerminal->content == ExprEndToken->content) { // There is no terminal on stack
-				printf("Break\n");
-				break;
-			}
-			/*else {
-			 syntaxError("Expr/unexpected end\n", tokenBuff->lp->lineNum,
-			 getTokenName(lastToken));
-			 }*/
-			ExprLastToken->content = ExprEndToken->content;
-		}
 
 		printf("prTable indexes - [%d][%d]\n", TopMostTerminal->content,
 				ExprLastToken->content);
@@ -243,12 +206,8 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			TopMostTerminal->shifted = false;
 			break;
 		case error:
-			/*if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
-			 ExprLastToken->content == t_id)) // maybe useless condition, will be removed later
-			 break;*/
-			syntaxError("Expression Error", tokenBuff->lp->lineNum, "s");
-
-			// Zahlas syntaktickou chybu
+			syntaxError("Expression Error", tokenBuff->lp->lineNum,
+					getTokenName(lastToken));
 		};
 		printStack(stack);
 	}
@@ -257,7 +216,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	// There is some terminal on stack - error
 	if (TopMostTerminal->content != ExprEndToken->content) {
 		syntaxError("Expression ended unexpectedly", tokenBuff->lp->lineNum,
-				"s");
+				getTokenName(lastToken));
 	}
 
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
