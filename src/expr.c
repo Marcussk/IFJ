@@ -169,7 +169,7 @@ bool iVar_isFn(iVar * v) {
 }
 
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
-	printf("--Calling expression-- Line: %d\n", tokenBuff->lp->lineNum);
+	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
 	/*
 	 * if iVar_isFn read '(' (and save in token '(' iVar of the fn )
 	 *  for all params do expression (with this stack) there mus be somethink like test
@@ -228,13 +228,14 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	}
 
 	TopMostTerminal = findTopMostTerminal(stack);
+	// !! check if all the items on stack can be reduced, else error
 	// There is some terminal on stack - error
 	if (TopMostTerminal->content != ExprEndToken->content) {
 		syntaxError("Expression ended unexpectedly", tokenBuff->lp->lineNum,
 				getTokenName(lastToken));
 	}
 
-	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,
+	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
 			getTokenName(lastToken));
 	TokenBuff_pushBack(tokenBuff, lastToken);
 }
