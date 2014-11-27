@@ -293,6 +293,7 @@ void Interpret_run(Interpret * self) {
 			pomA2.iReal = pomA1.iInt;
 			iStack_push(&(self->stack), pomA2);
 			break;
+
 		case i_copy:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
@@ -307,6 +308,7 @@ void Interpret_run(Interpret * self) {
 			pomA3.iInt = func_find(pomA1.iString, pomA2.iString);
 			iStack_push(&(self->stack), pomA3);
 			break;
+
 		case i_stop:
 			return;
 		default:
