@@ -1,5 +1,8 @@
 #include "lexParser.h"
 
+void LexParser_readEscape(LexParser * self);
+void LexParser_readString(LexParser * self);
+
 void LexParser__init__(LexParser * self, FILE * inFile) {
 	String__init__(&self->str, 32);
 	BuffFile__init__(&(self->input), inFile);
@@ -16,24 +19,36 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 }
 
 void LexParser_readString(LexParser * self) {
-	char ch,ch2;
-	while ((ch = BuffFile_get(&(self->input))) != '\'') {
+	char ch, ch2;
+	while (true) {
+		ch = BuffFile_get(&(self->input));
 		if (ch == EOF)
 			lexError("String missing right ' (end of string).\n",
 					self->str.buff, self->lineNum);
 		else if (ch == '\n')
 			self->lineNum = self->lineNum + 1;
-		else if (ch == '\'')
-		{
-			ch2 =BuffFile_get(&(self->input));
-			if(ch2 != '\''){
-				BuffFile_pushBack(&(self->input), ch2);
-				self->lastToken = t_str_val;
-				return;
+		else if (ch == '\'') {
+			ch2 = BuffFile_get(&(self->input));
+			if (ch2 != '\'') {
+				ch = ch2;
+				break;
 			}
 		}
 		String_append(&(self->str), ch);
 	}
+	/*BuffFile_pushBack(&(self->input), ch);
+	 ch = BuffFile_get(&(self->input));*/
+	while (true) {
+		if (ch == '\'') {
+			LexParser_readString(self);
+		} else if (ch == '#') {
+			LexParser_readEscape(self);
+		} else {
+			break;
+		}
+		ch = BuffFile_get(&(self->input));
+	}
+	BuffFile_pushBack(&(self->input), ch);
 	self->lastToken = t_str_val;
 }
 
@@ -49,20 +64,26 @@ void LexParser_readComment(LexParser * self) {
 }
 void LexParser_readEscape(LexParser * self) {
 	char ch = '0';
+	String str;
+	String__init__(&str, 4);
 	while (isdigit(ch)) {
 		ch = BuffFile_get(&(self->input));
-		String_append(&(self->str), ch);
+		String_append(&str, ch);
 	}
-	BuffFile_pushBack(&(self->input), ch);
-	if (self->str.len < 1)
-		lexError("Uncomplet escape sequention.\n", self->str.buff,
-				self->lineNum);
-	int escp = atoi(self->str.buff);
+	if (str.len < 1)
+		lexError("Uncomplet escape sequention.\n", str.buff, self->lineNum);
+	int escp = atoi(str.buff);
+	String__dell_(&str);
 	if (escp > 255)
 		lexError("Unknown escape sequention.\n", self->str.buff, self->lineNum);
-	String_clear(&(self->str));
 	String_append(&(self->str), (char) escp);
 	self->lastToken = t_str_val;
+	if (ch == '\'')
+		LexParser_readString(self);
+	else if (ch == '#')
+		LexParser_readEscape(self);
+	else
+		BuffFile_pushBack(&(self->input), ch);
 }
 
 void LexParser_syncLastVar(LexParser * self, Token t) {
@@ -84,7 +105,7 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			break;
 		case lp_debug:
 			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
-			if(i)
+			if (i)
 				self->lastSymbol = i->var;
 
 			break;
@@ -100,7 +121,7 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
  * when token is some constant (string, int, real) string value is in p->str.buff and this value is parsed to iVar an can be accessed
  * trough the  p->lastSymbol
  * */
-Token LexParser_gen(LexParser *self) {
+Token LexParser_next(LexParser *self) {
 	char ch;
 
 	switch (self->planedJob) {
@@ -164,7 +185,7 @@ Token LexParser_gen(LexParser *self) {
 				BuffFile_pushBack(&(self->input), ch);
 				self->planedJob = j_reset;
 				LexParser_syncLastVar(self, self->preLastToken);
-			//	self->lastToken = t_empty;
+				//	self->lastToken = t_empty;
 				return self->preLastToken;
 			} else {
 				if (self->lastToken == t_empty) {

@@ -14,7 +14,7 @@ Token TokenBuff_next(TokenBuff * self) {
 		self->next2 = t_empty;
 		return ret;
 	}
-	return LexParser_gen(self->lp);
+	return LexParser_next(self->lp);
 }
 void TokenBuff_pushBack(TokenBuff * self, Token t) {
 	if (self->next1 != t_empty) {

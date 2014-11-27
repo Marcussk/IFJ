@@ -248,14 +248,12 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
-
 		/*
 		 self->lp->idMode = lp_debug;
-		 printf("line %d: %s\n",self->lp->lineNum, getTokenName(tok));
-		 if(tok == t_eof){
+		 printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
+		 if (tok == t_eof) {
 		 return;
-		 }
-		 */
+		 }*/
 
 		switch (tok) {
 		case t_var:
