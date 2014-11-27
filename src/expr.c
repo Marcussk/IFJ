@@ -14,7 +14,10 @@ char * getExprTokenName(ExprToken t) {
 	return "Unknown";
 }
 
-Token getTokenContent(Token token) {
+Token getTokenContent(Token token, iVar* var) {
+	if (var->type == iFn)
+		return t_func;
+
 	switch (token) {
 	case t_num_int:
 	case t_num_real:
@@ -55,7 +58,7 @@ void ExprInit(exprStack *stack) {
 }
 
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
-	Expr->content = getTokenContent(token);
+	Expr->content = getTokenContent(token, lp->lastSymbol);
 	Expr->type = terminal;
 
 	if (token == t_id) {
