@@ -98,7 +98,7 @@ void suffixes(char* pattern, int suffix[], int max_pattern_len) {
 
 void good_suffixes(char *pattern, int good_suffix[]) {
 	int pattern_len = strlen(pattern);
-	int suffix[pattern_len]; //dalsie pole??
+	int * suffix = calloc(sizeof(int), pattern_len); //dalsie pole??
 	int i, j;
 
 	suffixes(pattern, suffix, pattern_len);
@@ -166,8 +166,8 @@ int func_find(char *src, char *search) {
 
 	//arrays for GS and BC tables;
 	// neviem ci robim vobec spravne velke polia
-	int good_suffix[src_len]; // pole velkosti dlzky zdrojoveho retazca, neviem ci to nema byt dlzka abecedy zdrojoveho ratazca
-	int bad_character[alfa_len]; // pole velkosti abecedy zdrojoveho retazca
+	int * good_suffix = calloc(sizeof(int),src_len); // pole velkosti dlzky zdrojoveho retazca, neviem ci to nema byt dlzka abecedy zdrojoveho ratazca
+	int * bad_character = calloc(sizeof(int),alfa_len); // pole velkosti abecedy zdrojoveho retazca
 
 	good_suffixes(search, good_suffix);
 	bad_char(search, bad_character, count);

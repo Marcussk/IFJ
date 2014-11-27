@@ -1,7 +1,5 @@
 #include "hashTable.h"
 
-
-
 void HashTable_print(HashTable *self) {
 	int hash;
 	printf("<hashTable:%p>\n", (void *) self);

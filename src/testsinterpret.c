@@ -116,6 +116,7 @@ void Interpret_test4() {
 	Interpret_run(&intr);
 
 }
+
 void Stack_test(){
 	iVal a,b,c;
 	a.iInt =10;
@@ -126,6 +127,5 @@ void Stack_test(){
 	iStack_push(&s, a );
 	iStack_push(&s, b );
 	iStack_push(&s, c );
-	iStack_debug(&s);
-
+	//iStack_debug(&s);
 }
