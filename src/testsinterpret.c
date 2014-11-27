@@ -53,21 +53,21 @@ void Interpret_test1() {
 void Interpret_test2() {
 
 	InstrParam a, b, c;
-	a.iString = "haba";
-	b.iInt = 1;
+	a.iString = "ba";
+	b.iString = "a";
 	c.iInt = 3;
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &c, NULL, NULL });
 	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_copy, iString, &a, &b, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_find, iString, &a, &b, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, &a, &b, NULL });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("%s interpret test end \n", (iStack_pop(&(intr.stack))).iString);
+	//printf("%d interpret test end \n", (iStack_pop(&(intr.stack))).iInt);
 
 }
 
