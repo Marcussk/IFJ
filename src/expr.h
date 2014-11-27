@@ -16,9 +16,10 @@ typedef enum {
 	terminal, nonterminal
 } ExprType;
 
+/*
 typedef enum {
 	none, boolean = 16, integer, real, string // none is for '$' and initialized ExprTokens
-} ExprDataType;
+} ExprDataType;*/
 
 typedef struct exprtoken{
 	unsigned int content; // contains terminal converted to a single char - terminal or E
@@ -26,7 +27,7 @@ typedef struct exprtoken{
 	iVal * value;
 	bool shifted;
 	ExprType type;
-	ExprDataType datatype;
+	tIFJ datatype;
 } ExprToken;
 
 DECLARE_STACK(expr, ExprToken);
