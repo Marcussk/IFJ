@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 /*
-#define MAX_SIZE 256
+#define MAX_SIZE 255
 
 void test1();
 void test2();
