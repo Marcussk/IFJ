@@ -54,8 +54,8 @@ stackElementT namePrefix##Stack_pop(namePrefix##Stack * self) {                \
 stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index) { \
 	int i;                                                                     \
 	namePrefix##StackNodeT * tmp = self->top;                                  \
-    if(index >= self->size)  rt_error("Stack invalid access");            \
-	for(i=self->size -1; i<index; i--)                                         \
+    if(index >= self->size)  rt_error("Stack invalid access");                 \
+	for(i=self->size -1; i>index; i--)                                         \
 		tmp= tmp->next;                                                        \
 	return &(tmp->data);                                                       \
 }                                                                              \

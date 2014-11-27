@@ -116,3 +116,16 @@ void Interpret_test4() {
 	Interpret_run(&intr);
 
 }
+void Stack_test(){
+	iVal a,b,c;
+	a.iInt =10;
+	b.iInt =20;
+	c.iInt = 30;
+	iStack s;
+	iStack__init__(&s);
+	iStack_push(&s, a );
+	iStack_push(&s, b );
+	iStack_push(&s, c );
+	iStack_debug(&s);
+
+}
