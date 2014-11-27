@@ -3,21 +3,21 @@
 
 void Interpret_test1() {
 	InstrParam a, b;
-	a.iInt = 8;
-	b.iString = " from interpret\n";
+	a.iString = "from";
+	b.iString = "interpret12";
 	InstrQueue instr;
 	Interpret intr;
 	InstrQueue__init__(&instr);
 
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iInt, &a, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iInt, NULL, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &b, NULL, NULL });
-	InstrQueue_insert(&instr, (Instruction ) { i_write, iString, NULL, NULL,
-			NULL });
+	InstrQueue_insert(&instr, (Instruction ) {  i_push, iString, &b, NULL, NULL });
+	InstrQueue_insert(&instr, (Instruction ) { i_push, iString, &a, NULL, NULL });
+	iStack_debug((&(intr.stack)));
+	InstrQueue_insert(&instr, (Instruction ) { i_assign, iString, &a, NULL, &b });
 
 	Interpret__init__(&intr, instr);
 	Interpret_run(&intr);
-	printf("interpret test end \n");
+
+	printf("\n%s\n", (iStack_pop(&(intr.stack))).iString);
 
 }
 void Interpret_test2() {

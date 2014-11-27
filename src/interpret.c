@@ -244,12 +244,13 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_assign:
+			pomA1 = iStack_pop(&(self->stack));
 			if (i.type != iString) {
-				pomA1 = iStack_pop(&(self->stack));
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 				break;
 			} else {
-				//[TODO]
+				//realloc(&(iStack_getAt(&self->stack, i.dest->stackAddr)->iString), ((strlen(pomA1.iString)+1) * sizeof(char)));
+				//strcpy((*iStack_getAt(&self->stack, i.dest->stackAddr)).iString, pomA1.iString);
 				break;
 			}
 
@@ -282,6 +283,19 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
+		case i_concat:
+					pomA1=iStack_pop(&(self->stack));
+					pomA2=iStack_pop(&(self->stack));
+
+					pomA3.iString = malloc((strlen(pomA1.iString) + strlen(pomA1.iString) +1)*sizeof(char));
+
+					strcpy(pomA3.iString, pomA1.iString);
+					strcat(pomA3.iString, pomA2.iString);
+					if (i.dest != NULL)
+							 *iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+					else
+							 iStack_push(&(self->stack), pomA3);
+					break;
 		case i_stop:
 			return;
 		default:
