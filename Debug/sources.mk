@@ -16,4 +16,5 @@ SUBDIRS := \
 tests \
 src \
 src/bin \
+doc/BoyerMoore \
 

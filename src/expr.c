@@ -8,12 +8,12 @@ ExprToken *TopMostTerminal;
 
 int tokenToChar(Token token) {
 	switch ((int) token) {
-		case t_num_int:
-		case t_num_real:
-		case t_str_val:
-			return t_id;
-		default:
-			return (int) token;
+	case t_num_int:
+	case t_num_real:
+	case t_str_val:
+		return t_id;
+	default:
+		return (int) token;
 	}
 }
 
@@ -40,6 +40,8 @@ ExprToken *ExprTokenInit(ExprToken *token) {
 	token->shifted = false;
 	token->type = terminal;
 	token->datatype = none;
+	token->id = NULL;
+	token->value = NULL;
 	return token;
 }
 
@@ -50,12 +52,49 @@ void ExprInit(exprStack *stack) {
 	exprStack_push(stack, *ExprEndToken);
 }
 
+bool isValue(Token t) {
+	return t == t_num_int || t == t_num_real || t == t_str_val || t == t_true
+			|| t == t_false;
+}
 
-
-void tokenToExpr(ExprToken *Expr, Token token) {
+void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	Expr->content = tokenToChar(token); //tokenToChar(token);
 	Expr->type = terminal;
 	Expr->datatype = getTokenType(token);
+
+	if (token == t_id)
+		Expr->id = lp->lastSymbol;
+	else
+		Expr->id = NULL;
+
+	if (isValue(token))
+		Expr->value = malloc(sizeof(iVal));
+
+	switch (token) {
+	case t_num_int:
+		if (!sscanf(lp->str.buff, "%d", &(Expr->value->iInt)))
+			lexError("Cannot parse int num", lp->str.buff, lp->lineNum);
+		break;
+
+	case t_num_real:
+		if (!sscanf(lp->str.buff, "%f", &(Expr->value->iReal)))
+			lexError("Cannot parse real num", lp->str.buff, lp->lineNum);
+		break;
+
+	case t_str_val:
+		Expr->value->iString = strdup(lp->str.buff);
+		if (!Expr->value->iString)
+			lexError("Cannot parse string", lp->str.buff, lp->lineNum);
+		break;
+	case t_true:
+		Expr->value->iInt = 1;
+		break;
+	case t_false:
+		Expr->value->iInt = 0;
+		break;
+	default:
+		Expr->value = NULL;
+	}
 }
 
 ExprToken *findTopMostTerminal(exprStack *s) {
@@ -68,27 +107,26 @@ ExprToken *findTopMostTerminal(exprStack *s) {
 	return NULL;
 }
 /*
-int getStackPos(exprStack *stack, ExprToken *token)
-{
-	if(!stack->top)
-		return 0;
-	int i = 1;
-	exprStackNodeT *tmp = stack->top;
-	while(!tmp)
-		if (tmp->next == NULL)
-			return 0;
-		if (&(tmp->data) == token)
-			return i;
-		i++;
-		tmp = tmp->next;
-}
-*/
+ int getStackPos(exprStack *stack, ExprToken *token)
+ {
+ if(!stack->top)
+ return 0;
+ int i = 1;
+ exprStackNodeT *tmp = stack->top;
+ while(!tmp)
+ if (tmp->next == NULL)
+ return 0;
+ if (&(tmp->data) == token)
+ return i;
+ i++;
+ tmp = tmp->next;
+ }
+ */
 
-int findHandle(exprStack * stack) {\
+int findHandle(exprStack * stack) {
 	int i = 0;
 	exprStackNodeT * tmp = stack->top;
-	while (tmp != NULL)
-	{
+	while (tmp != NULL) {
 		i++;
 		if (tmp->data.shifted)
 			return i;
@@ -98,33 +136,30 @@ int findHandle(exprStack * stack) {\
 
 }
 
-void reduceRule(exprStack *stack, ExprToken *TopMostTerminal)
-{
-	switch (TopMostTerminal->content)
-	{
-		case t_id:
-			printf("STACK POSITION = %d\n", findHandle(stack));
-			TopMostTerminal->type = nonterminal;
-			//TopMostTerminal->shifted = false;
-			break;
-		case t_plus:
-		case t_minus:
-		case t_asterisk:
-		case t_slash:
-		case t_less:
-		case t_greater:
-		case t_lessOrEqv:
-		case t_greaterOrEqv:
-		case t_eqv:
-		case t_notEqv:
-			printf("STACK POSITION = %d\n", findHandle(stack));
-			/*if (getStackPos(stack, TopMostTerminal) < 3)
-				printf("syntax error - not enough operands\n");
-			*/
-			printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
-			unimplementedError(
-					"Operations with 2 operands not implemented\n");
-			break;
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal) {
+	switch (TopMostTerminal->content) {
+	case t_id:
+		printf("STACK POSITION = %d\n", findHandle(stack));
+		TopMostTerminal->type = nonterminal;
+		//TopMostTerminal->shifted = false;
+		break;
+	case t_plus:
+	case t_minus:
+	case t_asterisk:
+	case t_slash:
+	case t_less:
+	case t_greater:
+	case t_lessOrEqv:
+	case t_greaterOrEqv:
+	case t_eqv:
+	case t_notEqv:
+		printf("STACK POSITION = %d\n", findHandle(stack));
+		/*if (getStackPos(stack, TopMostTerminal) < 3)
+		 printf("syntax error - not enough operands\n");
+		 */
+		printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
+		unimplementedError("Operations with 2 operands not implemented\n");
+		break;
 	}
 
 }
@@ -138,9 +173,21 @@ void printStack(exprStack *self) {
 		itr = itr->next;
 	}
 }
+
+bool iVar_isFn(iVar * v) {
+	return v->type == iFn;
+}
+
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	printf("--Calling expression-- Line: %d\n", tokenBuff->lp->lineNum);
-
+/*
+ * if iVar_isFn read '(' (and save in token '(' iVar of the fn )
+ *  for all params do expression (with this stack) there mus be somethink like test
+ *  on whitch param we are and if type fits (you will have pointer on param of function (iVar.fn.params ...)
+ *  and if it have nex you have to read next param or throw syntaxErr .. )
+ *
+ * Do it, do it now !!! :-D
+ * */
 	exprStack *stack;
 	stack = malloc(sizeof(exprStack));
 	if (!stack)
@@ -149,19 +196,22 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
-	tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
-	unsigned int endOfInput = 0;  // Flag for end of input -> when we get keyword or semicolon
+	tokenToExpr(ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+	unsigned int endOfInput = 0; // Flag for end of input -> when we get keyword or semicolon
 
-	while(1)
-	{
+	while (1) {
 		endOfInput = (Token_isKeyword(lastToken) || lastToken == t_scolon);
 		TopMostTerminal = findTopMostTerminal(stack);
 
-		if (endOfInput){ // Input has ended, from now, current token will always be '$'
-			if (TopMostTerminal->content == ExprEndToken->content){ // There is no terminal on stack
+		if (endOfInput) { // Input has ended, from now, current token will always be '$'
+			if (TopMostTerminal->content == ExprEndToken->content) { // There is no terminal on stack
 				printf("Break\n");
 				break;
 			}
+			/*else {
+			 syntaxError("Expr/unexpected end\n", tokenBuff->lp->lineNum,
+			 getTokenName(lastToken));
+			 }*/
 			ExprLastToken->content = ExprEndToken->content;
 		}
 
@@ -169,35 +219,34 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 				ExprLastToken->content);
 
 		switch (prTable[TopMostTerminal->content][ExprLastToken->content]) {
-			case shift:
-				printf("shift\n");
-				TopMostTerminal->shifted = true;
-				exprStack_push(stack, *ExprLastToken);
-				lastToken = TokenBuff_next(tokenBuff);
-				tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
-				break;
-				// Vloz zacatek handle
-			case equal:
-				printf("equal\n");
-				exprStack_push(stack, *ExprLastToken);
-				lastToken = TokenBuff_next(tokenBuff);
-				tokenToExpr(ExprLastToken, lastToken); // "copy" content of LastToken to ExprLastToken
-				// push ExprLastToken
-				break;
-			case reduce:
-				// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
-				// a zredukuj
-				printf("reduce\n");
-				reduceRule(stack, TopMostTerminal);
-				TopMostTerminal = findTopMostTerminal(stack);
-				TopMostTerminal->shifted = false;
-				break;
-			case error:
-				printf("error\n");
-				/*if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
-					ExprLastToken->content == t_id)) // maybe useless condition, will be removed later
-					break;*/
-				syntaxError("Expression Error", tokenBuff->lp->lineNum, "s");
+		case shift:
+			printf("shift\n");
+			TopMostTerminal->shifted = true;
+			exprStack_push(stack, *ExprLastToken);
+			lastToken = TokenBuff_next(tokenBuff);
+			tokenToExpr(ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+			break;
+			// Vloz zacatek handle
+		case equal:
+			printf("equal\n");
+			exprStack_push(stack, *ExprLastToken);
+			lastToken = TokenBuff_next(tokenBuff);
+			tokenToExpr(ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+			// push ExprLastToken
+			break;
+		case reduce:
+			// Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo
+			// a zredukuj
+			printf("reduce\n");
+			reduceRule(stack, TopMostTerminal);
+			TopMostTerminal = findTopMostTerminal(stack);
+			TopMostTerminal->shifted = false;
+			break;
+		case error:
+			/*if (TopMostTerminal->content == t_id && (ExprLastToken->content == t_lParenthessis ||
+			 ExprLastToken->content == t_id)) // maybe useless condition, will be removed later
+			 break;*/
+			syntaxError("Expression Error", tokenBuff->lp->lineNum, "s");
 
 			// Zahlas syntaktickou chybu
 		};
@@ -207,7 +256,8 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 	TopMostTerminal = findTopMostTerminal(stack);
 	// There is some terminal on stack - error
 	if (TopMostTerminal->content != ExprEndToken->content) {
-		printf("Syntax error in expression\n");
+		syntaxError("Expression ended unexpectedly", tokenBuff->lp->lineNum,
+				"s");
 	}
 
 	printf("Last token - %d - %s\n--Returning from expression\n\n", lastToken,

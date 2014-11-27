@@ -22,6 +22,8 @@ typedef enum {
 
 typedef struct exprtoken{
 	unsigned int content; // contains terminal converted to a single char - terminal or E
+	iVar * id; // contains variable to use or function to call
+	iVal * value;
 	bool shifted;
 	ExprType type;
 	ExprDataType datatype;

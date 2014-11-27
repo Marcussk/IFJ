@@ -4,8 +4,6 @@
 
 #define MAX_SIZE 256
 
-
-
 void test1();
 void test2();
 void test3();
