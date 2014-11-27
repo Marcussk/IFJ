@@ -263,20 +263,6 @@ int func_find(char *src, char *search) {
 ///////// KONIEC TOHOTO VELKEHO NEZMYSLU//////////////////////
 
 void registrBuiltins(HashTable * ht) {
-/*	iVar * item = NULL;
-	iVar * param = malloc(sizeof(iVar));
-	if (!param) {
-		memoryError("registrBuiltins can't allocate memory for new param\n");
-	}
-	//pro vsechny jmena HashTable_insert(ht, jmeno, &item);
-	HashTable_insert(ht, "readln", &item);
-	item->type = iFn;
-	item->isInitialied = true;
-	item->val.fn = iFunction__init__();
-	item->val.fn->retType = iVoid;
-	param->type = iVoid;
-	iFunction_addParam(item->val.fn, param);
-*/
 	//funkcia, navratova hodnota, typ parametru
 	regFn(ht,"readln", iVoid, iVoid);  
 	regFn(ht,"write", iVoid, iVoid);
@@ -284,14 +270,7 @@ void registrBuiltins(HashTable * ht) {
 	regFn(ht,"copy", iString, iInt);
 	regFn(ht,"find", iInt, iString);
 	regFn(ht,"sort", iString, iVoid);
-	
 
-/*	HashTable_insert(ht, "write", &item);
-	HashTable_insert(ht, "length", &item);
-	HashTable_insert(ht, "copy", &item);
-	HashTable_insert(ht, "sort", &item);
-	HashTable_insert(ht, "find", &item);
-*/
 }
 
 void regFn(HashTable * ht, char * name, tIFJ retTyp,int paramsCnt,...) {
