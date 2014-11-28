@@ -1,8 +1,8 @@
 #ifndef STACK_h
 #define STACK_h
 
-#include "stdlib.h"
-#include "stdio.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "errorHandler.h"
 #include "instruction.h"
 #include "ifjTypes.h"
