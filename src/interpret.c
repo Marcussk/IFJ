@@ -21,6 +21,9 @@ void Interpret_run(Interpret * self) {
 	iVal pomA2;
 	iVal pomA3;
 	iVal pomA4;
+
+	InstrQueueNode *pomInstr;
+
 	int stackOffset;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
@@ -313,13 +316,16 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
-			/*pomA1.iInt = self->stack.size;
+			pomA1.iInt = self->stack.size;
 			stackOffset = pomA1.iInt;
-			iStack_push(&(self->stack), pomA1);
+
+			pomInstr = self->instructions.actual;
+
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
-			continue;*/
 			break;
 		case i_return:
+				while(self->stack.size != stackOffset){iStack_pop(&(self->stack));}
+			    self->instructions.actual=pomInstr;
 				break;
 		case i_stop:
 				return;
