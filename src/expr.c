@@ -1,5 +1,7 @@
 #include "expr.h"
 
+#define EXPR_DEGUG
+
 IMPLEMENT_STACK(expr, ExprToken);
 
 ExprToken ExprLastToken;
@@ -255,7 +257,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
 
-					if (result.datatype == b_write) {
+					if (result.id->val.fn->builtin == b_write) {
 						InstrParam * p = malloc(sizeof(InstrParam));
 						if(!p)
 							memoryError("Cannot allocate instrParam for writeFn");
@@ -269,7 +271,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 										NULL, NULL });
 					}
 
-					else if (result.datatype == b_readLn) {
+					else if (result.id->val.fn->builtin == b_readLn) {
 						printf("readln found\n");
 					}
 
