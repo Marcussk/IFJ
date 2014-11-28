@@ -11,6 +11,7 @@
 #include "parserTables.h"
 #include "tokenBuff.h"
 
+//#define EXPR_DEBUG
 
 typedef enum {
 	terminal, nonterminal

@@ -168,12 +168,6 @@ TokenMapElement * TokenMap_add(TokenMapElement map[], char * str, Token t) {
 
 }
 
-
-//.
-void simpleRegex(char * regex){
-
-}
-
 //include rules for numbers in token map
 /*
  * supported: d, d.d , d.de+-d, d.de+-d.d // +- resp + or -
@@ -200,7 +194,6 @@ void TokenParser_addNumbers(TokenMapElement map[]) {
 		eFirst =  &(expFirstMap[i]);
 		eRInt = &(expRestIntMap[i]);
 		eRReal =&(expRestRealMap[i]);
-
 
 		elm->token = t_num_int;
 		elm->next = intMap;
@@ -243,9 +236,10 @@ TokenParser TokenParser__init__() {
 	TokenParser p;
 	p.map = TokenMap_newLevel();
 	TokenMapElement * map = p.map;
+	TokenMeaning tm;
 	int tokensCnt = STATIC_ARR_LEN(tokenMeanings);
 	for (ti = 0; ti < tokensCnt; ti++) {
-		TokenMeaning tm = tokenMeanings[ti];
+		tm = tokenMeanings[ti];
 		if (!TokenMap_add(map, tm.str, tm.token)) {
 			memoryError("could't allocate token map");
 		}

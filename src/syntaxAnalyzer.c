@@ -26,7 +26,6 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_assign, iStackRef, NULL,	NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
-
 }
 
 // t_var already found
