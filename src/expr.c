@@ -271,7 +271,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result = exprStack_pop(stack);
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
+#ifdef EXPR_DEGUG
 					printf("Function type: %d\n", result.id->val.fn->builtin);
+#endif
 					/* Do tohoto ifu vloz push
 					 * instrukci muzes dat natvrdo i_write a typ iString
 					 * samotny string na vypsani je v result.value->iString (u printf o par radku vys to vytiskne spravne :))
@@ -321,8 +323,9 @@ Token lastToken = TokenBuff_next(tokenBuff);
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
+#ifdef EXPR_DEGUG
 		printStack(stack);
-
+#endif
 		TopMostTerminal = findTopMostTerminal(stack);
 #ifdef EXPR_DEGUG
 		printf("prtable indexes [%d][%d]\n", TopMostTerminal->content,
