@@ -227,6 +227,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 					if (result.id->val.fn->builtin == b_write){
 
+						InstrQueue_insert(instructions, (Instruction ) { i_push, iString ,  result.value,  NULL, NULL });
+						InstrQueue_insert(instructions, (Instruction ) { i_write, iString ,  NULL,  NULL, NULL });
 					}
 				} else { // It's just (E)
 					printf("It's just normal E\n");
