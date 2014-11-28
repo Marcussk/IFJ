@@ -53,14 +53,15 @@ char * func_sort(char *str) {
 
 void badcharfill(char *str, int size, int badchar[MAX_SIZE])
 {
+	int i;
 	//initialize array
-	for(int i = 0; i < MAX_SIZE; i++)
+	for(i = 0; i < MAX_SIZE; i++)
 	{
 		badchar[i] = -1;
 	}
 	//fill array of patlength with last occurence of character
 	//array is rewritten during iterations and array[currentchar] = positioninpatter
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		badchar[(int) str[i]] = i;
 	}
