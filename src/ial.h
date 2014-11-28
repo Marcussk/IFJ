@@ -9,7 +9,7 @@
 
 #define MAX_SIZE 256
 
-int find(char *txt, char *pat);
+int func_find(char *txt, char *pat);
 //int func_find( char *src, char *search );
 char * func_sort(char *str);
 
