@@ -293,7 +293,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			TopMostTerminal->shifted = false;
 		} else {
 			printStack(stack);
-			syntaxError("Expression Error all readen and canot reduce",
+			syntaxError("Expression Error Everything read, can't reduce",
 					tokenBuff->lp->lineNum, getExprTokenName(ExprLastToken));
 		}
 	}
