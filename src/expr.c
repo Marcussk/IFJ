@@ -69,7 +69,7 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	} else
 		Expr->id = NULL;
 
-	free(Expr->value);
+	//free(Expr->value);
 	if (Token_isValue(token))
 		Expr->value = malloc(sizeof(iVal));
 
@@ -128,8 +128,8 @@ int findHandle(exprStack * stack) {
 }
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
-		TokenBuff *tokenBuff) {
-	ExprToken operand1, operator, operand2, lastItem, result;
+		TokenBuff *tokenBuff, InstrQueue * instructions) {
+	ExprToken operand1, operator, operand2, lastItem, result, parameter;
 	Token cont = TopMostTerminal->content;
 	printf("-----%d\n", cont);
 	switch (cont) {
@@ -203,7 +203,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		}
 
 		else if (lastItem.type == nonterminal) { // We have found E) found
-			result = exprStack_pop(stack); // might be parameter, needs to be saved later
+			result = parameter = exprStack_pop(stack); // might be parameter, needs to be saved later
+			if (result.datatype == iString){
+				printf("String in parameter: %s\n", result.value->iString);
+			}
 			lastItem = stack->top->data;
 			if (lastItem.content == t_lParenthessis
 					&& lastItem.type == terminal) { // (E) - not sure if function with 1 parameter or just an expression
@@ -216,6 +219,15 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result = exprStack_pop(stack);
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
+					printf("Function type: %d\n", result.id->val.fn->builtin);
+					/* Do tohoto ifu vloz push
+					 * instrukci muzes dat natvrdo i_write a typ iString
+					 * samotny string na vypsani je v result.value->iString (u printf o par radku vys to vytiskne spravne :))
+					 */
+
+					if (result.id->val.fn->builtin == b_write){
+
+					}
 				} else { // It's just (E)
 					printf("It's just normal E\n");
 					exprStack_push(stack, result);
@@ -241,19 +253,21 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 }
 
-void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
+void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
-	Token lastToken = TokenBuff_next(tokenBuff);
 	if (!stack)
 		memoryError("expression can't allocate memory for new stack\n");
 	ExprInit(stack);
 
+	Token lastToken = TokenBuff_next(tokenBuff);
 	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
 
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
+		printStack(stack);
+
 		TopMostTerminal = findTopMostTerminal(stack);
 		printf("prtable indexes [%d][%d]\n", TopMostTerminal->content,
 				ExprLastToken.content);
@@ -263,6 +277,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			TopMostTerminal->shifted = true;
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
+			printf("next symbol read\n");
 			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 			break;
 
@@ -270,12 +285,13 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			printf("equal\n");
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
+			printf("next symbol read\n");
 			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 			break;
 
 		case reduce: // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo a zredukuj
 			printf("reduce\n");
-			reduceRule(stack, TopMostTerminal, tokenBuff);
+			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 			break;
@@ -284,7 +300,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 			syntaxError("Expression Error, error state from prTable",
 					tokenBuff->lp->lineNum, getTokenName(lastToken));
 		};
-		printStack(stack);
 	}
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(stack);
@@ -293,7 +308,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
 			printf("reduce\n");
-			reduceRule(stack, TopMostTerminal, tokenBuff);
+			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {

@@ -36,7 +36,7 @@ void ExprTokenInit(ExprToken *token);
 void ExprInit(exprStack *stack);
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp);
 ExprToken *findTopMostTerminal(exprStack *s);
-void reduceRule(exprStack *stack, ExprToken *TopMostTerminal, TokenBuff *tokenBuff);
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal, TokenBuff *tokenBuff, InstrQueue * instructions);
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions);
 
 #endif
