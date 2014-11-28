@@ -34,11 +34,9 @@ void printStack(exprStack *self) {
 	exprStackNodeT *itr = self->top;
 	int poss = self->size - 1;
 	while (itr != NULL) {
-#ifdef EXPR_DEGUG
 		printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/>\n",
 				poss, getTokenName(itr->data.content), itr->data.type,
 				itr->data.datatype, itr->data.shifted);
-#endif
 		itr = itr->next;
 		poss--;
 	}
@@ -72,10 +70,8 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 		Expr->id = NULL;
 
 	//free(Expr->value);
-	if (Token_isValue(token)){
+	if (Token_isValue(token))
 		Expr->value = malloc(sizeof(iVal));
-	}else
-		Expr->value = NULL;
 
 	switch (token) {
 	case t_num_int:
@@ -159,29 +155,16 @@ InstrCode tokenToInstruction(Token token){
 }
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
-	ExprToken operand1, operator, operand2, lastItem, result, parameter;
-	InstrParam * param;
+	ExprToken operand1, operator, operand2, lastItem, result;
+	ExprToken *parameter = NULL;
+	parameter = malloc(sizeof(ExprToken));
+	ExprTokenInit(parameter);
+
 	Token cont = TopMostTerminal->content;
-#ifdef EXPR_DEGUG
 	printf("-----%d\n", cont);
-#endif
 	switch (cont) {
 	case t_id:
 		TopMostTerminal->type = nonterminal;
-		param = malloc(sizeof(InstrParam));
-		if (TopMostTerminal->id) {
-			param->stackAddr = TopMostTerminal->id->stackIndex;
-			InstrQueue_insert(instructions, (Instruction ) { i_push, iStackRef,
-							param, NULL, NULL });
-
-		} else if (TopMostTerminal->value) {
-			*param = iVal2InstrP(*TopMostTerminal->value, TopMostTerminal->datatype);
-			InstrQueue_insert(instructions, (Instruction ) { i_push,
-							TopMostTerminal->datatype, param,
-							NULL, NULL });
-		} else {
-			sem_Error("Use of id which have no iVar and no iVal");
-		}
 		// [TODO] instr pop
 		break;
 	case t_plus:
@@ -194,10 +177,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-#ifdef EXPR_DEGUG
 		printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
 		printf("STACK POSITION = %d\n", findHandle(stack));
-#endif
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
@@ -247,18 +228,15 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		ExprTokenInit(&result);
 
 		if (lastItem.content == t_lParenthessis && lastItem.type == terminal) { // '()' Function with no parameters or an empty expession
-#ifdef EXPR_DEGUG
-				printf("Generate call instruction\n"); // empty expression not implemented yet
-#endif
+			printf("Generate call instruction\n");// empty expression not implemented yet
 			exprStack_pop(stack); // Pop ')'
 			result.type = nonterminal;
 		}
 
 		else if (lastItem.type == nonterminal) { // We have found E) found
-			result = parameter = exprStack_pop(stack); // might be parameter, needs to be saved later
-			if (result.datatype == iString){
-				printf("String in parameter: %s\n", result.value->iString);
-			}
+			result = exprStack_pop(stack); // might be parameter, needs to be saved later
+			*parameter = result;
+
 			lastItem = stack->top->data;
 			if (lastItem.content == t_lParenthessis
 					&& lastItem.type == terminal) { // (E) - not sure if function with 1 parameter or just an expression
@@ -267,26 +245,21 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 				result.type = nonterminal;
 				if (lastItem.content == t_func && lastItem.type == terminal) { // got id(E)
 				// Push parameter to instruction queue here
-				//exprStack_push(stack, result); // Keep
 					result = exprStack_pop(stack);
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
-					printf("Function type: %d\n", result.id->val.fn->builtin);
-					/* Do tohoto ifu vloz push
-					 * instrukci muzes dat natvrdo i_write a typ iString
-					 * samotny string na vypsani je v result.value->iString (u printf o par radku vys to vytiskne spravne :))
-					 */
 
-					if (result.id->val.fn->builtin == b_write){
-						param = malloc(sizeof(InstrParam));
-						param->iString = result.value->iString;
-						InstrQueue_insert(instructions, (Instruction ) { i_push, iString ,  param,  NULL, NULL });
-						InstrQueue_insert(instructions, (Instruction ) { i_write, iString ,  NULL,  NULL, NULL });
+					if (result.datatype == b_write){
+						InstrQueue_insert(instructions, (Instruction ) { i_push, parameter->datatype,  parameter->value,  NULL, NULL });
+						InstrQueue_insert(instructions, (Instruction ) { i_write, parameter->datatype,  NULL,  NULL, NULL });
 					}
+
+					else if (result.datatype == b_readLn){
+						printf("readln found\n");
+					}
+
 				} else { // It's just (E)
-#ifdef EXPR_DEGUG
-				printf("It's just normal E\n");
-#endif
+					printf("It's just normal E\n");
 					exprStack_push(stack, result);
 				}
 			} else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
@@ -301,6 +274,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		else
 			syntaxError("Syntax Error - expected ) or function parameters", -1,
 					"");
+
+		//unimplementedError("Right parenthesis not implemented yet");
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -314,50 +289,36 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	if (!stack)
 		memoryError("expression can't allocate memory for new stack\n");
 	ExprInit(stack);
-Token lastToken = TokenBuff_next(tokenBuff);
-#ifdef EXPR_DEGUG
+
+	Token lastToken = TokenBuff_next(tokenBuff);
 	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
-#endif
+
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
 		printStack(stack);
 
 		TopMostTerminal = findTopMostTerminal(stack);
-#ifdef EXPR_DEGUG
 		printf("prtable indexes [%d][%d]\n", TopMostTerminal->content,
 				ExprLastToken.content);
-#endif
 		switch (prTable[TopMostTerminal->content][ExprLastToken.content]) {
 		case shift:		// Vloz zacatek handle
-#ifdef EXPR_DEGUG
-		printf("shift\n");
-#endif
+			printf("shift\n");
 			TopMostTerminal->shifted = true;
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
-#ifdef EXPR_DEGUG
-			printf("next symbol read\n");
-#endif
 			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 			break;
 
 		case equal:	// push ExprLastToken
-#ifdef EXPR_DEGUG
-		printf("equal\n");
-#endif
+			printf("equal\n");
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
-#ifdef EXPR_DEGUG
-			printf("next symbol read\n");
-#endif
 			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 			break;
 
 		case reduce: // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo a zredukuj
-#ifdef EXPR_DEGUG
-		printf("reduce\n");
-#endif
+			printf("reduce\n");
 			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
@@ -367,17 +328,15 @@ Token lastToken = TokenBuff_next(tokenBuff);
 			syntaxError("Expression Error, error state from prTable",
 					tokenBuff->lp->lineNum, getTokenName(lastToken));
 		};
-        }
+	}
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(stack);
 		if (stack->size == 2 && stack->top->data.type == nonterminal) { // only $ and S
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
-#ifdef EXPR_DEGUG
 			printf("reduce\n");
-#endif
-			reduceRule(stack, TopMostTerminal, NULL, instructions);
+			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {
@@ -386,12 +345,11 @@ Token lastToken = TokenBuff_next(tokenBuff);
 					tokenBuff->lp->lineNum, getExprTokenName(ExprLastToken));
 		}
 	}
-#ifdef EXPR_DEGUG
+
 	printf("Last stack status\n");
 	printStack(stack);
 
 	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
 			getTokenName(lastToken));
-#endif
 	TokenBuff_pushBack(tokenBuff, lastToken);
 }
