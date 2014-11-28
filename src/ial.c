@@ -72,7 +72,7 @@ int max(int a, int b)
 	return (a > b)? a: b;
 }
 
-int find(char *txt, char *pat)
+int func_find(char *txt, char *pat)
 {
 	int patlength = strlen(pat);
 	int txtlength = strlen(txt);
