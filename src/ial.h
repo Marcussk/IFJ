@@ -7,7 +7,8 @@
 #include "ifjTypes.h"
 #include "iFunction.h"
 
-int func_find( char *src, char *search );
+int find(char *txt, char *pat);
+//int func_find( char *src, char *search );
 char * func_sort(char *str);
 
 typedef enum {
