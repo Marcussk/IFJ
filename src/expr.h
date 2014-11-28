@@ -26,8 +26,6 @@ typedef struct exprtoken{
 	tIFJ datatype;
 } ExprToken;
 
-#include "expr.h"
-
 DECLARE_STACK(expr, ExprToken);
 
 char * getExprTokenName(ExprToken t);
