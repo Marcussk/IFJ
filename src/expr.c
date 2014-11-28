@@ -127,6 +127,32 @@ int findHandle(exprStack * stack) {
 	return 0;
 }
 
+InstrCode tokenToInstruction(Token token){
+	switch(token){
+	case t_plus:
+		return i_add;
+	case t_minus:
+		return i_sub;
+	case t_asterisk:
+		return i_mul;
+	case t_slash:
+		return i_div;
+	case t_less:
+		return i_less;
+	case t_greater:
+		return i_more;
+	case t_lessOrEqv:
+		return i_loreq;
+	case t_greaterOrEqv:
+		return i_moreq;
+	case t_eqv:
+		return i_equal;
+	case t_notEqv:
+		return i_nequal;
+	default:
+		return i_noop;
+	}
+}
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result, parameter;
@@ -176,6 +202,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		} else {
 			result.datatype = operand1.datatype;
 		}
+		//InstrQueue_insert(&instr, (Instruction ) { operator.content, result.datatype, operand1, operand2, result });
 
 		result.type = nonterminal;
 		exprStack_push(stack, result);
