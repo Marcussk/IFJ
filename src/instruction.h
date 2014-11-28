@@ -10,7 +10,6 @@ typedef enum {
 	i_jmp,  //skok pri pravdive podmince
 	i_jmpz, // skok pri nepravdive podmince
 	i_push,
-	i_call,
 	i_assign,
 	i_add,
 	i_sub,
@@ -23,6 +22,8 @@ typedef enum {
 	i_more,
 	i_loreq,
 	i_moreq,
+	i_call,
+	i_return,
 
 	//funkce ze zadani
 	i_readln = 20,

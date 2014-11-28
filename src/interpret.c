@@ -21,6 +21,10 @@ void Interpret_run(Interpret * self) {
 	iVal pomA2;
 	iVal pomA3;
 	iVal pomA4;
+
+	InstrQueueNode *pomInstr;
+
+	int stackOffset;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
@@ -311,8 +315,20 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 
+		case i_call:
+			pomA1.iInt = self->stack.size;
+			stackOffset = pomA1.iInt;
+
+			pomInstr = self->instructions.actual;
+
+			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+			break;
+		case i_return:
+				while(self->stack.size != stackOffset){iStack_pop(&(self->stack));}
+			    self->instructions.actual=pomInstr;
+				break;
 		case i_stop:
-			return;
+				return;
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}

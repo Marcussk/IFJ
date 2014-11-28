@@ -5,7 +5,6 @@ errSample4.pas: {Velke zaciatocne pismena klucovych slov}
 errSample5.pas: {zretazena inicializacia premennych}
 sample1.pas: { Test na cislicove literaly}
 sample2.pas: { Jednoduchy test na write }
-			 { Vynechana deklaracia premennych }
 sample3.pas: { Program 3: Prace s retezci a vestavenymi funkcemi }
 sample4.pas: { Program 2: Vypocet faktorialu (rekurzivne) }
 sample5.pas: { Program 1: Vypocet faktorialu (iterativne) }
@@ -13,6 +12,8 @@ sample6.pas: { Test na prazdny begin end}
 sample7.pas: { Test na prazdny program}
 sample8.pas: { Program 3: Prace s retezci a vestavenymi funkcemi }
 sample9.pas: { Jednoduchy test na if }
+sample10.pas { structs }
+sample11.pas { Vynechana deklaracia premennych }
 
 TODO: {Test funkce len (spravna hodnota pri escape sekvencii)}
 	  {Funkcia len vrati spravnu dlzku pri nacitavani cisel v inych sustavach}
