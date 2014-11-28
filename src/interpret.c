@@ -318,6 +318,7 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA1);
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
 			continue;*/
+			break;
 		case i_return:
 				break;
 		case i_stop:
