@@ -259,6 +259,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 					if (result.id->val.fn->builtin == b_write) {
 						InstrParam * p = malloc(sizeof(InstrParam));
+						if(!p)
+							memoryError("Cannot allocate instrParam for writeFn");
 						*p=iVal2InstrP(*parameter->value,parameter->datatype);
 
 						InstrQueue_insert(instructions, (Instruction ) { i_push,
