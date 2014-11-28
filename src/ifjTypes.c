@@ -45,8 +45,8 @@ void iVar__dell__(iVar * self) {
 		if (self->type == iString)
 			free(self->val.iString);
 		/*else if (self->type == iFn)
-		 iFunction__dell__(self->val.fn);
-		 */
+			iFunction__dell__(self->val.fn);
+*/
 	}
 
 	free(self);

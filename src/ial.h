@@ -5,9 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ifjTypes.h"
+#include "iFunction.h"
 
 int func_find( char *src, char *search );
 char * func_sort(char *str);
+
+typedef enum {
+	ht_found, ht_inserted
+} HTLookupRes;
 
 typedef struct hashTableItem_ {
 	char * str;

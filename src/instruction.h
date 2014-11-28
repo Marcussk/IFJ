@@ -69,6 +69,9 @@ void InstrQueue__init__(InstrQueue * self);
 Instruction * InstrQueue_next(InstrQueue * self);
 void InstrQueue_insert(InstrQueue * self, Instruction i);
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
+void InstrQueue__dell__(InstrQueue * self);
+
+
 iVal InstrP2iVal(InstrParam * a, tIFJ type);
 void InstrQueue_debug(InstrQueue * self);
 

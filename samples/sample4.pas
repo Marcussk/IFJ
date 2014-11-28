@@ -31,6 +31,6 @@ begin
     else
     begin
         vysl := factorial(a);
-        write('Vysledek je: ’, vysl, ''#10'')
+        write('Vysledek je: ', vysl, ''#10'')
     end
 end.

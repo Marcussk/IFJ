@@ -8,7 +8,6 @@ C_SRCS += \
 ../src/builtins.c \
 ../src/errorHandler.c \
 ../src/expr.c \
-../src/gerator3AC.c \
 ../src/hashTable.c \
 ../src/iFunction.c \
 ../src/ial.c \
@@ -29,7 +28,6 @@ OBJS += \
 ./src/builtins.o \
 ./src/errorHandler.o \
 ./src/expr.o \
-./src/gerator3AC.o \
 ./src/hashTable.o \
 ./src/iFunction.o \
 ./src/ial.o \
@@ -50,7 +48,6 @@ C_DEPS += \
 ./src/builtins.d \
 ./src/errorHandler.d \
 ./src/expr.d \
-./src/gerator3AC.d \
 ./src/hashTable.d \
 ./src/iFunction.d \
 ./src/ial.d \

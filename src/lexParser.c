@@ -92,7 +92,7 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 		switch (self->idMode) {
 		case lp_insertOnly:
 			if (HashTable_insert(self->symbolTable, self->str.buff,
-					&(self->lastSymbol)) != 0) {
+					&(self->lastSymbol)) != ht_inserted) {
 				sem_definitionError(self->lineNum, self->str.buff); // redefinition
 			}
 			break;

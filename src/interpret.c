@@ -2,11 +2,11 @@
 
 IMPLEMENT_STACK(i, iVal)
 
-void iStack_debug(iStack * s){
+void iStack_debug(iStack * s) {
 	int i;
 	printf("<stack %p, size: %d>\n", (void *) s, s->size);
-	for(i=0 ; i<s->size; i++){
-		printf("%d: %d\n", i , (*iStack_getAt(s, i)).iInt);
+	for (i = 0; i < s->size; i++) {
+		printf("%d: %d\n", i, (*iStack_getAt(s, i)).iInt);
 	}
 }
 
@@ -35,7 +35,7 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_jmpz:
 			pomA1 = iStack_pop(&(self->stack));
-			if(pomA1.iInt == 0){
+			if (pomA1.iInt == 0) {
 				InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
 				continue;
 			}
@@ -171,7 +171,9 @@ void Interpret_run(Interpret * self) {
 				pomA3.iReal = pomA2.iReal + pomA1.iReal;
 				break;
 			case iString:
-				pomA3.iString = malloc((strlen(pomA1.iString) + strlen(pomA1.iString) +1)*sizeof(char));
+				pomA3.iString = malloc(
+						(strlen(pomA1.iString) + strlen(pomA1.iString) + 1)
+								* sizeof(char));
 				strcpy(pomA3.iString, pomA1.iString);
 				strcat(pomA3.iString, pomA2.iString);
 				break;
@@ -190,16 +192,16 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
-				case iInt:
-					pomA3.iInt = pomA1.iInt - pomA2.iInt;
-					break;
-				case iReal:
-					pomA3.iReal = pomA1.iReal - pomA2.iReal;
-					break;
-				default:
-					unimplementedError(
-					"Instr. sub is not implemented for this type\n");
-					break;
+			case iInt:
+				pomA3.iInt = pomA1.iInt - pomA2.iInt;
+				break;
+			case iReal:
+				pomA3.iReal = pomA1.iReal - pomA2.iReal;
+				break;
+			default:
+				unimplementedError(
+						"Instr. sub is not implemented for this type\n");
+				break;
 			}
 			if (i.dest != NULL)
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
@@ -211,16 +213,16 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
-				case iInt:
-					pomA3.iInt = pomA1.iInt * pomA2.iInt;
-					break;
-				case iReal:
-					pomA3.iReal = pomA1.iReal * pomA2.iReal;
-					break;
-				default:
-					unimplementedError(
-					"Instr. mul is not implemented for this type\n");
-					break;
+			case iInt:
+				pomA3.iInt = pomA1.iInt * pomA2.iInt;
+				break;
+			case iReal:
+				pomA3.iReal = pomA1.iReal * pomA2.iReal;
+				break;
+			default:
+				unimplementedError(
+						"Instr. mul is not implemented for this type\n");
+				break;
 			}
 			if (i.dest != NULL)
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
@@ -232,16 +234,16 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
-				case iInt:
-					pomA3.iInt = pomA1.iInt / pomA2.iInt;
-					break;
-				case iReal:
-					pomA3.iReal = pomA1.iReal / pomA2.iReal;
-					break;
-				default:
-					unimplementedError(
-					"Instr. div is not implemented for this type\n");
-					break;
+			case iInt:
+				pomA3.iInt = pomA1.iInt / pomA2.iInt;
+				break;
+			case iReal:
+				pomA3.iReal = pomA1.iReal / pomA2.iReal;
+				break;
+			default:
+				unimplementedError(
+						"Instr. div is not implemented for this type\n");
+				break;
 			}
 			if (i.dest != NULL)
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
@@ -254,29 +256,30 @@ void Interpret_run(Interpret * self) {
 			if (i.type != iString) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
 			} else {
-				(*iStack_getAt(&self->stack, i.dest->stackAddr)).iString = strdup(pomA1.iString);
+				(*iStack_getAt(&self->stack, i.dest->stackAddr)).iString =
+						strdup(pomA1.iString);
 			}
 			break;
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
 		case i_readln:
-			    readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
-				break;
+			readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
+			break;
 		case i_sort:
-			        pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
-			        if (i.dest != NULL)
-			        	*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
-			        else
-			        	iStack_push(&(self->stack), pomA3);
-					break;
+			pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
+			if (i.dest != NULL)
+				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+			else
+				iStack_push(&(self->stack), pomA3);
+			break;
 		case i_len:
-				    pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
-				    if (i.dest != NULL)
-				      *iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
-				    else
-				       iStack_push(&(self->stack), pomA3);
-				    break;
+			pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
+			if (i.dest != NULL)
+				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+			else
+				iStack_push(&(self->stack), pomA3);
+			break;
 
 		case i_push:
 			if (i.type == iStackRef) {
@@ -316,10 +319,14 @@ void Interpret_run(Interpret * self) {
 		InstrQueue_next(&(self->instructions));
 	}
 }
+void iStack__dell__(iStack * self) {
+	int i;
+	for (i = 0; i < self->size; i++) {
+		iStack_pop(self);
+	}
+}
 
 void Interpret__dell__(Interpret * self) {
-	/*
-	 InstrQueue__dell__(self->instructions);
+	 InstrQueue__dell__(&self->instructions);
 	 iStack__dell__(&self->stack);
-	 */
 }

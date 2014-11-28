@@ -76,6 +76,20 @@ Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 	return &(self->actual)->val;
 }
 
+void InstrQueue__dell__(InstrQueue * self){
+	InstrQueueNode * tmp = self->first;
+	InstrQueueNode * tmp2;
+	while(tmp && tmp->next){
+		tmp2 = tmp;
+		tmp = tmp->next;
+		free(tmp->val.a1);
+		free(tmp->val.a2);
+		free(tmp->val.dest);
+		free(tmp2);
+	}
+	free(tmp);
+}
+
 iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	iVal v;
 	if (!a) {
