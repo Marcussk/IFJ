@@ -23,8 +23,8 @@ inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
 	SyntaxAnalyzer_parseExpr(self);
-	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
-			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
+	InstrQueue_insert(&self->instr,
+			(Instruction ) { i_assign, iStackRef, NULL,	NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
 
 }
@@ -54,8 +54,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		NEXT_TOK(t_scolon, "expected id\n");
 
 		InstrQueue_insert(&self->instr,
-				(Instruction ) { i_push, self->lp->lastSymbol->type,
-						NULL, NULL, NULL });
+				(Instruction ) { i_push, self->lp->lastSymbol->type, NULL, NULL, NULL });
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}

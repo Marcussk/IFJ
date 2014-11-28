@@ -11,7 +11,6 @@ typedef enum {
 	i_jmp,  //skok pri pravdive podmince
 	i_jmpz, // skok pri nepravdive podmince
 	i_push,
-	i_call,
 	i_assign,
 	i_add,
 	i_sub,
@@ -24,6 +23,8 @@ typedef enum {
 	i_more,
 	i_loreq,
 	i_moreq,
+	i_call,
+	i_return,
 
 	//funkce ze zadani
 	i_readln = 20,
@@ -69,6 +70,9 @@ void InstrQueue__init__(InstrQueue * self);
 Instruction * InstrQueue_next(InstrQueue * self);
 void InstrQueue_insert(InstrQueue * self, Instruction i);
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
+void InstrQueue__dell__(InstrQueue * self);
+
+
 iVal InstrP2iVal(InstrParam * a, tIFJ type);
 void InstrQueue_debug(InstrQueue * self);
 

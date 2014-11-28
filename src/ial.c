@@ -166,8 +166,8 @@ int func_find(char *src, char *search) {
 
 	//arrays for GS and BC tables;
 	// neviem ci robim vobec spravne velke polia
-	int * good_suffix = calloc(sizeof(int),src_len); // pole velkosti dlzky zdrojoveho retazca, neviem ci to nema byt dlzka abecedy zdrojoveho ratazca
-	int * bad_character = calloc(sizeof(int),alfa_len); // pole velkosti abecedy zdrojoveho retazca
+	int * good_suffix = calloc(sizeof(int), src_len); // pole velkosti dlzky zdrojoveho retazca, neviem ci to nema byt dlzka abecedy zdrojoveho ratazca
+	int * bad_character = calloc(sizeof(int), alfa_len); // pole velkosti abecedy zdrojoveho retazca
 
 	good_suffixes(search, good_suffix);
 	bad_char(search, bad_character, count);
@@ -187,7 +187,6 @@ int func_find(char *src, char *search) {
 	}
 	return -1;
 }
-
 
 HashTable * HashTable__init__(int size) {
 	HashTable * new_table;
@@ -223,9 +222,9 @@ unsigned int HashTable_hash(HashTable *self, char *str) {
 	return hashval % self->size;
 }
 
-HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str){
+HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str) {
 	HashTableItem * found = HashTable_lookup(self, str);
-	if(!found && self->masterTable)
+	if (!found && self->masterTable)
 		return HashTable_lookup(self->masterTable, str);
 	return found;
 }
@@ -252,21 +251,28 @@ int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
 
 	if (current_list) {
 		// already exists
-		if(newItem)
-		*newItem = current_list->var;
-		return 2;
+		if (newItem)
+			*newItem = current_list->var;
+		return ht_found;
 	}
 	if ((new_list = malloc(sizeof(HashTableItem))) == NULL)
 		memoryError("Can't allocate new item in hash table\n");
 	new_list->var = iVar__init__();
 	new_list->str = strdup(str);
-	if(newItem)
-	*newItem = new_list->var;
+	if (newItem)
+		*newItem = new_list->var;
 
 	new_list->next = self->table[hashval];
 	self->table[hashval] = new_list;
 
-	return 0;
+	return ht_inserted;
+}
+
+void HashTableItem__dell__(HashTableItem *self) {
+	if (self->var->type == iFn)
+		iFunction__dell__(self->var->val.fn);
+	iVar__dell__(self->var);
+	free(self->str);
 }
 
 void HashTable__dell__(HashTable *self) {
@@ -278,13 +284,11 @@ void HashTable__dell__(HashTable *self) {
 		while (list != NULL) {
 			temp = list;
 			list = list->next;
-			iVar__dell__(temp->var);
-			free(temp->str);
+			HashTableItem__dell__(temp);
 			free(temp);
 		}
 	}
 
 	free(self->table);
 	free(self);
-
 }
