@@ -269,12 +269,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 						InstrQueue_insert(instructions, (Instruction ) {
 										i_write, parameter->datatype, NULL,
 										NULL, NULL });
-					}
-
-					else if (result.id->val.fn->builtin == b_readLn) {
+					}else if (result.id->val.fn->builtin == b_readLn) {
 						printf("readln found\n");
 					}
-
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
 				printf("It's just normal E\n");
@@ -378,7 +375,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 #ifdef EXPR_DEGUG
 	printf("Last stack status\n");
 	printStack(stack);
-
 	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
 			getTokenName(lastToken));
 #endif

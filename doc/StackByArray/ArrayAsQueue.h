@@ -62,6 +62,7 @@ Instruction* InstrQueue_atIndex(InstrQueue* self, int index) {
 	} else
 		return (&(self->QueueArr[index]));
 }
+
 void InstrQueue__dell__(InstrQueue *self) {
 	free(self->QueueArr);
 	self->first = 0;
