@@ -16,6 +16,7 @@ typedef struct namePrefix##s_stackNodeT {                                      \
 typedef struct {                                                               \
 	namePrefix##StackNodeT *top;                                               \
 	int size;                                                                  \
+	int actualIndex;                                                           \
 } namePrefix##Stack;                                                           \
 void namePrefix##Stack__init__(namePrefix##Stack * self);                      \
 void namePrefix##Stack_push(namePrefix##Stack * s, stackElementT data) ;       \
@@ -28,6 +29,7 @@ stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index);  \
 void namePrefix##Stack__init__(namePrefix##Stack * self) {                     \
 	self->top = NULL;                                                          \
 	self->size = 0;                                                            \
+	self->actualIndex = 0;                                                     \
 }                                                                              \
                                                                                \
 void namePrefix##Stack_push(namePrefix##Stack * self, stackElementT data) {    \
@@ -38,6 +40,7 @@ void namePrefix##Stack_push(namePrefix##Stack * self, stackElementT data) {    \
 	tmp->data = data;                                                          \
 	self->size ++;                                                             \
 	self->top = tmp;                                                           \
+    self->actualIndex ++;                                                      \
 }                                                                              \
                                                                                \
 stackElementT namePrefix##Stack_pop(namePrefix##Stack * self) {                \
@@ -47,6 +50,7 @@ stackElementT namePrefix##Stack_pop(namePrefix##Stack * self) {                \
 	data = self->top->data;                                                    \
 	self->top = self->top->next;                                               \
 	self->size --;                                                             \
+	self->actualIndex --;                                                      \
     free(tmp);                                                                 \
 	return data;                                                               \
 }                                                                              \
