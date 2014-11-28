@@ -259,8 +259,6 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		else
 			syntaxError("Syntax Error - expected ) or function parameters", -1,
 					"");
-
-		//unimplementedError("Right parenthesis not implemented yet");
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -332,7 +330,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 #ifdef EXPR_DEGUG
 			printf("reduce\n");
 #endif
-			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
+			reduceRule(stack, TopMostTerminal, NULL, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {
