@@ -76,10 +76,10 @@ Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 	return &(self->actual)->val;
 }
 
-void InstrQueue__dell__(InstrQueue * self){
+void InstrQueue__dell__(InstrQueue * self) {
 	InstrQueueNode * tmp = self->first;
 	InstrQueueNode * tmp2;
-	while(tmp && tmp->next){
+	while (tmp && tmp->next) {
 		tmp2 = tmp;
 		tmp = tmp->next;
 		free(tmp->val.a1);
@@ -90,6 +90,27 @@ void InstrQueue__dell__(InstrQueue * self){
 	free(tmp);
 }
 
+InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
+	InstrParam p;
+	switch (type) {
+	case iBool:
+	case iChar:
+	case iInt:
+		p.iInt = v.iInt;
+		break;
+	case iString:
+		p.iString = v.iString;
+		break;
+	case iReal:
+		p.iReal = v.iReal;
+		break;
+	default:
+		unimplementedError(
+				"Unimplemented cast in InstrP2iVal for the interpret\n");
+	}
+	return p;
+}
+
 iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	iVal v;
 	if (!a) {
@@ -97,6 +118,8 @@ iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 		return v;
 	}
 	switch (type) {
+	case iBool:
+	case iChar:
 	case iInt:
 		v.iInt = a->iInt;
 		break;

@@ -17,7 +17,7 @@ typedef enum {
 	terminal, nonterminal
 } ExprType;
 
-typedef struct exprtoken{
+typedef struct exprtoken {
 	Token content; // contains terminal converted to a single char - terminal or E
 	iVar * id; // contains variable to use or function to call
 	iVal * value;
@@ -35,7 +35,8 @@ void ExprTokenInit(ExprToken *token);
 void ExprInit(exprStack *stack);
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp);
 ExprToken *findTopMostTerminal(exprStack *s);
-void reduceRule(exprStack *stack, ExprToken *TopMostTerminal, TokenBuff *tokenBuff);
+void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
+		TokenBuff *tokenBuff, InstrQueue * instructions);
 void expression(TokenBuff * tokenBuff, InstrQueue * istructions);
 
 #endif

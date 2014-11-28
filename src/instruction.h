@@ -6,8 +6,7 @@
 
 // synergy with builtins
 typedef enum {
-	i_stop = 0,
-	i_noop,		// does nothing
+	i_stop = 0, i_noop,		// does nothing
 	i_jmp,  //skok pri pravdive podmince
 	i_jmpz, // skok pri nepravdive podmince
 	i_push,
@@ -71,8 +70,8 @@ void InstrQueue_insert(InstrQueue * self, Instruction i);
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
 void InstrQueue__dell__(InstrQueue * self);
 
-
 iVal InstrP2iVal(InstrParam * a, tIFJ type);
+InstrParam inline iVal2InstrP(iVal v, tIFJ type);
 void InstrQueue_debug(InstrQueue * self);
 
 #endif

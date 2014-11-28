@@ -72,8 +72,10 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 		Expr->id = NULL;
 
 	free(Expr->value);
-	if (Token_isValue(token))
+	if (Token_isValue(token)){
 		Expr->value = malloc(sizeof(iVal));
+	}else
+		Expr->value = NULL;
 
 	switch (token) {
 	case t_num_int:
@@ -130,8 +132,9 @@ int findHandle(exprStack * stack) {
 }
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
-		TokenBuff *tokenBuff) {
+		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
+	InstrParam * param;
 	Token cont = TopMostTerminal->content;
 #ifdef EXPR_DEGUG
 	printf("-----%d\n", cont);
@@ -139,6 +142,20 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	switch (cont) {
 	case t_id:
 		TopMostTerminal->type = nonterminal;
+		param = malloc(sizeof(InstrParam));
+		if (TopMostTerminal->id) {
+			param->stackAddr = TopMostTerminal->id->stackIndex;
+			InstrQueue_insert(instructions, (Instruction ) { i_push, iStackRef,
+							param, NULL, NULL });
+
+		} else if (TopMostTerminal->value) {
+			*param = iVal2InstrP(*TopMostTerminal->value, TopMostTerminal->datatype);
+			InstrQueue_insert(instructions, (Instruction ) { i_push,
+							TopMostTerminal->datatype, param,
+							NULL, NULL });
+		} else {
+			sem_Error("Use of id which have no iVar and no iVal");
+		}
 		// [TODO] instr pop
 		break;
 	case t_plus:
@@ -204,7 +221,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		if (lastItem.content == t_lParenthessis && lastItem.type == terminal) { // '()' Function with no parameters or an empty expession
 #ifdef EXPR_DEGUG
-			printf("Generate call instruction\n"); // empty expression not implemented yet
+				printf("Generate call instruction\n"); // empty expression not implemented yet
 #endif
 			exprStack_pop(stack); // Pop ')'
 			result.type = nonterminal;
@@ -226,7 +243,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					exprStack_push(stack, result); // Keep
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
-					printf("It's just normal E\n");
+				printf("It's just normal E\n");
 #endif
 					exprStack_push(stack, result);
 				}
@@ -251,7 +268,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 }
 
-void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
+void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
 	Token lastToken = TokenBuff_next(tokenBuff);
@@ -272,7 +289,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 		switch (prTable[TopMostTerminal->content][ExprLastToken.content]) {
 		case shift:		// Vloz zacatek handle
 #ifdef EXPR_DEGUG
-			printf("shift\n");
+		printf("shift\n");
 #endif
 			TopMostTerminal->shifted = true;
 			exprStack_push(stack, ExprLastToken);
@@ -282,7 +299,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 		case equal:	// push ExprLastToken
 #ifdef EXPR_DEGUG
-			printf("equal\n");
+		printf("equal\n");
 #endif
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
@@ -291,9 +308,9 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 
 		case reduce: // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo a zredukuj
 #ifdef EXPR_DEGUG
-			printf("reduce\n");
+		printf("reduce\n");
 #endif
-			reduceRule(stack, TopMostTerminal, tokenBuff);
+			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 			break;
@@ -315,7 +332,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * istructions) {
 #ifdef EXPR_DEGUG
 			printf("reduce\n");
 #endif
-			reduceRule(stack, TopMostTerminal, tokenBuff);
+			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {
