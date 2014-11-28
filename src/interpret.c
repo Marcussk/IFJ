@@ -311,8 +311,13 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 
+		case i_call:
+
+			break;
+		case i_return:
+				break;
 		case i_stop:
-			return;
+				return;
 		default:
 			unimplementedError("Unimplemented instruction for the interpret\n");
 		}
