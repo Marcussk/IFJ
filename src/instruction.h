@@ -7,8 +7,8 @@
 // synergy with builtins
 typedef enum {
 	i_stop = 0, i_noop,		// does nothing
-	i_jmp,  //skok pri pravdive podmince
-	i_jmpz, // skok pri nepravdive podmince
+	i_jmp,  //skok vzdy
+	i_jmpz, //podmineny skok pri nepravdive podmince
 	i_push,
 	i_assign,
 	i_add,
