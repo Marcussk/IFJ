@@ -141,23 +141,23 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
-	InstrQueueNode * StackAddrbegin = NULL;
-	InstrQueueNode * StackAddrend = NULL;
+	//InstrQueueNode * StackAddrbegin = NULL;
+	//InstrQueueNode * StackAddrend = NULL;
 	SyntaxAnalyzer_parseExpr(self);					//COND
 
 	NEXT_TOK(t_do, "expected do")
 	//begin:
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrbegin = (&self->instr)->actual;
+	//InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	//StackAddrbegin = (&self->instr)->actual;
 	//jmpz end
-	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
+	//InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
 	lastToken = TokenBuff_next(&self->tokBuff);		//begin
 	SyntaxAnalyzer_parse_block(self);				//STMTLIST
 	//jmp begin
-	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrbegin});
+	//InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrbegin});
 	//end
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrend = (&self->instr)->actual;
+	//InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	//StackAddrend = (&self->instr)->actual;
 	//[TODO] instructions
 
 }
