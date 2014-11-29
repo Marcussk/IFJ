@@ -22,7 +22,7 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	int exprtype = SyntaxAnalyzer_parseExpr(self);
+	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
 	printf("Datovy typ expr: %d\n", exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 					NULL, (InstrParam*) &(asigmentTo->stackIndex) });

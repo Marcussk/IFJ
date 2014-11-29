@@ -393,7 +393,7 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 					sem_Error("Use of uninitialized variable");
 				param = malloc(sizeof(InstrParam));
 				param->stackAddr = lastSymbol->stackIndex;
-				instr.type = lastSymbol->type;
+				instr.type = iStackRef;
 				instr.a1 = param;
 			} else {
 				syntaxError("Function call cannot be in write call",
@@ -412,8 +412,11 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 
 		}
 		InstrQueue_insert(instructions, instr);
+		if( instr.type == iStackRef){
+			instr.type = lastSymbol->type;
+		}
 		InstrQueue_insert(instructions, (Instruction ) { i_write, instr.type,
-						NULL, NULL, NULL });
+				NULL, NULL, NULL });
 		lastToken = TokenBuff_next(tokenBuff);
 		if (lastToken == t_comma)
 			continue;
@@ -441,20 +444,19 @@ void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		tokenBuff->lp->lastSymbol->isInitialized = true;
 		param = malloc(sizeof(InstrParam));
 		param->stackAddr = lastSymbol->stackIndex;
-	}
-	else
-		syntaxError("Expected identificator",
-				tokenBuff->lp->lineNum, getTokenName(lastToken));
+	} else
+		syntaxError("Expected identificator", tokenBuff->lp->lineNum,
+				getTokenName(lastToken));
 
 	InstrQueue_insert(instructions, (Instruction ) { i_readln, lastSymbol->type,
-					NULL, NULL, param});
+			NULL, NULL, param });
 
 	lastToken = TokenBuff_next(tokenBuff);
 	if (lastToken == t_rParenthessis)
 		return;
 	else
-		syntaxError("write call unexpected argument",
-				tokenBuff->lp->lineNum, getTokenName(lastToken));
+		syntaxError("write call unexpected argument", tokenBuff->lp->lineNum,
+				getTokenName(lastToken));
 }
 
 tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {

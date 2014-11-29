@@ -22,7 +22,7 @@ void write(tIFJ type, iVal a1) {
 			else if(a1.iInt == 1){printf("TRUE");}
 			break;
 	default:
-		printf("Function write has performed error");
+		rt_error("instr write used with incompatible type");
 	}
 }
 

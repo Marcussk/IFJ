@@ -3,7 +3,7 @@
 
 
 #define RANDOM_NUM 15
-
+/*
 
 iVal *get_new_iVal(){
 	iVal new_iVal = malloc(sizeof(iVal));
@@ -23,3 +23,4 @@ void test_stack1(void){
 		printf("Vypis staku : %d \n ", s->StackArray[i].Iint );
 	}
 }
+*/

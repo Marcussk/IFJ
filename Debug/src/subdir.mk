@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/StackAsArray.c \
 ../src/buffFile.c \
 ../src/builtins.c \
 ../src/errorHandler.c \
@@ -24,6 +25,7 @@ C_SRCS += \
 ../src/tokenMap.c 
 
 OBJS += \
+./src/StackAsArray.o \
 ./src/buffFile.o \
 ./src/builtins.o \
 ./src/errorHandler.o \
@@ -44,6 +46,7 @@ OBJS += \
 ./src/tokenMap.o 
 
 C_DEPS += \
+./src/StackAsArray.d \
 ./src/buffFile.d \
 ./src/builtins.d \
 ./src/errorHandler.d \

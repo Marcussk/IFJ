@@ -12,5 +12,6 @@ begin
 	write(a);
 	a := a*2;
 	write(''#10'');
-	write(a)
+	write(a, 'Hello 2', 99, ''#10'');
+	write(c, ''#10'')
 end.
