@@ -242,7 +242,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		}
 
 		printf("instruction = %d\n", tokenToInstruction(operator.content));
-		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, NULL, NULL, NULL});
+		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), operand1.datatype, NULL, NULL, NULL});
 
 		result.type = nonterminal;
 		exprStack_push(stack, result);
