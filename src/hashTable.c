@@ -14,3 +14,10 @@ void HashTable_print(HashTable *self) {
 		}
 	}
 }
+
+HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str) {
+	HashTableItem * found = HashTable_lookup(self, str);
+	if (!found && self->masterTable)
+		return HashTable_lookup(self->masterTable, str);
+	return found;
+}

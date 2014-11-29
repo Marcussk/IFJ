@@ -148,12 +148,6 @@ unsigned int HashTable_hash(HashTable *self, char *str) {
 	return hashval % self->size;
 }
 
-HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str) {
-	HashTableItem * found = HashTable_lookup(self, str);
-	if (!found && self->masterTable)
-		return HashTable_lookup(self->masterTable, str);
-	return found;
-}
 
 // = search in table
 HashTableItem *HashTable_lookup(HashTable *self, char *str) {

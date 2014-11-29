@@ -247,7 +247,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			result.datatype = operand1.datatype;
 		}
 
-		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), operand1.datatype, NULL, NULL, NULL});
+		InstrQueue_insert(instructions,
+				(Instruction ) { tokenToInstruction(operator.content),
+								operand1.datatype, NULL, NULL, NULL });
 
 		result.type = nonterminal;
 		exprStack_push(stack, result);
@@ -288,12 +290,18 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
 					if (result.id->val.fn->builtin) {
-						p = malloc(sizeof(InstrParam));
-						p->stackAddr = TopMostTerminal->id->stackIndex;
-						instr.type = iStackRef;
-						InstrQueue_insert(instructions, (Instruction ) {
-							result.id->val.fn->builtin, parameter->datatype, NULL,
-										NULL, NULL }); // Tady byl p->stackAddr
+						if (TopMostTerminal->id) {
+							p = malloc(sizeof(InstrParam));
+							p->stackAddr = TopMostTerminal->id->stackIndex;
+							instr.type = iStackRef;
+
+						}
+						InstrQueue_insert(instructions,
+								(Instruction ) {
+												result.id->val.fn->builtin,
+												parameter->datatype, NULL,
+												NULL, NULL }); // Tady byl p->stackAddr
+
 					}
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
