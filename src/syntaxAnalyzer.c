@@ -162,12 +162,13 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
 	//Cond
+	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	StackAddrbegin->stackAddr = self->instr.index;
 	SyntaxAnalyzer_parseExpr(self);					
 	//do
 	NEXT_TOK(t_do, "expected do")
 	//begin:
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrbegin->stackAddr = self->instr.index;
+	
 	//jmpz end
 	InstrQueue_insert(&self->instr,(Instruction){i_jmpz, iVoid, NULL, NULL, StackAddrend});
 	lastToken = TokenBuff_next(&self->tokBuff);		//begin
