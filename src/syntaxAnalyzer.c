@@ -16,16 +16,17 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->stackIndexCntr = 0;
 }
 
-inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
-	expression(&self->tokBuff, &self->instr);
+tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
+	return expression(&self->tokBuff, &self->instr);
 }
 
-void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
+void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	SyntaxAnalyzer_parseExpr(self);
+	int exprtype = SyntaxAnalyzer_parseExpr(self);
+	printf("Datovy typ expr: %d\n", exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 					NULL, (InstrParam*) &(asigmentTo->stackIndex) });
-	asigmentTo->isInitialied = true;
+	asigmentTo->isInitialized = true;
 }
 
 // t_var already found
@@ -34,8 +35,8 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_rParenthessis) {    // ) - args are empty
-		syntaxError("expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
+	if (lastToken == t_begin) {    // ) - args are empty
+		syntaxError("Expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
 		return;
 	}
 	else {
@@ -91,10 +92,9 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_while(self);
 			break;
 		case t_id:
-			varForLastId = self->lp->lastSymbol;
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_asigment) {
-				SyntaxAnalyzer_parseAsigment(self, varForLastId);
+				SyntaxAnalyzer_parseAsigment(self);
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
@@ -240,7 +240,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	}
 	while (true) {
 		NEXT_TOK(t_id, "expected id in argument list")
-		self->lp->lastSymbol->isInitialied = true;
+		self->lp->lastSymbol->isInitialized = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
@@ -308,7 +308,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Expected \"begin\" or \"var\" after function declaration",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
-	fn->isInitialied = true;
+	fn->isInitialized = true;
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;

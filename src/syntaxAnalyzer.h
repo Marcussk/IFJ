@@ -26,7 +26,7 @@ void SyntaxAnalyzer_parseCond(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self);
-void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
+tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
 
 
 

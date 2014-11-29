@@ -37,7 +37,7 @@ typedef union {
 // basic variable can represents everything, even function *
 typedef struct s_iVar {
 	tIFJ type;
-	bool isInitialied;
+	bool isInitialized;
 	int stackIndex;
 	iVal val;
 } iVar;

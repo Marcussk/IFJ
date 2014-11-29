@@ -5,7 +5,7 @@ iVar * iVar__init__() {
 	if (!self) {
 		memoryError("Can't allocate memory for iVar");
 	}
-	self->isInitialied = false;
+	self->isInitialized = false;
 	self->type = iUnknown;
 	self->val.iInt = 0;
 	self->stackIndex = -1;
@@ -36,12 +36,12 @@ void iVar_debug(iVar * v) {
 		printf("Null variable\n");
 	else {
 		printf("<iVar p:%p, type:%s, initialised:%d>\n", (void *) v,
-				iVar_type2str(v->type), v->isInitialied);
+				iVar_type2str(v->type), v->isInitialized);
 	}
 }
 
 void iVar__dell__(iVar * self) {
-	if (self->isInitialied) {
+	if (self->isInitialized) {
 		if (self->type == iString)
 			free(self->val.iString);
 		/*else if (self->type == iFn)
