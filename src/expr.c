@@ -245,6 +245,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			result.datatype = operand1.datatype;
 		}
 
+<<<<<<< HEAD
 		/*
 		 InstrParam * i_operand1 = malloc(sizeof(InstrParam));
 		 InstrParam * i_operand2 = malloc(sizeof(InstrParam));
@@ -263,6 +264,11 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		//result.value = malloc(sizeof(iVal));
 		//*(result.value) = InstrP2iVal(i_dest, result.datatype);
 		//printf("result value = %d\n", result.value->iInt);
+=======
+		printf("instruction = %d\n", tokenToInstruction(operator.content));
+		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, NULL, NULL, NULL});
+
+>>>>>>> d80538eff99b4fee452a0eb07ca00f2b0da3325f
 		result.type = nonterminal;
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
