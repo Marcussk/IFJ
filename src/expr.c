@@ -21,6 +21,8 @@ Token getTokenContent(Token token, iVar* var) {
 	case t_num_int:
 	case t_num_real:
 	case t_str_val:
+	case t_true:
+	case t_false:
 		return t_id;
 	case t_id:
 		if (var->type == iFn)
