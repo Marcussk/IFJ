@@ -34,9 +34,9 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 			Interpret__init__(&interpret, synAnalyzer.instr);
 			Interpret_run(&interpret);
-			Interpret__dell__(&interpret);
+			//Interpret__dell__(&interpret);
 			//InstrQueue__dell__(&(synAnalyzer.instr));
-			SyntaxAnalyzer__dell__(&synAnalyzer);
+			//SyntaxAnalyzer__dell__(&synAnalyzer);
 		}
 	}
 	return EXIT_SUCCESS;

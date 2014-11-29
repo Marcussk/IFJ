@@ -177,6 +177,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (TopMostTerminal->type == terminal) {
 			InstrParam * p = NULL;
 			instr.code = i_push;
+			instr.a1 = NULL;
+			instr.a2 = NULL;
+			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
@@ -187,6 +190,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 						TopMostTerminal->datatype);
 				instr.type = TopMostTerminal->datatype;
 			} else {
+				break;
 				//is on stack
 			}
 			TopMostTerminal->type = nonterminal;
@@ -241,9 +245,30 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			result.datatype = operand1.datatype;
 		}
 
+<<<<<<< HEAD
+		/*
+		 InstrParam * i_operand1 = malloc(sizeof(InstrParam));
+		 InstrParam * i_operand2 = malloc(sizeof(InstrParam));
+		 InstrParam * i_dest = malloc(sizeof(InstrParam));
+		 if (!i_operand1 || !i_operand2)
+		 memoryError("Cannot allocate instrParam for arithmetical operations");
+		 printf("bb");
+
+		 *i_operand1 = iVal2InstrP(*(operand1.value),operand1.datatype);
+		 *i_operand2 = iVal2InstrP(*(operand2.value),operand2.datatype);
+
+		 //printf("operand1 value - %d\n", i_operand1->iInt);
+		 InstrQueue_insert(instructions, (Instruction ) { i_push, operand2.datatype, i_operand2, NULL, NULL });
+		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, i_operand1, i_operand2, NULL});
+		 */
+		//result.value = malloc(sizeof(iVal));
+		//*(result.value) = InstrP2iVal(i_dest, result.datatype);
+		//printf("result value = %d\n", result.value->iInt);
+=======
 		printf("instruction = %d\n", tokenToInstruction(operator.content));
 		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), operand1.datatype, NULL, NULL, NULL});
 
+>>>>>>> d80538eff99b4fee452a0eb07ca00f2b0da3325f
 		result.type = nonterminal;
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
@@ -282,13 +307,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result = exprStack_pop(stack);
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
-
-					if (result.id->val.fn->builtin == b_write) {
+					if (result.id->val.fn->builtin) {
 						InstrQueue_insert(instructions, (Instruction ) {
-										i_write, parameter->datatype, NULL,
+							result.id->val.fn->builtin, parameter->datatype, NULL,
 										NULL, NULL });
-					} else if (result.id->val.fn->builtin == b_readLn) {
-						printf("readln found\n");
 					}
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
