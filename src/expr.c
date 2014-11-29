@@ -296,13 +296,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result = exprStack_pop(stack);
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
-
-					if (result.id->val.fn->builtin == b_write) {
+					if (result.id->val.fn->builtin) {
 						InstrQueue_insert(instructions, (Instruction ) {
-										i_write, parameter->datatype, NULL,
+							result.id->val.fn->builtin, parameter->datatype, NULL,
 										NULL, NULL });
-					} else if (result.id->val.fn->builtin == b_readLn) {
-						printf("readln found\n");
 					}
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
