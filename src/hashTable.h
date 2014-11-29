@@ -14,5 +14,6 @@
  */
 
 void HashTable_debug(HashTable *hashtable);
+HashTableItem * HashTable_lookupEverywhere(HashTable * self, char* str);
 
 #endif

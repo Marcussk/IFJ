@@ -23,8 +23,8 @@ inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
 	SyntaxAnalyzer_parseExpr(self);
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_assign, iStackRef, NULL,	NULL, (InstrParam*) &(asigmentTo->stackIndex) });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
+					NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
 }
 
@@ -62,7 +62,8 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		NEXT_TOK(t_scolon, "expected \";\"\n");
 
 		InstrQueue_insert(&self->instr,
-				(Instruction ) { i_push, self->lp->lastSymbol->type, NULL, NULL, NULL });
+				(Instruction ) { i_push, self->lp->lastSymbol->type,
+								NULL, NULL, NULL });
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}
@@ -123,17 +124,18 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
 	InstrParam * StackAddrelse = malloc(sizeof(InstrParam));
-	if(!StackAddrelse) {
+	if (!StackAddrelse) {
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
-	if(!StackAddrend) {
+	if (!StackAddrend) {
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
 	//COND
-	SyntaxAnalyzer_parseExpr(self);              		
+	SyntaxAnalyzer_parseExpr(self);
 	//jmpz else
-	InstrQueue_insert(&self->instr,(Instruction){i_jmpz, iVoid, NULL, NULL, StackAddrelse});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
+					StackAddrelse });
 	//then
 	NEXT_TOK(t_then, "expected then")
 	//begin then block
@@ -141,18 +143,21 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
 	//jmp end
-	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL, NULL,
+					StackAddrend });
 	//else
 	NEXT_TOK(t_else, "expected else")
 	//begin else block
 	NEXT_TOK(t_begin, "expected begin for if else block")
 	//else:
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
+					NULL });
 	StackAddrelse->stackAddr = self->instr.index;
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
+					NULL });
 	StackAddrend->stackAddr = self->instr.index;
 	return;
 
@@ -163,29 +168,33 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
 	InstrParam * StackAddrbegin = malloc(sizeof(InstrParam));
-	if(!StackAddrbegin) {
+	if (!StackAddrbegin) {
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
-	if(!StackAddrend) {
+	if (!StackAddrend) {
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
 	//Cond
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
+					NULL });
 	StackAddrbegin->stackAddr = self->instr.index;
-	SyntaxAnalyzer_parseExpr(self);					
+	SyntaxAnalyzer_parseExpr(self);
 	//do
 	NEXT_TOK(t_do, "expected do")
 	//begin:
-	
+
 	//jmpz end
-	InstrQueue_insert(&self->instr,(Instruction){i_jmpz, iVoid, NULL, NULL, StackAddrend});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
+					StackAddrend });
 	lastToken = TokenBuff_next(&self->tokBuff);		//begin
 	SyntaxAnalyzer_parse_block(self);				//STMTLIST
 	//jmp begin
-	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrbegin});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL, NULL,
+					StackAddrbegin });
 	//end
-	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
+					NULL });
 	StackAddrend->stackAddr = self->instr.index;
 	//[TODO] instructions
 
@@ -231,6 +240,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	}
 	while (true) {
 		NEXT_TOK(t_id, "expected id in argument list")
+		self->lp->lastSymbol->isInitialied = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
@@ -239,6 +249,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 					getTokenName(lastToken));
 			return;
 		}
+		self->lp->lastSymbol->type = lastToken;
 
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (lastToken != t_scolon) {
@@ -282,7 +293,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 	lastToken = TokenBuff_next(&self->tokBuff);
 	HashTable_insert(self->lp->symbolTable, name, &returnVal);
-	returnVal->stackIndex =-1;
+	returnVal->stackIndex = -1;
 	returnVal->type = fn->val.fn->retType;
 	switch (lastToken) {
 	case t_var:
