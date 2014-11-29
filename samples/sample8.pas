@@ -8,5 +8,4 @@ begin
         write(a);
 		a := a - 1    
 	end
-write('end')
 end.
