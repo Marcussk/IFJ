@@ -426,6 +426,37 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	}
 }
 
+void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
+	Token lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken != t_lParenthessis)
+		syntaxError("Expected (", tokenBuff->lp->lineNum,
+				getTokenName(lastToken));
+
+	iVar * lastSymbol;
+	InstrParam * param;
+
+	lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken == t_id) {
+		lastSymbol = tokenBuff->lp->lastSymbol;
+		tokenBuff->lp->lastSymbol->isInitialized = true;
+		param = malloc(sizeof(InstrParam));
+		param->stackAddr = lastSymbol->stackIndex;
+	}
+	else
+		syntaxError("Expected identificator",
+				tokenBuff->lp->lineNum, getTokenName(lastToken));
+
+	InstrQueue_insert(instructions, (Instruction ) { i_readln, lastSymbol->type,
+					NULL, NULL, param});
+
+	lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken == t_rParenthessis)
+		return;
+	else
+		syntaxError("write call unexpected argument",
+				tokenBuff->lp->lineNum, getTokenName(lastToken));
+}
+
 tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
@@ -439,6 +470,7 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
 		switch (b) {
 		case b_readLn:
+			parseReadLn(tokenBuff, instructions);
 			return iVoid;
 		case b_write:
 			parseWrite(tokenBuff, instructions);
