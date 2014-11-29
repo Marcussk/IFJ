@@ -278,6 +278,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
+		NEXT_TOK(t_begin, "expected begin (function body)")
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	case t_begin:
