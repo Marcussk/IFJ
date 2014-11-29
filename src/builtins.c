@@ -17,6 +17,10 @@ void write(tIFJ type, iVal a1) {
 	case iReal:
 		printf("%f", a1.iReal);
 		break;
+	case iBool:
+			if(a1.iInt == 0){printf("FALSE");}
+			else if(a1.iInt == 1){printf("TRUE");}
+			break;
 	default:
 		printf("Function write has performed error");
 	}
