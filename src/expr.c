@@ -177,6 +177,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (TopMostTerminal->type == terminal) {
 			InstrParam * p = NULL;
 			instr.code = i_push;
+			instr.a1 = NULL;
+			instr.a2 = NULL;
+			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
@@ -187,6 +190,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 						TopMostTerminal->datatype);
 				instr.type = TopMostTerminal->datatype;
 			} else {
+				break;
 				//is on stack
 			}
 			TopMostTerminal->type = nonterminal;
@@ -240,6 +244,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		} else {
 			result.datatype = operand1.datatype;
 		}
+
 		/*
 		 InstrParam * i_operand1 = malloc(sizeof(InstrParam));
 		 InstrParam * i_operand2 = malloc(sizeof(InstrParam));
