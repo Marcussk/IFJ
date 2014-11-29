@@ -113,8 +113,14 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
-	int * StackAddrelse = NULL;
-	int * StackAddrend = NULL;
+	InstrParam * StackAddrelse = malloc(sizeof(InstrParam));
+	if(!StackAddrelse) {
+		memoryError("Cannot allocate instrParam for writeFn");
+	}
+	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
+	if(!StackAddrend) {
+		memoryError("Cannot allocate instrParam for writeFn");
+	}
 	SyntaxAnalyzer_parseExpr(self);              		//COND
 	//jmpz else
 	InstrQueue_insert(&self->instr,(Instruction){i_jmpz, iVoid, NULL, NULL, StackAddrelse});
@@ -127,11 +133,11 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	NEXT_TOK(t_begin, "expected begin for if else block")
 	//else:
 	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrelse = &self->instr.index;
+	StackAddrelse->stackAddr = self->instr.index;
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
 	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrend= &self->instr.index;
+	StackAddrend->stackAddr = self->instr.index;
 	return;
 
 	//[TODO] instructions
@@ -140,8 +146,14 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
-	InstrParam * StackAddrbegin = NULL;
-	InstrParam * StackAddrend = NULL;
+	InstrParam * StackAddrbegin = malloc(sizeof(InstrParam));
+	if(!StackAddrbegin) {
+		memoryError("Cannot allocate instrParam for writeFn");
+	}
+	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
+	if(!StackAddrend) {
+		memoryError("Cannot allocate instrParam for writeFn");
+	}
 	SyntaxAnalyzer_parseExpr(self);					//COND
 
 	NEXT_TOK(t_do, "expected do")
