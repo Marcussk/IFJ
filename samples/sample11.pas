@@ -10,7 +10,7 @@ begin
 	write(''#10'');
 	write('Hello world'#10'');
 	write(a);
+	c := c*2;
 	write(''#10'');
 	write(c)
-	if 
 end.

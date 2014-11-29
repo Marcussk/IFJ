@@ -249,14 +249,15 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup = self->stackIndexCntr;
 	Token lastToken;
+	iVar * returnVal;
 	iVar * fn;
-
+	char * name;
 	NEXT_TOK(t_id, "id of function expected")
+	name = strdup(self->lp->str.buff);
 	fn = self->lp->lastSymbol;
 	fn->type = iFn;
 	fn->val.fn = iFunction__init__();
 
-	LexParser_fnParamsEnter(self->lp);
 	SyntaxAnalyzer_parse_paramList(self);
 
 	// [TODO] check and implement forward
@@ -270,6 +271,9 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
 	lastToken = TokenBuff_next(&self->tokBuff);
+	HashTable_insert(self->lp->symbolTable, name, &returnVal);
+	returnVal->stackIndex =-1;
+	returnVal->type = fn->val.fn->retType;
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
@@ -284,6 +288,8 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	}
 	fn->isInitialied = true;
 	self->stackIndexCntr = stackCntrBackup;
+	LexParser_fnBodyLeave(self->lp);
+	free(name);
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {

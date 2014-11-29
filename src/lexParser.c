@@ -214,7 +214,7 @@ void LexParser_fnParamsEnter(LexParser * self) {
 	fnSymTable->masterItem = self->lastSymbol;
 	fnSymTable->masterItem->type = iFn;
 	fnSymTable->masterItem->val.fn = iFunction__init__();
-	self->symbolTable = fnSymTable;
+	//self->symbolTable = fnSymTable;
 }
 
 // end saving ids to params, save function return type and return variable to this fn symbol table

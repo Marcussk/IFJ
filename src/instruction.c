@@ -27,6 +27,65 @@ Instruction * InstrQueue_next(InstrQueue * self) {
 	return NULL; // [TODO] we probably wont there an error
 }
 
+
+char * instr2Str(InstrCode code) {
+	switch (code) {
+	case i_stop:
+		return "stop";
+	case i_noop:
+		return "noop";
+	case i_jmp:
+		return "jmp";
+	case i_jmpz:
+		return "jmpz";
+	case i_push:
+		return "push";
+	case i_assign:
+		return "assign";
+	case i_add:
+		return "add";
+	case i_sub:
+		return "sub";
+	case i_mul:
+		return "mul";
+	case i_div:
+		return "div";
+	case i_int2real:
+		return "int2real";
+	case i_equal:
+		return "equal";
+	case i_nequal:
+		return "nequal";
+	case i_less:
+		return "less";
+	case i_more:
+		return "more";
+	case i_loreq:
+		return "loreq";
+	case i_moreq:
+		return "moreq";
+	case i_call:
+		return "call";
+	case i_return:
+		return "return";
+	case i_readln:
+		return "readln";
+	case i_write:
+		return "write";
+	case i_find:
+		return "find";
+	case i_copy:
+		return "copy";
+	case i_len:
+		return "len";
+	case i_sort:
+		return "sort";
+	default:
+		return "unknown instr";
+	}
+}
+
+
 void InstrQueue_debug(InstrQueue * self) {
 	InstrQueueNode * item = self->actual;
 	Instruction instr;
@@ -39,7 +98,7 @@ void InstrQueue_debug(InstrQueue * self) {
 			printf("->");
 		else
 			printf("  ");
-		printf("%d code %d type %d, a1 %p, a2 %p, dest %p\n", i, instr.code,
+		printf("%d code %s type %d, a1 %p, a2 %p, dest %p\n", i, instr2Str(instr.code),
 				instr.type, instr.a1, instr.a2, instr.dest);
 		i++;
 		self->actual = self->actual->next;
@@ -93,6 +152,8 @@ void InstrQueue__dell__(InstrQueue * self) {
 	}
 	free(tmp);
 }
+
+
 
 InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
 	InstrParam p;
