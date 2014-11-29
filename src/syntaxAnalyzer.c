@@ -33,13 +33,17 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	Token lastToken;
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken == t_rParenthessis) {    // ) - args are empty
+		syntaxError("expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
+		return;
+	}
+	else {
+		TokenBuff_pushBack(&self->tokBuff, lastToken);
+	}
+
 	while (true) {
 		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken == t_begin) {
-			syntaxError("expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
-			return;
-		}
-
 		if (lastToken != t_id) {
 			self->lp->idMode = lp_searchOnly;
 			TokenBuff_pushBack(&self->tokBuff, lastToken);

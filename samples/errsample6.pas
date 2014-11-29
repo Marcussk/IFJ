@@ -4,4 +4,4 @@ begin
 	a := 5;
 write(a)
 end.
-
+write('something after end')
