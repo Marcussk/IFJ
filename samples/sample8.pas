@@ -5,8 +5,8 @@ begin
     a := 5 ;
     while a > 0 do
     begin
-        write('kladne')
-		a := a - 1;     
+        write('kladne');
+		a := a - 1    
 	end
 write('end')
 end.
