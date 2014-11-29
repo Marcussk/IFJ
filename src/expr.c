@@ -1,6 +1,6 @@
 #include "expr.h"
 
-#define EXPR_DEGUG
+//#define EXPR_DEGUG
 
 IMPLEMENT_STACK(expr, ExprToken);
 
@@ -261,9 +261,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			printf("Generate call instruction\n"); // empty expression not implemented yet
 			exprStack_pop(stack); // Pop ')'
 			result.type = nonterminal;
-		}
-
-		else if (lastItem.type == nonterminal) { // We have found E) found
+		}else if (lastItem.type == nonterminal) { // We have found E) found
 			result = exprStack_pop(stack); // might be parameter, needs to be saved later
 			*parameter = result;
 
@@ -288,12 +286,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 						InstrQueue_insert(instructions, (Instruction ) {
 										i_write, parameter->datatype, NULL,
 										NULL, NULL });
-					}
-
-					else if (result.id->val.fn->builtin == b_readLn) {
+					}else if (result.id->val.fn->builtin == b_readLn) {
 						printf("readln found\n");
 					}
-
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
 				printf("It's just normal E\n");
@@ -397,7 +392,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 #ifdef EXPR_DEGUG
 	printf("Last stack status\n");
 	printStack(stack);
-
 	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
 			getTokenName(lastToken));
 #endif

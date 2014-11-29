@@ -4,30 +4,30 @@
 #include "instruction.h"
 #include "ifjTypes.h"
 
-#define STACK_MAX_SIZE 64
+#define STACK_START_SIZE 64
 
 typedef struct {
 	iVal *StackArray; //iVal StackArray[prealocated];
 	int top;
 	int prealocated; 
-} Stack;
+} StackArr;
 
-void Stack__init__( Stack *self );
-void Stack__dell__( Stack * self );
-void Stack_push( Stack *s, iVal data );
-iVal Stack_pop( Stack *s );
-iVal * Stack_getAt( Stack *self, int index );
+void StackArr__init__( StackArr *self );
+void StackArr__dell__( StackArr * self );
+void StackArr_push( StackArr *s, iVal data );
+iVal StackArr_pop( StackArr *s );
+iVal * StackArr_getAt( StackArr *self, int index );
 
-void Stack__init__( Stack *self ){
+void StackArr__init__( StackArr *self ){
 	// ?? self->StackArray = malloc( STACK_MAX_SIZE * sizeof(struct iVal));
 	//if( self->StackArray == NULL )
 	//	memoryError("Can't allocate memory for Stack");
 	self->top = 0;
-	self->prealocated = STACK_MAX_SIZE; 
+	self->prealocated = STACK_START_SIZE; 
 }
 
-void Stack_push( Stack *s, iVal data ){
-	if( s->top >= prealocated ){
+void StackArr_push( StackArr *s, iVal data ){
+	if( s->top >= s->prealocated ){
 		int newCapacity = s->prealocated *2;
 		iVal *newArray = realloc(s->StackArray, newCapacity * sizeof(struct iVal));
 		if( newArray == NULL )
@@ -40,7 +40,7 @@ void Stack_push( Stack *s, iVal data ){
 	}
 }
 
-iVal Stack_pop( Stack *s ){
+iVal StackArr_pop( StackArr *s ){
 	if(s->top == 0 ){
 		free(s->StackArray);
 		rt_error("Stack underflow");
@@ -51,16 +51,16 @@ iVal Stack_pop( Stack *s ){
 	return data;
 }
 
-iVal *Stack_getAt(Stack *self, int index){
-	if( index <= 0  || index > prealocated ){
-		free(s->StackArray);
+iVal *StackArr_getAt(StackArr *self, int index){
+	if( index <= 0  || index > self->prealocated ){
+		free(self->StackArray);
 		rt_error("Stack invalid access")
 	}
 	return( &(self->StackArray[index]) );
 }
 
-void Stack__dell__( Stack * self ){
+void StackArr__dell__( StackArr * self ){
 	free( self->StackArray );
 	self->top = 0;
-	self->prealocated = STACK_MAX_SIZE; 
+	self->prealocated = STACK_START_SIZE; 
 }

@@ -2,5 +2,6 @@
 var
 
 begin
-	write(5)
+	write(5);
+	write(2)
 end.
