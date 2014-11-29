@@ -10,17 +10,17 @@ typedef enum {
 	i_jmp,  //skok vzdy
 	i_jmpz, //podmineny skok pri nepravdive podmince
 	i_push,
-	i_assign,
+	i_assign, //5
 	i_add,
 	i_sub,
 	i_mul,
 	i_div,
-	i_int2real,
+	i_int2real, //10
 	i_equal,
 	i_nequal,
 	i_less,
 	i_more,
-	i_loreq,
+	i_loreq, //15
 	i_moreq,
 	i_call,
 	i_return,
