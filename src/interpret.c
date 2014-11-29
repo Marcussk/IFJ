@@ -85,8 +85,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_more:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = (pomA1.iInt > pomA2.iInt);
@@ -105,8 +105,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_less:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = ((pomA1.iInt) < (pomA2.iInt));
@@ -125,8 +125,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_moreq:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = (pomA1.iInt >= pomA2.iInt);
@@ -145,8 +145,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_loreq:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = (pomA1.iInt <= pomA2.iInt);
@@ -193,8 +193,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_sub:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = pomA1.iInt - pomA2.iInt;
@@ -214,8 +214,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_mul:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = pomA1.iInt * pomA2.iInt;
@@ -235,8 +235,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_div:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
 			case iInt:
 				pomA3.iInt = pomA1.iInt / pomA2.iInt;
