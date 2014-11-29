@@ -10,7 +10,7 @@ sample4.pas: { Program 2: Vypocet faktorialu (rekurzivne) }
 sample5.pas: { Program 1: Vypocet faktorialu (iterativne) }
 sample6.pas: { Test na prazdny begin end}
 sample7.pas: { Test na prazdny program}
-sample8.pas: { Program 3: Prace s retezci a vestavenymi funkcemi }
+sample8.pas: 
 sample9.pas: { Jednoduchy test na if }
 sample10.pas { structs }
 sample11.pas { Vynechana deklaracia premennych }
