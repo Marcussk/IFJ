@@ -157,6 +157,11 @@ InstrCode tokenToInstruction(Token token) {
 		return i_noop;
 	}
 }
+
+void reduceFunctionCall(Builtins b){
+
+}
+
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
@@ -280,12 +285,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 				unimplementedError(
 						"Functions with more than 1 parameters not implemented");
 			else
-				// Syntax error
 				syntaxError("Syntax Error - expected ) or function parameters",
 						-1, "");
-		}
-
-		else
+		}else
 			syntaxError("Syntax Error - expected ) or function parameters", -1,
 					"");
 

@@ -50,7 +50,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 		}
 		self->lp->lastSymbol->type = lastToken;
 
-		NEXT_TOK(t_scolon, "expected id\n");
+		NEXT_TOK(t_scolon, "expected \";\"\n");
 
 		InstrQueue_insert(&self->instr,
 				(Instruction ) { i_push, self->lp->lastSymbol->type, NULL, NULL, NULL });
