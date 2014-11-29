@@ -158,41 +158,39 @@ InstrCode tokenToInstruction(Token token) {
 	}
 }
 
-tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator){
-	switch(operator){
-		case t_plus:
-			if  (operand1 == operand2 &&
-				(operand1 == iInt || operand1 == iString))
-				return operand1;
-			else if (operand1 >= iInt && operand1 <= iReal && // int or real
-					 operand2 >= iInt && operand2 <= iReal)
-				return iReal;
-			break;
-		case t_minus:
-		case t_asterisk:
-			if (operand1 == iInt && operand2 == iInt)
-				return iInt;
-			else if (operand1 >= iInt && operand1 <= iReal && // int or real
-					 operand2 >= iInt && operand1 <= iReal)
-				return iReal;
-			break;
-		case t_slash:
-			if (operand1 >= iInt && operand1 <= iReal && // int or real
+tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
+	switch (operator) {
+	case t_plus:
+		if (operand1 == operand2 && (operand1 == iInt || operand1 == iString))
+			return operand1;
+		else if (operand1 >= iInt && operand1 <= iReal && // int or real
 				operand2 >= iInt && operand2 <= iReal)
-				return iReal;
-			break;
-		case t_less:
-		case t_greater:
-		case t_lessOrEqv:
-		case t_greaterOrEqv:
-		case t_eqv:
-		case t_notEqv:
-			if (operand1 == operand2 &&
-				operand1 >= iBool && operand1 <= iString) // any type
-				return iBool;
-			break;
-		default:
-			sem_Error("Unknown operator");
+			return iReal;
+		break;
+	case t_minus:
+	case t_asterisk:
+		if (operand1 == iInt && operand2 == iInt)
+			return iInt;
+		else if (operand1 >= iInt && operand1 <= iReal && // int or real
+				operand2 >= iInt && operand1 <= iReal)
+			return iReal;
+		break;
+	case t_slash:
+		if (operand1 >= iInt && operand1 <= iReal && // int or real
+				operand2 >= iInt && operand2 <= iReal)
+			return iReal;
+		break;
+	case t_less:
+	case t_greater:
+	case t_lessOrEqv:
+	case t_greaterOrEqv:
+	case t_eqv:
+	case t_notEqv:
+		if (operand1 == operand2 && operand1 >= iBool && operand1 <= iString) // any type
+			return iBool;
+		break;
+	default:
+		sem_Error("Unknown operator");
 	}
 	sem_Error("Bad datatype of operands");
 }
@@ -270,14 +268,14 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		operator = exprStack_pop(stack);
 		operand1 = exprStack_pop(stack);
 
-
 		if (operand2.type != nonterminal || operand1.type != nonterminal) {
 			syntaxError("Expression Error - Operands error",
 					tokenBuff->lp->lineNum, "nonterminal probably ','");
 		}
 		ExprTokenInit(&result);
 
-		result.datatype = getResultType(operand1.datatype, operand2.datatype, operator.content);
+		result.datatype = getResultType(operand1.datatype, operand2.datatype,
+				operator.content);
 
 		InstrQueue_insert(instructions,
 				(Instruction ) { tokenToInstruction(operator.content),
@@ -367,6 +365,25 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken == t_id && tokenBuff->lp->lastSymbol->type == iFn
+			&& tokenBuff->lp->lastSymbol->val.fn->builtin) {
+		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
+		switch (b) {
+		case b_copy:
+			break;
+		case b_find:
+			break;
+		case b_length:
+			break;
+		case b_sort:
+			break;
+		case b_readLn:
+			break;
+		case b_write:
+			break;
+
+		}
+	}
 #ifdef EXPR_DEGUG
 	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
 #endif
