@@ -163,6 +163,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	ExprToken operand1, operator, operand2, lastItem, result;
 	ExprToken *parameter;
 	Instruction instr;
+	InstrParam * p = NULL;
 
 	// [TODO] useless
 	parameter = malloc(sizeof(ExprToken));
@@ -175,12 +176,13 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	switch (cont) {
 	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
 		if (TopMostTerminal->type == terminal) {
-			InstrParam * p = NULL;
 			instr.code = i_push;
 			instr.a1 = NULL;
 			instr.a2 = NULL;
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
+				if (!(TopMostTerminal->id->isInitialied))
+					sem_Error("Uninitialized variable");
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
