@@ -24,7 +24,7 @@ void Interpret_run(Interpret * self) {
 
 	InstrQueueNode *pomInstr;
 
-	int stackOffset;
+	int stackOffset = 0;
 	self->instructions.actual = self->instructions.first;
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
@@ -187,7 +187,7 @@ void Interpret_run(Interpret * self) {
 				break;
 			}
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 
@@ -208,7 +208,7 @@ void Interpret_run(Interpret * self) {
 				break;
 			}
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset ) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 
@@ -229,7 +229,7 @@ void Interpret_run(Interpret * self) {
 				break;
 			}
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 
@@ -250,7 +250,7 @@ void Interpret_run(Interpret * self) {
 				break;
 			}
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 
@@ -258,9 +258,9 @@ void Interpret_run(Interpret * self) {
 		case i_assign:
 			pomA1 = iStack_pop(&(self->stack));
 			if (i.type != iString) {
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA1;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA1;
 			} else {
-				(*iStack_getAt(&self->stack, i.dest->stackAddr)).iString =
+				(*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)).iString =
 						strdup(pomA1.iString);
 			}
 			break;
@@ -268,19 +268,19 @@ void Interpret_run(Interpret * self) {
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
 		case i_readln:
-			readLn(iStack_getAt(&self->stack, i.dest->stackAddr), i.type);
+			readLn(iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset), i.type);
 			break;
 		case i_sort:
 			pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 			break;
 		case i_len:
 			pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
 			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr) = pomA3;
+				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) = pomA3;
 			else
 				iStack_push(&(self->stack), pomA3);
 			break;
@@ -288,7 +288,7 @@ void Interpret_run(Interpret * self) {
 		case i_push:
 			if (i.type == iStackRef) {
 				iStack_push(&(self->stack),
-						*iStack_getAt(&self->stack, i.a1->stackAddr));
+						*iStack_getAt(&self->stack, i.a1->stackAddr + stackOffset));
 			} else {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
