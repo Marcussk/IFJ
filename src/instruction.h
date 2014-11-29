@@ -61,6 +61,7 @@ typedef struct s_InstrQueueNode {
 } InstrQueueNode;
 
 typedef struct {
+	int index;
 	InstrQueueNode * first;
 	InstrQueueNode * actual;
 } InstrQueue;

@@ -15,8 +15,10 @@ Instruction Instr_Create(InstrCode code, tIFJ typ, InstrParam * a1,
 void InstrQueue__init__(InstrQueue * self) {
 	self->actual = NULL;
 	self->first = NULL;
+	self->index = -1;
 }
 Instruction * InstrQueue_next(InstrQueue * self) {
+	self->index++;
 	if (self->actual)
 		self->actual = self->actual->next;
 	if (self->actual)
@@ -51,6 +53,7 @@ void InstrQueue_insert(InstrQueue * self, Instruction i) {
 	if (!newItem) {
 		memoryError("InstrQueue_insert can't allocate memory for newItem");
 	}
+	self->index++;
 	newItem->val = i;
 	if (self->actual) {
 		newItem->next = self->actual->next;
@@ -66,6 +69,7 @@ void InstrQueue_insert(InstrQueue * self, Instruction i) {
 
 Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
 	int i;
+	self->index = index;
 	self->actual = self->first;
 	for (i = 0; i < index; i++) {
 		if (!self->actual) {
