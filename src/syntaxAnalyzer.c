@@ -25,7 +25,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	SyntaxAnalyzer_parseExpr(self);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 					NULL, (InstrParam*) &(asigmentTo->stackIndex) });
-	asigmentTo->isInitialied = true;
+	asigmentTo->isInitialized = true;
 }
 
 // t_var already found
@@ -240,7 +240,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	}
 	while (true) {
 		NEXT_TOK(t_id, "expected id in argument list")
-		self->lp->lastSymbol->isInitialied = true;
+		self->lp->lastSymbol->isInitialized = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
@@ -308,7 +308,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Expected \"begin\" or \"var\" after function declaration",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
-	fn->isInitialied = true;
+	fn->isInitialized = true;
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;

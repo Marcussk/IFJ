@@ -224,7 +224,7 @@ void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType) {
 //set up symbol table back to global
 void LexParser_fnBodyLeave(LexParser * self) {
 	HashTable * st = self->symbolTable;
-	st->masterItem->isInitialied = true;
+	st->masterItem->isInitialized = true;
 	self->symbolTable = st->masterTable;
 }
 

@@ -124,11 +124,11 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 		Expr->id = NULL;
 
 	//free(Expr->value);
-	if (Token_isValue(token)){
+	if (Token_isValue(token)) {
 		Expr->value = malloc(sizeof(iVal));
 		*Expr->value = str2iVal(lp->str.buff, token, lp);
 		Expr->datatype = getTokenType(token);
-	}else
+	} else
 		Expr->value = NULL;
 }
 
@@ -241,7 +241,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			instr.a2 = NULL;
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
-				if (!(TopMostTerminal->id->isInitialied))
+				if (!(TopMostTerminal->id->isInitialized))
 					sem_Error("Uninitialized variable");
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
@@ -389,6 +389,8 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		if (lastToken == t_id) {
 			lastSymbol = tokenBuff->lp->lastSymbol;
 			if (lastSymbol->type != iFn) {
+				if (!lastSymbol->isInitialized)
+					sem_Error("Use of uninitialized variable");
 				param = malloc(sizeof(InstrParam));
 				param->stackAddr = lastSymbol->stackIndex;
 				instr.type = lastSymbol->type;
@@ -410,7 +412,8 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 
 		}
 		InstrQueue_insert(instructions, instr);
-		InstrQueue_insert(instructions, (Instruction){ i_write, instr.type, NULL, NULL, NULL });
+		InstrQueue_insert(instructions, (Instruction ) { i_write, instr.type,
+						NULL, NULL, NULL });
 		lastToken = TokenBuff_next(tokenBuff);
 		if (lastToken == t_comma)
 			continue;
