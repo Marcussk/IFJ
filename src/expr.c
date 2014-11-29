@@ -347,7 +347,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 }
 
-void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
+tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
 	if (!stack)
@@ -438,4 +438,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			getTokenName(lastToken));
 #endif
 	TokenBuff_pushBack(tokenBuff, lastToken);
+
+	return (stack->top->data.datatype);
 }
