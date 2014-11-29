@@ -63,6 +63,56 @@ void ExprInit(exprStack *stack) {
 	ExprTokenInit(&ExprLastToken);
 }
 
+tIFJ getTokenType(Token t) {
+	switch (t) {
+	case t_num_int:
+		return iInt;
+		break;
+	case t_num_real:
+		return iReal;
+		break;
+	case t_str_val:
+		return iString;
+		break;
+	case t_true:
+	case t_false:
+		return iBool;
+	default:
+		unimplementedError("cannot convert token to type");
+	}
+	return iUnknown;
+}
+
+iVal str2iVal(char * str, Token token, LexParser * lp) {
+	iVal val;
+	switch (token) {
+	case t_num_int:
+		if (!sscanf(str, "%d", &(val.iInt)))
+			lexError("Cannot parse int num", str, lp->lineNum);
+		break;
+
+	case t_num_real:
+		if (!sscanf(str, "%f", &(val.iReal)))
+			lexError("Cannot parse real num", lp->str.buff, lp->lineNum);
+		break;
+
+	case t_str_val:
+		val.iString = strdup(str);
+		if (!val.iString)
+			lexError("Cannot parse string", lp->str.buff, lp->lineNum);
+		break;
+	case t_true:
+		val.iInt = 1;
+		break;
+	case t_false:
+		val.iInt = 0;
+		break;
+	default:
+		lexError("cannot convert value", str, lp->lineNum);
+	}
+	return val;
+}
+
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	Expr->content = getTokenContent(token, lp->lastSymbol);
 	Expr->type = terminal;
@@ -74,39 +124,12 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 		Expr->id = NULL;
 
 	//free(Expr->value);
-	if (Token_isValue(token))
+	if (Token_isValue(token)){
 		Expr->value = malloc(sizeof(iVal));
-
-	switch (token) {
-	case t_num_int:
-		if (!sscanf(lp->str.buff, "%d", &(Expr->value->iInt)))
-			lexError("Cannot parse int num", lp->str.buff, lp->lineNum);
-		Expr->datatype = iInt;
-		break;
-
-	case t_num_real:
-		if (!sscanf(lp->str.buff, "%f", &(Expr->value->iReal)))
-			lexError("Cannot parse real num", lp->str.buff, lp->lineNum);
-		Expr->datatype = iReal;
-		break;
-
-	case t_str_val:
-		Expr->value->iString = strdup(lp->str.buff);
-		if (!Expr->value->iString)
-			lexError("Cannot parse string", lp->str.buff, lp->lineNum);
-		Expr->datatype = iString;
-		break;
-	case t_true:
-		Expr->value->iInt = 1;
-		Expr->datatype = iBool;
-		break;
-	case t_false:
-		Expr->value->iInt = 0;
-		Expr->datatype = iBool;
-		break;
-	default:
+		*Expr->value = str2iVal(lp->str.buff, token, lp);
+		Expr->datatype = getTokenType(token);
+	}else
 		Expr->value = NULL;
-	}
 }
 
 ExprToken *findTopMostTerminal(exprStack *s) {
@@ -279,7 +302,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		InstrQueue_insert(instructions,
 				(Instruction ) { tokenToInstruction(operator.content),
-								operand1.datatype, NULL, NULL, NULL });
+								operand1.datatype, NULL,
+								NULL, NULL });
 
 		result.type = nonterminal;
 		exprStack_push(stack, result);
@@ -320,7 +344,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
 					if (result.id->val.fn->builtin) {
-						unimplementedError("others builtins are not implemented yet");
+						unimplementedError(
+								"others builtins are not implemented yet");
 					}
 					unimplementedError("Call is not implemented now");
 				} else { // It's just (E)
@@ -347,6 +372,57 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 }
 
+void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
+	Token lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken != t_lParenthessis)
+		syntaxError("writeCall expects '(' after write", tokenBuff->lp->lineNum,
+				getTokenName(lastToken));
+	iVar * lastSymbol;
+	Instruction instr;
+	instr.code = i_push;
+	instr.a2 = NULL;
+	instr.dest = NULL;
+	InstrParam * param;
+
+	while (true) {
+		lastToken = TokenBuff_next(tokenBuff);
+		if (lastToken == t_id) {
+			lastSymbol = tokenBuff->lp->lastSymbol;
+			if (lastSymbol->type != iFn) {
+				param = malloc(sizeof(InstrParam));
+				param->stackAddr = lastSymbol->stackIndex;
+				instr.type = lastSymbol->type;
+				instr.a1 = param;
+			} else {
+				syntaxError("Function call cannot be in write call",
+						tokenBuff->lp->lineNum, getTokenName(lastToken));
+			}
+		} else if (Token_isValue(lastToken)) {
+			param = malloc(sizeof(InstrParam));
+			*param = iVal2InstrP(
+					str2iVal(tokenBuff->lp->str.buff, lastToken, tokenBuff->lp),
+					getTokenType(lastToken));
+			instr.type = getTokenType(lastToken);
+			instr.a1 = param;
+		} else {
+			syntaxError("write call unexpected argument",
+					tokenBuff->lp->lineNum, getTokenName(lastToken));
+
+		}
+		InstrQueue_insert(instructions, instr);
+		InstrQueue_insert(instructions, (Instruction){ i_write, instr.type, NULL, NULL, NULL });
+		lastToken = TokenBuff_next(tokenBuff);
+		if (lastToken == t_comma)
+			continue;
+		else if (lastToken == t_rParenthessis)
+			return;
+		else
+			syntaxError("write call unexpected argument",
+					tokenBuff->lp->lineNum, getTokenName(lastToken));
+
+	}
+}
+
 void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
@@ -362,6 +438,7 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		case b_readLn:
 			break;
 		case b_write:
+			parseWrite(tokenBuff, instructions);
 			break;
 
 		}

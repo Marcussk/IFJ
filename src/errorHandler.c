@@ -1,7 +1,7 @@
 #include "errorHandler.h"
 
 void lexError(char * str, char * lexBuff, int lineNum) {
-	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s", lineNum,
+	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s\n", lineNum,
 			lexBuff, str);
 	exit(1);
 }
