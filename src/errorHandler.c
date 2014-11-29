@@ -19,7 +19,7 @@ void syntaxError(char * str, int lineNum,char * actualTokenName) {
 
 void sem_definitionError(int lineNum, char * varName) {
 	fprintf(stderr,
-			"ERROR(Semantic/Definition) Line %d: variable \"%s\" or function is not defined or you are atempting to redefine it.\n",
+			"ERROR(Semantic/Definition) Line %d: variable \"%s\" or function is undefined or you are atempting to redefine it.\n",
 			lineNum, varName);
 	exit(3);
 }
@@ -29,7 +29,7 @@ void sem_definitionError(int lineNum, char * varName) {
  */
 void sem_TypeError(char * nameOfType) {
 	fprintf(stderr,
-			"ERROR(Semantic/Type): Variable or function of type %s does not fit to expression or function have bad parameters.\n",
+			"ERROR(Semantic/Type): Variable or function of type %s does not fit to expression or function has bad parameters.\n",
 			nameOfType);
 	exit(4);
 }
@@ -48,7 +48,7 @@ void rt_readlnNumError() {
 void rt_notInitError(char * varName) {
 	if (varName) {
 		fprintf(stderr,
-				"ERROR(Runtime/notInit): Variable %s have to be initialized before is used.\n",
+				"ERROR(Runtime/notInit): Variable %s has to be initialized before it is used.\n",
 				varName);
 	} else {
 		fprintf(stderr,
