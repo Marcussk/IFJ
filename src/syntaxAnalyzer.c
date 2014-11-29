@@ -121,14 +121,15 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	if(!StackAddrend) {
 		memoryError("Cannot allocate instrParam for writeFn");
 	}
-	SyntaxAnalyzer_parseExpr(self);              		//COND
+	//COND
+	SyntaxAnalyzer_parseExpr(self);              		
 	//jmpz else
 	InstrQueue_insert(&self->instr,(Instruction){i_jmpz, iVoid, NULL, NULL, StackAddrelse});
 	NEXT_TOK(t_then, "expected then")
 	NEXT_TOK(t_begin, "expected begin for if block")
 	//jmp end
-	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
+	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
 	NEXT_TOK(t_else, "expected else")
 	NEXT_TOK(t_begin, "expected begin for if else block")
 	//else:
