@@ -140,14 +140,14 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 //"while" already found
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
-	int * StackAddrbegin = NULL;
-	int * StackAddrend = NULL;
+	InstrParam * StackAddrbegin = NULL;
+	InstrParam * StackAddrend = NULL;
 	SyntaxAnalyzer_parseExpr(self);					//COND
 
 	NEXT_TOK(t_do, "expected do")
 	//begin:
 	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrbegin = &self->instr.index;
+	StackAddrbegin->stackAddr = self->instr.index;
 	//jmpz end
 	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrend});
 	lastToken = TokenBuff_next(&self->tokBuff);		//begin
@@ -156,7 +156,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	InstrQueue_insert(&self->instr,(Instruction){i_jmp, iVoid, NULL, NULL, StackAddrbegin});
 	//end
 	InstrQueue_insert(&self->instr,(Instruction){i_noop, iVoid, NULL, NULL, NULL});
-	StackAddrend = &self->instr.index;
+	StackAddrend->stackAddr = self->instr.index;
 	//[TODO] instructions
 
 }

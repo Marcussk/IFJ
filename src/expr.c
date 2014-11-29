@@ -1,6 +1,6 @@
 #include "expr.h"
 
-#define EXPR_DEGUG
+//#define EXPR_DEGUG
 
 IMPLEMENT_STACK(expr, ExprToken);
 
@@ -239,9 +239,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			printf("Generate call instruction\n"); // empty expression not implemented yet
 			exprStack_pop(stack); // Pop ')'
 			result.type = nonterminal;
-		}
-
-		else if (lastItem.type == nonterminal) { // We have found E) found
+		}else if (lastItem.type == nonterminal) { // We have found E) found
 			result = exprStack_pop(stack); // might be parameter, needs to be saved later
 			*parameter = result;
 
