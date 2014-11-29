@@ -20,7 +20,7 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 	return expression(&self->tokBuff, &self->instr);
 }
 
-void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
+void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
 	int exprtype = SyntaxAnalyzer_parseExpr(self);
 	printf("Datovy typ expr: %d\n", exprtype);
@@ -92,10 +92,9 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_while(self);
 			break;
 		case t_id:
-			varForLastId = self->lp->lastSymbol;
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_asigment) {
-				SyntaxAnalyzer_parseAsigment(self, varForLastId);
+				SyntaxAnalyzer_parseAsigment(self);
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
