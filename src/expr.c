@@ -176,13 +176,14 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
 		if (TopMostTerminal->type == terminal) {
 			InstrParam * p = NULL;
+			instr.code = i_push;
 			if (TopMostTerminal->id) {
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
 			} else if (TopMostTerminal->value) {
 				p = malloc(sizeof(InstrParam));
-				*p = iVal2InstrP(TopMostTerminal->value,
+				*p = iVal2InstrP(*TopMostTerminal->value,
 						TopMostTerminal->datatype);
 				instr.type = TopMostTerminal->datatype;
 			} else {
