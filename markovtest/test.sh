@@ -7,8 +7,8 @@ do
 	totaltests=$((totaltests + 1))
 	name=$(echo $file | awk -F'[/]' '{print $3}' | awk -F'[.]' '{print $1}')
 	echo TEST$totaltests $name
-	../src/bin/ifj.run ../samples/$name.pas > results/$name.out
-	
+	../src/bin/ifj.run ../samples/$name.pas > results/$name.out  2>&1
+
 	if [ -e "output/$name.out" ]
 	then
 	DIFF=$(diff results/$name.out output/$name.out) 
@@ -17,7 +17,7 @@ do
     	index=$((index + 1))
     	echo Passed
 		else
-		diff -c results/$name.out output/$name.out
+		diff results/$name.out output/$name.out
 		#echo $DIFF
 		fi
 	else
