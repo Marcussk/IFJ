@@ -158,10 +158,6 @@ InstrCode tokenToInstruction(Token token) {
 	}
 }
 
-void reduceFunctionCall(Builtins b){
-
-}
-
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;

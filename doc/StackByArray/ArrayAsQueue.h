@@ -20,6 +20,7 @@ Instruction* InstrQueueArr_next(InstrQueueArr* self);
 void InstrQueueArr_insert(InstrQueueArr *self, Instruction i);
 Instruction* InstrQueueArr_atIndex(InstrQueueArr* self, int index);
 void InstrQueueArr__dell__(InstrQueueArr *self);
+
 void InstrQueueArr__init__(InstrQueueArr *self) {
 	// ?? self->QueueArr = malloc( QUEUE_MAX_SIZE * sizeof(struct Instruction));
 	//if( self->QueueArr == NULL )
