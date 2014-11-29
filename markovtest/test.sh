@@ -23,6 +23,7 @@ do
 	else
 		echo output/$name.out does not exist
 	fi	
+	echo "             "
 done
 
 echo Total tests : $totaltests Passed: $index

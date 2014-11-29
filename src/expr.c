@@ -423,7 +423,7 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	}
 }
 
-void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
+tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprToken *TopMostTerminal;
 	exprStack *stack = malloc(sizeof(exprStack));
 	if (!stack)
@@ -436,10 +436,10 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
 		switch (b) {
 		case b_readLn:
-			break;
+			return iVoid;
 		case b_write:
 			parseWrite(tokenBuff, instructions);
-			break;
+			return iVoid;
 
 		}
 	}
@@ -515,4 +515,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			getTokenName(lastToken));
 #endif
 	TokenBuff_pushBack(tokenBuff, lastToken);
+
+	return (stack->top->data.datatype);
 }
