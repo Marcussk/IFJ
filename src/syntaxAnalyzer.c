@@ -16,13 +16,14 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	self->stackIndexCntr = 0;
 }
 
-inline void SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
-	expression(&self->tokBuff, &self->instr);
+tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
+	return expression(&self->tokBuff, &self->instr);
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self, iVar * variableTo) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	SyntaxAnalyzer_parseExpr(self);
+	int exprtype = SyntaxAnalyzer_parseExpr(self);
+	printf("Datovy typ expr: %d\n", exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 					NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialied = true;
@@ -34,8 +35,8 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_rParenthessis) {    // ) - args are empty
-		syntaxError("expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
+	if (lastToken == t_begin) {    // ) - args are empty
+		syntaxError("Expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
 		return;
 	}
 	else {
