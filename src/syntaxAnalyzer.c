@@ -346,7 +346,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 				return;
 			}
 		case t_eof:
-			syntaxError("Expected \".\" on the end of program",
+			syntaxError("Expected \".\" at the end of program",
 					self->lp->lineNum, getTokenName(tok));
 			return;
 		default:

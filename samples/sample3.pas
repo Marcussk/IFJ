@@ -2,7 +2,7 @@
 var
   str1 : string;
   str2 : string;
-  10n : integer;
+  n : integer;
 begin
   str1 := 'Toto je nejaky text';
   str2 := copy(str1, 9, 11);
