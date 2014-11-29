@@ -320,19 +320,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
 					if (result.id->val.fn->builtin) {
-						if (TopMostTerminal->id) {
-							p = malloc(sizeof(InstrParam));
-							p->stackAddr = TopMostTerminal->id->stackIndex;
-							instr.type = iStackRef;
-
-						}
-						InstrQueue_insert(instructions,
-								(Instruction ) {
-												result.id->val.fn->builtin,
-												parameter->datatype, NULL,
-												NULL, NULL }); // Tady byl p->stackAddr
-
+						unimplementedError("others builtins are not implemented yet");
 					}
+					unimplementedError("Call is not implemented now");
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
 				printf("It's just normal E\n");
@@ -369,14 +359,6 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			&& tokenBuff->lp->lastSymbol->val.fn->builtin) {
 		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
 		switch (b) {
-		case b_copy:
-			break;
-		case b_find:
-			break;
-		case b_length:
-			break;
-		case b_sort:
-			break;
 		case b_readLn:
 			break;
 		case b_write:
