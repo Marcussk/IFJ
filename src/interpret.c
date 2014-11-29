@@ -268,7 +268,8 @@ void Interpret_run(Interpret * self) {
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
 		case i_readln:
-			readLn(iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset), i.type);
+			if(!(readLn(iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset), i.type)))
+				rt_readlnNumError();
 			break;
 		case i_sort:
 			pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
