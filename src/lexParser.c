@@ -212,9 +212,9 @@ void LexParser_fnParamsEnter(LexParser * self) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = self->lastSymbol;
-	fnSymTable->masterItem->type = iFn;
-	fnSymTable->masterItem->val.fn = iFunction__init__();
-	//self->symbolTable = fnSymTable;
+	//fnSymTable->masterItem->type = iFn;
+	//fnSymTable->masterItem->val.fn = iFunction__init__();
+	self->symbolTable = fnSymTable;
 }
 
 // end saving ids to params, save function return type and return variable to this fn symbol table

@@ -252,6 +252,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	iVar * returnVal;
 	iVar * fn;
 	char * name;
+	self->lp->idMode = lp_insertOnly;
 	NEXT_TOK(t_id, "id of function expected")
 	name = strdup(self->lp->str.buff);
 	fn = self->lp->lastSymbol;
@@ -289,6 +290,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn->isInitialied = true;
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
+	self->lp->idMode = lp_searchOnly;
 	free(name);
 }
 
