@@ -158,6 +158,43 @@ InstrCode tokenToInstruction(Token token) {
 	}
 }
 
+tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
+	switch (operator) {
+	case t_plus:
+		if (operand1 == operand2 && (operand1 == iInt || operand1 == iString))
+			return operand1;
+		else if (operand1 >= iInt && operand1 <= iReal && // int or real
+				operand2 >= iInt && operand2 <= iReal)
+			return iReal;
+		break;
+	case t_minus:
+	case t_asterisk:
+		if (operand1 == iInt && operand2 == iInt)
+			return iInt;
+		else if (operand1 >= iInt && operand1 <= iReal && // int or real
+				operand2 >= iInt && operand1 <= iReal)
+			return iReal;
+		break;
+	case t_slash:
+		if (operand1 >= iInt && operand1 <= iReal && // int or real
+				operand2 >= iInt && operand2 <= iReal)
+			return iReal;
+		break;
+	case t_less:
+	case t_greater:
+	case t_lessOrEqv:
+	case t_greaterOrEqv:
+	case t_eqv:
+	case t_notEqv:
+		if (operand1 == operand2 && operand1 >= iBool && operand1 <= iString) // any type
+			return iBool;
+		break;
+	default:
+		sem_Error("Unknown operator");
+	}
+	sem_Error("Bad datatype of operands");
+}
+
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
@@ -231,21 +268,14 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		operator = exprStack_pop(stack);
 		operand1 = exprStack_pop(stack);
 
-		if (operand2.datatype != operand1.datatype)
-			sem_Error("Incompatible operands");
-
 		if (operand2.type != nonterminal || operand1.type != nonterminal) {
 			syntaxError("Expression Error - Operands error",
 					tokenBuff->lp->lineNum, "nonterminal probably ','");
 		}
 		ExprTokenInit(&result);
-		if (cont == t_less || cont == t_greater || cont == t_lessOrEqv
-				|| cont == t_greaterOrEqv || cont == t_eqv
-				|| cont == t_notEqv) {
-			result.datatype = iBool;
-		} else {
-			result.datatype = operand1.datatype;
-		}
+
+		result.datatype = getResultType(operand1.datatype, operand2.datatype,
+				operator.content);
 
 		InstrQueue_insert(instructions,
 				(Instruction ) { tokenToInstruction(operator.content),
@@ -290,19 +320,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					result.type = nonterminal;
 					exprStack_push(stack, result); // Keep
 					if (result.id->val.fn->builtin) {
-						if (TopMostTerminal->id) {
-							p = malloc(sizeof(InstrParam));
-							p->stackAddr = TopMostTerminal->id->stackIndex;
-							instr.type = iStackRef;
-
-						}
-						InstrQueue_insert(instructions,
-								(Instruction ) {
-												result.id->val.fn->builtin,
-												parameter->datatype, NULL,
-												NULL, NULL }); // Tady byl p->stackAddr
-
+						unimplementedError("others builtins are not implemented yet");
 					}
+					unimplementedError("Call is not implemented now");
 				} else { // It's just (E)
 #ifdef EXPR_DEGUG
 				printf("It's just normal E\n");
@@ -335,6 +355,17 @@ void expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
+	if (lastToken == t_id && tokenBuff->lp->lastSymbol->type == iFn
+			&& tokenBuff->lp->lastSymbol->val.fn->builtin) {
+		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
+		switch (b) {
+		case b_readLn:
+			break;
+		case b_write:
+			break;
+
+		}
+	}
 #ifdef EXPR_DEGUG
 	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
 #endif

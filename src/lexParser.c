@@ -212,8 +212,7 @@ void LexParser_fnParamsEnter(LexParser * self) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = self->lastSymbol;
-	//fnSymTable->masterItem->type = iFn;
-	//fnSymTable->masterItem->val.fn = iFunction__init__();
+
 	self->symbolTable = fnSymTable;
 }
 
