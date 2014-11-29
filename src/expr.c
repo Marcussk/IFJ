@@ -162,7 +162,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
 	ExprToken *parameter;
+	Instruction instr;
 
+	// [TODO] useless
 	parameter = malloc(sizeof(ExprToken));
 	ExprTokenInit(parameter);
 
@@ -171,13 +173,29 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	printf("-----%d\n", cont);
 #endif
 	switch (cont) {
-	case t_id:// kdyz var, tak push 1. parametr bude stackaddr
-		 if(TopMostTerminal->type == terminal){
-		   TopMostTerminal->type = nonterminal;
-		   InstrQueue_insert(instructions, (Instruction ) { i_push, parameter->datatype, NULL, NULL, NULL });
-		  }
-		TopMostTerminal->type = nonterminal;
-
+	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
+		if (TopMostTerminal->type == terminal) {
+			InstrParam * p = NULL;
+			if (TopMostTerminal->id) {
+				p = malloc(sizeof(InstrParam));
+				p->stackAddr = TopMostTerminal->id->stackIndex;
+				instr.type = iStackRef;
+			} else if (TopMostTerminal->value) {
+				p = malloc(sizeof(InstrParam));
+				*p = iVal2InstrP(TopMostTerminal->value,
+						TopMostTerminal->datatype);
+				instr.type = TopMostTerminal->datatype;
+			} else {
+				//is on stack
+			}
+			TopMostTerminal->type = nonterminal;
+			instr.a1 = p;
+			InstrQueue_insert(instructions, instr);
+			TopMostTerminal->type = nonterminal;
+		} else {
+			syntaxError("Reduction of token which was already reducted", -1,
+					getExprTokenName(*TopMostTerminal));
+		}
 		// [TODO] instr pop
 		break;
 	case t_plus:
@@ -221,21 +239,21 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		} else {
 			result.datatype = operand1.datatype;
 		}
-/*
-		InstrParam * i_operand1 = malloc(sizeof(InstrParam));
-		InstrParam * i_operand2 = malloc(sizeof(InstrParam));
-		InstrParam * i_dest = malloc(sizeof(InstrParam));
-		if (!i_operand1 || !i_operand2)
-			memoryError("Cannot allocate instrParam for arithmetical operations");
-		printf("bb");
+		/*
+		 InstrParam * i_operand1 = malloc(sizeof(InstrParam));
+		 InstrParam * i_operand2 = malloc(sizeof(InstrParam));
+		 InstrParam * i_dest = malloc(sizeof(InstrParam));
+		 if (!i_operand1 || !i_operand2)
+		 memoryError("Cannot allocate instrParam for arithmetical operations");
+		 printf("bb");
 
-		*i_operand1 = iVal2InstrP(*(operand1.value),operand1.datatype);
-		*i_operand2 = iVal2InstrP(*(operand2.value),operand2.datatype);
+		 *i_operand1 = iVal2InstrP(*(operand1.value),operand1.datatype);
+		 *i_operand2 = iVal2InstrP(*(operand2.value),operand2.datatype);
 
-		//printf("operand1 value - %d\n", i_operand1->iInt);
-		InstrQueue_insert(instructions, (Instruction ) { i_push, operand2.datatype, i_operand2, NULL, NULL });
-		InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, i_operand1, i_operand2, NULL});
-*/
+		 //printf("operand1 value - %d\n", i_operand1->iInt);
+		 InstrQueue_insert(instructions, (Instruction ) { i_push, operand2.datatype, i_operand2, NULL, NULL });
+		 InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, i_operand1, i_operand2, NULL});
+		 */
 		//result.value = malloc(sizeof(iVal));
 		//*(result.value) = InstrP2iVal(i_dest, result.datatype);
 		//printf("result value = %d\n", result.value->iInt);
@@ -262,7 +280,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			printf("Generate call instruction\n"); // empty expression not implemented yet
 			exprStack_pop(stack); // Pop ')'
 			result.type = nonterminal;
-		}else if (lastItem.type == nonterminal) { // We have found E) found
+		} else if (lastItem.type == nonterminal) { // We have found E) found
 			result = exprStack_pop(stack); // might be parameter, needs to be saved later
 			*parameter = result;
 
@@ -279,15 +297,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					exprStack_push(stack, result); // Keep
 
 					if (result.id->val.fn->builtin == b_write) {
-						InstrParam * p = malloc(sizeof(InstrParam));
-						if(!p)
-							memoryError("Cannot allocate instrParam for writeFn");
-						*p=iVal2InstrP(*parameter->value,parameter->datatype);
-
 						InstrQueue_insert(instructions, (Instruction ) {
 										i_write, parameter->datatype, NULL,
 										NULL, NULL });
-					}else if (result.id->val.fn->builtin == b_readLn) {
+					} else if (result.id->val.fn->builtin == b_readLn) {
 						printf("readln found\n");
 					}
 				} else { // It's just (E)
@@ -302,7 +315,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			else
 				syntaxError("Syntax Error - expected ) or function parameters",
 						-1, "");
-		}else
+		} else
 			syntaxError("Syntax Error - expected ) or function parameters", -1,
 					"");
 
