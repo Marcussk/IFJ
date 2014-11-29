@@ -37,7 +37,7 @@ void printStack(exprStack *self) {
 	int poss = self->size - 1;
 	while (itr != NULL) {
 #ifdef EXPR_DEGUG
-		printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/>\n",
+		printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n",
 				poss, getTokenName(itr->data.content), itr->data.type,
 				itr->data.datatype, itr->data.shifted);
 #endif
@@ -160,7 +160,8 @@ InstrCode tokenToInstruction(Token token) {
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
-	ExprToken *parameter = NULL;
+	ExprToken *parameter;
+
 	parameter = malloc(sizeof(ExprToken));
 	ExprTokenInit(parameter);
 
@@ -169,8 +170,13 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	printf("-----%d\n", cont);
 #endif
 	switch (cont) {
-	case t_id:
+	case t_id:// kdyz var, tak push 1. parametr bude stackaddr
+		 if(TopMostTerminal->type == terminal){
+		   TopMostTerminal->type = nonterminal;
+		   InstrQueue_insert(instructions, (Instruction ) { i_push, parameter->datatype, NULL, NULL, NULL });
+		  }
 		TopMostTerminal->type = nonterminal;
+
 		// [TODO] instr pop
 		break;
 	case t_plus:
@@ -214,8 +220,24 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		} else {
 			result.datatype = operand1.datatype;
 		}
-		//InstrQueue_insert(&instr, (Instruction ) { operator.content, result.datatype, operand1, operand2, result });
+/*
+		InstrParam * i_operand1 = malloc(sizeof(InstrParam));
+		InstrParam * i_operand2 = malloc(sizeof(InstrParam));
+		InstrParam * i_dest = malloc(sizeof(InstrParam));
+		if (!i_operand1 || !i_operand2)
+			memoryError("Cannot allocate instrParam for arithmetical operations");
+		printf("bb");
 
+		*i_operand1 = iVal2InstrP(*(operand1.value),operand1.datatype);
+		*i_operand2 = iVal2InstrP(*(operand2.value),operand2.datatype);
+
+		//printf("operand1 value - %d\n", i_operand1->iInt);
+		InstrQueue_insert(instructions, (Instruction ) { i_push, operand2.datatype, i_operand2, NULL, NULL });
+		InstrQueue_insert(instructions, (Instruction ) { tokenToInstruction(operator.content), result.datatype, i_operand1, i_operand2, NULL});
+*/
+		//result.value = malloc(sizeof(iVal));
+		//*(result.value) = InstrP2iVal(i_dest, result.datatype);
+		//printf("result value = %d\n", result.value->iInt);
 		result.type = nonterminal;
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
@@ -263,9 +285,6 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 							memoryError("Cannot allocate instrParam for writeFn");
 						*p=iVal2InstrP(*parameter->value,parameter->datatype);
 
-						InstrQueue_insert(instructions, (Instruction ) { i_push,
-										parameter->datatype, p,
-										NULL, NULL });
 						InstrQueue_insert(instructions, (Instruction ) {
 										i_write, parameter->datatype, NULL,
 										NULL, NULL });
