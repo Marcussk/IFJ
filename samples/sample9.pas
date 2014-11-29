@@ -2,13 +2,14 @@
 var
     a : integer;
 begin
-    readln(a);
-    if a < 0 then
+    a := 5 - 10;
+    if a > 0 then
     begin
-        write('ano')
+        write('kladne')
     end
     else
     begin
-        write('nie')
+        write('zaporne')
     end
+write('end')
 end.
