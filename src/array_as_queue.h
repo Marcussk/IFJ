@@ -1,8 +1,8 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#include "../../src/ifj_types.h"
-#include "errorHanler.h"
+#include "ifj_types.h"
+#include "error_handler.h"
 #include "instruction.h"
 
 

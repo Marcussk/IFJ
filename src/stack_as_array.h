@@ -26,8 +26,9 @@ void StackArr__init__( StackArr *self );
 void StackArr__dell__( StackArr *self );
 void StackArr_push( StackArr *self, iVal data );
 iVal StackArr_pop( StackArr *self );
-iVal * StackArr_getAt( StackArr *self, int index );
+iVal StackArr_getAt( StackArr *self, int index );
 
-void int_StackArr_debug( StackArr *self, int index );
+void int_StackArr_debug( StackArr *self);
+void test_stack1(void);
 
 #endif

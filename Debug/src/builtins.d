@@ -1,19 +1,19 @@
-src/builtins.d: ../src/builtins.c ../src/builtins.h ../src/errorHandler.h \
- ../src/ifjTypes.h ../src/tokenMap.h ../src/iFunction.h \
- ../src/instruction.h ../src/hashTable.h ../src/ial.h
+src/builtins.d: ../src/builtins.c ../src/builtins.h ../src/ial.h \
+ ../src/i_function.h ../src/ifj_types.h ../src/error_handler.h \
+ ../src/token_map.h ../src/instruction.h ../src/hash_table.h
 
 ../src/builtins.h:
 
-../src/errorHandler.h:
+../src/ial.h:
 
-../src/ifjTypes.h:
+../src/i_function.h:
 
-../src/tokenMap.h:
+../src/ifj_types.h:
 
-../src/iFunction.h:
+../src/error_handler.h:
+
+../src/token_map.h:
 
 ../src/instruction.h:
 
-../src/hashTable.h:
-
-../src/ial.h:
+../src/hash_table.h:
