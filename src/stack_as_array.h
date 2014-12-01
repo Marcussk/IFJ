@@ -29,5 +29,6 @@ iVal StackArr_pop( StackArr *self );
 iVal * StackArr_getAt( StackArr *self, int index );
 
 void int_StackArr_debug( StackArr *self, int index );
+void test_stack1(void);
 
 #endif
