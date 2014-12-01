@@ -8,7 +8,8 @@
 #include "i_function.h"
 #include "ifj_types.h"
 
-#define MAX_SIZE 256
+//cardinality of alphabet - number of all poss. chars
+#define MAX_SIZE 255
 
 int func_find(char *txt, char *pat);
 //int func_find( char *src, char *search );

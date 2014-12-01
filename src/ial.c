@@ -55,7 +55,7 @@ void badcharfill(char *str, int size, int badchar[MAX_SIZE]) {
 	int i;
 	//initialize array
 	for (i = 0; i < MAX_SIZE; i++) {
-		badchar[i] = -1;
+		badchar[i] = -1; // [TODO] replace with size 
 	}
 	//fill array of patlength with last occurence of character
 	//array is rewritten during iterations and array[currentchar] = positioninpatter
