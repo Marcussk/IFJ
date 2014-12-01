@@ -1,4 +1,4 @@
-#include "hashTable.h"
+#include "hash_table.h"
 
 void HashTable_print(HashTable *self) {
 	int hash;

@@ -4,8 +4,8 @@
 #include "instruction.h"
 #include "stack.h"
 #include "builtins.h"
-#include "errorHandler.h"
 #include <stdbool.h>
+#include "error_handler.h"
 
 DECLARE_STACK(i, iVal);
 

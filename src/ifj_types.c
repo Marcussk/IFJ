@@ -1,4 +1,4 @@
-#include "ifjTypes.h"
+#include "ifj_types.h"
 
 iVar * iVar__init__() {
 	iVar * self = malloc(sizeof(iVar));

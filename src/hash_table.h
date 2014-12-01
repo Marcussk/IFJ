@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "ifjTypes.h"
 #include "ial.h"
+#include "ifj_types.h"
 
 /*
  * very similar with http://www.sparknotes.com/cs/searching/hashtables/section3.rhtml

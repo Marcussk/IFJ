@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "errorHandler.h"
-#include "tokenMap.h"
+#include "error_handler.h"
+#include "token_map.h"
 
 /*
  * !!compatible!! with tokens

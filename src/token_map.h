@@ -6,7 +6,8 @@
  * */
 #include <stdlib.h>
 #include <stdbool.h>
-#include "errorHandler.h"
+
+#include "error_handler.h"
 
 #define STATIC_ARR_LEN(x)  (sizeof(x) / sizeof(x[0]))
 #define TOKENMAP_NODESIZE 128

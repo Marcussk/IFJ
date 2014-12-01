@@ -1,7 +1,7 @@
 #ifndef IFUNCTION_h
 #define IFUNCTION_h
 
-#include "ifjTypes.h"
+#include "ifj_types.h"
 #include "instruction.h"
 
 //list of parameters for function

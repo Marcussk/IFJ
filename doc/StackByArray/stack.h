@@ -1,8 +1,9 @@
 #include "stdlib.h"
 #include "stdio.h"
+
+#include "../../src/ifj_types.h"
 #include "errorHanler.h"
 #include "instruction.h"
-#include "ifjTypes.h"
 
 #define STACK_START_SIZE 64
 

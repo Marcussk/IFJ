@@ -1,4 +1,4 @@
-#include "iFunction.h"
+#include "i_function.h"
 
 
 iFunction * iFunction__init__() {

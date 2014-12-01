@@ -4,8 +4,9 @@
 #include "stdbool.h"
 #include <stdlib.h>
 #include <string.h>
-#include "ifjTypes.h"
-#include "iFunction.h"
+
+#include "i_function.h"
+#include "ifj_types.h"
 
 #define MAX_SIZE 256
 

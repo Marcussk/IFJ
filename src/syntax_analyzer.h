@@ -1,16 +1,16 @@
 #ifndef SYNTAX_ANALYZER_h
 #define SYNTAX_ANALYZER_h
 
+#include "error_handler.h"
 #include "expr.h"
-#include "lexParser.h"
-#include "hashTable.h"
-#include "ifjTypes.h"
 #include "stack.h"
-#include "errorHandler.h"
 #include "instruction.h"
 #include "expr.h"
-#include "tokenBuff.h"
-#include "semanticAnalyzer.h"
+#include "hash_table.h"
+#include "ifj_types.h"
+#include "lex_parser.h"
+#include "semantic_analyzer.h"
+#include "token_buff.h"
 
 typedef struct {
 	LexParser * lp;

@@ -1,8 +1,8 @@
 #ifndef INSTRUCTION_h
 #define INSTRUCTION_h
 
-#include "ifjTypes.h"
 #include <string.h>
+#include "ifj_types.h"
 
 // synergy with builtins
 typedef enum {

@@ -1,4 +1,4 @@
-#include "syntaxAnalyzer.h"
+#include "syntax_analyzer.h"
 
 #define NEXT_TOK(expected, errMsg)                                  \
  lastToken = TokenBuff_next(&self->tokBuff);                        \

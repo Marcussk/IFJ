@@ -1,4 +1,4 @@
-#include "lexParser.h"
+#include "lex_parser.h"
 
 void LexParser_readEscape(LexParser * self);
 void LexParser_readString(LexParser * self);
