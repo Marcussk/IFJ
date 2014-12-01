@@ -2,6 +2,12 @@
 
 //#define EXPR_DEGUG
 
+#ifdef EXPR_DEBUG
+#define EXPR_DEBUGING(body) body
+#else
+#define EXPR_DEBUGING(body) ;
+#endif
+
 IMPLEMENT_STACK(expr, ExprToken);
 
 ExprToken ExprLastToken;
@@ -33,20 +39,10 @@ Token getTokenContent(Token token, iVar* var) {
 		return token;
 	}
 }
+EXPR_DEBUGING(
+		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
 
-void printStack(exprStack *self) {
-	exprStackNodeT *itr = self->top;
-	int poss = self->size - 1;
-	while (itr != NULL) {
-#ifdef EXPR_DEGUG
-		printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n",
-				poss, getTokenName(itr->data.content), itr->data.type,
-				itr->data.datatype, itr->data.shifted);
-#endif
-		itr = itr->next;
-		poss--;
-	}
-}
+		itr = itr->next; poss--; } })
 
 void ExprTokenInit(ExprToken *token) {
 	token->content = t_eof;
@@ -65,56 +61,6 @@ void ExprInit(exprStack *stack) {
 	ExprTokenInit(&ExprLastToken);
 }
 
-tIFJ getTokenType(Token t) {
-	switch (t) {
-	case t_num_int:
-		return iInt;
-		break;
-	case t_num_real:
-		return iReal;
-		break;
-	case t_str_val:
-		return iString;
-		break;
-	case t_true:
-	case t_false:
-		return iBool;
-	default:
-		unimplementedError("cannot convert token to type");
-	}
-	return iUnknown;
-}
-
-iVal str2iVal(char * str, Token token, LexParser * lp) {
-	iVal val;
-	switch (token) {
-	case t_num_int:
-		if (!sscanf(str, "%d", &(val.iInt)))
-			lexError("Cannot parse int num", str, lp->lineNum);
-		break;
-
-	case t_num_real:
-		if (!sscanf(str, "%f", &(val.iReal)))
-			lexError("Cannot parse real num", lp->str.buff, lp->lineNum);
-		break;
-
-	case t_str_val:
-		val.iString = strdup(str);
-		if (!val.iString)
-			lexError("Cannot parse string", lp->str.buff, lp->lineNum);
-		break;
-	case t_true:
-		val.iInt = 1;
-		break;
-	case t_false:
-		val.iInt = 0;
-		break;
-	default:
-		lexError("cannot convert value", str, lp->lineNum);
-	}
-	return val;
-}
-
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	Expr->content = getTokenContent(token, lp->lastSymbol);
 	Expr->type = terminal;
@@ -128,8 +74,8 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	//free(Expr->value);
 	if (Token_isValue(token)) {
 		Expr->value = malloc(sizeof(iVal));
-		*Expr->value = str2iVal(lp->str.buff, token, lp);
-		Expr->datatype = getTokenType(token);
+		*Expr->value = str2iVal(lp->str.buff, token, lp->lineNum);
+		Expr->datatype = Token_getType(token);
 	} else
 		Expr->value = NULL;
 }
@@ -154,33 +100,6 @@ int findHandle(exprStack * stack) {
 		tmp = tmp->next;
 	}
 	return 0;
-}
-
-InstrCode tokenToInstruction(Token token) {
-	switch (token) {
-	case t_plus:
-		return i_add;
-	case t_minus:
-		return i_sub;
-	case t_asterisk:
-		return i_mul;
-	case t_slash:
-		return i_div;
-	case t_less:
-		return i_less;
-	case t_greater:
-		return i_more;
-	case t_lessOrEqv:
-		return i_loreq;
-	case t_greaterOrEqv:
-		return i_moreq;
-	case t_eqv:
-		return i_equal;
-	case t_notEqv:
-		return i_nequal;
-	default:
-		return i_noop;
-	}
 }
 
 tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
@@ -232,9 +151,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	ExprTokenInit(parameter);
 
 	Token cont = TopMostTerminal->content;
-#ifdef EXPR_DEGUG
-	printf("-----%d\n", cont);
-#endif
+	EXPR_DEBUGING(printf("-----%d\n", cont);)
 	switch (cont) {
 	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
 		if (TopMostTerminal->type == terminal) {
@@ -277,10 +194,8 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-#ifdef EXPR_DEGUG
-		printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n");
-		printf("STACK POSITION = %d\n", findHandle(stack));
-#endif
+		EXPR_DEBUGING(
+				printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n"); printf("STACK POSITION = %d\n", findHandle(stack));)
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
@@ -303,7 +218,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 				operator.content);
 
 		InstrQueue_insert(instructions,
-				(Instruction ) { tokenToInstruction(operator.content),
+				(Instruction ) { Token2Instruction(operator.content),
 								operand1.datatype, NULL,
 								NULL, NULL });
 
@@ -351,9 +266,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					}
 					unimplementedError("Call is not implemented now");
 				} else { // It's just (E)
-#ifdef EXPR_DEGUG
-				printf("It's just normal E\n");
-#endif
+					EXPR_DEBUGING(printf("It's just normal E\n");)
 					exprStack_push(stack, result);
 				}
 			} else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
@@ -404,9 +317,9 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		} else if (Token_isValue(lastToken)) {
 			param = malloc(sizeof(InstrParam));
 			*param = iVal2InstrP(
-					str2iVal(tokenBuff->lp->str.buff, lastToken, tokenBuff->lp),
-					getTokenType(lastToken));
-			instr.type = getTokenType(lastToken);
+					str2iVal(tokenBuff->lp->str.buff, lastToken,
+							tokenBuff->lp->lineNum), Token_getType(lastToken));
+			instr.type = Token_getType(lastToken);
 			instr.a1 = param;
 		} else {
 			syntaxError("write call unexpected argument",
@@ -414,7 +327,7 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 
 		}
 		InstrQueue_insert(instructions, instr);
-		if( instr.type == iStackRef){
+		if (instr.type == iStackRef) {
 			instr.type = lastSymbol->type;
 		}
 		InstrQueue_insert(instructions, (Instruction ) { i_write, instr.type,
@@ -481,25 +394,17 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			return iVoid;
 
 		}
-	}
-#ifdef EXPR_DEGUG
-	printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);
-#endif
+	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);)
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
 		TopMostTerminal = findTopMostTerminal(stack);
-#ifdef EXPR_DEGUG
-		printStack(stack);
-		printf("prtable indexes [%d][%d]\n", TopMostTerminal->content,
-				ExprLastToken.content);
-#endif
+		EXPR_DEBUGING(
+				printStack(stack); printf("prtable indexes [%d][%d]\n", TopMostTerminal->content, ExprLastToken.content);)
 
 		switch (prTable[TopMostTerminal->content][ExprLastToken.content]) {
 		case shift:		// Vloz zacatek handle
-#ifdef EXPR_DEGUG
-		printf("shift\n");
-#endif
+			EXPR_DEBUGING(printf("shift\n");)
 			TopMostTerminal->shifted = true;
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
@@ -507,18 +412,14 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			break;
 
 		case equal:	// push ExprLastToken
-#ifdef EXPR_DEGUG
-		printf("equal\n");
-#endif			
+			EXPR_DEBUGING(printf("equal\n");)
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
 			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 			break;
 
 		case reduce: // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo a zredukuj
-#ifdef EXPR_DEGUG
-		printf("reduce\n");
-#endif
+			EXPR_DEBUGING(printf("reduce\n");)
 			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
@@ -535,24 +436,18 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
-#ifdef EXPR_DEGUG
-			printf("reduce\n");
-#endif
+			EXPR_DEBUGING(printf("reduce\n");)
 			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
 			TopMostTerminal->shifted = false;
 		} else {
-			printStack(stack);
+			EXPR_DEBUGING(printStack(stack);)
 			syntaxError("Expression Error Everything read, can't reduce",
 					tokenBuff->lp->lineNum, getExprTokenName(ExprLastToken));
 		}
-	}
-#ifdef EXPR_DEGUG
-	printf("Last stack status\n");
-	printStack(stack);
-	printf("</Expr lastToken:%d - %s >\n\n", lastToken,
-			getTokenName(lastToken));
-#endif
+	}EXPR_DEBUGING(
+			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
+
 	TokenBuff_pushBack(tokenBuff, lastToken);
 
 	return (stack->top->data.datatype);

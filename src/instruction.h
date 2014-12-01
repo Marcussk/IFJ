@@ -75,5 +75,6 @@ void InstrQueue__dell__(InstrQueue * self);
 iVal InstrP2iVal(InstrParam * a, tIFJ type);
 InstrParam inline iVal2InstrP(iVal v, tIFJ type);
 void InstrQueue_debug(InstrQueue * self);
+InstrCode Token2Instruction(Token token);
 
 #endif

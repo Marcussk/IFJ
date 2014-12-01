@@ -5,25 +5,11 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 O_SRCS += \
 ../src/StackAsArray.o \
-../src/buffFile.o \
-../src/builtins.o \
 ../src/errorHandler.o \
-../src/expr.o \
 ../src/hashTable.o \
-../src/iFunction.o \
-../src/ial.o \
-../src/ifj.o \
-../src/ifjTypes.o \
 ../src/instruction.o \
-../src/interpret.o \
 ../src/lexParser.o \
-../src/parserTables.o \
-../src/semanticAnalyzer.o \
-../src/strRoutines.o \
-../src/syntaxAnalyzer.o \
-../src/testsinterpret.o \
-../src/tokenBuff.o \
-../src/tokenMap.o 
+../src/tokenBuff.o 
 
 C_SRCS += \
 ../src/StackAsArray.c \
