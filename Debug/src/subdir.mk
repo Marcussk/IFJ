@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 O_SRCS += \
 ../src/StackAsArray.o \
+../src/array_as_queue.o \
 ../src/buffFile.o \
 ../src/builtins.o \
 ../src/errorHandler.o \
@@ -39,6 +40,7 @@ O_SRCS += \
 ../src/token_map.o 
 
 C_SRCS += \
+../src/array_as_queue.c \
 ../src/buffFile.c \
 ../src/builtins.c \
 ../src/error_handler.c \
@@ -61,6 +63,7 @@ C_SRCS += \
 ../src/token_map.c 
 
 OBJS += \
+./src/array_as_queue.o \
 ./src/buffFile.o \
 ./src/builtins.o \
 ./src/error_handler.o \
@@ -83,6 +86,7 @@ OBJS += \
 ./src/token_map.o 
 
 C_DEPS += \
+./src/array_as_queue.d \
 ./src/buffFile.d \
 ./src/builtins.d \
 ./src/error_handler.d \

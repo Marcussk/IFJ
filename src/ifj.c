@@ -20,7 +20,7 @@
 #include "stack_as_array.h"
 
 int main(int argc, char *argv[]) {
-	StackArr s;
+	//StackArr s;
 
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
