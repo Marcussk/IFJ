@@ -17,7 +17,7 @@
 #include "lex_parser.h"
 #include "stack_as_array.h"
 #include "syntax_analyzer.h"
- #include "stack_as_array.h"
+#include "stack_as_array.h"
 
 int main(int argc, char *argv[]) {
 	StackArr s;
@@ -32,13 +32,14 @@ int main(int argc, char *argv[]) {
 		if (file == 0) {
 			printf("ERROR: Could not open file!\n");
 		} else {
-			/*StackArr__init__(&s);
-			StackArr_push(&s, (iVal){}) ;
-			StackArr_pop(&s);
-			int_StackArr_debug( &s, 5);*/
+			/*			StackArr__init__(&s);
+			 StackArr_push(&s, (iVal){}) ;
+			 StackArr_pop(&s);
+			 int_StackArr_debug( &s, 5);
 
-			//test_stack1();
-			//return;
+			 test_stack1();
+			 return EXIT_SUCCESS;
+			 */
 			LexParser__init__(&lexParser, file);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
 			SyntaxAnalyzer_parse(&synAnalyzer);

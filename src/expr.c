@@ -264,6 +264,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 						unimplementedError(
 								"others builtins are not implemented yet");
 					}
+
 					unimplementedError("Call is not implemented now");
 				} else { // It's just (E)
 					EXPR_DEBUGING(printf("It's just normal E\n");)
