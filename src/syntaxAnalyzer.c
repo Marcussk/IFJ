@@ -228,8 +228,8 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
 	}
 }
 
-// "(" - already found ;( params are in function declarations)
 /*
+ * ( params are in function declarations)
  During definition of user function
  f(params) -> f(id : typ; id : typ)
  */
