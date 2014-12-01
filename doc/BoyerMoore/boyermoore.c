@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/*
+
 #define MAX_SIZE 255
 
 void test1();
@@ -22,32 +22,63 @@ int main()
 
 }
 
-int find(char *txt, char *pat)
-{
+/* strom implementovany polom kde lavy syn je na pozici 2i+1, a pravy syn na pozicii 2i+2 */
+char * func_sort(char *str) {
+	int str_len = strlen(str);
+
+	int i;
+	int left = str_len / 2 - 1; /* index najpravejsieho uzlu na najnizsej urovni */
+	int right = str_len - 1; /* posleny prvok pola */
+
+	for (i = left; i >= 0; i--) {
+		Sift(str, i, right);
+	}
+	for (right = str_len - 1; right >= 1; right--) {
+		change(str, right); /* vymena prvkov */
+		Sift(str, 0, right - 1); /* opakovane zostavenie stromu z prvkov ktore este niesu zoradene */
+	}
+
+	return str;
+}
+
+void badcharfill(char *str, int size, int badchar[MAX_SIZE]) {
+	int i;
+	//initialize array
+	for (i = 0; i < MAX_SIZE; i++) {
+		badchar[i] = size; // [TODO] replace with size 
+	}
+	//fill array of patlength with last occurence of character
+	//array is rewritten during iterations and array[currentchar] = positioninpatter
+	for (i = 0; i < size; i++) {
+		badchar[(int) str[i]] = i;
+	}
+}
+
+int max(int a, int b) {
+	return (a > b) ? a : b;
+}
+
+int func_find(char *txt, char *pat) {
 	int patlength = strlen(pat);
 	int txtlength = strlen(txt);
 	int shift = 0;
-	
-	int badchar[MAX_SIZE];
-	badcharfill(pat,patlength, badchar);
 
-	while(shift <= txtlength - patlength)
-	{
+	int badchar[MAX_SIZE];
+	badcharfill(pat, patlength, badchar);
+
+	while (shift <= txtlength - patlength) {
 		int matchindex = patlength - 1;
 		//Check chars from right to left to see if we have pattern match
-		while((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex]))
-		{
+		while ((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex])) {
 			matchindex--;
 		}
 		//Succesfully found match (patlength of chars are matching)
-		if(matchindex < 0)
-		{
+		if (matchindex < 0) {
 			//printf("Finding: %d \n", shift + 1);
 			return shift + 1;
 			//if we can move shift so it aligns with text
-			if(shift + patlength < txtlength)
-			{
-				shift += patlength - badchar[txt[shift + patlength]];
+			if (shift + patlength < txtlength) {
+				shift += patlength - badchar[(int) txt[shift + patlength]];
 			}
 			//if not move just by one
 			else {
@@ -55,34 +86,13 @@ int find(char *txt, char *pat)
 			}
 		}
 		//havent found match in text
-		else
-		{
+		else {
 			//move shift, if there is bigger skip choose it
-			shift += max(1 , matchindex - badchar[txt[shift+matchindex]]);
+			shift += max(1,
+					matchindex - badchar[(int) txt[shift + matchindex]]);
 		}
 	}
 	return 0;
-}
-
-void badcharfill(char *str, int size, int badchar[MAX_SIZE])
-{
-	//initialize array
-	for(int i = 0; i < MAX_SIZE; i++)
-	{
-		badchar[i] = -1;
-	}
-	//fill array of patlength with last occurence of character
-	//array is rewritten during iterations and array[currentchar] = positioninpatter
-	for (int i = 0; i < size; i++)
-	{
-		badchar[(int) str[i]] = i;
-	}
-}
-
-
-int max(int a, int b)
-{
-	return (a > b)? a: b;
 }
 
 void test1()
@@ -148,144 +158,3 @@ void test4()
     }
     return;
 }
-*/
-
-
-/////*** Neviem ako to funguje a co sa tam deje zvacsa to nefunguje a uz nem8m nervy to debugovat dneska **////////
-/***pointa algoritmu je vytvorenie tabuliek posunov, jedna tabulka je bad_characters, druha good_suffixes,
- suffixes je len pomocna funkcia na vytvorenie good suffixes tiez sa tam vytvara nejaka tabulka. ***////
-/*** Napisala som to podla niekolko algoritmou co som nala neviem mozno som sa pomylila mozno to nefunguje liky su zde:
- ******************************************************************
- http://www-igm.univ-mlv.fr/~lecroq/string/node14.html
- http://www.stoimen.com/blog/2012/04/17/computer-algorithms-boyer-moore-string-search-and-matching/
- http://www2.fiit.stuba.sk/~pospichal/soltis/algo_i513.htm
- https://www.youtube.com/watch?v=xYBM0_dChRE
- ******************************************************************
- Ak tomu niekto kodu niekto nechapete tak ani ja nie...
- Michal nehrot to s tymto toto sa da dorobit aj po pokusnom odovzdani.*/
-
-/* tato funkcia vytvara prvy tabulku mala by nastavit posuny iba pre znaku ktore sa nachadzaju
- v zdrojovom retazci, ale prave to tvori nejake nezmysli domievam sa ze chyba moze byt prave tu
- ale akosi nechapem preco*/
-
-// ked som pozerala ako to je napisane na nete autor tam caroval s f neviem co to tam je .... //
-/*
-void suffixes(char* pattern, int suffix[], int max_pattern_len) {
-	suffix[max_pattern_len - 1] = max_pattern_len;
-
-	int pattern_len = max_pattern_len - 1;
-	int i, f;
-
-	for (i = max_pattern_len - 2; i >= 0; --i) {
-		if (i > pattern_len
-				&& suffix[i + max_pattern_len - 1 - f] < i - pattern_len)
-			suffix[i] = suffix[i + max_pattern_len - 1 - f];
-		else {
-			if (i < pattern_len)
-				pattern_len = i;
-
-			f = i;
-
-			while (pattern_len >= 0
-					&& pattern[pattern_len]
-							== pattern[pattern_len + max_pattern_len - 1 - f])
-				pattern_len--;
-			suffix[i] = f - pattern_len;
-		}
-	}
-
-	return;
-}
-
-void good_suffixes(char *pattern, int good_suffix[]) {
-	int pattern_len = strlen(pattern);
-	int * suffix = calloc(sizeof(int), pattern_len); //dalsie pole??
-	int i, j;
-
-	suffixes(pattern, suffix, pattern_len);
-
-	for (i = 0; i < pattern_len; i++)
-		good_suffix[i] = pattern_len;
-
-	for (i = pattern_len - 1; i >= 0; i--) {
-		if (suffix[i] == i + 1) {
-			for (j = 0; j <= pattern_len - i - 1; j++) {
-				if (good_suffix[j] == pattern_len)
-					good_suffix[j] = pattern_len - i - 1;
-			}
-		}
-	}
-
-	for (i = 0; i < pattern_len - 2; i++) {
-		good_suffix[pattern_len - 1 - suffix[i]] = pattern_len - i - 1;
-	}
-
-	return;
-}
-
-void bad_char(char *pattern, int bad_character[], int max_src_len) {
-	int i;
-	int pattern_len = strlen(pattern);
-
-	for (i = 0; i < max_src_len; i++) {
-		bad_character[i] = pattern_len;
-	}
-	for (i = 0; i < pattern_len - 1; i++) {
-		bad_character[(int) pattern[i]] = pattern_len - i - 1; // plnenie pola indexami, ale deje sa tu nieco zle :D
-	}
-	return;
-}
-
-// funkcia na zistenie velkosti abecedy vstupneho stringu
-int alfabeth_len(int src_len, char *src) {
-	int i;
-	int j;
-	bool new_char = true; // ak true prvok sa pocita, inac uz bol zapocitany
-	int alfa_len = 0; // pocet roznych prvkov
-
-	for (i = 0; i <= src_len - 1; i++) {
-		for (j = i; j >= 1; j--) {
-			if (src[i] == src[j - 1])
-				new_char = false;
-		}
-		if (new_char) {
-			//printf("%c\n",src[i] ); vypis prvkov ako pomocka
-			alfa_len++;
-		}
-		new_char = true;
-	}
-
-	return alfa_len;
-}
-
-int func_find(char *src, char *search) {
-
-	int i = 0, j = 0, count = 0;
-	int src_len = strlen(src);
-	int search_len = strlen(search);
-	int alfa_len = alfabeth_len(src_len, src);
-
-	//arrays for GS and BC tables;
-	// neviem ci robim vobec spravne velke polia
-	int * good_suffix = calloc(sizeof(int), src_len); // pole velkosti dlzky zdrojoveho retazca, neviem ci to nema byt dlzka abecedy zdrojoveho ratazca
-	int * bad_character = calloc(sizeof(int), alfa_len); // pole velkosti abecedy zdrojoveho retazca
-
-	good_suffixes(search, good_suffix);
-	bad_char(search, bad_character, count);
-
-	//tu sa zacina carovat//
-	while (j < src_len - search_len) {
-		for (i = search_len - 1; i >= 0 && search[i] == src[i + j]; i--)
-			;
-		if (i < 0) {
-			return j;
-			//j += good_suffix[0];
-		} else if (good_suffix[i]
-				>= bad_character[(int) src[i + j]] - search_len + 1 + i)
-			j += good_suffix[i];
-		else
-			j += bad_character[(int) src[i + j]] - search_len + 1 + i;
-	}
-	return -1;
-}
-*/
