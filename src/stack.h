@@ -3,9 +3,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "errorHandler.h"
+
+#include "error_handler.h"
+#include "ifj_types.h"
 #include "instruction.h"
-#include "ifjTypes.h"
 
 #define DECLARE_STACK(namePrefix, stackElementT)                               \
 typedef struct namePrefix##s_stackNodeT {                                      \

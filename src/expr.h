@@ -3,13 +3,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "errorHandler.h"
-#include "lexParser.h"
-#include "strRoutines.h"
-#include "tokenMap.h"
+
+#include "error_handler.h"
+#include "lex_parser.h"
+#include "parser_tables.h"
 #include "stack.h"
-#include "parserTables.h"
-#include "tokenBuff.h"
+#include "str_routines.h"
+#include "token_buff.h"
+#include "token_map.h"
 
 //#define EXPR_DEBUG
 

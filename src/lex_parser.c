@@ -1,4 +1,4 @@
-#include "lexParser.h"
+#include "lex_parser.h"
 
 void LexParser_readEscape(LexParser * self);
 void LexParser_readString(LexParser * self);
@@ -210,16 +210,20 @@ bool CanAddAsParam(LexParser * self) {
 //create new Symbol table for this function, save next Ids to fn params
 void LexParser_fnParamsEnter(LexParser * self) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
+	iVar * fnRecurse = NULL;
+	if( HashTable_insert(fnSymTable,self->str.buff, &fnRecurse) !=ht_inserted){
+		lexError("Error while creating symbol for function recurse",self->str.buff, self->lineNum);
+	}
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = self->lastSymbol;
-
+	*fnRecurse = *fnSymTable->masterItem;
 	self->symbolTable = fnSymTable;
 }
 
 // end saving ids to params, save function return type and return variable to this fn symbol table
 void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType) {
 	iVar * fn = self->symbolTable->masterItem;
-	fn->val.fn->retType = fnReturnType;
+	fn->val.fn->retVal.type = fnReturnType;
 }
 //set up symbol table back to global
 void LexParser_fnBodyLeave(LexParser * self) {

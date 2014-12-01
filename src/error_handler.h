@@ -21,7 +21,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "ifjTypes.h"
 
 void memoryError(char * str);
 void unimplementedError(char * str);

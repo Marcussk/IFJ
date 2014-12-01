@@ -51,53 +51,44 @@ char * func_sort(char *str) {
 	return str;
 }
 
-void badcharfill(char *str, int size, int badchar[MAX_SIZE])
-{
+void badcharfill(char *str, int size, int badchar[MAX_SIZE]) {
 	int i;
 	//initialize array
-	for(i = 0; i < MAX_SIZE; i++)
-	{
-		badchar[i] = -1;
+	for (i = 0; i < MAX_SIZE; i++) {
+		badchar[i] = -1; // [TODO] replace with size 
 	}
 	//fill array of patlength with last occurence of character
 	//array is rewritten during iterations and array[currentchar] = positioninpatter
-	for (i = 0; i < size; i++)
-	{
+	for (i = 0; i < size; i++) {
 		badchar[(int) str[i]] = i;
 	}
 }
 
-int max(int a, int b)
-{
-	return (a > b)? a: b;
+int max(int a, int b) {
+	return (a > b) ? a : b;
 }
 
-int func_find(char *txt, char *pat)
-{
+int func_find(char *txt, char *pat) {
 	int patlength = strlen(pat);
 	int txtlength = strlen(txt);
 	int shift = 0;
-	
-	int badchar[MAX_SIZE];
-	badcharfill(pat,patlength, badchar);
 
-	while(shift <= txtlength - patlength)
-	{
+	int badchar[MAX_SIZE];
+	badcharfill(pat, patlength, badchar);
+
+	while (shift <= txtlength - patlength) {
 		int matchindex = patlength - 1;
 		//Check chars from right to left to see if we have pattern match
-		while((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex]))
-		{
+		while ((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex])) {
 			matchindex--;
 		}
 		//Succesfully found match (patlength of chars are matching)
-		if(matchindex < 0)
-		{
+		if (matchindex < 0) {
 			//printf("Finding: %d \n", shift + 1);
 			return shift + 1;
 			//if we can move shift so it aligns with text
-			if(shift + patlength < txtlength)
-			{
-				shift += patlength - badchar[txt[shift + patlength]];
+			if (shift + patlength < txtlength) {
+				shift += patlength - badchar[(int) txt[shift + patlength]];
 			}
 			//if not move just by one
 			else {
@@ -105,10 +96,10 @@ int func_find(char *txt, char *pat)
 			}
 		}
 		//havent found match in text
-		else
-		{
+		else {
 			//move shift, if there is bigger skip choose it
-			shift += max(1 , matchindex - badchar[txt[shift+matchindex]]);
+			shift += max(1,
+					matchindex - badchar[(int) txt[shift + matchindex]]);
 		}
 	}
 	return 0;
@@ -147,7 +138,6 @@ unsigned int HashTable_hash(HashTable *self, char *str) {
 	// fit into the necessary range
 	return hashval % self->size;
 }
-
 
 // = search in table
 HashTableItem *HashTable_lookup(HashTable *self, char *str) {

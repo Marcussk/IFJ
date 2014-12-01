@@ -3,7 +3,8 @@
 
 #include <ctype.h>
 #include <stdlib.h>
-#include "errorHandler.h"
+
+#include "error_handler.h"
 
 typedef struct {
 	char * buff;

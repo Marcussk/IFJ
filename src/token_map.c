@@ -1,4 +1,4 @@
-#include "tokenMap.h"
+#include "token_map.h"
 
 //describes string form of token
 TokenMeaning tokenMeanings[] = {

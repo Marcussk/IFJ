@@ -85,6 +85,32 @@ char * instr2Str(InstrCode code) {
 	}
 }
 
+InstrCode Token2Instruction(Token token) {
+	switch (token) {
+	case t_plus:
+		return i_add;
+	case t_minus:
+		return i_sub;
+	case t_asterisk:
+		return i_mul;
+	case t_slash:
+		return i_div;
+	case t_less:
+		return i_less;
+	case t_greater:
+		return i_more;
+	case t_lessOrEqv:
+		return i_loreq;
+	case t_greaterOrEqv:
+		return i_moreq;
+	case t_eqv:
+		return i_equal;
+	case t_notEqv:
+		return i_nequal;
+	default:
+		return i_noop;
+	}
+}
 
 void InstrQueue_debug(InstrQueue * self) {
 	InstrQueueNode * item = self->actual;

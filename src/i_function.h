@@ -1,7 +1,7 @@
 #ifndef IFUNCTION_h
 #define IFUNCTION_h
 
-#include "ifjTypes.h"
+#include "ifj_types.h"
 #include "instruction.h"
 
 //list of parameters for function
@@ -16,7 +16,7 @@ typedef enum {
 
 //first n iVars in
 typedef struct s_iFunction{
-	tIFJ retType;
+	iVar retVal;
 	struct s_ParamsListItem * params;
 	Instruction * body;
 	Builtins builtin;

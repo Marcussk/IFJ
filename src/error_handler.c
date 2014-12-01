@@ -1,4 +1,4 @@
-#include "errorHandler.h"
+#include "error_handler.h"
 
 void lexError(char * str, char * lexBuff, int lineNum) {
 	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s\n", lineNum,

@@ -1,9 +1,9 @@
 #ifndef TOKEN_BUFF_h
 #define TOKEN_BUFF_h
 
-#include "lexParser.h"
-#include "tokenMap.h"
-#include "errorHandler.h"
+#include "error_handler.h"
+#include "lex_parser.h"
+#include "token_map.h"
 
 typedef struct {
 	LexParser * lp;

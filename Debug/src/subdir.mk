@@ -3,6 +3,14 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/StackAsArray.o \
+../src/errorHandler.o \
+../src/hashTable.o \
+../src/instruction.o \
+../src/lexParser.o \
+../src/tokenBuff.o 
+
 C_SRCS += \
 ../src/StackAsArray.c \
 ../src/buffFile.c \
@@ -18,6 +26,7 @@ C_SRCS += \
 ../src/interpret.c \
 ../src/lexParser.c \
 ../src/parserTables.c \
+../src/semanticAnalyzer.c \
 ../src/strRoutines.c \
 ../src/syntaxAnalyzer.c \
 ../src/testsinterpret.c \
@@ -39,6 +48,7 @@ OBJS += \
 ./src/interpret.o \
 ./src/lexParser.o \
 ./src/parserTables.o \
+./src/semanticAnalyzer.o \
 ./src/strRoutines.o \
 ./src/syntaxAnalyzer.o \
 ./src/testsinterpret.o \
@@ -60,6 +70,7 @@ C_DEPS += \
 ./src/interpret.d \
 ./src/lexParser.d \
 ./src/parserTables.d \
+./src/semanticAnalyzer.d \
 ./src/strRoutines.d \
 ./src/syntaxAnalyzer.d \
 ./src/testsinterpret.d \

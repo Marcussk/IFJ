@@ -11,11 +11,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "lexParser.h"
-#include "syntaxAnalyzer.h"
 #include "defs.h"
 #include "interpret.h"
 #include "ial.h"
+#include "lex_parser.h"
+#include "stack_as_array.h"
+#include "syntax_analyzer.h"
 
 int main(int argc, char *argv[]) {
 	LexParser lexParser;
@@ -39,5 +40,6 @@ int main(int argc, char *argv[]) {
 			//SyntaxAnalyzer__dell__(&synAnalyzer);
 		}
 	}
+
 	return EXIT_SUCCESS;
 }

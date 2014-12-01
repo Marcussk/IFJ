@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "strRoutines.h"
-#include "hashTable.h"
-#include "tokenMap.h"
 #include "buffFile.h"
 #include "builtins.h"
 #include "defs.h"
+#include "hash_table.h"
+#include "str_routines.h"
+#include "token_map.h"
 
 
 typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;

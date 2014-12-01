@@ -1,4 +1,4 @@
-#include "parserTables.h"
+#include "parser_tables.h"
 
 precedenceRule prTable[16][16] =
  //+       -       *       /       <       >       <=      >=      =       <>      (      )       ,       $       var    fn

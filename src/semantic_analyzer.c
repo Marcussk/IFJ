@@ -1,4 +1,4 @@
-#include "semanticAnalyzer.h"
+#include "semantic_analyzer.h"
 
 void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2) {
 	if (param1 == param2) {	

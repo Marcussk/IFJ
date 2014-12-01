@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include "errorHandler.h"
-#include "ifjTypes.h"
-#include "iFunction.h"
-#include "hashTable.h"
 #include "ial.h"
 #include <stdarg.h>
+#include "error_handler.h"
+#include "hash_table.h"
+#include "i_function.h"
+#include "ifj_types.h"
 
 void registrBuiltins(HashTable * ht);
 

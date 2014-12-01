@@ -4,10 +4,12 @@
 #include "stdbool.h"
 #include <stdlib.h>
 #include <string.h>
-#include "ifjTypes.h"
-#include "iFunction.h"
 
-#define MAX_SIZE 256
+#include "i_function.h"
+#include "ifj_types.h"
+
+//cardinality of alphabet - number of all poss. chars
+#define MAX_SIZE 255
 
 int func_find(char *txt, char *pat);
 //int func_find( char *src, char *search );

@@ -4,7 +4,8 @@
  * file with pushBah back
  */
 #include <stdio.h>
-#include "errorHandler.h"
+
+#include "error_handler.h"
 
 typedef struct {
 	FILE * input;

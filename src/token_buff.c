@@ -1,4 +1,4 @@
-#include "tokenBuff.h"
+#include "token_buff.h"
 
 void TokenBuff__init__(TokenBuff * self, LexParser * lp) {
 	self->lp = lp;

@@ -1,4 +1,4 @@
-#include "strRoutines.h"
+#include "str_routines.h"
 
 void String__init__(String * self, int prealocatedLen) {
 	self->buff = calloc(prealocatedLen, sizeof(char));
