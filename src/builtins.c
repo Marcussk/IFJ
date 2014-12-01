@@ -97,7 +97,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	item->type = iFn;
 	item->isInitialized = true;
 	item->val.fn = iFunction__init__();
-	item->val.fn->retType = retTyp;
+	item->val.fn->retVal.type = retTyp;
 	item->val.fn->builtin = b;
 
 	for (i = 0; i < paramsCnt; i++) {

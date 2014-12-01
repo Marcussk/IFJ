@@ -3,7 +3,7 @@
 
 /*value self->top = -1 is not work be carfule using top value,*/
 /* DONT FORGET DECREMENT */
-void Stack__init__( Stack *self ){
+void StackArr__init__( StackArr *self ){
 	int i;
 	self->StackArray = malloc( STACK_MAX_SIZE *sizeof(iVal));
 	if( self->StackArray == NULL )
@@ -16,7 +16,7 @@ void Stack__init__( Stack *self ){
 	}
 }
 
-void Stack_push( Stack *self, iVal data ){
+void StackArr_push( StackArr *self, iVal data ){
 	if( self->top >= self->prealocated ){
 		int newCapacity = self->prealocated *2;
 		iVal *newArray = realloc(self->StackArray, newCapacity * sizeof(iVal));
@@ -31,7 +31,7 @@ void Stack_push( Stack *self, iVal data ){
 	}
 }
 
-iVal Stack_pop( Stack *self ){
+iVal StackArr_pop( StackArr *self ){
 	if(self->top <= 0 ){
 		free(self->StackArray);
 		rt_error("Stack underflow");
@@ -42,7 +42,7 @@ iVal Stack_pop( Stack *self ){
 	return data;
 }
 
-iVal *Stack_getAt(Stack *self, int index){
+iVal *StackArr_getAt(StackArr *self, int index){
 	if( index < 0  || index >= self->prealocated ){
 		free(self->StackArray);
 		rt_error("Stack invalid access");
@@ -52,14 +52,14 @@ iVal *Stack_getAt(Stack *self, int index){
 
 /*When you dell Stack, and you want to use it again,
  dont forget init it again*/
-void Stack__dell__( Stack * self ){			
+void StackArr__dell__( StackArr * self ){
 	free( self->StackArray );
 	self->top = -1;
 	self->prealocated = STACK_MAX_SIZE; 
 }
 
 /*debug only for integers iVal*/
-void int_Stack_debug( Stack *self, int index ){
+void int_StackArr_debug( StackArr *self, int index ){
 	int i;
 	iVal *ret_iVal;
 
@@ -70,7 +70,7 @@ void int_Stack_debug( Stack *self, int index ){
 	for(i = 0 ;  i < self->prealocated; i++){
 		printf("%d.pos -> %d \n ", i,  (self->StackArray[i]).iInt );
 	}
-	(ret_iVal) = Stack_getAt( self, index );
+	(ret_iVal) = StackArr_getAt( self, index );
 	printf("Hodnota na indexe %d je %d \n", index, ret_iVal->iInt );
 
 	printf("__________________________________\n ");

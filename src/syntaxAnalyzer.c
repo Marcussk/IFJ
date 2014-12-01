@@ -22,10 +22,13 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
+	if(asigmentTo->type == iFn && asigmentTo == self->lp->symbolTable->masterItem){
+		asigmentTo = &(asigmentTo->val.fn->retVal);
+	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_checktypes(asigmentTo->type,exprtype);
+	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
-					NULL, (InstrParam*) &(asigmentTo->stackIndex) });
+			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialized = true;
 }
 
@@ -36,10 +39,10 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	// read all variable declarations
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken == t_begin) {    // ) - args are empty
-		syntaxError("Expected var declaration\n", self->lp->lineNum, getTokenName(lastToken));
+		syntaxError("Expected var declaration\n", self->lp->lineNum,
+				getTokenName(lastToken));
 		return;
-	}
-	else {
+	} else {
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 	}
 
@@ -64,7 +67,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 		InstrQueue_insert(&self->instr,
 				(Instruction ) { i_push, self->lp->lastSymbol->type,
-								NULL, NULL, NULL });
+						NULL, NULL, NULL });
 		self->lp->lastSymbol->stackIndex = self->stackIndexCntr;
 		self->stackIndexCntr++;
 	}
@@ -74,7 +77,6 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 	Token lastToken;
 	Token secTok = t_empty;
-	iVar * varForLastId = NULL;
 	lastToken = TokenBuff_next(&self->tokBuff);
 
 	if (lastToken == t_end)
@@ -151,13 +153,13 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	NEXT_TOK(t_begin, "expected begin for if else block")
 	//else:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
-					NULL });
+			NULL });
 	StackAddrelse->stackAddr = self->instr.index;
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
-					NULL });
+			NULL });
 	StackAddrend->stackAddr = self->instr.index;
 	return;
 
@@ -177,7 +179,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	}
 	//Cond
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
-					NULL });
+			NULL });
 	StackAddrbegin->stackAddr = self->instr.index;
 	SyntaxAnalyzer_parseExpr(self);
 	//do
@@ -194,7 +196,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 					StackAddrbegin });
 	//end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
-					NULL });
+			NULL });
 	StackAddrend->stackAddr = self->instr.index;
 	//[TODO] instructions
 
@@ -233,13 +235,17 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	Token lastToken;
+
+	NEXT_TOK(t_lParenthessis, "expected \"(\"")
 	LexParser_fnParamsEnter(self->lp);
-	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_rParenthessis) {            // ) - params are empty
-		return;
-	}
 	while (true) {
-		NEXT_TOK(t_id, "expected id in argument list")
+		lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken == t_rParenthessis) {            // ) - params are empty
+			return;
+		} else if (lastToken != t_id) {
+			syntaxError("expected id in argument list", self->lp->lineNum,
+					getTokenName(lastToken));
+		}
 		self->lp->lastSymbol->isInitialized = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
@@ -269,7 +275,6 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup = self->stackIndexCntr;
 	Token lastToken;
-	iVar * returnVal;
 	iVar * fn;
 	char * name;
 	self->lp->idMode = lp_insertOnly;
@@ -287,14 +292,14 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
 
 	LexParser_fnBodyEnter(self->lp, lastToken);
-	fn->val.fn->retType = lastToken;
+	fn->val.fn->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
 	lastToken = TokenBuff_next(&self->tokBuff);
-	HashTable_insert(self->lp->symbolTable, name, &returnVal);
+	/*HashTable_insert(self->lp->symbolTable, name, &returnVal);
 	returnVal->stackIndex = -1;
-	returnVal->type = fn->val.fn->retType;
+	returnVal->type = fn->val.fn->retType;*/
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);

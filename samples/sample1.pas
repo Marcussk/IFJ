@@ -1,10 +1,10 @@
 {Test na cislicove literaly}
 var
 	a : integer;
-	b : integer;
-	c : integer;
-	d : integer;
-	e : integer;
+	b : real;
+	c : real;
+	d : real;
+	e : real;
 begin
 	a := 0010;
 	write('Hodnota a je: ', a, ''#10'');

@@ -7,7 +7,7 @@ begin
   str1 := 'Toto je nejaky text';
   str2 := copy(str1, 9, 11);
   write(str1, ''#10'', str2, ''#10'');
-  n := find(str2, ’text’);
+  n := find(str2, 'text');
   write('Pozice retezce "text" v str2: ', n, ''#10'');
   write('Zadejte posloupnost vsech malych pismen a-h, ',
   'aby se pismena v posloupnosti neopakovala:');

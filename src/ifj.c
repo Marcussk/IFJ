@@ -16,6 +16,7 @@
 #include "defs.h"
 #include "interpret.h"
 #include "ial.h"
+#include "StackAsArray.h"
 
 int main(int argc, char *argv[]) {
 	LexParser lexParser;
@@ -39,5 +40,6 @@ int main(int argc, char *argv[]) {
 			//SyntaxAnalyzer__dell__(&synAnalyzer);
 		}
 	}
+
 	return EXIT_SUCCESS;
 }

@@ -8,7 +8,9 @@ iFunction * iFunction__init__() {
 	}
 	self->body = NULL;
 	self->params = NULL;
-	self->retType = iUnknown;
+	self->retVal.isInitialized = false;
+	self->retVal.stackIndex = -1;
+	self->retVal.type = iUnknown;
 	self->builtin = b_none;
 	return self;
 }

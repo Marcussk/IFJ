@@ -10,6 +10,7 @@
 #include "instruction.h"
 #include "expr.h"
 #include "tokenBuff.h"
+#include "semanticAnalyzer.h"
 
 typedef struct {
 	LexParser * lp;
