@@ -398,7 +398,7 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);)
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
-	while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)) { // cann't  require anything else
+	do {
 		TopMostTerminal = findTopMostTerminal(stack);
 		EXPR_DEBUGING(
 				printStack(stack); printf("prtable indexes [%d][%d]\n", TopMostTerminal->content, ExprLastToken.content);)
@@ -409,17 +409,17 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			TopMostTerminal->shifted = true;
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
-			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp);
 			break;
 
 		case equal:	// push ExprLastToken
 			EXPR_DEBUGING(printf("equal\n");)
 			exprStack_push(stack, ExprLastToken);
 			lastToken = TokenBuff_next(tokenBuff);
-			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp);
 			break;
 
-		case reduce: // Prohledavej zasobnik, dokud nenarazis na handle, najdi pravidlo a zredukuj
+		case reduce: // Search for handle on stack and reduce expression
 			EXPR_DEBUGING(printf("reduce\n");)
 			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
 			TopMostTerminal = findTopMostTerminal(stack);
@@ -430,7 +430,8 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			syntaxError("Expression Error, error state from prTable",
 					tokenBuff->lp->lineNum, getTokenName(lastToken));
 		};
-	}
+	} while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)); // cann't  require anything else
+
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(stack);
 		if (stack->size == 2 && stack->top->data.type == nonterminal) { // only $ and S
