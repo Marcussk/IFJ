@@ -3,158 +3,143 @@
 #include <string.h>
 
 #define MAX_SIZE 255
+#define SUFFSIZE 255
 
+//#define DEGUG
+
+#ifdef DEBUG
+#define DEBUGING(body) body
+#else
+#define DEBUGING(body) ;
+#endif
+
+
+
+void test(int n, char *txt, char *pat, int expect);
 void test1();
 void test2();
 void test3();
 void test4();
+void test5();
 int find(char *txt, char *pat);
 int max(int a, int b);
-void badcharfill(char *str, int size, int badchar[MAX_SIZE]);
+void badcharfill( char *str, int length, int badchar[MAX_SIZE] );
 
 int main() 
 {
-	test1();
-	test2();
-	test3();
-	test4();
+	test(1,"ABAAABCD","ABC",5);
+	test(2,"BCDEFGABCDEF","ABCD",7);
+    test(3,"ABDXXXXXABCD","CD",11);
+    test(4,"ABDXXXXXABCD","DE",0);
+    test(5,"ABAAABCD","ABCD",5);
     return 0;
 
 }
 
-/* strom implementovany polom kde lavy syn je na pozici 2i+1, a pravy syn na pozicii 2i+2 */
-char * func_sort(char *str) {
-	int str_len = strlen(str);
-
-	int i;
-	int left = str_len / 2 - 1; /* index najpravejsieho uzlu na najnizsej urovni */
-	int right = str_len - 1; /* posleny prvok pola */
-
-	for (i = left; i >= 0; i--) {
-		Sift(str, i, right);
-	}
-	for (right = str_len - 1; right >= 1; right--) {
-		change(str, right); /* vymena prvkov */
-		Sift(str, 0, right - 1); /* opakovane zostavenie stromu z prvkov ktore este niesu zoradene */
-	}
-
-	return str;
-}
-
-void badcharfill(char *str, int size, int badchar[MAX_SIZE]) {
+void badcharfill( char *str, int length, int badchar[] ) {
 	int i;
 	//initialize array
 	for (i = 0; i < MAX_SIZE; i++) {
-		badchar[i] = size; // [TODO] replace with size 
+		badchar[i] = length; 
 	}
 	//fill array of patlength with last occurence of character
 	//array is rewritten during iterations and array[currentchar] = positioninpatter
-	for (i = 0; i < size; i++) {
-		badchar[(int) str[i]] = i;
+	for (i = 0; i < length; i++) {
+		badchar[(int) str[i]] = length -i -1;
 	}
 }
 
-int max(int a, int b) {
-	return (a > b) ? a : b;
+void suffixes(char *str, int length, int *suff) {
+   int f, g, i;
+ 
+   suff[length - 1] = length;
+   g = length - 1;
+   for (i = length - 2; i >= 0; --i) {
+      if (i > g && suff[i + length - 1 - f] < i - g)
+         suff[i] = suff[i + length - 1 - f];
+      else {
+         if (i < g)
+            g = i;
+         f = i;
+         while (g >= 0 && str[g] == str[g + length - 1 - f])
+            --g;
+         suff[i] = f - g;
+      }
+   }
 }
 
-int func_find(char *txt, char *pat) {
+void processsuff(char *str, int length, int goodsuff[]) {
+    int i, j, suff[SUFFSIZE];
+ 
+   suffixes(str, length, suff);
+ 
+   for (i = 0; i < length; ++i)
+      goodsuff[i] = length;
+   j = 0;
+   for (i = length - 1; i >= 0; --i)
+      if (suff[i] == i + 1)
+         for (; j < length - 1 - i; ++j)
+            if (goodsuff[j] == length)
+               goodsuff[j] = length - 1 - i;
+   for (i = 0; i <= length - 2; ++i)
+      goodsuff[length - 1 - suff[i]] = length - 1 - i;
+}
+
+int find(char *txt, char *pat) {
 	int patlength = strlen(pat);
 	int txtlength = strlen(txt);
 	int shift = 0;
-
+	int matchindex;
 	int badchar[MAX_SIZE];
+    int goodsuff[SUFFSIZE];
+
 	badcharfill(pat, patlength, badchar);
+    processsuff(pat, patlength, goodsuff);
 
 	while (shift <= txtlength - patlength) {
-		int matchindex = patlength - 1;
+		matchindex = patlength - 1;
 		//Check chars from right to left to see if we have pattern match
-		while ((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex])) {
-			matchindex--;
-		}
+		for (matchindex = patlength - 1; matchindex >= 0 && pat[matchindex] == txt[matchindex +shift]; --matchindex);
+        DEBUGING(printf("Match index: %d\n",matchindex);)
 		//Succesfully found match (patlength of chars are matching)
-		if (matchindex < 0) {
-			//printf("Finding: %d \n", shift + 1);
-			return shift + 1;
-			//if we can move shift so it aligns with text
-			if (shift + patlength < txtlength) {
-				shift += patlength - badchar[(int) txt[shift + patlength]];
-			}
-			//if not move just by one
+			if (matchindex < 0) {
+				//printf("Finding: %d \n", shift + 1);
+				return shift + 1;
+				//if we can move shift so it aligns with text
+				shift += goodsuff[0];
+            }
 			else {
-				shift += 1;
-			}
-		}
-		//havent found match in text
-		else {
-			//move shift, if there is bigger skip choose it
-			shift += max(1,
-					matchindex - badchar[(int) txt[shift + matchindex]]);
-		}
-	}
+                shift += max(goodsuff[matchindex], badchar[(int)txt[matchindex + shift]] - patlength +1 + matchindex);
+            }
+	}		
+		
+		
+	
 	return 0;
 }
 
-void test1()
-{	
-	char txt[] = "ABAAABCD";
-    char pat[] = "ABC";
-    int result = find(txt, pat);
-    if (result == 5)
-    {
-    	printf("test1 passed\n");
-    }
-    else
-    {
-    	printf("test1 failed Found at: %d \n",result);
-    }
-    return;
+int max(int a, int b) {
+    return (a > b) ? a : b;
 }
 
-void test2()
-{	
-	char txt[] = "BCDEFGABC";
-    char pat[] = "ABC";
-     int result = find(txt, pat);
-    if (result == 7)
+void test(int n, char *txt, char *pat, int expect)
+{
+    int result;
+    printf("------------------------------------------------------------------------\n");
+    printf("test%d\n",n);
+    printf("%s\n", txt);
+    printf("%s\n", pat);
+    result = find(txt, pat);
+    if(expect == result)
     {
-    	printf("test2 passed\n");
+        printf("test%d passed\n",n);
     }
     else
     {
-    	printf("test2 failed Found at: %d \n",result);
+        
+        printf("test%d failed Expected: %d Found at: %d \n", n, expect, result);
     }
-    return;
+    printf("------------------------------------------------------------------------\n");
+    return;    
 }
 
-void test3()
-{	
-	char txt[] = "ABCXXXXXABC";
-    char pat[] = "ABC";
-     int result = find(txt, pat);
-    if (result == 1)
-    {
-    	printf("test3 passed\n");
-    }
-    else
-    {
-    	printf("test3 failed Found at: %d \n",result);
-    }
-    return;
-}
-
-void test4()
-{	
-	char txt[] = "DEFGHIJKL";
-    char pat[] = "ABC";
-     int result = find(txt, pat);
-    if (result == 0)
-    {
-    	printf("test4 passed\n");
-    }
-    else
-    {
-    	printf("test4 failed Found at: %d \n",result);
-    }
-    return;
-}
