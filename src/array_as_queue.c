@@ -11,7 +11,7 @@ void InstrQueueArr__init__(InstrQueueArr *self) {
 }
 
 Instruction *InstrQueueArr_next(InstrQueueArr *self) {
-	if (self->actual > self->prealocated) {
+	if (self->actual >= self->last-1) {
 		free(self->QueueArr);
 		rt_error("Can't return next instruction , end of queue.");
 	} else {
@@ -21,23 +21,25 @@ Instruction *InstrQueueArr_next(InstrQueueArr *self) {
 }
 
 void InstrQueueArr_insert(InstrQueueArr *self, Instruction i) {
-	if (self->last > self->prealocated) {
+	if (self->last >= self->prealocated -1) {
 		int newCapacity = self->prealocated * 2;
-		Instruction *newArray = realloc(self->QueueArr,
-				newCapacity * sizeof(Instruction));
+		Instruction *newArray = realloc(self->QueueArr,	newCapacity * sizeof(Instruction));
 		if (newArray == NULL) {
 			free(self->QueueArr);
 			memoryError("Can't reallocate memory for queue ");
 		}
-	} else {
-		self->last++;
-		self->QueueArr[self->last] = i;
-		self->actual++;
-	}
+		self->QueueArr = newArray;
+		self->prealocated = newCapacity;
+
+	} 
+	self->last++;
+	self->QueueArr[self->last] = i;
+	self->actual++;
+	
 }
 
 Instruction* InstrQueueArr_atIndex(InstrQueueArr* self, int index) {
-	if (index < self->first || index < self->prealocated) {
+	if (index >= self->last-1) {
 		free(self->QueueArr);
 		rt_error("InstrQueue_atIndex out of index");
 	} else
@@ -52,61 +54,27 @@ void InstrQueueArr__dell__(InstrQueueArr *self) {
 	self->prealocated = QUEUE_START_SIZE;
 }
 
-void InstrQueueArr_debud(InstrQueueArr *self) {
-	Instruction instr;
+/* Debugging function, use in troubles */
+void InstrQueueArr_debud(InstrQueueArr *self, int index) {
 	int i;
+	Instruction * ins;
 
+	printf("Max queue size: %d: \n",self->prealocated );
+	printf("First is : %d, Last is: %d \n",self->first, self->last );
+	printf("Actual: %d  \n", self->actual);
+	printf("_____________________________________________________________\n");
 	for (i = self->first; i <= self->last; i++) {
-		printf("Actual: %d  \n", self->actual);
 		printf("index %d. code %s, type %d, a1 %p, a2 %p, dest %p \n", i,
-				instr2Str(instr.code), (int) instr.type, (void *) instr.a1,
-				(void *) instr.a2, (void *) instr.dest);
+				instr2Str((self->QueueArr[i]).code), (int) (self->QueueArr[i]).type, (void *) (self->QueueArr[i]).a1,
+				(void *) (self->QueueArr[i]).a2, (void *) (self->QueueArr[i]).dest);
 	}
+	printf("_____________________________________________________________\n");
+	printf("Finding instruction at index %d\n", index);
+	ins = InstrQueueArr_atIndex(self, index);
 
+	printf("index %d. code %s, type %d, a1 %p, a2 %p, dest %p \n", index,
+				instr2Str(ins->code), (int) ins->type, (void *) ins->a1,
+				(void *) ins->a2, (void *) ins->dest);
+	printf("_____________________________________________________________\n");
 }
 
-void test_queue1(void) {
-	InstrQueueArr q;
-	InstrQueueArr__init__(&q);
-	Instruction ins = { .code = i_push, .type = iInt, .a1 = NULL, .a2 = NULL,
-			.dest = NULL };
-
-
-}
-
-/*
-
- void test_stack2(void){
- printf("Test2 stared ..................\n");
- Stack s;
- iVal new_iVal, next_iVal, iVal_1,  ret_iVal;
- new_iVal.iInt = RANDOM_NUM;
- next_iVal.iInt = REAL_NUM;
- iVal_1.iInt = 42;
-
- Stack__init__(&s);
-
- Stack_push(&s, next_iVal );
- Stack_push(&s, new_iVal );
- Stack_push(&s, next_iVal );
- Stack_push(&s, new_iVal );
- Stack_push(&s, next_iVal );
- Stack_push(&s, next_iVal );
-
- int_Stack_debug(&s, IND);
-
- ret_iVal = Stack_pop(&s);
- ret_iVal = Stack_pop(&s);
- ret_iVal = Stack_pop(&s);
- ret_iVal = Stack_pop(&s);
- int_Stack_debug(&s, IND);
-
- Stack_push(&s, next_iVal );
- Stack_push(&s, next_iVal );
-
- int_Stack_debug(&s, IND);
-
- Stack__dell__(&s);
- }
- */
-/*Test of functionality for array stack*/

@@ -1,3 +1,6 @@
+#ifndef ARRAY_AS_QUEUE_h
+#define ARRAY_AS_QUEUE_h
+
 #include "stdlib.h"
 #include "stdio.h"
 
@@ -6,7 +9,7 @@
 #include "instruction.h"
 
 
-#define QUEUE_START_SIZE 128
+#define QUEUE_START_SIZE 32
 
 typedef struct {
 	Instruction *QueueArr; //Instruction QueueArr[prealocated];
@@ -21,3 +24,6 @@ Instruction* InstrQueueArr_next(InstrQueueArr* self);
 void InstrQueueArr_insert(InstrQueueArr *self, Instruction i);
 Instruction* InstrQueueArr_atIndex(InstrQueueArr* self, int index);
 void InstrQueueArr__dell__(InstrQueueArr *self);
+void InstrQueueArr_debud(InstrQueueArr *self, int index); 
+
+#endif

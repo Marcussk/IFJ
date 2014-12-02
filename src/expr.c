@@ -39,9 +39,7 @@ Token getTokenContent(Token token, iVar* var) {
 		return token;
 	}
 }
-EXPR_DEBUGING(
-		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
-
+EXPR_DEBUGING( void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
 		itr = itr->next; poss--; } })
 
 void ExprTokenInit(ExprToken *token) {
@@ -138,9 +136,53 @@ tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
 	}
 	sem_Error("Bad datatype of operands");
 }
+int isOperator(Token t){
+	return (t >= t_plus && t <= t_notEqv);
+}
+
+void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount, int gotFunc){ // ')' already found and popped
+	ExprToken *TopMost;
+	ExprToken result;
+	TopMost = malloc(sizeof(ExprToken));
+	*TopMost = stack->top->data;
+
+	if (TopMost->type == nonterminal){ // Got parameter
+		result = exprStack_pop(stack);
+		*TopMost = stack->top->data;
+		if (TopMost->content == t_comma){ // this must be a function
+			exprStack_pop(stack); // pop comma
+			return reduceParams(stack, tokenBuff, ++paramCount, 1);
+		}
+		else if (TopMost->content == t_lParenthessis) {
+			exprStack_pop(stack); // Pop '('
+			*TopMost = stack->top->data;
+			// There must be function id, an operator or nothing on the left from '('
+			if (TopMost->content == t_func){
+				//result.datatype = navratovy typ funkce
+				// Insert call instruction
+				unimplementedError("Call instruction is not implemented yet in expression");
+				exprStack_pop(stack); // pop t_func on stack
+			}
+			else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
+				syntaxError("Expected function id", -1, getTokenName(stack->top->data.content));
+			exprStack_push(stack, result); //
+
+			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
+			return;
+		}
+		else if (isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
+			return;
+		else
+			syntaxError("Expected function parameter", -1, "");
+	}
+	else{
+		printf("LastToken = %s\n", getTokenName(TopMost->content));
+		syntaxError("Expected something else", -1, "");
+	}
+}
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
-		TokenBuff *tokenBuff, InstrQueue * instructions) {
+	TokenBuff *tokenBuff, InstrQueue * instructions) {
 	ExprToken operand1, operator, operand2, lastItem, result;
 	ExprToken *parameter;
 	Instruction instr;
@@ -223,6 +265,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 								NULL, NULL });
 
 		result.type = nonterminal;
+		result.content = t_id;
 		exprStack_push(stack, result);
 		// [TODO] instr add, eq, etc...
 		break;
@@ -235,7 +278,26 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			syntaxError("Expression syntax error - expected )",
 					tokenBuff->lp->lineNum, "");
 		exprStack_pop(stack); // Pop ')'
+		ExprToken last = exprStack_pop(stack);
+		if (last.content == t_lParenthessis){
+			last = exprStack_pop(stack);
+			if (last.content == t_func){
+				// function with no parameter
+				unimplementedError(
+					"Call instruction (without parameter) is not implemented yet in expression");
+			}
+			else
+				syntaxError("Empty brackets are not allowed",
+					tokenBuff->lp->lineNum, "");
+		}
 
+		exprStack_push(stack, last);
+
+		reduceParams(stack, tokenBuff, 0, 0);
+		result.type = nonterminal;
+		result.content = t_id;
+
+		/*
 		ExprTokenInit(&lastItem);
 		lastItem = stack->top->data; // Should be '(' or E
 
@@ -281,6 +343,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					"");
 
 		//unimplementedError("Right parenthesis not implemented yet");
+		*/
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -451,6 +514,5 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
 
 	TokenBuff_pushBack(tokenBuff, lastToken);
-
 	return (stack->top->data.datatype);
 }

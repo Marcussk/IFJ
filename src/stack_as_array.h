@@ -11,10 +11,8 @@
 #include "instruction.h"
 
 
-#define RANDOM_NUM 15
-#define REAL_NUM 17
-#define STACK_MAX_SIZE 8
-#define IND 6
+#define STACK_MAX_SIZE 32
+
 
 typedef struct {
 	iVal *StackArray;
@@ -27,8 +25,6 @@ void StackArr__dell__( StackArr *self );
 void StackArr_push( StackArr *self, iVal data );
 iVal StackArr_pop( StackArr *self );
 iVal StackArr_getAt( StackArr *self, int index );
-
 void int_StackArr_debug( StackArr *self);
-void test_stack1(void);
 
 #endif
