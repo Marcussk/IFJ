@@ -39,9 +39,8 @@ Token getTokenContent(Token token, iVar* var) {
 		return token;
 	}
 }
-
- void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
-		itr = itr->next; poss--; } }
+EXPR_DEBUGING( void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
+		itr = itr->next; poss--; } })
 
 void ExprTokenInit(ExprToken *token) {
 	token->content = t_eof;
@@ -169,7 +168,6 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount, int go
 			exprStack_push(stack, result); //
 
 			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
-			printStack(stack);
 			return;
 		}
 		else if (isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
