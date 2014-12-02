@@ -34,6 +34,13 @@ void sem_TypeError(char * nameOfType) {
 	exit(4);
 }
 
+void sem_CondError(char * nameOfType) {
+	fprintf(stderr,
+			"ERROR(Semantic/Type): Variable type %s does not fit to condition.\n",
+			nameOfType);
+	exit(4);
+}
+
 void sem_Error(char * str) {
 	fprintf(stderr, "ERROR(Semantic): %s .\n", str);
 	exit(5);

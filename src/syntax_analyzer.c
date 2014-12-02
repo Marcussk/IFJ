@@ -125,16 +125,18 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
+	tIFJ condtype;
 	InstrParam * StackAddrelse = malloc(sizeof(InstrParam));
 	if (!StackAddrelse) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		memoryError("Cannot allocate instrParam for Label ");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
 	if (!StackAddrend) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		memoryError("Cannot allocate instrParam for Label ");
 	}
 	//COND
-	SyntaxAnalyzer_parseExpr(self);
+	condtype = SyntaxAnalyzer_parseExpr(self);
+	SemAnalyzer_checkcond(condtype);
 	//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
 					StackAddrelse });
