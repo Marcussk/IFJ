@@ -383,7 +383,6 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	ExprInit(stack);
 
 	Token lastToken = TokenBuff_next(tokenBuff);
-	printf("LastToken - %d\n", lastToken);
 	if (lastToken == t_id && tokenBuff->lp->lastSymbol->type == iFn
 			&& tokenBuff->lp->lastSymbol->val.fn->builtin) {
 		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
