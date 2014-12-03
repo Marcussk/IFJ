@@ -39,8 +39,8 @@ Token getTokenContent(Token token, iVar* var) {
 		return token;
 	}
 }
-EXPR_DEBUGING( void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted);
-		itr = itr->next; poss--; } })
+EXPR_DEBUGING(
+		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
 
 void ExprTokenInit(ExprToken *token) {
 	token->content = t_eof;
@@ -132,58 +132,58 @@ tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
 			return iBool;
 		break;
 	default:
-		sem_Error("Unknown operator");
+		break;
 	}
-	sem_Error("Bad datatype of operands");
+	sem_Error("Unknown operator");
+	return iUnknown;
 }
-int isOperator(Token t){
+int isOperator(Token t) {
 	return (t >= t_plus && t <= t_notEqv);
 }
 
-void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount, int gotFunc){ // ')' already found and popped
+void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
+		int gotFunc) { // ')' already found and popped
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
 	*TopMost = stack->top->data;
 
-	if (TopMost->type == nonterminal){ // Got parameter
+	if (TopMost->type == nonterminal) { // Got parameter
 		result = exprStack_pop(stack);
 		*TopMost = stack->top->data;
-		if (TopMost->content == t_comma){ // this must be a function
+		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
 			return reduceParams(stack, tokenBuff, ++paramCount, 1);
-		}
-		else if (TopMost->content == t_lParenthessis) {
+		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
 			*TopMost = stack->top->data;
 			// There must be function id, an operator or nothing on the left from '('
-			if (TopMost->content == t_func){
+			if (TopMost->content == t_func) {
 				//result.datatype = navratovy typ funkce
 				// Insert call instruction
-				unimplementedError("Call instruction is not implemented yet in expression");
+				unimplementedError(
+						"Call instruction is not implemented yet in expression");
 				exprStack_pop(stack); // pop t_func on stack
-			}
-			else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
-				syntaxError("Expected function id", -1, getTokenName(stack->top->data.content));
+			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
+				syntaxError("Expected function id", -1,
+						getTokenName(stack->top->data.content));
 			exprStack_push(stack, result); //
 
 			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
 			return;
-		}
-		else if (isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
+		} else if (isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
 			return;
 		else
 			syntaxError("Expected function parameter", -1, "");
-	}
-	else{
+	} else {
 		printf("LastToken = %s\n", getTokenName(TopMost->content));
 		syntaxError("Expected something else", -1, "");
 	}
 }
 
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
-	TokenBuff *tokenBuff, InstrQueue * instructions) {
-	ExprToken operand1, operator, operand2, lastItem, result;
+		TokenBuff *tokenBuff, InstrQueue * instructions) {
+	ExprToken operand1, operator, operand2, result;
 	ExprToken *parameter;
 	Instruction instr;
 	InstrParam * p = NULL;
@@ -279,16 +279,15 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					tokenBuff->lp->lineNum, "");
 		exprStack_pop(stack); // Pop ')'
 		ExprToken last = exprStack_pop(stack);
-		if (last.content == t_lParenthessis){
+		if (last.content == t_lParenthessis) {
 			last = exprStack_pop(stack);
-			if (last.content == t_func){
+			if (last.content == t_func) {
 				// function with no parameter
 				unimplementedError(
-					"Call instruction (without parameter) is not implemented yet in expression");
-			}
-			else
+						"Call instruction (without parameter) is not implemented yet in expression");
+			} else
 				syntaxError("Empty brackets are not allowed",
-					tokenBuff->lp->lineNum, "");
+						tokenBuff->lp->lineNum, "");
 		}
 
 		exprStack_push(stack, last);
@@ -298,52 +297,52 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		result.content = t_id;
 
 		/*
-		ExprTokenInit(&lastItem);
-		lastItem = stack->top->data; // Should be '(' or E
+		 ExprTokenInit(&lastItem);
+		 lastItem = stack->top->data; // Should be '(' or E
 
-		ExprTokenInit(&result);
+		 ExprTokenInit(&result);
 
-		if (lastItem.content == t_lParenthessis && lastItem.type == terminal) { // '()' Function with no parameters or an empty expession
-			printf("Generate call instruction\n"); // empty expression not implemented yet
-			exprStack_pop(stack); // Pop ')'
-			result.type = nonterminal;
-		} else if (lastItem.type == nonterminal) { // We have found E) found
-			result = exprStack_pop(stack); // might be parameter, needs to be saved later
-			*parameter = result;
+		 if (lastItem.content == t_lParenthessis && lastItem.type == terminal) { // '()' Function with no parameters or an empty expession
+		 printf("Generate call instruction\n"); // empty expression not implemented yet
+		 exprStack_pop(stack); // Pop ')'
+		 result.type = nonterminal;
+		 } else if (lastItem.type == nonterminal) { // We have found E) found
+		 result = exprStack_pop(stack); // might be parameter, needs to be saved later
+		 *parameter = result;
 
-			lastItem = stack->top->data;
-			if (lastItem.content == t_lParenthessis
-					&& lastItem.type == terminal) { // (E) - not sure if function with 1 parameter or just an expression
-				exprStack_pop(stack);
-				lastItem = stack->top->data;
-				result.type = nonterminal;
-				if (lastItem.content == t_func && lastItem.type == terminal) { // got id(E)
-				// Push parameter to instruction queue here
-					result = exprStack_pop(stack);
-					result.type = nonterminal;
-					exprStack_push(stack, result); // Keep
-					if (result.id->val.fn->builtin) {
-						unimplementedError(
-								"others builtins are not implemented yet");
-					}
+		 lastItem = stack->top->data;
+		 if (lastItem.content == t_lParenthessis
+		 && lastItem.type == terminal) { // (E) - not sure if function with 1 parameter or just an expression
+		 exprStack_pop(stack);
+		 lastItem = stack->top->data;
+		 result.type = nonterminal;
+		 if (lastItem.content == t_func && lastItem.type == terminal) { // got id(E)
+		 // Push parameter to instruction queue here
+		 result = exprStack_pop(stack);
+		 result.type = nonterminal;
+		 exprStack_push(stack, result); // Keep
+		 if (result.id->val.fn->builtin) {
+		 unimplementedError(
+		 "others builtins are not implemented yet");
+		 }
 
-					unimplementedError("Call is not implemented now");
-				} else { // It's just (E)
-					EXPR_DEBUGING(printf("It's just normal E\n");)
-					exprStack_push(stack, result);
-				}
-			} else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
-				unimplementedError(
-						"Functions with more than 1 parameters not implemented");
-			else
-				syntaxError("Syntax Error - expected ) or function parameters",
-						-1, "");
-		} else
-			syntaxError("Syntax Error - expected ) or function parameters", -1,
-					"");
+		 unimplementedError("Call is not implemented now");
+		 } else { // It's just (E)
+		 EXPR_DEBUGING(printf("It's just normal E\n");)
+		 exprStack_push(stack, result);
+		 }
+		 } else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
+		 unimplementedError(
+		 "Functions with more than 1 parameters not implemented");
+		 else
+		 syntaxError("Syntax Error - expected ) or function parameters",
+		 -1, "");
+		 } else
+		 syntaxError("Syntax Error - expected ) or function parameters", -1,
+		 "");
 
-		//unimplementedError("Right parenthesis not implemented yet");
-		*/
+		 //unimplementedError("Right parenthesis not implemented yet");
+		 */
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -456,7 +455,8 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		case b_write:
 			parseWrite(tokenBuff, instructions);
 			return iVoid;
-
+		default :
+			break;
 		}
 	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);)
 	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken

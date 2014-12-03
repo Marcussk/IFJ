@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/array_as_queue.c \
+../src/array_as_stack.c \
 ../src/buffFile.c \
 ../src/builtins.c \
 ../src/error_handler.c \
@@ -19,7 +20,6 @@ C_SRCS += \
 ../src/lex_parser.c \
 ../src/parser_tables.c \
 ../src/semantic_analyzer.c \
-../src/stack_as_array.c \
 ../src/str_routines.c \
 ../src/syntax_analyzer.c \
 ../src/token_buff.c \
@@ -27,6 +27,7 @@ C_SRCS += \
 
 OBJS += \
 ./src/array_as_queue.o \
+./src/array_as_stack.o \
 ./src/buffFile.o \
 ./src/builtins.o \
 ./src/error_handler.o \
@@ -41,7 +42,6 @@ OBJS += \
 ./src/lex_parser.o \
 ./src/parser_tables.o \
 ./src/semantic_analyzer.o \
-./src/stack_as_array.o \
 ./src/str_routines.o \
 ./src/syntax_analyzer.o \
 ./src/token_buff.o \
@@ -49,6 +49,7 @@ OBJS += \
 
 C_DEPS += \
 ./src/array_as_queue.d \
+./src/array_as_stack.d \
 ./src/buffFile.d \
 ./src/builtins.d \
 ./src/error_handler.d \
@@ -63,7 +64,6 @@ C_DEPS += \
 ./src/lex_parser.d \
 ./src/parser_tables.d \
 ./src/semantic_analyzer.d \
-./src/stack_as_array.d \
 ./src/str_routines.d \
 ./src/syntax_analyzer.d \
 ./src/token_buff.d \

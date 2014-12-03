@@ -75,7 +75,7 @@ void Interpret_test2() {
 
 void Interpret_test3() {
 
-	InstrParam a, b, c, d1, d2, f;
+	InstrParam a, b, c;
 	a.iInt = 20;
 	b.iInt = 15;
 	c.iInt = 30;

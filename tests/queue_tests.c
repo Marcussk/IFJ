@@ -84,7 +84,8 @@ void test_queue3(void) {
 	q.actual = 5;
 	Instruction * i;
 	i = InstrQueueArr_next(&q);
-
+	if(!i)
+		printf("next unsuccessful\n");
 	InstrQueueArr_debud(&q, q.actual);
 	InstrQueueArr__dell__(&q);
 }

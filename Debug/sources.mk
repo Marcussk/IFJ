@@ -15,7 +15,5 @@ EXECUTABLES :=
 SUBDIRS := \
 tests \
 src \
-src/bin \
-doc \
 doc/BoyerMoore \
 

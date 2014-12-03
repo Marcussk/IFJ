@@ -3,7 +3,6 @@
 /*value self->top = -1 is not work be carfule using top value,*/
 /* DONT FORGET DECREMENT */
 void StackArr__init__(StackArr *self) {
-	int i;
 	self->StackArray = malloc( STACK_MAX_SIZE * sizeof(iVal));
 	if (self->StackArray == NULL)
 		memoryError("Can't allocate memory for Stack");
@@ -57,7 +56,6 @@ void StackArr__dell__(StackArr * self) {
 /*debug only for integers iVal*/
 void int_StackArr_debug(StackArr *self) {
 	int i;
-	iVal *ret_iVal;
 
 	printf("__________________________________\n ");
 	printf("Velkost stacku: %d \n ", self->prealocated);

@@ -38,6 +38,7 @@ void test_stack1(void) {
 	printf("__________________________________\n ");
 
 	iVal ret_iVal = StackArr_pop(&s);
+	printf("pop : %d", ret_iVal.iInt);
 	printf("TOP: %d \n ", s.top);
 	int_StackArr_debug(&s);
 

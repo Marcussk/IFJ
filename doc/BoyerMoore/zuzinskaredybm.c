@@ -17,7 +17,7 @@
  ale akosi nechapem preco*/
 
 // ked som pozerala ako to je napisane na nete autor tam caroval s f neviem co to tam je .... //
-
+/*
 void suffixes(char* pattern, int suffix[], int max_pattern_len) {
 	suffix[max_pattern_len - 1] = max_pattern_len;
 
@@ -136,3 +136,4 @@ int func_find(char *src, char *search) {
 	}
 	return -1;
 }
+*/
