@@ -1,4 +1,4 @@
-#include "buffFile.h"
+#include "buff_file.h"
 
 void BuffFile__init__(BuffFile * self, FILE * f) {
 	self->backup = EOF;

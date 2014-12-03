@@ -165,7 +165,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 										TopMost->id->val.fn->retVal.type,
 										NULL, NULL, NULL });
 				for (i = 0; i < paramCount; i++) {
-					InstrQueue_insert(instructions, (Instruction ) { i_call,
+					InstrQueue_insert(instructions, (Instruction ) { i_pop,
 									iVoid,
 									NULL, NULL, NULL });
 				}

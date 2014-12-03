@@ -40,6 +40,8 @@ char * instr2Str(InstrCode code) {
 		return "jmpz";
 	case i_push:
 		return "push";
+	case i_pop:
+		return "pop";
 	case i_assign:
 		return "assign";
 	case i_add:

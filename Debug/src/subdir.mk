@@ -6,7 +6,7 @@
 C_SRCS += \
 ../src/array_as_queue.c \
 ../src/array_as_stack.c \
-../src/buffFile.c \
+../src/buff_file.c \
 ../src/builtins.c \
 ../src/error_handler.c \
 ../src/expr.c \
@@ -28,7 +28,7 @@ C_SRCS += \
 OBJS += \
 ./src/array_as_queue.o \
 ./src/array_as_stack.o \
-./src/buffFile.o \
+./src/buff_file.o \
 ./src/builtins.o \
 ./src/error_handler.o \
 ./src/expr.o \
@@ -50,7 +50,7 @@ OBJS += \
 C_DEPS += \
 ./src/array_as_queue.d \
 ./src/array_as_stack.d \
-./src/buffFile.d \
+./src/buff_file.d \
 ./src/builtins.d \
 ./src/error_handler.d \
 ./src/expr.d \

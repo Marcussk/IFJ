@@ -310,7 +310,9 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
-
+		case i_pop:
+			iStack_pop(&self->stack);
+			break;
 		case i_int2real:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2.iReal = pomA1.iInt;
@@ -335,11 +337,9 @@ void Interpret_run(Interpret * self) {
 		case i_call:
 			stackOffset = self->stack.actualIndex;
 			iStack_push(&self->stack, (iVal) (self->instructions.index + 1));
-
 			break;
 
 		case i_return:
-
 			while (self->stack.actualIndex != stackOffset + 1)
 				iStack_pop(&(self->stack));
 
@@ -354,7 +354,9 @@ void Interpret_run(Interpret * self) {
 		}
 		InstrQueue_next(&(self->instructions));
 	}
-	if(!self->instructions.actual){rt_error("Program was not properly finished");}
+	if (!self->instructions.actual) {
+		rt_error("Program was not properly finished");
+	}
 }
 void iStack__dell__(iStack * self) {
 	int i;

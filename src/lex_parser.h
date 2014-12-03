@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "buffFile.h"
+
+#include "buff_file.h"
 #include "builtins.h"
 #include "defs.h"
 #include "hash_table.h"
