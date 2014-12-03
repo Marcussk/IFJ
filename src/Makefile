@@ -1,9 +1,10 @@
+export MAKEFLAGS="-j $(grep -c ^processor /proc/cpuinfo)"
 
 #compiler
 CC=gcc
 
 #compiler options
-OPTS=-c -Wall -std=c99 -Wextra 
+OPTS=-c -pipe -Wall -std=c99 -Wextra 
 
 #source files
 SOURCES=$(wildcard *.c )
