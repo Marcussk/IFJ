@@ -335,15 +335,20 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
+			pomA4.iInt = stackOffset;
+			iStack_push(&self->stack, (iVal) 0);                          // return value
 			stackOffset = self->stack.actualIndex;
-			iStack_push(&self->stack, (iVal) (self->instructions.index + 1));
-			break;
+			iStack_push(&self->stack, (iVal) (self->instructions.index +1)); // next instr after return
+			iStack_push(&self->stack, (iVal) (pomA4.iInt));                  // push old stack offset
+			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);         // jmp to instr body
+
+			continue;
 
 		case i_return:
-			while (self->stack.actualIndex != stackOffset + 1)
+			while (self->stack.actualIndex > stackOffset + 1) //clear all fn mess
 				iStack_pop(&(self->stack));
-
-			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+			stackOffset = iStack_pop(&self->stack).iInt;
+			InstrQueue_atIndex(&(self->instructions),iStack_pop(&self->stack).iInt); // jmp back to caller
 			break;
 
 		case i_stop:

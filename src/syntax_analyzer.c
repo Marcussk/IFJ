@@ -287,6 +287,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn = self->lp->lastSymbol;
 	fn->type = iFn;
 	fn->val.fn = iFunction__init__();
+	fn->val.fn->bodyInstrIndex = self->instr.index +1;
 
 	SyntaxAnalyzer_parse_paramList(self);
 
