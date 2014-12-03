@@ -145,6 +145,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		int gotFunc, InstrQueue * instructions) { // ')' already found and popped
 	ExprToken *TopMost;
 	ExprToken result;
+	int i;
 	TopMost = malloc(sizeof(ExprToken));
 	*TopMost = stack->top->data;
 
@@ -161,8 +162,13 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 			if (TopMost->content == t_func) {
 				InstrQueue_insert(instructions,
 						(Instruction ) { i_call,
-										TopMost->id->val.fn->retVal.type, NULL,
-										NULL, NULL });
+										TopMost->id->val.fn->retVal.type,
+										NULL, NULL, NULL });
+				for (i = 0; i < paramCount; i++) {
+					InstrQueue_insert(instructions, (Instruction ) { i_call,
+									iVoid,
+									NULL, NULL, NULL });
+				}
 				//result.datatype = navratovy typ funkce
 				exprStack_pop(stack); // pop t_func on stack
 			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
@@ -259,10 +265,11 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		result.datatype = getResultType(operand1.datatype, operand2.datatype,
 				operator.content);
-
+		InstrParam * paramCnt = malloc(sizeof(InstrParam));
+		paramCnt->iInt = 0;
 		InstrQueue_insert(instructions,
 				(Instruction ) { Token2Instruction(operator.content),
-								operand1.datatype, NULL,
+								operand1.datatype, paramCnt,
 								NULL, NULL });
 
 		result.type = nonterminal;
