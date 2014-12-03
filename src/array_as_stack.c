@@ -1,4 +1,4 @@
-#include "stack_as_array.h"
+#include "array_as_stack.h"
 
 /*value self->top = -1 is not work be carfule using top value,*/
 /* DONT FORGET DECREMENT */
