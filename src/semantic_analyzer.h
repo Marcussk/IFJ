@@ -9,4 +9,5 @@
 //the entire header file file
 void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2);
 void SemAnalyzer_checkcond(tIFJ param);
+void SemAnalyzer_typeconvert (tIFJ param1, tIFJ param2);
 #endif
