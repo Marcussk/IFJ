@@ -18,7 +18,7 @@ typedef enum {
 typedef struct s_iFunction{
 	iVar retVal;
 	struct s_ParamsListItem * params;
-	Instruction * body;
+	int bodyInstrIndex;
 	Builtins builtin;
 } iFunction;
 

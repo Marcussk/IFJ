@@ -6,10 +6,10 @@ iFunction * iFunction__init__() {
 	if (!self) {
 		memoryError("Can't allocate memory for iFunction");
 	}
-	self->body = NULL;
+	self->bodyInstrIndex = -1;
 	self->params = NULL;
 	self->retVal.isInitialized = false;
-	self->retVal.stackIndex = -1;
+	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
 	self->builtin = b_none;
 	return self;

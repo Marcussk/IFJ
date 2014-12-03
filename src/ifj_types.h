@@ -33,7 +33,6 @@ typedef union {
 	int iInt;
 	char * iString;
 	struct s_iFunction * fn;
-	void * instr;
 } iVal;
 
 

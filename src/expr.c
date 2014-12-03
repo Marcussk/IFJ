@@ -160,10 +160,12 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 			*TopMost = stack->top->data;
 			// There must be function id, an operator or nothing on the left from '('
 			if (TopMost->content == t_func) {
+				InstrParam * p = malloc(sizeof(InstrParam));
+				p->iInt = TopMost->id->val.fn->bodyInstrIndex;
 				InstrQueue_insert(instructions,
 						(Instruction ) { i_call,
 										TopMost->id->val.fn->retVal.type,
-										NULL, NULL, NULL });
+										NULL, NULL, p });
 				for (i = 0; i < paramCount; i++) {
 					InstrQueue_insert(instructions, (Instruction ) { i_pop,
 									iVoid,
