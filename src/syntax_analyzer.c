@@ -268,9 +268,16 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 						self->lp->lineNum, getTokenName(lastToken));
 			}
 			return;
-		} else {											 // ;
-			lastToken = TokenBuff_next(&self->tokBuff);
-			NEXT_TOK(t_id, "expected id in argument list after semicolon")
+		} 
+		else {											 // ;
+			lastToken = TokenBuff_next(&self->tokBuff);                        
+ 			if(lastToken != t_id){                                         
+	 			syntaxError("expected id in argument list after semicolon",self->lp->lineNum, getTokenName(lastToken));\
+			}
+			else
+			{
+				TokenBuff_pushBack(&self->tokBuff, lastToken);
+			}
 		}
 	}
 }
