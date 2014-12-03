@@ -339,6 +339,7 @@ void Interpret_run(Interpret * self) {
 		}
 		InstrQueue_next(&(self->instructions));
 	}
+	if(!self->instructions.actual){rt_error("Program was not properly finished");}
 }
 void iStack__dell__(iStack * self) {
 	int i;
