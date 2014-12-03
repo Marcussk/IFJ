@@ -35,8 +35,6 @@ typedef enum {
 
 } InstrCode;
 
-//typedef union u_InstrParam;
-
 /*
  * type can be reference, in that case operands are indexes to interpreter stack
  * dest is always reference if dest.stackAddr <0 push result on stack
@@ -60,7 +58,6 @@ typedef union u_InstrParam {
 	float iReal;
 	int iInt;
 	char * iString;
-	InstrQueueNode * instr;
 } InstrParam;
 
 typedef struct {

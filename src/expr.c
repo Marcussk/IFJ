@@ -302,7 +302,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		exprStack_push(stack, last);
 
-		reduceParams(stack, tokenBuff, 0, 0, instructions);
+		reduceParams(stack, tokenBuff, 1, 0, instructions);
 		result.type = nonterminal;
 		result.content = t_id;
 

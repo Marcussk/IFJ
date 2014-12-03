@@ -24,6 +24,6 @@ Instruction* InstrQueueArr_next(InstrQueueArr* self);
 void InstrQueueArr_insert(InstrQueueArr *self, Instruction i);
 Instruction* InstrQueueArr_atIndex(InstrQueueArr* self, int index);
 void InstrQueueArr__dell__(InstrQueueArr *self);
-void InstrQueueArr_debud(InstrQueueArr *self, int index); 
+void InstrQueueArr_debug(InstrQueueArr *self, int index); 
 
 #endif

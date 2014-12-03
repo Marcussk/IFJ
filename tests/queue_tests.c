@@ -11,13 +11,13 @@ void test_queue1(void) {
 	InstrQueueArr_insert(&q, (Instruction ) { i_jmp, iVoid, NULL, NULL,
 					StackAddrend });
 	InstrQueueArr_insert(&q, ins);
-	InstrQueueArr_debud(&q,q.actual);
+	InstrQueueArr_debug(&q,q.actual);
 	InstrQueueArr_insert(&q, ins);
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 	InstrQueueArr_insert(&q, ins);
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 	InstrQueueArr_insert(&q, ins);
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 
 	InstrQueueArr__dell__(&q);
 }
@@ -45,12 +45,12 @@ void test_queue2(void) {
 					StackAddrend });
 	InstrQueueArr_insert(&q, (Instruction ) { i_mul, iVoid, NULL, NULL,
 					StackAddrend });
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 	InstrQueueArr_insert(&q, (Instruction ) { i_mul, iVoid, NULL, NULL,
 					StackAddrend });
 	InstrQueueArr_insert(&q, (Instruction ) { i_mul, iVoid, NULL, NULL,
 					StackAddrend });
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 
 	InstrQueueArr__dell__(&q);
 
@@ -79,14 +79,14 @@ void test_queue3(void) {
 					StackAddrend });
 	InstrQueueArr_insert(&q, (Instruction ) { i_mul, iVoid, NULL, NULL,
 					StackAddrend });
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 
 	q.actual = 5;
 	Instruction * i;
 	i = InstrQueueArr_next(&q);
 	if(!i)
 		printf("next unsuccessful\n");
-	InstrQueueArr_debud(&q, q.actual);
+	InstrQueueArr_debug(&q, q.actual);
 	InstrQueueArr__dell__(&q);
 }
 /*test on index*/
@@ -113,7 +113,7 @@ void test_queue4(void) {
 					StackAddrend });
 	InstrQueueArr_insert(&q, (Instruction ) { i_mul, iVoid, NULL, NULL,
 					StackAddrend });
-	InstrQueueArr_debud(&q, 5);
+	InstrQueueArr_debug(&q, 5);
 
 	InstrQueueArr__dell__(&q);
 }

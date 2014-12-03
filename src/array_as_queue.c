@@ -55,7 +55,7 @@ void InstrQueueArr__dell__(InstrQueueArr *self) {
 }
 
 /* Debugging function, use in troubles */
-void InstrQueueArr_debud(InstrQueueArr *self, int index) {
+void InstrQueueArr_debug(InstrQueueArr *self, int index) {
 	int i;
 	Instruction * ins;
 

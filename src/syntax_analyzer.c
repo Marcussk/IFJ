@@ -321,11 +321,15 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	NEXT_TOK(t_scolon, "expected \";\" after function definition")
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_return, fn->val.fn->retVal.type, NULL,
-							NULL, NULL });
+					NULL, NULL });
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 	Token tok;
+	InstrParam * i = malloc(sizeof(InstrParam));
+	Instruction jmpToMainBody = { .code = i_jmp, .type = iStackRef, .a1 =
+	NULL, .a2 = NULL, .dest = i };
+
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
 		/*
@@ -338,8 +342,11 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		switch (tok) {
 		case t_var:
 			SyntaxAnalyzer_parse_varDeclr(self);
+			InstrQueue_insert(&self->instr, jmpToMainBody);
+
 			break;
 		case t_begin:
+			i->iInt = self->instr.index +1;
 			SyntaxAnalyzer_parse_block(self);
 			break;
 		case t_func:
