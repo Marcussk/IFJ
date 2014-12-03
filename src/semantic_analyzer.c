@@ -17,15 +17,27 @@ void SemAnalyzer_checkcond(tIFJ param) {
 	//printf("Condition: %s\n",iVar_type2str(param) );
 }
 
-void SemAnalyzer_typeconvert (tIFJ param1, tIFJ param2) {
+void SemAnalyzer_typeconvert (InstrQueue * self, tIFJ param1, tIFJ param2) {
 	//int real
+	InstrParam * instrparam;
 	if (( param1 == 17) && (param2 == 18)) {
 		//convert param1
+		instrparam = malloc(sizeof(iVar));
+		if (!instrparam) {
+			memoryError("Can't allocate memory for new instruction parameter\n");
+		}
+		instrparam->stackAddr = 0;
+		InstrQueue_insert(*(&self), (Instruction){i_int2real, iInt, instrparam, NULL, instrparam});
+	}
+	// real int
+	if ((param1 == 18) && (param2 == 17)) {
+		//convert param2
+		instrparam = malloc(sizeof(iVar));
+		if (!instrparam) {
+			memoryError("Can't allocate memory for new instruction parameter\n");
+		}
+		instrparam->stackAddr = -1;
+		InstrQueue_insert(self, (Instruction){i_int2real, iInt, instrparam, NULL, instrparam});
 	}
 	
-	//real int
-	if (( param1 == 18) && (param2 == 17)) {
-		//convert param2
-	}
-
 }

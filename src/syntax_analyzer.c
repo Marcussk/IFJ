@@ -27,6 +27,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 		asigmentTo = &(asigmentTo->val.fn->retVal);
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
+	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype);
 	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
