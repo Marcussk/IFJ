@@ -1,7 +1,7 @@
 #ifndef TESTSINTERPRET_h
 #define TESTSINTERPRET_h
 
-#include "interpret.h"
+#include "../src/interpret.h"
 
 void Interpret_test1();
 void Interpret_test2();

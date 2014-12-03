@@ -16,6 +16,6 @@ SUBDIRS := \
 tests \
 src \
 src/bin \
-doc/StackByArray \
+doc \
 doc/BoyerMoore \
 

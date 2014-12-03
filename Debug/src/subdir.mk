@@ -3,42 +3,6 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
-O_SRCS += \
-../src/StackAsArray.o \
-../src/array_as_queue.o \
-../src/buffFile.o \
-../src/builtins.o \
-../src/errorHandler.o \
-../src/error_handler.o \
-../src/expr.o \
-../src/hashTable.o \
-../src/hash_table.o \
-../src/iFunction.o \
-../src/i_function.o \
-../src/ial.o \
-../src/ifj.o \
-../src/ifjTypes.o \
-../src/ifj_types.o \
-../src/instruction.o \
-../src/interpret.o \
-../src/lexParser.o \
-../src/lex_parser.o \
-../src/parserTables.o \
-../src/parser_tables.o \
-../src/semanticAnalyzer.o \
-../src/semantic_analyzer.o \
-../src/stack_as_array.o \
-../src/strRoutines.o \
-../src/str_routines.o \
-../src/syntaxAnalyzer.o \
-../src/syntax_analyzer.o \
-../src/tests_interpret.o \
-../src/testsinterpret.o \
-../src/tokenBuff.o \
-../src/tokenMap.o \
-../src/token_buff.o \
-../src/token_map.o 
-
 C_SRCS += \
 ../src/array_as_queue.c \
 ../src/buffFile.c \
@@ -58,7 +22,6 @@ C_SRCS += \
 ../src/stack_as_array.c \
 ../src/str_routines.c \
 ../src/syntax_analyzer.c \
-../src/tests_interpret.c \
 ../src/token_buff.c \
 ../src/token_map.c 
 
@@ -81,7 +44,6 @@ OBJS += \
 ./src/stack_as_array.o \
 ./src/str_routines.o \
 ./src/syntax_analyzer.o \
-./src/tests_interpret.o \
 ./src/token_buff.o \
 ./src/token_map.o 
 
@@ -104,7 +66,6 @@ C_DEPS += \
 ./src/stack_as_array.d \
 ./src/str_routines.d \
 ./src/syntax_analyzer.d \
-./src/tests_interpret.d \
 ./src/token_buff.d \
 ./src/token_map.d 
 
