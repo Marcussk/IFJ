@@ -18,9 +18,12 @@ void write(tIFJ type, iVal a1) {
 		printf("%f", a1.iReal);
 		break;
 	case iBool:
-			if(a1.iInt == 0){printf("FALSE");}
-			else if(a1.iInt == 1){printf("TRUE");}
-			break;
+		if (a1.iInt == 0) {
+			printf("FALSE");
+		} else {
+			printf("TRUE");
+		}
+		break;
 	default:
 		rt_error("instr write used with incompatible type");
 	}
@@ -91,7 +94,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	int i;
 	// becouse ht returns place where it creates
 	iVar * item = NULL;
-	if((HashTable_insert(ht, name, &item) != ht_inserted)){
+	if ((HashTable_insert(ht, name, &item) != ht_inserted)) {
 		unimplementedError("Redefinition of builtin function");
 	}
 	item->type = iFn;
