@@ -15,10 +15,7 @@ EXECUTABLE=ifj.run
 #EXECUTABLE_WIN=ifj.exe
 
 all: $(EXECUTABLE) 
-#       $(EXECUTABLE_WIN)
-#	mv -t bin *.o
-#	mv -t bin $(EXECUTABLE)
-#	mv -t bin $(EXECUTABLE_WIN)
+	rm *.o
 
 $(EXECUTABLE): $(OBJECTS)
 	$(LINK.o) $^ -o $@ $(LIBS)
