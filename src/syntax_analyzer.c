@@ -136,7 +136,6 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	}
 	//COND
 	condtype = SyntaxAnalyzer_parseExpr(self);
-	printf("Received condtype %d \n", condtype);
 	SemAnalyzer_checkcond(condtype);
 	//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
