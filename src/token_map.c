@@ -25,22 +25,23 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_eqv, "=" },
 		(TokenMeaning ) { t_less, "<" },
 		(TokenMeaning ) { t_greater, ">" },
-		(TokenMeaning ) { t_lBracket, "[" },
-		(TokenMeaning ) { t_rBracket, "]" },
+		//(TokenMeaning ) { t_lBracket, "[" },
+		//(TokenMeaning ) { t_rBracket, "]" },
 		(TokenMeaning ) { t_period, "." },
 		(TokenMeaning ) { t_comma, "," },
 		(TokenMeaning ) { t_colon, ":" },
 		(TokenMeaning ) { t_scolon, ";" },
-		(TokenMeaning ) { t_pointer, "^" },
+		//(TokenMeaning ) { t_pointer, "^" },
 		(TokenMeaning ) { t_lParenthessis, "(" },
 		(TokenMeaning ) { t_rParenthessis, ")" },
 		(TokenMeaning ) { t_notEqv, "<>" },
 		(TokenMeaning ) { t_lessOrEqv, "<=" },
 		(TokenMeaning ) { t_greaterOrEqv, ">=" },
-		(TokenMeaning ) { t_asigment, ":=" },
-		(TokenMeaning ) { t_doubleDot, ".." },
-		(TokenMeaning ) { t_lcBracket, "{" }, //others
-		(TokenMeaning ) { t_rcBracket, "}" } };
+		(TokenMeaning ) { t_asigment, ":=" }
+		//(TokenMeaning ) { t_doubleDot, ".." },
+	    //(TokenMeaning ) { t_lcBracket, "{" }, //others
+		//(TokenMeaning ) { t_rcBracket, "}" }
+		};
 
 bool Token_isType(Token t) {
 	return t >= t_boolean && t <= t_string;

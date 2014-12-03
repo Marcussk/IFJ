@@ -35,30 +35,33 @@ typedef enum {
 
 } InstrCode;
 
-typedef union {
-	int stackAddr;
-	float iReal;
-	int iInt;
-	char * iString;
-} InstrParam;
+//typedef union u_InstrParam;
 
 /*
  * type can be reference, in that case operands are indexes to interpreter stack
  * dest is always reference if dest.stackAddr <0 push result on stack
  *
  * */
-typedef struct {
+typedef struct s_Instruction {
 	InstrCode code;      //kod instrukcie z InstrCode
 	tIFJ type;           //datovy typ
-	InstrParam * a1;     //operand1
-	InstrParam * a2;     //operand2
-	InstrParam * dest;   //vysledok operace
+	union u_InstrParam * a1;     //operand1
+	union u_InstrParam * a2;     //operand2
+	union u_InstrParam * dest;   //vysledok operace
 } Instruction;
 
 typedef struct s_InstrQueueNode {
 	Instruction val;
 	struct s_InstrQueueNode * next;
 } InstrQueueNode;
+
+typedef union u_InstrParam {
+	int stackAddr;
+	float iReal;
+	int iInt;
+	char * iString;
+	InstrQueueNode * instr;
+} InstrParam;
 
 typedef struct {
 	int index;

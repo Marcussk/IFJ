@@ -11,7 +11,6 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 	self->lastToken = t_empty;
 	self->preLastToken = t_empty;
 	self->planedJob = j_continue;
-	self->pushBackTok = t_empty;
 	self->idMode = lp_searchOnly;
 	self->lastSymbol = NULL;
 	self->symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);

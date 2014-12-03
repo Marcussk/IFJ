@@ -22,7 +22,8 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	if(asigmentTo->type == iFn && asigmentTo == self->lp->symbolTable->masterItem){
+	if (asigmentTo->type == iFn
+			&& asigmentTo == self->lp->symbolTable->masterItem) {
 		asigmentTo = &(asigmentTo->val.fn->retVal);
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
@@ -300,9 +301,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
 	lastToken = TokenBuff_next(&self->tokBuff);
-	/*HashTable_insert(self->lp->symbolTable, name, &returnVal);
-	returnVal->stackIndex = -1;
-	returnVal->type = fn->val.fn->retType;*/
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
@@ -321,6 +319,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;
 	free(name);
+	NEXT_TOK(t_scolon, "expected \";\" after function definition")
+	InstrQueue_insert(&self->instr,
+			(Instruction ) { i_return, fn->val.fn->retVal.type, NULL,
+							NULL, NULL });
 }
 
 void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {

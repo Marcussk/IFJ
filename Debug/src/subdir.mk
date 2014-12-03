@@ -3,6 +3,15 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/buffFile.o \
+../src/error_handler.o \
+../src/ifj_types.o \
+../src/parser_tables.o \
+../src/semantic_analyzer.o \
+../src/str_routines.o \
+../src/token_map.o 
+
 C_SRCS += \
 ../src/array_as_queue.c \
 ../src/array_as_stack.c \

@@ -142,7 +142,7 @@ int isOperator(Token t) {
 }
 
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
-		int gotFunc) { // ')' already found and popped
+		int gotFunc, InstrQueue * instructions) { // ')' already found and popped
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
@@ -153,16 +153,17 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
-			return reduceParams(stack, tokenBuff, ++paramCount, 1);
+			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions);
 		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
 			*TopMost = stack->top->data;
 			// There must be function id, an operator or nothing on the left from '('
 			if (TopMost->content == t_func) {
+				InstrQueue_insert(instructions,
+						(Instruction ) { i_call,
+										TopMost->id->val.fn->retVal.type, NULL,
+										NULL, NULL });
 				//result.datatype = navratovy typ funkce
-				// Insert call instruction
-				unimplementedError(
-						"Call instruction is not implemented yet in expression");
 				exprStack_pop(stack); // pop t_func on stack
 			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
@@ -283,8 +284,10 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			last = exprStack_pop(stack);
 			if (last.content == t_func) {
 				// function with no parameter
-				unimplementedError(
-						"Call instruction (without parameter) is not implemented yet in expression");
+				InstrQueue_insert(instructions,
+						(Instruction ) { i_call,
+										last.id->val.fn->retVal.type, NULL,
+										NULL, NULL });
 			} else
 				syntaxError("Empty brackets are not allowed",
 						tokenBuff->lp->lineNum, "");
@@ -292,7 +295,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 		exprStack_push(stack, last);
 
-		reduceParams(stack, tokenBuff, 0, 0);
+		reduceParams(stack, tokenBuff, 0, 0, instructions);
 		result.type = nonterminal;
 		result.content = t_id;
 
@@ -455,7 +458,7 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		case b_write:
 			parseWrite(tokenBuff, instructions);
 			return iVoid;
-		default :
+		default:
 			break;
 		}
 	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);)
