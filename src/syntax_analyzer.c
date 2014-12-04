@@ -269,7 +269,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 			}
 			return;
 		} 
-		else {											 // ;
+		else {											 // ;q
 			lastToken = TokenBuff_next(&self->tokBuff);                        
  			if(lastToken != t_id){                                         
 	 			syntaxError("expected id in argument list after semicolon",self->lp->lineNum, getTokenName(lastToken));\
