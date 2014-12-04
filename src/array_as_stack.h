@@ -11,7 +11,7 @@
 #include "instruction.h"
 
 
-#define STACK_MAX_SIZE 32
+#define STACK_MAX_SIZE 4
 
 
 typedef struct {
