@@ -97,6 +97,7 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 	return iUnknown;
 }
 
+
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		InstrQueue * instructions, ParamsListItem * paramNode) { // ')' already found and popped
 	ExprToken *TopMost;
@@ -105,10 +106,12 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	*TopMost = stack->top->data;
 
 	if (TopMost->type == nonterminal) { // Got parameter
-		//printf("%s\n", iVar_type2str(paramNode->data->type));
+		printf("%s\n", iVar_type2str(paramNode->data->type));
 
-		result = exprStack_pop(stack);
-		//checkParam(result, paramCount)
+		result = exprStack_pop(stack); // parameter
+		if (result.datatype != paramNode->data->type)
+			sem_Error("Bad function parameter");
+
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
