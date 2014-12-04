@@ -10,8 +10,6 @@
 
 IMPLEMENT_STACK(expr, ExprToken);
 
-
-
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
 
@@ -52,8 +50,8 @@ iFunction * findFunction(exprStack * stack) {
 	exprStackNodeT * tmp = stack->top;
 	while (tmp != NULL) {
 		i++;
-		if (tmp->data.content == t_lParenthessis && tmp->next &&
-				tmp->next->data.content == t_func){
+		if (tmp->data.content == t_lParenthessis && tmp->next
+				&& tmp->next->data.content == t_func) {
 			return tmp->next->data.id->val.fn;
 		}
 		tmp = tmp->next;
@@ -112,7 +110,8 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
-			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions, param);
+			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions,
+					param);
 		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
 			*TopMost = stack->top->data;
@@ -125,9 +124,8 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 				//printf("Function parameter = %d\n", TopMost->id->val.fn->params->next->param->type);
 				p->iInt = TopMost->id->val.fn->bodyInstrIndex;
 				InstrQueue_insert(instructions,
-						(Instruction ) { i_call,
-										result.datatype,
-										pCount, NULL, p });
+						(Instruction ) { i_call, result.datatype, pCount,
+										NULL, p });
 				exprStack_pop(stack); // pop t_func on stack
 			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
@@ -259,7 +257,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (func)
 			reduceParams(stack, tokenBuff, 1, 0, instructions, func->params);
 		else
-			syntaxError("Could not reduce function", -1, getTokenName(TopMostTerminal->content));
+			reduceParams(stack, tokenBuff, 1, 0, instructions, NULL);
 
 		break;
 	default:

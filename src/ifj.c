@@ -18,9 +18,9 @@
 #include "ial.h"
 #include "lex_parser.h"
 #include "syntax_analyzer.h"
+#include "../tests/stack_test.h"
 
 int main(int argc, char *argv[]) {
-
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	Interpret interpret;

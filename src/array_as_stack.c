@@ -7,7 +7,7 @@ void StackArr__init__(StackArr *self) {
 	if (self->StackArray == NULL)
 		memoryError("Can't allocate memory for Stack");
 
-	self->top = 0;
+	self->top = -1;
 	self->prealocated = STACK_MAX_SIZE;
 }
 
@@ -56,18 +56,12 @@ void StackArr__dell__(StackArr * self) {
 /*debug only for integers iVal*/
 void int_StackArr_debug(StackArr *self) {
 	int i;
-
-	printf("__________________________________\n ");
 	printf("Velkost stacku: %d \n ", self->prealocated);
-	printf("TOP: %d -> %d \n ", self->top,
-			self->StackArray[self->top ].iInt);
 	printf("Vypis poloziek staku:\n ");
-	for (i = 0; i < self->top + 1; i++) {
+	for (i = 0; i < self->top; i++) {
 		if (i == self->top) {
 			printf("top->");
 		}
 		printf("%d.pos -> %d \n ", i, (StackArr_getAt(self, i)).iInt);
 	}
-	printf("__________________________________\n ");
-
 }

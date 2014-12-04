@@ -13,9 +13,6 @@ void test_stack1(void) {
 	printf("Velkost stacku: %d \n ", s.prealocated);
 	printf("TOP: %d \n ", s.top);
 	printf("Vypis poloziek staku:\n ");
-	for (i = 0; i < s.prealocated; i++) {
-		printf("%d.pos -> %d \n ", i, (s.StackArray[i]).iInt);
-	}
 	iVal new_iVal, next_iVal, iVal_1;
 	new_iVal.iInt = RANDOM_NUM;
 	next_iVal.iInt = REAL_NUM;
