@@ -106,7 +106,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	*TopMost = stack->top->data;
 
 	if (TopMost->type == nonterminal) { // Got parameter
-		printf("%s\n", iVar_type2str(paramNode->data->type));
+		//printf("%s\n", iVar_type2str(paramNode->data->type));
 
 		result = exprStack_pop(stack); // parameter
 		if (result.datatype != paramNode->data->type)
@@ -131,6 +131,15 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 				pCount->iInt = paramCount;
 				//printf("Function parameter = %d\n", TopMost->id->val.fn->params->next->param->type);
 				p->iInt = TopMost->id->val.fn->bodyInstrIndex;
+
+				Builtins b = TopMost->id->val.fn->builtin;
+				if (b){
+						InstrQueue_insert(instructions,
+								(Instruction ) { b, result.datatype, pCount,
+										NULL, p });
+
+				}
+				else if (TopMost)
 				InstrQueue_insert(instructions,
 						(Instruction ) { i_call, result.datatype, pCount,
 								NULL, p });
