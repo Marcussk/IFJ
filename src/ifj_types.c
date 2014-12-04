@@ -46,6 +46,8 @@ char * iVar_type2str(tIFJ t) {
 		return "real";
 	case iFn:
 		return "fn";
+	case iStackRef:
+		return "iStackRef";
 	default:
 		return "unknown";
 	}

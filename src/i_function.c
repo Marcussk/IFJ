@@ -27,15 +27,19 @@ ParamsListItem * ParamsListItem__init__() {
 
 void iFunction_addParam(iFunction * self, iVar * var) {
 	ParamsListItem * lastItem = self->params;
+	int stackAddr = -1;
 	if (!lastItem) {
 		self->params = ParamsListItem__init__();
 		self->params->param = var;
 	} else {
-		while (lastItem->next)
+		while (lastItem->next){
 			lastItem = lastItem->next;
+			var->stackIndex --;
+		}
 		lastItem->next = ParamsListItem__init__();
 		lastItem->next->param = var;
 	}
+	var->stackIndex = stackAddr;
 }
 
 ParamsListItem * iFunction_lastParam(iFunction * self) {

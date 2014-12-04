@@ -128,8 +128,8 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
 	tIFJ condtype;
-	InstrParam * StackAddrelse = malloc(sizeof(InstrParam));
-	if (!StackAddrelse) {
+	InstrParam * StackAddress = malloc(sizeof(InstrParam));
+	if (!StackAddress) {
 		memoryError("Cannot allocate instrParam for Label ");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
@@ -141,7 +141,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	SemAnalyzer_checkcond(condtype);
 	//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
-					StackAddrelse });
+					StackAddress });
 	//then
 	NEXT_TOK(t_then, "expected then")
 	//begin then block
@@ -158,7 +158,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	//else:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
-	StackAddrelse->stackAddr = self->instr.index;
+	StackAddress->iInt = self->instr.index;
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
@@ -285,6 +285,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup = self->stackIndexCntr;
+	self->stackIndexCntr = 4; // because 0 is return val, ...
 	Token lastToken;
 	iVar * fn;
 	char * name;
@@ -294,7 +295,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn = self->lp->lastSymbol;
 	fn->type = iFn;
 	fn->val.fn = iFunction__init__();
-	fn->val.fn->bodyInstrIndex = self->instr.index +1;
+	fn->val.fn->bodyInstrIndex = self->instr.index + 1;
 
 	SyntaxAnalyzer_parse_paramList(self);
 
@@ -355,7 +356,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 			break;
 		case t_begin:
-			i->iInt = self->instr.index +1;
+			i->iInt = self->instr.index + 1;
 			SyntaxAnalyzer_parse_block(self);
 			break;
 		case t_func:
@@ -363,6 +364,8 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			break;
 		case t_period:
 			tok = TokenBuff_next(&self->tokBuff);
+			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL,
+							NULL, NULL });
 			if (tok == t_eof)
 				return;
 			else {
