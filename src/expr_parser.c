@@ -47,14 +47,14 @@ int findHandle(exprStack * stack) {
 	return 0;
 }
 
-ExprToken * findFunction(exprStack * stack) {
+iFunction * findFunction(exprStack * stack) {
 	int i = 0;
 	exprStackNodeT * tmp = stack->top;
 	while (tmp != NULL) {
 		i++;
 		if (tmp->data.content == t_lParenthessis && tmp->next &&
 				tmp->next->data.content == t_func){
-			return &(tmp->next->data);
+			return tmp->next->data.id->val.fn;
 		}
 		tmp = tmp->next;
 	}
@@ -100,7 +100,7 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 }
 
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
-		int gotFunc, InstrQueue * instructions) { // ')' already found and popped
+		int gotFunc, InstrQueue * instructions, ParamsListItem * param) { // ')' already found and popped
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
@@ -112,7 +112,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
-			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions);
+			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions, param);
 		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
 			*TopMost = stack->top->data;
@@ -255,7 +255,12 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		}
 
 		exprStack_push(stack, last);
-		reduceParams(stack, tokenBuff, 1, 0, instructions);
+		iFunction * func = findFunction(stack);
+		if (func)
+			reduceParams(stack, tokenBuff, 1, 0, instructions, func->params);
+		else
+			syntaxError("Could not reduce function", -1, getTokenName(TopMostTerminal->content));
+
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
