@@ -1,15 +1,16 @@
 #include "expr_parser.h"
 
-#define EXPR_DEGUG
+//#define EXPR_DEGUG
 
 #ifdef EXPR_DEBUG
-#define EXPR_DEBUGING(body) \
-	body
+#define EXPR_DEBUGING(body) body
 #else
 #define EXPR_DEBUGING(body) ;
 #endif
 
 IMPLEMENT_STACK(expr, ExprToken);
+
+
 
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
@@ -44,6 +45,20 @@ int findHandle(exprStack * stack) {
 		tmp = tmp->next;
 	}
 	return 0;
+}
+
+ExprToken * findFunction(exprStack * stack) {
+	int i = 0;
+	exprStackNodeT * tmp = stack->top;
+	while (tmp != NULL) {
+		i++;
+		if (tmp->data.content == t_lParenthessis && tmp->next &&
+				tmp->next->data.content == t_func){
+			return &(tmp->next->data);
+		}
+		tmp = tmp->next;
+	}
+	return NULL;
 }
 
 tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
@@ -93,6 +108,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 
 	if (TopMost->type == nonterminal) { // Got parameter
 		result = exprStack_pop(stack);
+		//checkParam(result, paramCount)
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
@@ -102,20 +118,21 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 			*TopMost = stack->top->data;
 			// There must be function id, an operator or nothing on the left from '('
 			if (TopMost->content == t_func) {
+				result.datatype = TopMost->id->val.fn->retVal.type;
 				InstrParam * p = malloc(sizeof(InstrParam));
 				InstrParam * pCount = malloc(sizeof(InstrParam));
 				pCount->iInt = paramCount;
+				printf("Function parameter = %d\n", TopMost->id->val.fn->params->next->param->type);
 				p->iInt = TopMost->id->val.fn->bodyInstrIndex;
 				InstrQueue_insert(instructions,
 						(Instruction ) { i_call,
-										TopMost->id->val.fn->retVal.type,
+										result.datatype,
 										pCount, NULL, p });
-				//result.datatype = navratovy typ funkce
 				exprStack_pop(stack); // pop t_func on stack
 			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
 						getTokenName(stack->top->data.content));
-			exprStack_push(stack, result); //
+			exprStack_push(stack, result);
 
 			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
 			return;
@@ -225,6 +242,19 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					tokenBuff->lp->lineNum, "");
 
 		exprStack_pop(stack); // Pop ')'
+		ExprToken last = exprStack_pop(stack);
+		if (last.content == t_lParenthessis) {
+			last = exprStack_pop(stack);
+			if (last.content != t_func) 	// function with no parameter
+				syntaxError("Empty brackets are not allowed",
+						tokenBuff->lp->lineNum, "");
+			InstrQueue_insert(instructions,
+					(Instruction ) { i_call,
+									last.id->val.fn->retVal.type, NULL,
+									NULL, NULL });
+		}
+
+		exprStack_push(stack, last);
 		reduceParams(stack, tokenBuff, 1, 0, instructions);
 		break;
 	default:
