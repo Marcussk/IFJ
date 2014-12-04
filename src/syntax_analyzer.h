@@ -2,10 +2,10 @@
 #define SYNTAX_ANALYZER_h
 
 #include "error_handler.h"
-#include "expr.h"
+#include "expr_parser.h"
+#include "expr_parser.h"
 #include "stack.h"
 #include "instruction.h"
-#include "expr.h"
 #include "hash_table.h"
 #include "ifj_types.h"
 #include "lex_parser.h"
