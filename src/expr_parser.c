@@ -1,4 +1,4 @@
-#include "expr.h"
+#include "expr_parser.h"
 
 //#define EXPR_DEGUG
 
@@ -10,7 +10,7 @@
 
 IMPLEMENT_STACK(expr, ExprToken);
 
-ExprToken ExprLastToken;
+
 
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
@@ -23,10 +23,9 @@ void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 	ExprToken_Init(&start);
 	exprStack__init__(&self->stack);
 	exprStack_push(&self->stack, start);
-	ExprToken_Init(&ExprLastToken);
 }
 
-ExprToken *findTopMostTerminal(exprStack *s) {
+ExprToken * findTopMostTerminal(exprStack *s) {
 	exprStackNodeT * itr = s->top;
 	while (itr != NULL) {
 		if (itr->data.type == terminal)
@@ -48,26 +47,26 @@ int findHandle(exprStack * stack) {
 	return 0;
 }
 
-tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
+tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 	switch (operator) {
 	case t_plus:
-		if (operand1 == operand2 && (operand1 == iInt || operand1 == iString))
-			return operand1;
-		else if (operand1 >= iInt && operand1 <= iReal && // int or real
-				operand2 >= iInt && operand2 <= iReal)
+		if (op1Type == op2Type && (op1Type == iInt || op1Type == iString))
+			return op1Type;
+		else if (op1Type >= iInt && op1Type <= iReal && // int or real
+				op2Type >= iInt && op2Type <= iReal)
 			return iReal;
 		break;
 	case t_minus:
 	case t_asterisk:
-		if (operand1 == iInt && operand2 == iInt)
+		if (op1Type == iInt && op2Type == iInt)
 			return iInt;
-		else if (operand1 >= iInt && operand1 <= iReal && // int or real
-				operand2 >= iInt && operand1 <= iReal)
+		else if (op1Type >= iInt && op1Type <= iReal && // int or real
+				op2Type >= iInt && op1Type <= iReal)
 			return iReal;
 		break;
 	case t_slash:
-		if (operand1 >= iInt && operand1 <= iReal && // int or real
-				operand2 >= iInt && operand2 <= iReal)
+		if (op1Type >= iInt && op1Type <= iReal && // int or real
+				op2Type >= iInt && op2Type <= iReal)
 			return iReal;
 		break;
 	case t_less:
@@ -76,13 +75,13 @@ tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-		if (operand1 == operand2 && operand1 >= iBool && operand1 <= iString) // any type
+		if (op1Type == op2Type && op1Type >= iBool && op1Type <= iString) // any type
 			return iBool;
 		break;
 	default:
-		break;
+		syntaxError("Unknown operator", -1, "");
 	}
-	sem_Error("Unknown operator");
+	sem_Error("Incompatible types");
 	return iUnknown;
 }
 
@@ -212,33 +211,31 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
-
 		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
 			syntaxError("Expression Error - Operator error",
 					tokenBuff->lp->lineNum, ",");
+
 		Expr_reduceBinaryOperator(stack, tokenBuff, instructions);
 		break;
 	case t_rParenthessis:
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - not enough operands",
 					tokenBuff->lp->lineNum, ",");
-
 		if (TopMostTerminal->content != stack->top->data.content) // ')' Must be on top of stack
 			syntaxError("Expression syntax error - expected )",
 					tokenBuff->lp->lineNum, "");
+
 		exprStack_pop(stack); // Pop ')'
 		ExprToken last = exprStack_pop(stack);
 		if (last.content == t_lParenthessis) {
 			last = exprStack_pop(stack);
-			if (last.content == t_func) {
-				// function with no parameter
-				InstrQueue_insert(instructions,
-						(Instruction ) { i_call,
-										last.id->val.fn->retVal.type, NULL,
-										NULL, NULL });
-			} else
+			if (last.content != t_func) 	// function with no parameter
 				syntaxError("Empty brackets are not allowed",
 						tokenBuff->lp->lineNum, "");
+			InstrQueue_insert(instructions,
+					(Instruction ) { i_call,
+									last.id->val.fn->retVal.type, NULL,
+									NULL, NULL });
 		}
 
 		exprStack_push(stack, last);
@@ -250,57 +247,59 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 
 }
 
-void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
-	Token lastToken = TokenBuff_next(tokenBuff);
-	if (lastToken != t_lParenthessis)
-		syntaxError("writeCall expects '(' after write", tokenBuff->lp->lineNum,
-				getTokenName(lastToken));
+void parseWrite(ExprParser * self) {
+	Token lastToken = TokenBuff_next(self->tokenBuff);
 	iVar * lastSymbol;
 	Instruction instr;
+	InstrParam * param;
+
+	if (lastToken != t_lParenthessis)
+		syntaxError("writeCall expects '(' after write",
+				self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 	instr.code = i_push;
 	instr.a2 = NULL;
 	instr.dest = NULL;
-	InstrParam * param;
+
 	while (true) {
-		lastToken = TokenBuff_next(tokenBuff);
+		lastToken = TokenBuff_next(self->tokenBuff);
+		param = malloc(sizeof(InstrParam));
 		if (lastToken == t_id) {
-			lastSymbol = tokenBuff->lp->lastSymbol;
-			if (lastSymbol->type != iFn) {
-				if (!lastSymbol->isInitialized)
-					sem_Error("Use of uninitialized variable");
-				param = malloc(sizeof(InstrParam));
-				param->stackAddr = lastSymbol->stackIndex;
-				instr.type = iStackRef;
-				instr.a1 = param;
-			} else {
+			lastSymbol = self->tokenBuff->lp->lastSymbol;
+			if (lastSymbol->type == iFn)
 				syntaxError("Function call cannot be in write call",
-						tokenBuff->lp->lineNum, getTokenName(lastToken));
-			}
+						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
+			if (!lastSymbol->isInitialized)
+				sem_Error("Use of uninitialized variable");
+
+			param->stackAddr = lastSymbol->stackIndex;
+			instr.type = iStackRef;
+
 		} else if (Token_isValue(lastToken)) {
-			param = malloc(sizeof(InstrParam));
 			*param = iVal2InstrP(
-					str2iVal(tokenBuff->lp->str.buff, lastToken,
-							tokenBuff->lp->lineNum), Token_getType(lastToken));
+					str2iVal(self->tokenBuff->lp->str.buff, lastToken,
+							self->tokenBuff->lp->lineNum),
+					Token_getType(lastToken));
 			instr.type = Token_getType(lastToken);
-			instr.a1 = param;
 		} else {
 			syntaxError("write call unexpected argument",
-					tokenBuff->lp->lineNum, getTokenName(lastToken));
+					self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 		}
-		InstrQueue_insert(instructions, instr);
+		instr.a1 = param;
+		InstrQueue_insert(self->instructions, instr);
 		if (instr.type == iStackRef) {
 			instr.type = lastSymbol->type;
 		}
-		InstrQueue_insert(instructions, (Instruction ) { i_write, instr.type,
-				NULL, NULL, NULL });
-		lastToken = TokenBuff_next(tokenBuff);
+		InstrQueue_insert(self->instructions,
+				(Instruction ) { i_write, instr.type,
+						NULL, NULL, NULL });
+		lastToken = TokenBuff_next(self->tokenBuff);
 		if (lastToken == t_comma)
 			continue;
 		else if (lastToken == t_rParenthessis)
 			return;
 		else
 			syntaxError("write call unexpected argument",
-					tokenBuff->lp->lineNum, getTokenName(lastToken));
+					self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 	}
 }
 
@@ -336,6 +335,8 @@ void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
 
 tIFJ ExprParser_parse(ExprParser * self) {
 	ExprToken *TopMostTerminal;
+	ExprToken ExprLastToken;
+	ExprToken_Init(&ExprLastToken);
 
 	Token lastToken = TokenBuff_next(self->tokenBuff);
 	if (lastToken == t_id && self->tokenBuff->lp->lastSymbol->type == iFn
@@ -346,7 +347,7 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			parseReadLn(self->tokenBuff, self->instructions);
 			return iVoid;
 		case b_write:
-			parseWrite(self->tokenBuff, self->instructions);
+			parseWrite(self);
 			return iVoid;
 		default:
 			break;
