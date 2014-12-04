@@ -1,7 +1,9 @@
 #include "array_as_stack.h"
 
-void StackArr__init__(StackArr *self) {
-	self->StackArray = malloc( STACK_MAX_SIZE * sizeof(iVal));
+#define IMPLEMENT_STACK(namePrefix, stackElementT)  
+
+void namePrefix##StackArr__init__(namePrefix##StackArr *self) {
+	self->StackArray = malloc( STACK_MAX_SIZE * sizeof(stackElementT));
 	if (self->StackArray == NULL)
 		memoryError("Can't allocate memory for Stack");
 
@@ -9,10 +11,10 @@ void StackArr__init__(StackArr *self) {
 	self->prealocated = STACK_MAX_SIZE;
 }
 
-void StackArr_push(StackArr *self, iVal data) {
+void namePrefix##StackArr_push(namePrefix##StackArr *self, stackElementT data) {
 	if (self->top == self->prealocated - 1) {
 		int newCapacity = self->prealocated * 2;
-		iVal *newArray = realloc(self->StackArray, newCapacity * sizeof(iVal));
+		stackElementT *newArray = realloc(self->StackArray, newCapacity * sizeof(stackElementT));
 		if (newArray == NULL)
 			memoryError("Cano't reallocate memory for stack ");
 		self->StackArray = newArray;
@@ -22,8 +24,8 @@ void StackArr_push(StackArr *self, iVal data) {
 	self->StackArray[self->top] = data;
 }
 
-iVal StackArr_pop(StackArr *self) {
-	iVal data;
+stackElementT namePrefix##StackArr_pop( namePrefix##StackArr *self) {
+	stackElementT data;
 	if (self->top < 0)
 		rt_error("Stack underflow");
 
@@ -32,20 +34,20 @@ iVal StackArr_pop(StackArr *self) {
 	return data;
 }
 
-iVal StackArr_getAt(StackArr *self, int index) {
+stackElementT namePrefix##StackArr_getAt(namePrefix##StackArr *self, int index) {
 	if (index > self->top || index < 0) {
 		rt_error("Stack invalid access");
 	}
 	return self->StackArray[index];
 }
 
-void StackArr__dell__(StackArr * self) {
+void namePrefix##StackArr__dell__(namePrefix##StackArr * self) {
 	free(self->StackArray);
 	self->top = 0;
 	self->prealocated = STACK_MAX_SIZE;
 }
 
-void int_StackArr_debug(StackArr *self) {
+void int_namePrefix##StackArr_debug(namePrefix##StackArr *self) {
 	int i;
 	printf("Velkost stacku: %d \n ", self->prealocated);
 	printf("Vypis poloziek staku:\n ");
@@ -53,6 +55,6 @@ void int_StackArr_debug(StackArr *self) {
 		if (i == self->top) {
 			printf("top->");
 		}
-		printf("%d.pos -> %d \n ", i, (StackArr_getAt(self, i)).iInt);
+		printf("%d.pos -> %d \n ", i, (namePrefix##StackArr_getAt(self, i)).iInt);
 	}
 }

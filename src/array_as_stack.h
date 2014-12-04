@@ -11,20 +11,21 @@
 #include "instruction.h"
 
 
-#define STACK_MAX_SIZE 4
+#define STACK_MAX_SIZE 32
 
+#define DECLARE_STACK(namePrefix, stackElementT)
 
 typedef struct {
-	iVal *StackArray;
+	stackElementT *StackArray;
 	int top;
 	int prealocated; 
-} StackArr;
+} namePrefix##StackArr;
 
-void StackArr__init__( StackArr *self );
-void StackArr__dell__( StackArr *self );
-void StackArr_push( StackArr *self, iVal data );
-iVal StackArr_pop( StackArr *self );
-iVal StackArr_getAt( StackArr *self, int index );
-void int_StackArr_debug( StackArr *self);
+void namePrefix##StackArr__init__( namePrefix##StackArr *self );
+void namePrefix##StackArr__dell__( namePrefix##StackArr *self );
+void namePrefix##StackArr_push( namePrefix##StackArr *self, stackElementT data );
+stackElementT namePrefix##StackArr_pop( namePrefix##StackArr *self );
+stackElementT namePrefix##StackArr_getAt( namePrefix##StackArr *self, int index );
+void int_namePrefix##StackArr_debug( namePrefix##StackArr *self);
 
 #endif
