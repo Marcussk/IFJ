@@ -379,4 +379,5 @@ void Interpret_run(Interpret * self) {
 void Interpret__dell__(Interpret * self) {
 	InstrQueue__dell__(&self->instructions);
 	iStack__dell__(&self->stack);
+	fflush(stdout);
 }
