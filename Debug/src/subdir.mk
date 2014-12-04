@@ -10,6 +10,7 @@ C_SRCS += \
 ../src/builtins.c \
 ../src/error_handler.c \
 ../src/expr.c \
+../src/expr_token.c \
 ../src/hash_table.c \
 ../src/i_function.c \
 ../src/ial.c \
@@ -32,6 +33,7 @@ OBJS += \
 ./src/builtins.o \
 ./src/error_handler.o \
 ./src/expr.o \
+./src/expr_token.o \
 ./src/hash_table.o \
 ./src/i_function.o \
 ./src/ial.o \
@@ -54,6 +56,7 @@ C_DEPS += \
 ./src/builtins.d \
 ./src/error_handler.d \
 ./src/expr.d \
+./src/expr_token.d \
 ./src/hash_table.d \
 ./src/i_function.d \
 ./src/ial.d \
