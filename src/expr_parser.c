@@ -122,7 +122,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 				InstrParam * p = malloc(sizeof(InstrParam));
 				InstrParam * pCount = malloc(sizeof(InstrParam));
 				pCount->iInt = paramCount;
-				printf("Function parameter = %d\n", TopMost->id->val.fn->params->next->param->type);
+				//printf("Function parameter = %d\n", TopMost->id->val.fn->params->next->param->type);
 				p->iInt = TopMost->id->val.fn->bodyInstrIndex;
 				InstrQueue_insert(instructions,
 						(Instruction ) { i_call,
