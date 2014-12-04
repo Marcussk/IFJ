@@ -93,7 +93,7 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 	default:
 		syntaxError("Unknown operator", -1, "");
 	}
-	sem_Error("Incompatible types");
+	sem_Error("Incompatible types", -1);
 	return iUnknown;
 }
 
@@ -193,7 +193,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				if (!(TopMostTerminal->id->isInitialized))
-					sem_Error("Uninitialized variable");
+					sem_Error("Uninitialized variable", -1);
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
@@ -293,7 +293,7 @@ void parseWrite(ExprParser * self) {
 				syntaxError("Function call cannot be in write call",
 						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 			if (!lastSymbol->isInitialized)
-				sem_Error("Use of uninitialized variable");
+				sem_Error("Use of uninitialized variable", self->tokenBuff->lp->lineNum);
 
 			param->stackAddr = lastSymbol->stackIndex;
 			instr.type = iStackRef;

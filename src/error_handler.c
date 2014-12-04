@@ -41,8 +41,8 @@ void sem_CondError(char * nameOfType) {
 	exit(4);
 }
 
-void sem_Error(char * str) {
-	fprintf(stderr, "ERROR(Semantic): %s .\n", str);
+void sem_Error(char * str, int lineNum) {
+	fprintf(stderr, "ERROR(Semantic) Line: %d: %s .\n",lineNum, str);
 	exit(5);
 }
 
