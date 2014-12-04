@@ -78,19 +78,19 @@ int readLn(iVal *a1, tIFJ type) {
 
 void registrBuiltins(HashTable * ht) {
 	//funkcia, navratova hodnota, typ parametru
-	regFn(ht, "readln", b_readLn, iVoid, iVoid);
-	regFn(ht, "write", b_write, iVoid, iVoid);
-	regFn(ht, "length", b_length, iInt, iString);
-	regFn(ht, "copy", b_copy, iString, iString, iInt, iInt);
-	regFn(ht, "find", b_find, iInt, iString, iString);
-	regFn(ht, "sort", b_sort, iString, iString);
+	regFn(ht, "readln", b_readLn, iVoid, 1, iVoid);
+	regFn(ht, "write", b_write, iVoid, 1, iVoid);
+	regFn(ht, "length", b_length, iInt, 1, iString);
+	regFn(ht, "copy", b_copy, iString, 3, iString, iInt, iInt);
+	regFn(ht, "find", b_find, iInt, 2, iString, iString);
+	regFn(ht, "sort", b_sort, iString, 1, iString);
 }
 
 void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 		...) {
 	va_list valist;
-	iVar * param = NULL;
 	va_start(valist, paramsCnt);
+	iVar * param = NULL;
 	int i;
 	// becouse ht returns place where it creates
 	iVar * item = NULL;
@@ -103,7 +103,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	item->val.fn->retVal.type = retTyp;
 	item->val.fn->builtin = b;
 
-	for (i = 0; i < paramsCnt; i++) {
+	for (i = -1 * paramsCnt; i < 0; i++) {
 		param = malloc(sizeof(iVar));
 		if (!param) {
 			memoryError("Can't allocate memory for new parameter\n");

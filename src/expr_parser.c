@@ -110,7 +110,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 
 		result = exprStack_pop(stack); // parameter
 		if (result.datatype != paramNode->data->type)
-			sem_Error("Bad function parameter");
+			sem_Error("Bad function parameter", tokenBuff->lp->lineNum);
 
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
