@@ -320,16 +320,16 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_copy:
-			pomA1 = iStack_pop(&(self->stack));
-			pomA2 = iStack_pop(&(self->stack));
 			pomA3 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			pomA4.iString = func_copy(pomA1.iString, pomA2.iInt, pomA3.iInt);
 			iStack_push(&(self->stack), pomA4);
 			break;
 
 		case i_find:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			pomA3.iInt = func_find(pomA1.iString, pomA2.iString);
 			iStack_push(&(self->stack), pomA3);
 			break;
