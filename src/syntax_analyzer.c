@@ -298,7 +298,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn->val.fn->bodyInstrIndex = self->instr.index + 1;
 
 	SyntaxAnalyzer_parse_paramList(self);
-
 	// [TODO] check and implement forward
 	NEXT_TOK(t_colon, "expected \":\"")
 

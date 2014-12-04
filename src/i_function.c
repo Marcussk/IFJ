@@ -42,17 +42,6 @@ void iFunction_addParam(iFunction * self, iVar * var) {
 	var->stackIndex = stackAddr;
 }
 
-ParamsListItem * iFunction_lastParam(iFunction * self) {
-	ParamsListItem * lastItem = self->params;
-	if (!lastItem)
-		return self->params;
-
-	while (lastItem->next)
-		lastItem = lastItem->next;
-
-	return lastItem;
-}
-
 void ParamsListItem__dell__(ParamsListItem * self) {
 	if (self->next)
 		ParamsListItem__dell__(self->next);

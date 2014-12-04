@@ -54,6 +54,9 @@ bool Token_isValue(Token t) {
 	return t == t_num_int || t == t_num_real || t == t_str_val || t == t_true
 			|| t == t_false;
 }
+bool Token_isOperator(Token t) {
+	return (t >= t_plus && t <= t_notEqv);
+}
 
 // reverz function, can get string form of token
 char * getTokenStr(Token t) {

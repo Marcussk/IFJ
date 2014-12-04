@@ -137,9 +137,7 @@ tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
 	sem_Error("Unknown operator");
 	return iUnknown;
 }
-int isOperator(Token t) {
-	return (t >= t_plus && t <= t_notEqv);
-}
+
 
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		int gotFunc, InstrQueue * instructions) { // ')' already found and popped
@@ -177,7 +175,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 
 			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
 			return;
-		} else if (isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
+		} else if (Token_isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
 			return;
 		else
 			syntaxError("Expected function parameter", -1, "");
@@ -304,54 +302,6 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		reduceParams(stack, tokenBuff, 1, 0, instructions);
 		result.type = nonterminal;
 		result.content = t_id;
-
-		/*
-		 ExprTokenInit(&lastItem);
-		 lastItem = stack->top->data; // Should be '(' or E
-
-		 ExprTokenInit(&result);
-
-		 if (lastItem.content == t_lParenthessis && lastItem.type == terminal) { // '()' Function with no parameters or an empty expession
-		 printf("Generate call instruction\n"); // empty expression not implemented yet
-		 exprStack_pop(stack); // Pop ')'
-		 result.type = nonterminal;
-		 } else if (lastItem.type == nonterminal) { // We have found E) found
-		 result = exprStack_pop(stack); // might be parameter, needs to be saved later
-		 *parameter = result;
-
-		 lastItem = stack->top->data;
-		 if (lastItem.content == t_lParenthessis
-		 && lastItem.type == terminal) { // (E) - not sure if function with 1 parameter or just an expression
-		 exprStack_pop(stack);
-		 lastItem = stack->top->data;
-		 result.type = nonterminal;
-		 if (lastItem.content == t_func && lastItem.type == terminal) { // got id(E)
-		 // Push parameter to instruction queue here
-		 result = exprStack_pop(stack);
-		 result.type = nonterminal;
-		 exprStack_push(stack, result); // Keep
-		 if (result.id->val.fn->builtin) {
-		 unimplementedError(
-		 "others builtins are not implemented yet");
-		 }
-
-		 unimplementedError("Call is not implemented now");
-		 } else { // It's just (E)
-		 EXPR_DEBUGING(printf("It's just normal E\n");)
-		 exprStack_push(stack, result);
-		 }
-		 } else if (lastItem.content == t_comma && lastItem.type == terminal) // Found ,E) -> function with more parameters, we do not consider that yet
-		 unimplementedError(
-		 "Functions with more than 1 parameters not implemented");
-		 else
-		 syntaxError("Syntax Error - expected ) or function parameters",
-		 -1, "");
-		 } else
-		 syntaxError("Syntax Error - expected ) or function parameters", -1,
-		 "");
-
-		 //unimplementedError("Right parenthesis not implemented yet");
-		 */
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
