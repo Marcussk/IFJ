@@ -9,16 +9,15 @@ void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2) {
 }
 
 void SemAnalyzer_checkcond(tIFJ param) {
-	if (param != 16) {
+	if(param != iBool ) {
 		sem_CondError(iVar_type2str(param));
 	}
-	//printf("Condition: %s\n",iVar_type2str(param) );
 }
 
-void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2) {
-	//int real
+typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2) {
+
 	InstrParam * instrparam;
-	if ((param1 == 17) && (param2 == 18)) {
+	if (( param1 == iInt) && (param2 == iReal)) {
 		//convert param1
 		instrparam = malloc(sizeof(iVar));
 		if (!instrparam) {
@@ -29,9 +28,8 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2) {
 		InstrQueue_insert(*(&self), (Instruction ) { i_int2real, iInt,
 						instrparam, NULL, instrparam });
 	}
-	// real int
-	if ((param1 == 18) && (param2 == 17)) {
-		//convert param2
+	
+	if ((param1 == iReal) && (param2 == iInt)) {
 		instrparam = malloc(sizeof(iVar));
 		if (!instrparam) {
 			memoryError(
