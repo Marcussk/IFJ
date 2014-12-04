@@ -288,12 +288,8 @@ void Interpret_run(Interpret * self) {
 				rt_readlnNumError();
 			break;
 		case i_sort:
-			pomA3.iString = func_sort((iStack_pop(&(self->stack)).iString));
-			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
-						pomA3;
-			else
-				iStack_push(&(self->stack), pomA3);
+			pomA3.iString = strdup(func_sort((iStack_pop(&(self->stack)).iString)));
+			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_len:
 			pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
