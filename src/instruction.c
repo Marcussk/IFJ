@@ -114,6 +114,14 @@ InstrCode Token2Instruction(Token token) {
 	}
 }
 
+void InstrParamDebug(InstrParam * p, char * name){
+	if(!p){
+		printf("%s: %p", name, (void *) p );
+	}else{
+		printf("%s: %d", name , p->iInt);
+	}
+}
+
 void InstrQueue_debug(InstrQueue * self) {
 	InstrQueueNode * item = self->actual;
 	Instruction instr;
@@ -126,8 +134,12 @@ void InstrQueue_debug(InstrQueue * self) {
 			printf("->");
 		else
 			printf("  ");
-		printf("%d code %s type %d, a1 %p, a2 %p, dest %p\n", i, instr2Str(instr.code),
-				instr.type, instr.a1, instr.a2, instr.dest);
+		printf("%d code %s type %s, ", i, instr2Str(instr.code),
+				iVar_type2str(instr.type));
+		InstrParamDebug(instr.a1, "a1");
+		InstrParamDebug(instr.a2, ", a2");
+		InstrParamDebug(instr.dest, ", a2");
+		printf("\n");
 		i++;
 		self->actual = self->actual->next;
 	}

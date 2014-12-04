@@ -2,9 +2,12 @@
 
 IMPLEMENT_STACK(i, iVal)
 
-void iStack_debug(iStack * s) {
+void iStack_debug(iStack * s, int stackOffset, char * msg) {
 	int i;
-	printf("<stack %p, size: %d>\n", (void *) s, s->size);
+	if (msg)
+		printf("%s: ", msg);
+	printf("<stack %p, size: %d, offset: %d>\n", (void *) s, s->size,
+			stackOffset);
 	for (i = 0; i < s->size; i++) {
 		printf("%d: %d\n", i, (*iStack_getAt(s, i)).iInt);
 	}
@@ -17,25 +20,26 @@ void Interpret__init__(Interpret * self, InstrQueue instructions) {
 
 void Interpret_run(Interpret * self) {
 	Instruction i;
+	int index;
 	iVal pomA1;
 	iVal pomA2;
 	iVal pomA3;
 	iVal pomA4;
-	InstrQueue_debug(&self->instructions);
+	//InstrQueue_debug(&self->instructions);
 
 	int stackOffset = 0;
 	self->instructions.actual = self->instructions.first;
+	self->instructions.index = 0;
+
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
-		if (i.type == iUnknown)
-			rt_error("Instruction with unknown type");
+		//printf("%d\n", self->instructions.index);
 		switch (i.code) {
 		case i_noop:
 			break;
 		case i_jmp:
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
 			continue;
-			break;
 		case i_jmpz:
 			pomA1 = iStack_pop(&(self->stack));
 			if (pomA1.iInt == 0) {
@@ -310,9 +314,6 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
 			}
 			break;
-		case i_pop:
-			iStack_pop(&self->stack);
-			break;
 		case i_int2real:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2.iReal = pomA1.iInt;
@@ -335,33 +336,50 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
-			pomA4.iInt = stackOffset;
-			iStack_push(&self->stack, (iVal) 0);                          // return value
-			stackOffset = self->stack.actualIndex;
-			iStack_push(&self->stack, (iVal) (self->instructions.index +1)); // next instr after return
-			iStack_push(&self->stack, (iVal) (pomA4.iInt));                  // push old stack offset
-			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);         // jmp to instr body
-
+			//iStack_debug(&self->stack, stackOffset, "before call");
+			pomA4.iInt = self->stack.size;
+			iStack_push(&self->stack, (iVal) 0);            // return value on 0
+			iStack_push(&self->stack, (iVal) i.a1->iInt);      // paramsCnt at 1
+			iStack_push(&self->stack, (iVal) (self->instructions.index + 1)); // next instr after return  at 2
+			iStack_push(&self->stack, (iVal) (stackOffset)); // push old stack offset  at 3
+			InstrQueue_atIndex(&(self->instructions), i.dest->iInt); // jmp to instr body
+			stackOffset = pomA4.iInt;
+			//iStack_debug(&self->stack, stackOffset, "after call");
 			continue;
 
 		case i_return:
-			while (self->stack.actualIndex > stackOffset + 1) //clear all fn mess
+			//iStack_debug(&self->stack, stackOffset, "return");
+			while (self->stack.size  > stackOffset + 4) { //clear all fn mess
 				iStack_pop(&(self->stack));
+				//printf("pop variables %d\n", self->stack.size);
+			}
+			//iStack_debug(&self->stack, stackOffset, "variables poped");
 			stackOffset = iStack_pop(&self->stack).iInt;
-			InstrQueue_atIndex(&(self->instructions),iStack_pop(&self->stack).iInt); // jmp back to caller
-			break;
+			pomA4 = iStack_pop(&self->stack);                      // next instr
+			InstrQueue_atIndex(&(self->instructions), pomA4.iInt); // jmp back to caller
+			pomA1 = iStack_pop(&self->stack);                      // paramsCnt
+			pomA2 = iStack_pop(&self->stack);                      //  retVal
+			for (index = 0; index < pomA1.iInt; index++) { // pop params
+				iStack_pop(&self->stack);
+				//printf("param pop %d\n", self->stack.size);
+			}
+			iStack_push(&self->stack, pomA2);
+			//printf("return %d\n", pomA2.iInt);
+			//iStack_debug(&self->stack, stackOffset, "after return");
+			continue;
 
 		case i_stop:
 			return;
 
 		default:
-			unimplementedError("Unimplemented instruction for the interpret\n");
+			rt_error("Instruction with unknown type");
+		}
+		if (!self->instructions.actual->next) {
+			rt_error("Program was not properly finished");
 		}
 		InstrQueue_next(&(self->instructions));
 	}
-	if (!self->instructions.actual) {
-		rt_error("Program was not properly finished");
-	}
+
 }
 void iStack__dell__(iStack * self) {
 	int i;
