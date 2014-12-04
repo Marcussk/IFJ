@@ -100,19 +100,23 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 }
 
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
-		int gotFunc, InstrQueue * instructions, ParamsListItem * param) { // ')' already found and popped
+		InstrQueue * instructions, ParamsListItem * paramNode) { // ')' already found and popped
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
 	*TopMost = stack->top->data;
 
 	if (TopMost->type == nonterminal) { // Got parameter
+		printf("%s\n", iVar_type2str(paramNode->param->type));
+
 		result = exprStack_pop(stack);
 		//checkParam(result, paramCount)
 		*TopMost = stack->top->data;
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
-			return reduceParams(stack, tokenBuff, ++paramCount, 1, instructions, param);
+			if (paramNode)
+				return reduceParams(stack, tokenBuff, ++paramCount, instructions, paramNode->next);
+
 		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
 			*TopMost = stack->top->data;
@@ -129,7 +133,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 										result.datatype,
 										pCount, NULL, p });
 				exprStack_pop(stack); // pop t_func on stack
-			} else if (gotFunc) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
+			} else if (paramNode) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
 						getTokenName(stack->top->data.content));
 			exprStack_push(stack, result);
@@ -257,9 +261,9 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		exprStack_push(stack, last);
 		iFunction * func = findFunction(stack);
 		if (func)
-			reduceParams(stack, tokenBuff, 1, 0, instructions, func->params);
+			reduceParams(stack, tokenBuff, 1, instructions, func->params);
 		else
-			syntaxError("Could not reduce function", -1, getTokenName(TopMostTerminal->content));
+			reduceParams(stack, tokenBuff, 1, instructions, NULL);
 
 		break;
 	default:

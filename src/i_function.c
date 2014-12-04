@@ -7,13 +7,16 @@ iFunction * iFunction__init__() {
 		memoryError("Can't allocate memory for iFunction");
 	}
 	self->bodyInstrIndex = -1;
-	self->params = NULL;
+	self->params.First = NULL;
+	self->params.Last = NULL;
 	self->retVal.isInitialized = false;
 	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
 	self->builtin = b_none;
 	return self;
 }
+
+
 
 ParamsListItem * ParamsListItem__init__() {
 	ParamsListItem * self = malloc(sizeof(ParamsListItem));
@@ -22,25 +25,53 @@ ParamsListItem * ParamsListItem__init__() {
 	}
 	self->param = NULL;
 	self->next = NULL;
+	self->prev = NULL;
 	return self;
 }
 
+void iFunction_listInit(ParamsList *List) {
+	List->First = NULL;
+	List->Last = NULL;
+}
+
+void iFunction_addParam(ParamsList *List, iVar * var) {
+	ParamsListItem *newItem = NULL;
+
+	newItem = malloc(sizeof(ParamsListItem));
+	if (newItem == NULL){
+		memoryError("Could not allocate memory for parameter");
+		return;
+	}
+
+	newItem->data = val;
+	newItem->next = NULL;
+
+	if (List->First == NULL){
+		List->First = newItem;
+		newItem->prev = NULL;
+	}
+	else{
+		List->Last->next = newItem;
+		newItem->prev = List->Last;
+	}
+
+	List->Last = newItem;
+}
+/*
 void iFunction_addParam(iFunction * self, iVar * var) {
 	ParamsListItem * lastItem = self->params;
-	int stackAddr = -1;
 	if (!lastItem) {
 		self->params = ParamsListItem__init__();
-		self->params->param = var;
+		self->params->data = var;
 	} else {
 		while (lastItem->next){
 			lastItem = lastItem->next;
-			var->stackIndex --;
 		}
 		lastItem->next = ParamsListItem__init__();
-		lastItem->next->param = var;
+		lastItem->next->data = var;
 	}
-	var->stackIndex = stackAddr;
 }
+*/
 
 void iFunction_buildParamIndexes(iFunction * self) {
 	int paramsCnt = 0;
