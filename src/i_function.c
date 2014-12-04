@@ -7,7 +7,8 @@ iFunction * iFunction__init__() {
 		memoryError("Can't allocate memory for iFunction");
 	}
 	self->bodyInstrIndex = -1;
-	self->params = NULL;
+	self->params.First = NULL;
+	self->params.Last = NULL;
 	self->retVal.isInitialized = false;
 	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
@@ -15,45 +16,70 @@ iFunction * iFunction__init__() {
 	return self;
 }
 
+
+
 ParamsListItem * ParamsListItem__init__() {
 	ParamsListItem * self = malloc(sizeof(ParamsListItem));
 	if (!self) {
 		memoryError("Can't allocate memory for ParamsListItem");
 	}
-	self->param = NULL;
+	self->data = NULL;
 	self->next = NULL;
+	self->prev = NULL;
 	return self;
 }
 
+void iFunction_listInit(ParamsList *List) {
+	List->First = NULL;
+	List->Last = NULL;
+}
+
+void iFunction_addParam(iFunction * self, iVar * var) {
+	ParamsListItem *newItem = NULL;
+
+	newItem = malloc(sizeof(ParamsListItem));
+	if (newItem == NULL){
+		memoryError("Could not allocate memory for parameter");
+		return;
+	}
+
+	newItem->data = var;
+	newItem->next = NULL;
+
+	if (self->params.First == NULL){
+		self->params.First = newItem;
+		newItem->prev = NULL;
+	}
+	else{
+		self->params.Last->next = newItem;
+		newItem->prev = self->params.Last;
+	}
+
+	self->params.Last = newItem;
+}
+/*
 void iFunction_addParam(iFunction * self, iVar * var) {
 	ParamsListItem * lastItem = self->params;
-	int stackAddr = -1;
 	if (!lastItem) {
 		self->params = ParamsListItem__init__();
-		self->params->param = var;
+		self->params->data = var;
 	} else {
 		while (lastItem->next){
 			lastItem = lastItem->next;
-			var->stackIndex --;
 		}
 		lastItem->next = ParamsListItem__init__();
-		lastItem->next->param = var;
+		lastItem->next->data = var;
 	}
-	var->stackIndex = stackAddr;
 }
+*/
 
 void iFunction_buildParamIndexes(iFunction * self) {
-	int paramsCnt = 0;
-	int i;
-	ParamsListItem * lastItem = self->params;
-	while (lastItem) {
-		lastItem = lastItem->next;
-		paramsCnt++;
-	}
-	lastItem = self->params;
-	for (i = -1 * paramsCnt; i < 0; i++) {
-		lastItem->param->stackIndex = i;
-		lastItem = lastItem->next;
+	int i = -1;
+	ParamsListItem * lastItem = self->params.Last;
+	while(lastItem){
+		lastItem->data->stackIndex = i;
+		i--;
+		lastItem = lastItem->prev;
 	}
 }
 
@@ -64,7 +90,7 @@ void ParamsListItem__dell__(ParamsListItem * self) {
 }
 
 void iFunction__dell__(iFunction * self) {
-	if (self->params)
-		ParamsListItem__dell__(self->params);
+	if (self->params.First)
+		ParamsListItem__dell__(self->params.First);
 }
 

@@ -4,9 +4,9 @@ void InstrQueueArr__init__(InstrQueueArr *self) {
 	self->QueueArr = malloc( QUEUE_START_SIZE * sizeof(Instruction));
 	if (self->QueueArr == NULL)
 		memoryError("Can't allocate memory for QueueArr");
-	self->first = 0;
-	self->last = 0;
-	self->actual = 0;
+	self->first = -1;
+	self->last = -1;
+	self->actual = -1;
 	self->prealocated = QUEUE_START_SIZE;
 }
 

@@ -32,7 +32,7 @@ void syntaxError(char * str, int lineNum, char * actualTokenName);
 void sem_definitionError( int lineNum, char * varName);
 void sem_TypeError( char * nameOfType);
 void sem_CondError(char * nameOfType);
-void sem_Error(char * str);
+void sem_Error(char * str, int lineNum);
 
 void rt_readlnNumError();
 void rt_notInitError(char * varName);
