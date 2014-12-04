@@ -206,32 +206,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 }
 
-// "("  already found (args are in function call)
-/*
- paramaters during function call
- id := f(args)
- args -> seznam termu
- */
-void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	Token lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_rParenthessis)     // ) - args are empty
-		return;
-	else
-		TokenBuff_pushBack(&self->tokBuff, lastToken);
-
-	while (lastToken != t_rParenthessis) {
-		SyntaxAnalyzer_parseExpr(self);
-		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken == t_rParenthessis)     // ) - end of args
-			return;
-		else if (lastToken == t_comma)
-			continue;
-		else
-			syntaxError("expected \",\" or \")\"", self->lp->lineNum,
-					getTokenName(lastToken));
-	}
-}
-
 /*
  * ( params are in function declarations)
  During definition of user function
@@ -239,6 +213,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	Token lastToken;
+	self->lp->idMode = lp_parseParams;
 
 	NEXT_TOK(t_lParenthessis, "expected \"(\"")
 	LexParser_fnParamsEnter(self->lp);
@@ -303,7 +278,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
 
-	LexParser_fnBodyEnter(self->lp, lastToken);
+	LexParser_fnDefEnter(self->lp, lastToken);
 	fn->val.fn->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
@@ -313,9 +288,11 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
 		NEXT_TOK(t_begin, "expected begin (function body)")
+		iFunction_buildParamIndexes(fn->val.fn);
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	case t_begin:
+		self->lp->idMode = lp_searchOnly;
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	default:

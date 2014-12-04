@@ -6,6 +6,7 @@
 
 #include "ifj_types.h"
 #include "instruction.h"
+#include "i_function.h"
 
 //the entire header file file
 void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2);
