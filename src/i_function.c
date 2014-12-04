@@ -79,6 +79,7 @@ void iFunction_buildParamIndexes(iFunction * self) {
 	while(lastItem){
 		lastItem->data->stackIndex = i;
 		i--;
+		lastItem = lastItem->prev;
 	}
 }
 
