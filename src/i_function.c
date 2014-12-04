@@ -23,7 +23,7 @@ ParamsListItem * ParamsListItem__init__() {
 	if (!self) {
 		memoryError("Can't allocate memory for ParamsListItem");
 	}
-	self->param = NULL;
+	self->data = NULL;
 	self->next = NULL;
 	self->prev = NULL;
 	return self;
@@ -43,7 +43,7 @@ void iFunction_addParam(ParamsList *List, iVar * var) {
 		return;
 	}
 
-	newItem->data = val;
+	newItem->data = var;
 	newItem->next = NULL;
 
 	if (List->First == NULL){

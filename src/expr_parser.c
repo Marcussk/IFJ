@@ -107,7 +107,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	*TopMost = stack->top->data;
 
 	if (TopMost->type == nonterminal) { // Got parameter
-		printf("%s\n", iVar_type2str(paramNode->param->type));
+		printf("%s\n", iVar_type2str(paramNode->data->type));
 
 		result = exprStack_pop(stack);
 		//checkParam(result, paramCount)

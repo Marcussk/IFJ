@@ -23,7 +23,7 @@ typedef enum {
 //first n iVars in
 typedef struct s_iFunction{
 	iVar retVal;
-	struct s_ParamsListItem * params;
+	ParamsList params;
 	int bodyInstrIndex;
 	Builtins builtin;
 } iFunction;
