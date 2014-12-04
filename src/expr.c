@@ -12,16 +12,17 @@ IMPLEMENT_STACK(expr, ExprToken);
 
 ExprToken ExprLastToken;
 
-
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
 
-
-void ExprInit(exprStack *stack) {
+void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
+		InstrQueue * instructions) {
+	self->tokenBuff = tokenBuff;
+	self->instructions = instructions;
 	ExprToken start;
 	ExprToken_Init(&start);
-	exprStack__init__(stack);
-	exprStack_push(stack, start);
+	exprStack__init__(&self->stack);
+	exprStack_push(&self->stack, start);
 	ExprToken_Init(&ExprLastToken);
 }
 
@@ -85,7 +86,6 @@ tIFJ getResultType(tIFJ operand1, tIFJ operand2, Token operator) {
 	return iUnknown;
 }
 
-
 void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		int gotFunc, InstrQueue * instructions) { // ')' already found and popped
 	ExprToken *TopMost;
@@ -131,19 +131,41 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	}
 }
 
+void Expr_reduceBinaryOperator(exprStack *stack, TokenBuff *tokenBuff,
+		InstrQueue * instructions) {
+	ExprToken operand2 = exprStack_pop(stack);
+	ExprToken operator = exprStack_pop(stack);
+	ExprToken operand1 = exprStack_pop(stack);
+	ExprToken result;
+
+	if (operand2.type != nonterminal || operand1.type != nonterminal) {
+		syntaxError("Expression Error - Operands error", tokenBuff->lp->lineNum,
+				"nonterminal probably ','");
+	}
+	ExprToken_Init(&result);
+
+	result.datatype = getResultType(operand1.datatype, operand2.datatype,
+			operator.content);
+	InstrParam * paramCnt = malloc(sizeof(InstrParam));
+	paramCnt->iInt = 0;
+	InstrQueue_insert(instructions,
+			(Instruction ) { Token2Instruction(operator.content),
+							operand1.datatype, paramCnt,
+							NULL, NULL });
+
+	result.type = nonterminal;
+	result.content = t_id;
+	exprStack_push(stack, result);
+}
+
 void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		TokenBuff *tokenBuff, InstrQueue * instructions) {
-	ExprToken operand1, operator, operand2, result;
-	ExprToken *parameter;
 	Instruction instr;
 	InstrParam * p = NULL;
-
-	// [TODO] useless
-	parameter = malloc(sizeof(ExprToken));
-	ExprToken_Init(parameter);
-
 	Token cont = TopMostTerminal->content;
+
 	EXPR_DEBUGING(printf("-----%d\n", cont);)
+
 	switch (cont) {
 	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
 		if (TopMostTerminal->type == terminal) {
@@ -174,7 +196,6 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			syntaxError("Reduction of token which was already reducted", -1,
 					ExprToken_getName(*TopMostTerminal));
 		}
-		// [TODO] instr pop
 		break;
 	case t_plus:
 	case t_minus:
@@ -195,30 +216,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
 			syntaxError("Expression Error - Operator error",
 					tokenBuff->lp->lineNum, ",");
-
-		operand2 = exprStack_pop(stack);
-		operator = exprStack_pop(stack);
-		operand1 = exprStack_pop(stack);
-
-		if (operand2.type != nonterminal || operand1.type != nonterminal) {
-			syntaxError("Expression Error - Operands error",
-					tokenBuff->lp->lineNum, "nonterminal probably ','");
-		}
-		ExprToken_Init(&result);
-
-		result.datatype = getResultType(operand1.datatype, operand2.datatype,
-				operator.content);
-		InstrParam * paramCnt = malloc(sizeof(InstrParam));
-		paramCnt->iInt = 0;
-		InstrQueue_insert(instructions,
-				(Instruction ) { Token2Instruction(operator.content),
-								operand1.datatype, paramCnt,
-								NULL, NULL });
-
-		result.type = nonterminal;
-		result.content = t_id;
-		exprStack_push(stack, result);
-		// [TODO] instr add, eq, etc...
+		Expr_reduceBinaryOperator(stack, tokenBuff, instructions);
 		break;
 	case t_rParenthessis:
 		if (findHandle(stack) < 4)
@@ -244,10 +242,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		}
 
 		exprStack_push(stack, last);
-
 		reduceParams(stack, tokenBuff, 1, 0, instructions);
-		result.type = nonterminal;
-		result.content = t_id;
 		break;
 	default:
 		syntaxError("unknown content of ExprToken", -1, "");
@@ -266,7 +261,6 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	instr.a2 = NULL;
 	instr.dest = NULL;
 	InstrParam * param;
-
 	while (true) {
 		lastToken = TokenBuff_next(tokenBuff);
 		if (lastToken == t_id) {
@@ -292,7 +286,6 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		} else {
 			syntaxError("write call unexpected argument",
 					tokenBuff->lp->lineNum, getTokenName(lastToken));
-
 		}
 		InstrQueue_insert(instructions, instr);
 		if (instr.type == iStackRef) {
@@ -308,7 +301,6 @@ void parseWrite(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		else
 			syntaxError("write call unexpected argument",
 					tokenBuff->lp->lineNum, getTokenName(lastToken));
-
 	}
 }
 
@@ -342,32 +334,28 @@ void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
 				getTokenName(lastToken));
 }
 
-tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
+tIFJ ExprParser_parse(ExprParser * self) {
 	ExprToken *TopMostTerminal;
-	exprStack *stack = malloc(sizeof(exprStack));
-	if (!stack)
-		memoryError("expression can't allocate memory for new stack\n");
-	ExprInit(stack);
 
-	Token lastToken = TokenBuff_next(tokenBuff);
-	if (lastToken == t_id && tokenBuff->lp->lastSymbol->type == iFn
-			&& tokenBuff->lp->lastSymbol->val.fn->builtin) {
-		Builtins b = tokenBuff->lp->lastSymbol->val.fn->builtin;
+	Token lastToken = TokenBuff_next(self->tokenBuff);
+	if (lastToken == t_id && self->tokenBuff->lp->lastSymbol->type == iFn
+			&& self->tokenBuff->lp->lastSymbol->val.fn->builtin) {
+		Builtins b = self->tokenBuff->lp->lastSymbol->val.fn->builtin;
 		switch (b) {
 		case b_readLn:
-			parseReadLn(tokenBuff, instructions);
+			parseReadLn(self->tokenBuff, self->instructions);
 			return iVoid;
 		case b_write:
-			parseWrite(tokenBuff, instructions);
+			parseWrite(self->tokenBuff, self->instructions);
 			return iVoid;
 		default:
 			break;
 		}
 	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->lineNum);)
-	tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
+	tokenToExpr(&ExprLastToken, lastToken, self->tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	do {
-		TopMostTerminal = findTopMostTerminal(stack);
+		TopMostTerminal = findTopMostTerminal(&self->stack);
 		EXPR_DEBUGING(
 				printStack(stack); printf("prtable indexes [%d][%d]\n", TopMostTerminal->content, ExprLastToken.content);)
 
@@ -375,49 +363,57 @@ tIFJ expression(TokenBuff * tokenBuff, InstrQueue * instructions) {
 		case shift:		// Vloz zacatek handle
 			EXPR_DEBUGING(printf("shift\n");)
 			TopMostTerminal->shifted = true;
-			exprStack_push(stack, ExprLastToken);
-			lastToken = TokenBuff_next(tokenBuff);
-			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp);
+			exprStack_push(&self->stack, ExprLastToken);
+			lastToken = TokenBuff_next(self->tokenBuff);
+			tokenToExpr(&ExprLastToken, lastToken, self->tokenBuff->lp);
 			break;
 
 		case equal:	// push ExprLastToken
 			EXPR_DEBUGING(printf("equal\n");)
-			exprStack_push(stack, ExprLastToken);
-			lastToken = TokenBuff_next(tokenBuff);
-			tokenToExpr(&ExprLastToken, lastToken, tokenBuff->lp);
+			exprStack_push(&self->stack, ExprLastToken);
+			lastToken = TokenBuff_next(self->tokenBuff);
+			tokenToExpr(&ExprLastToken, lastToken, self->tokenBuff->lp);
 			break;
 
 		case reduce: // Search for handle on stack and reduce expression
 			EXPR_DEBUGING(printf("reduce\n");)
-			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
-			TopMostTerminal = findTopMostTerminal(stack);
+			reduceRule(&self->stack, TopMostTerminal, self->tokenBuff,
+					self->instructions);
+			TopMostTerminal = findTopMostTerminal(&self->stack);
 			TopMostTerminal->shifted = false;
 			break;
 
 		case error:
 			syntaxError("Expression Error, error state from prTable",
-					tokenBuff->lp->lineNum, getTokenName(lastToken));
+					self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 		};
 	} while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)); // cann't  require anything else
 
 	while (true) {
-		TopMostTerminal = findTopMostTerminal(stack);
-		if (stack->size == 2 && stack->top->data.type == nonterminal) { // only $ and S
+		TopMostTerminal = findTopMostTerminal(&self->stack);
+		if (self->stack.size == 2
+				&& self->stack.top->data.type == nonterminal) { // only $ and S
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
 			EXPR_DEBUGING(printf("reduce\n");)
-			reduceRule(stack, TopMostTerminal, tokenBuff, instructions);
-			TopMostTerminal = findTopMostTerminal(stack);
+			reduceRule(&self->stack, TopMostTerminal, self->tokenBuff,
+					self->instructions);
+			TopMostTerminal = findTopMostTerminal(&self->stack);
 			TopMostTerminal->shifted = false;
 		} else {
 			EXPR_DEBUGING(printStack(stack);)
 			syntaxError("Expression Error Everything read, can't reduce",
-					tokenBuff->lp->lineNum, ExprToken_getName(ExprLastToken));
+					self->tokenBuff->lp->lineNum,
+					ExprToken_getName(ExprLastToken));
 		}
 	}EXPR_DEBUGING(
 			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
 
-	TokenBuff_pushBack(tokenBuff, lastToken);
-	return (stack->top->data.datatype);
+	TokenBuff_pushBack(self->tokenBuff, lastToken);
+	return self->stack.top->data.datatype;
+}
+
+void ExprParser__dell__(ExprParser * self) {
+	exprStack__dell__(&self->stack);
 }

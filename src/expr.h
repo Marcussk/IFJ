@@ -17,6 +17,16 @@
 
 DECLARE_STACK(expr, ExprToken);
 
-tIFJ expression(TokenBuff * tokenBuff, InstrQueue * istructions);
+typedef struct {
+	TokenBuff * tokenBuff;
+	InstrQueue * instructions;
+	exprStack stack;
+} ExprParser;
+
+
+void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
+		InstrQueue * instructions);
+tIFJ ExprParser_parse(ExprParser * self);
+void ExprParser__dell__(ExprParser * self);
 
 #endif

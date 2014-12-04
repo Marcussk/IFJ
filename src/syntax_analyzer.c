@@ -17,7 +17,12 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 }
 
 tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
-	return expression(&self->tokBuff, &self->instr);
+	ExprParser expr;
+	tIFJ exprType;
+	ExprParser__init__(&expr, &self->tokBuff, &self->instr);
+	exprType = ExprParser_parse(&expr);
+	ExprParser__dell__(&expr);
+	return exprType;
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
@@ -243,14 +248,12 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 						self->lp->lineNum, getTokenName(lastToken));
 			}
 			return;
-		} 
-		else {											 // ;
-			lastToken = TokenBuff_next(&self->tokBuff);                        
- 			if(lastToken != t_id){                                         
-	 			syntaxError("expected id in argument list after semicolon",self->lp->lineNum, getTokenName(lastToken));\
-			}
-			else
-			{
+		} else {											 // ;
+			lastToken = TokenBuff_next(&self->tokBuff);
+			if (lastToken != t_id) {
+				syntaxError("expected id in argument list after semicolon",
+						self->lp->lineNum, getTokenName(lastToken));\
+			} else {
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
 			}
 		}
@@ -341,7 +344,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_period:
 			tok = TokenBuff_next(&self->tokBuff);
 			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL,
-							NULL, NULL });
+					NULL, NULL });
 			if (tok == t_eof)
 				return;
 			else {

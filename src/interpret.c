@@ -374,12 +374,7 @@ void Interpret_run(Interpret * self) {
 	}
 
 }
-void iStack__dell__(iStack * self) {
-	int i;
-	for (i = 0; i < self->size; i++) {
-		iStack_pop(self);
-	}
-}
+
 
 void Interpret__dell__(Interpret * self) {
 	InstrQueue__dell__(&self->instructions);
