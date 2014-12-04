@@ -23,7 +23,7 @@ void namePrefix##Stack__init__(namePrefix##Stack * self);                      \
 void namePrefix##Stack_push(namePrefix##Stack * s, stackElementT data) ;       \
 stackElementT namePrefix##Stack_pop(namePrefix##Stack * s);                    \
 stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index);  \
-
+void namePrefix##Stack__dell__(namePrefix##Stack * self)
 
 #define IMPLEMENT_STACK(namePrefix, stackElementT)                             \
                                                                                \
@@ -64,6 +64,12 @@ stackElementT * namePrefix##Stack_getAt(namePrefix##Stack * self, int index) { \
 		tmp= tmp->next;                                                        \
 	return &(tmp->data);                                                       \
 }                                                                              \
-
+                                                                               \
+void namePrefix##Stack__dell__(namePrefix##Stack * self) {                     \
+	int i;                                                                     \
+	for (i = 0; i < self->size; i++) {                                         \
+		namePrefix##Stack_pop(self);                                           \
+	}                                                                          \
+}
 
 #endif

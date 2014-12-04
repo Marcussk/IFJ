@@ -17,7 +17,12 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 }
 
 tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
-	return expression(&self->tokBuff, &self->instr);
+	ExprParser expr;
+	tIFJ exprType;
+	ExprParser__init__(&expr, &self->tokBuff, &self->instr);
+	exprType = ExprParser_parse(&expr);
+	ExprParser__dell__(&expr);
+	return exprType;
 }
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
@@ -206,32 +211,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 }
 
-// "("  already found (args are in function call)
-/*
- paramaters during function call
- id := f(args)
- args -> seznam termu
- */
-void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
-	Token lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_rParenthessis)     // ) - args are empty
-		return;
-	else
-		TokenBuff_pushBack(&self->tokBuff, lastToken);
-
-	while (lastToken != t_rParenthessis) {
-		SyntaxAnalyzer_parseExpr(self);
-		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken == t_rParenthessis)     // ) - end of args
-			return;
-		else if (lastToken == t_comma)
-			continue;
-		else
-			syntaxError("expected \",\" or \")\"", self->lp->lineNum,
-					getTokenName(lastToken));
-	}
-}
-
 /*
  * ( params are in function declarations)
  During definition of user function
@@ -239,6 +218,7 @@ void SyntaxAnalyzer_parse_argList(SyntaxAnalyzer * self) {
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	Token lastToken;
+	self->lp->idMode = lp_parseParams;
 
 	NEXT_TOK(t_lParenthessis, "expected \"(\"")
 	LexParser_fnParamsEnter(self->lp);
@@ -268,14 +248,12 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 						self->lp->lineNum, getTokenName(lastToken));
 			}
 			return;
-		} 
-		else {											 // ;q
-			lastToken = TokenBuff_next(&self->tokBuff);                        
- 			if(lastToken != t_id){                                         
-	 			syntaxError("expected id in argument list after semicolon",self->lp->lineNum, getTokenName(lastToken));\
-			}
-			else
-			{
+		} else {											 // ;
+			lastToken = TokenBuff_next(&self->tokBuff);
+			if (lastToken != t_id) {
+				syntaxError("expected id in argument list after semicolon",
+						self->lp->lineNum, getTokenName(lastToken));\
+			} else {
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
 			}
 		}
@@ -298,13 +276,12 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn->val.fn->bodyInstrIndex = self->instr.index + 1;
 
 	SyntaxAnalyzer_parse_paramList(self);
-
 	// [TODO] check and implement forward
 	NEXT_TOK(t_colon, "expected \":\"")
 
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
 
-	LexParser_fnBodyEnter(self->lp, lastToken);
+	LexParser_fnDefEnter(self->lp, lastToken);
 	fn->val.fn->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
@@ -314,9 +291,11 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
 		NEXT_TOK(t_begin, "expected begin (function body)")
+		iFunction_buildParamIndexes(fn->val.fn);
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	case t_begin:
+		self->lp->idMode = lp_searchOnly;
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	default:
@@ -365,7 +344,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_period:
 			tok = TokenBuff_next(&self->tokBuff);
 			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL,
-							NULL, NULL });
+					NULL, NULL });
 			if (tok == t_eof)
 				return;
 			else {

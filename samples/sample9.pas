@@ -6,20 +6,20 @@ begin
     a := 5;
     if a > 0 then
     begin
-        write('kladne')
+        write('kladne', ''#10'')
     end
     else
     begin
-        write('zaporne')
+        write('zaporne', ''#10'')
     end
  	
 	b := 5 - 10;
     if b > 0 then
     begin
-        write('kladne')
+        write('kladne', ''#10'')
     end
     else
     begin
-        write('zaporne')
+        write('zaporne', ''#10'')
     end
 end.

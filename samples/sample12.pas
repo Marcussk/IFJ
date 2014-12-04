@@ -8,7 +8,7 @@ var
     temp_result : integer;
     decremented_n : integer;
 begin
-	write(x);
+	write('volání s n:', n, ' x:' , x, ''#10'');
     if n < 2 then
     begin
         factorial := 1
@@ -16,7 +16,7 @@ begin
     else
     begin
         decremented_n := n - 1;
-        temp_result := factorial(decremented_n);
+        temp_result := factorial(decremented_n, x+1);
         factorial := n * temp_result
     end
 end;
@@ -31,7 +31,7 @@ begin
     end
     else
     begin
-        vysl := factorial(a);
+        vysl := factorial(a,0);
         write('Vysledek je: ', vysl, ''#10'')
     end
 end.

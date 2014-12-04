@@ -24,6 +24,7 @@ typedef struct s_iFunction{
 
 
 iFunction * iFunction__init__();
+void iFunction_buildParamIndexes(iFunction * self);
 void iFunction_addParam(iFunction * self, iVar * var);
 void iFunction__dell__(iFunction * self);
 

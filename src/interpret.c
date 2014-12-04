@@ -33,7 +33,6 @@ void Interpret_run(Interpret * self) {
 
 	while (self->instructions.actual) {
 		i = self->instructions.actual->val;
-		//printf("%d\n", self->instructions.index);
 		switch (i.code) {
 		case i_noop:
 			break;
@@ -321,16 +320,16 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_copy:
-			pomA1 = iStack_pop(&(self->stack));
-			pomA2 = iStack_pop(&(self->stack));
 			pomA3 = iStack_pop(&(self->stack));
+			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			pomA4.iString = func_copy(pomA1.iString, pomA2.iInt, pomA3.iInt);
 			iStack_push(&(self->stack), pomA4);
 			break;
 
 		case i_find:
-			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
+			pomA1 = iStack_pop(&(self->stack));
 			pomA3.iInt = func_find(pomA1.iString, pomA2.iString);
 			iStack_push(&(self->stack), pomA3);
 			break;
@@ -348,12 +347,9 @@ void Interpret_run(Interpret * self) {
 			continue;
 
 		case i_return:
-			//iStack_debug(&self->stack, stackOffset, "return");
 			while (self->stack.size  > stackOffset + 4) { //clear all fn mess
 				iStack_pop(&(self->stack));
-				//printf("pop variables %d\n", self->stack.size);
 			}
-			//iStack_debug(&self->stack, stackOffset, "variables poped");
 			stackOffset = iStack_pop(&self->stack).iInt;
 			pomA4 = iStack_pop(&self->stack);                      // next instr
 			InstrQueue_atIndex(&(self->instructions), pomA4.iInt); // jmp back to caller
@@ -361,11 +357,8 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&self->stack);                      //  retVal
 			for (index = 0; index < pomA1.iInt; index++) { // pop params
 				iStack_pop(&self->stack);
-				//printf("param pop %d\n", self->stack.size);
 			}
 			iStack_push(&self->stack, pomA2);
-			//printf("return %d\n", pomA2.iInt);
-			//iStack_debug(&self->stack, stackOffset, "after return");
 			continue;
 
 		case i_stop:
@@ -381,14 +374,10 @@ void Interpret_run(Interpret * self) {
 	}
 
 }
-void iStack__dell__(iStack * self) {
-	int i;
-	for (i = 0; i < self->size; i++) {
-		iStack_pop(self);
-	}
-}
+
 
 void Interpret__dell__(Interpret * self) {
 	InstrQueue__dell__(&self->instructions);
 	iStack__dell__(&self->stack);
+	fflush(stdout);
 }

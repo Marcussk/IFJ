@@ -95,6 +95,13 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 				sem_definitionError(self->lineNum, self->str.buff); // redefinition
 			}
 			break;
+		case lp_parseParams:
+			if (HashTable_insert(self->symbolTable, self->str.buff,
+					&(self->lastSymbol)) != ht_inserted) {
+				sem_definitionError(self->lineNum, self->str.buff); // redefinition
+			}
+			iFunction_addParam(self->symbolTable->masterItem->val.fn, self->lastSymbol);
+			break;
 		case lp_searchOnly:
 			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
 			if (!i) {
@@ -102,12 +109,12 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			self->lastSymbol = i->var;
 			break;
-		case lp_debug:
-			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
-			if (i)
-				self->lastSymbol = i->var;
+		//case lp_debug:
+		//	i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+		//	if (i)
+		//		self->lastSymbol = i->var;
+		//	break;
 
-			break;
 		default:
 			lexError("LexParser don't know if search or insert new id\n",
 					self->str.buff, self->lineNum);
@@ -210,6 +217,7 @@ bool CanAddAsParam(LexParser * self) {
 void LexParser_fnParamsEnter(LexParser * self) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	iVar * fnRecurse = NULL;
+	self->idMode = lp_parseParams;
 	if( HashTable_insert(fnSymTable,self->str.buff, &fnRecurse) !=ht_inserted){
 		lexError("Error while creating symbol for function recurse",self->str.buff, self->lineNum);
 	}
@@ -220,7 +228,7 @@ void LexParser_fnParamsEnter(LexParser * self) {
 }
 
 // end saving ids to params, save function return type and return variable to this fn symbol table
-void LexParser_fnBodyEnter(LexParser * self, tIFJ fnReturnType) {
+void LexParser_fnDefEnter(LexParser * self, tIFJ fnReturnType) {
 	iVar * fn = self->symbolTable->masterItem;
 	fn->val.fn->retVal.type = fnReturnType;
 }

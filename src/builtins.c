@@ -15,7 +15,7 @@ void write(tIFJ type, iVal a1) {
 		printf("%s", a1.iString);
 		break;
 	case iReal:
-		printf("%f", a1.iReal);
+		printf("%g", a1.iReal);
 		break;
 	case iBool:
 		if (a1.iInt == 0) {

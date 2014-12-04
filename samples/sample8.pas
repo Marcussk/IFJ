@@ -6,6 +6,7 @@ begin
     while a > 0 do
     begin
         write(a);
-		a := a - 1    
-	end
+	    a := a - 1    
+         end
+    write('vysl:', a, ''#10'')
 end.

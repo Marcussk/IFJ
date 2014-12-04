@@ -42,15 +42,19 @@ void iFunction_addParam(iFunction * self, iVar * var) {
 	var->stackIndex = stackAddr;
 }
 
-ParamsListItem * iFunction_lastParam(iFunction * self) {
+void iFunction_buildParamIndexes(iFunction * self) {
+	int paramsCnt = 0;
+	int i;
 	ParamsListItem * lastItem = self->params;
-	if (!lastItem)
-		return self->params;
-
-	while (lastItem->next)
+	while (lastItem) {
 		lastItem = lastItem->next;
-
-	return lastItem;
+		paramsCnt++;
+	}
+	lastItem = self->params;
+	for (i = -1 * paramsCnt; i < 0; i++) {
+		lastItem->param->stackIndex = i;
+		lastItem = lastItem->next;
+	}
 }
 
 void ParamsListItem__dell__(ParamsListItem * self) {
