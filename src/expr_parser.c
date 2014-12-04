@@ -1,16 +1,15 @@
 #include "expr_parser.h"
 
-//#define EXPR_DEGUG
+#define EXPR_DEGUG
 
 #ifdef EXPR_DEBUG
-#define EXPR_DEBUGING(body) body
+#define EXPR_DEBUGING(body) \
+	body
 #else
 #define EXPR_DEBUGING(body) ;
 #endif
 
 IMPLEMENT_STACK(expr, ExprToken);
-
-
 
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
@@ -226,19 +225,6 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 					tokenBuff->lp->lineNum, "");
 
 		exprStack_pop(stack); // Pop ')'
-		ExprToken last = exprStack_pop(stack);
-		if (last.content == t_lParenthessis) {
-			last = exprStack_pop(stack);
-			if (last.content != t_func) 	// function with no parameter
-				syntaxError("Empty brackets are not allowed",
-						tokenBuff->lp->lineNum, "");
-			InstrQueue_insert(instructions,
-					(Instruction ) { i_call,
-									last.id->val.fn->retVal.type, NULL,
-									NULL, NULL });
-		}
-
-		exprStack_push(stack, last);
 		reduceParams(stack, tokenBuff, 1, 0, instructions);
 		break;
 	default:
