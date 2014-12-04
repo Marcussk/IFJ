@@ -14,7 +14,7 @@ void SemAnalyzer_checkcond(tIFJ param) {
 	}
 }
 
-typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2) {
+void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2) {
 
 	InstrParam * instrparam;
 	if (( param1 == iInt) && (param2 == iReal)) {
