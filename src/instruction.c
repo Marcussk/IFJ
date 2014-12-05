@@ -43,7 +43,6 @@ InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
 	InstrParam p;
 	switch (type) {
 	case iBool:
-	case iChar:
 	case iInt:
 		p.iInt = v.iInt;
 		break;
@@ -68,7 +67,6 @@ iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 	}
 	switch (type) {
 	case iBool:
-	case iChar:
 	case iInt:
 		v.iInt = a->iInt;
 		break;
