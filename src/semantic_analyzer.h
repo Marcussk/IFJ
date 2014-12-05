@@ -7,9 +7,10 @@
 #include "ifj_types.h"
 #include "instruction.h"
 #include "i_function.h"
+#include "token_map.h"
 
 //the entire header file file
 void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2);
 void SemAnalyzer_checkcond(tIFJ param);
-void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2);
+void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token operator);
 #endif

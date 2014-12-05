@@ -59,7 +59,7 @@ void rt_notInitError() {
 }
 
 void rt_zeroDivisionError() {
-	fprintf(stderr, "ERROR(Runtime/zeroDivision):.");
+	fprintf(stderr, "ERROR(Runtime/zeroDivision):.\n");
 	exit(8);
 }
 void rt_error(char * str) {
