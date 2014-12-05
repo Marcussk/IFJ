@@ -267,8 +267,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	Token lastToken;
 	iVar * fn;
 	char * name;
-	self->lp->idMode = lp_insertOnly;
+	self->lp->idMode = lp_fnSearch;
 	NEXT_TOK(t_id, "id of function expected")
+	self->lp->idMode = lp_insertOnly;
+
 	name = strdup(self->lp->str.buff);
 	fn = self->lp->lastSymbol;
 	fn->type = iFn;
