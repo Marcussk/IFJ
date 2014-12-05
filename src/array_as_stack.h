@@ -9,9 +9,9 @@
 #include "error_handler.h"
 #include "ifj_types.h"
 #include "instruction.h"
+#include "defs.h"
 
 
-#define STACK_MAX_SIZE 4
 
 
 typedef struct {

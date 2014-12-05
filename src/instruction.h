@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include "ifj_types.h"
+#include "queue.h"
 
 // synergy with builtins
 typedef enum {
@@ -49,11 +50,6 @@ typedef struct s_Instruction {
 	union u_InstrParam * dest;   //vysledok operace
 } Instruction;
 
-typedef struct s_InstrQueueNode {
-	Instruction val;
-	struct s_InstrQueueNode * next;
-} InstrQueueNode;
-
 typedef union u_InstrParam {
 	int stackAddr;
 	float iReal;
@@ -61,16 +57,9 @@ typedef union u_InstrParam {
 	char * iString;
 } InstrParam;
 
-typedef struct {
-	int index;
-	InstrQueueNode * first;
-	InstrQueueNode * actual;
-} InstrQueue;
+QUEUE_DECLARE(Instr, Instruction)
 
-void InstrQueue__init__(InstrQueue * self);
-Instruction * InstrQueue_next(InstrQueue * self);
-void InstrQueue_insert(InstrQueue * self, Instruction i);
-Instruction * InstrQueue_atIndex(InstrQueue * self, int index);
+
 void InstrQueue__dell__(InstrQueue * self);
 
 iVal InstrP2iVal(InstrParam * a, tIFJ type);

@@ -30,7 +30,7 @@ void namePrefix##Stack__dell__(namePrefix##Stack * self)
 void namePrefix##Stack__init__(namePrefix##Stack * self) {                     \
 	self->top = NULL;                                                          \
 	self->size = 0;                                                            \
-	self->actualIndex = 0;                                                     \
+	self->actualIndex = -1;                                                     \
 }                                                                              \
                                                                                \
 void namePrefix##Stack_push(namePrefix##Stack * self, stackElementT data) {    \

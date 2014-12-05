@@ -92,7 +92,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	va_start(valist, paramsCnt);
 	iVar * param = NULL;
 	int i;
-	// becouse ht returns place where it creates
+	// becouse ht returns place where is variable created creates
 	iVar * item = NULL;
 	if ((HashTable_insert(ht, name, &item) != ht_inserted)) {
 		unimplementedError("Redefinition of builtin function");

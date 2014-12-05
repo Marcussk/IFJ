@@ -25,24 +25,23 @@ void Interpret_run(Interpret * self) {
 	iVal pomA2;
 	iVal pomA3;
 	iVal pomA4;
-	//InstrQueue_debug(&self->instructions);
+	InstrQueue_debug(&self->instructions);
 
 	int stackOffset = 0;
-	self->instructions.actual = self->instructions.first;
-	self->instructions.index = 0;
-
-	while (self->instructions.actual) {
-		i = self->instructions.actual->val;
+	self->instructions.actual = -1;
+	i = *InstrQueue_next(&self->instructions);
+	while (self->instructions.size > self->instructions.actual) {
+		i = self->instructions.QueueArr[self->instructions.actual];
 		switch (i.code) {
 		case i_noop:
 			break;
 		case i_jmp:
-			InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+			self->instructions.actual = i.dest->iInt;
 			continue;
 		case i_jmpz:
 			pomA1 = iStack_pop(&(self->stack));
 			if (pomA1.iInt == 0) {
-				InstrQueue_atIndex(&(self->instructions), i.dest->iInt);
+				self->instructions.actual = i.dest->iInt;
 				continue;
 			}
 			break;
@@ -335,19 +334,17 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
-			//iStack_debug(&self->stack, stackOffset, "before call");
-			pomA4.iInt = self->stack.size;
 			iStack_push(&self->stack, (iVal) 0);            // return value on 0
+			pomA4.iInt = self->stack.actualIndex;
 			iStack_push(&self->stack, (iVal) i.a1->iInt);      // paramsCnt at 1
-			iStack_push(&self->stack, (iVal) (self->instructions.index + 1)); // next instr after return  at 2
+			iStack_push(&self->stack, (iVal) (self->instructions.actual + 1)); // next instr after return  at 2
 			iStack_push(&self->stack, (iVal) (stackOffset)); // push old stack offset  at 3
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt); // jmp to instr body
 			stackOffset = pomA4.iInt;
-			//iStack_debug(&self->stack, stackOffset, "after call");
 			continue;
 
 		case i_return:
-			while (self->stack.size  > stackOffset + 4) { //clear all fn mess
+			while (self->stack.size > stackOffset + 4) { //clear all fn mess
 				iStack_pop(&(self->stack));
 			}
 			stackOffset = iStack_pop(&self->stack).iInt;
@@ -367,14 +364,14 @@ void Interpret_run(Interpret * self) {
 		default:
 			rt_error("Instruction with unknown type");
 		}
-		if (!self->instructions.actual->next) {
+		i = *InstrQueue_next(&self->instructions);
+		if (!self->instructions.actual == self->instructions.size - 1) {
 			rt_error("Program was not properly finished");
 		}
-		InstrQueue_next(&(self->instructions));
+
 	}
 
 }
-
 
 void Interpret__dell__(Interpret * self) {
 	InstrQueue__dell__(&self->instructions);

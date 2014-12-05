@@ -1,12 +1,12 @@
 #include "array_as_stack.h"
 
 void StackArr__init__(StackArr *self) {
-	self->StackArray = malloc( STACK_MAX_SIZE * sizeof(iVal));
+	self->StackArray = malloc( 32 * sizeof(iVal));
 	if (self->StackArray == NULL)
 		memoryError("Can't allocate memory for Stack");
 
 	self->top = -1;
-	self->prealocated = STACK_MAX_SIZE;
+	self->prealocated = 32;
 }
 
 void StackArr_push(StackArr *self, iVal data) {
@@ -42,7 +42,7 @@ iVal StackArr_getAt(StackArr *self, int index) {
 void StackArr__dell__(StackArr * self) {
 	free(self->StackArray);
 	self->top = 0;
-	self->prealocated = STACK_MAX_SIZE;
+	self->prealocated = -1;
 }
 
 void int_StackArr_debug(StackArr *self) {

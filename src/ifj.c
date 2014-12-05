@@ -12,15 +12,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "array_as_stack.h"
-#include "defs.h"
 #include "interpret.h"
 #include "ial.h"
 #include "lex_parser.h"
 #include "syntax_analyzer.h"
 
 int main(int argc, char *argv[]) {
-
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	Interpret interpret;

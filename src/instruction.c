@@ -1,32 +1,90 @@
 #include "instruction.h"
 
-//vytvari novou instrukci
-Instruction Instr_Create(InstrCode code, tIFJ typ, InstrParam * a1,
-		InstrParam * a2, InstrParam *a3) {
-	Instruction I;
-	I.code = code;
-	I.type = typ;
-	I.a1 = a1;
-	I.a2 = a2;
-	I.dest = a3;
-	return I;
+QUEUE_DEFINE(Instr, Instruction)
+
+void InstrParamDebug(InstrParam * p, char * name){
+	if(!p){
+		printf("%s: %p", name, (void *) p );
+	}else{
+		printf("%s: %d", name , p->iInt);
+	}
 }
 
-void InstrQueue__init__(InstrQueue * self) {
-	self->actual = NULL;
-	self->first = NULL;
-	self->index = -1;
-}
-Instruction * InstrQueue_next(InstrQueue * self) {
-	self->index++;
-	if (self->actual)
-		self->actual = self->actual->next;
-	if (self->actual)
-		return &(self->actual->val);
+void InstrQueue_debug(InstrQueue * self) {
+	Instruction instr;
+	int i;
 
-	return NULL; // [TODO] we probably wont there an error
+	for(i =0; i < self->size; i++) {
+		instr = *InstrQueue_atIndex(self, i);
+		if (self->actual == i)
+			printf("->");
+		else
+			printf("  ");
+		printf("%d code %s type %s, ", i, instr2Str(instr.code),
+				iVar_type2str(instr.type));
+		InstrParamDebug(instr.a1, "a1");
+		InstrParamDebug(instr.a2, ", a2");
+		InstrParamDebug(instr.dest, ", a2");
+		printf("\n");
+	}
 }
 
+void InstrQueue__dell__(InstrQueue * self) {
+	int i;
+	for(i =0; i < self->size; i++) {
+		// [TODO] clear instr
+	}
+	free(self->QueueArr);
+}
+
+
+
+InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
+	InstrParam p;
+	switch (type) {
+	case iBool:
+	case iChar:
+	case iInt:
+		p.iInt = v.iInt;
+		break;
+	case iString:
+		p.iString = v.iString;
+		break;
+	case iReal:
+		p.iReal = v.iReal;
+		break;
+	default:
+		unimplementedError(
+				"Unimplemented cast in InstrP2iVal for the interpret\n");
+	}
+	return p;
+}
+
+iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
+	iVal v;
+	if (!a) {
+		v.iInt = 0;
+		return v;
+	}
+	switch (type) {
+	case iBool:
+	case iChar:
+	case iInt:
+		v.iInt = a->iInt;
+		break;
+	case iString:
+		v.iString = a->iString;
+		break;
+	case iReal:
+		v.iReal = a->iReal;
+		break;
+	default:
+		unimplementedError(
+				"Unimplemented cast in InstrP2iVal for the interpret\n");
+	}
+
+	return v;
+}
 
 char * instr2Str(InstrCode code) {
 	switch (code) {
@@ -112,132 +170,4 @@ InstrCode Token2Instruction(Token token) {
 	default:
 		return i_noop;
 	}
-}
-
-void InstrParamDebug(InstrParam * p, char * name){
-	if(!p){
-		printf("%s: %p", name, (void *) p );
-	}else{
-		printf("%s: %d", name , p->iInt);
-	}
-}
-
-void InstrQueue_debug(InstrQueue * self) {
-	InstrQueueNode * item = self->actual;
-	Instruction instr;
-	int i = 0;
-	self->actual = self->first;
-
-	while (self->actual) {
-		instr = self->actual->val;
-		if (self->actual == item)
-			printf("->");
-		else
-			printf("  ");
-		printf("%d code %s type %s, ", i, instr2Str(instr.code),
-				iVar_type2str(instr.type));
-		InstrParamDebug(instr.a1, "a1");
-		InstrParamDebug(instr.a2, ", a2");
-		InstrParamDebug(instr.dest, ", a2");
-		printf("\n");
-		i++;
-		self->actual = self->actual->next;
-	}
-	self->actual = item;
-
-}
-
-void InstrQueue_insert(InstrQueue * self, Instruction i) {
-	InstrQueueNode * newItem = malloc(sizeof(InstrQueueNode));
-	if (!newItem) {
-		memoryError("InstrQueue_insert can't allocate memory for newItem");
-	}
-	self->index++;
-	newItem->val = i;
-	if (self->actual) {
-		newItem->next = self->actual->next;
-		self->actual->next = newItem;
-	}
-	if (!self->first) {
-		self->first = newItem;
-		newItem->next = NULL;
-	}
-
-	self->actual = newItem;
-}
-
-Instruction * InstrQueue_atIndex(InstrQueue * self, int index) {
-	int i;
-	self->index = index;
-	self->actual = self->first;
-	for (i = 0; i < index; i++) {
-		if (!self->actual) {
-			rt_error("InstrQueue_atIndex out of index");
-		}
-		self->actual = self->actual->next;
-	}
-	return &(self->actual)->val;
-}
-
-void InstrQueue__dell__(InstrQueue * self) {
-	InstrQueueNode * tmp = self->first;
-	InstrQueueNode * tmp2;
-	while (tmp && tmp->next) {
-		tmp2 = tmp;
-		tmp = tmp->next;
-		free(tmp->val.a1);
-		free(tmp->val.a2);
-		free(tmp->val.dest);
-		free(tmp2);
-	}
-	free(tmp);
-}
-
-
-
-InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
-	InstrParam p;
-	switch (type) {
-	case iBool:
-	case iChar:
-	case iInt:
-		p.iInt = v.iInt;
-		break;
-	case iString:
-		p.iString = v.iString;
-		break;
-	case iReal:
-		p.iReal = v.iReal;
-		break;
-	default:
-		unimplementedError(
-				"Unimplemented cast in InstrP2iVal for the interpret\n");
-	}
-	return p;
-}
-
-iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
-	iVal v;
-	if (!a) {
-		v.iInt = 0;
-		return v;
-	}
-	switch (type) {
-	case iBool:
-	case iChar:
-	case iInt:
-		v.iInt = a->iInt;
-		break;
-	case iString:
-		v.iString = a->iString;
-		break;
-	case iReal:
-		v.iReal = a->iReal;
-		break;
-	default:
-		unimplementedError(
-				"Unimplemented cast in InstrP2iVal for the interpret\n");
-	}
-
-	return v;
 }
