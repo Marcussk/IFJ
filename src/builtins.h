@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include "ial.h"
 #include <stdarg.h>
+#include "str_routines.h"
 #include "error_handler.h"
 #include "hash_table.h"
 #include "i_function.h"
