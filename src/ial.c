@@ -40,7 +40,7 @@ char * func_sort(char *str) {
 	int left = str_len / 2 - 1; /* index najpravejsieho uzlu na najnizsej urovni */
 	int right = str_len - 1; /* posleny prvok pola */
 
-	for (i = left; i >= 0; i--) {
+	for (i = left; i >= 0; i--) {		/*ustaveni hromady*/
 		Sift(str, i, right);
 	}
 	for (right = str_len - 1; right >= 1; right--) {

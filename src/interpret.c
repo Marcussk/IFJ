@@ -6,7 +6,7 @@ void iStack_debug(iStack *self, int stackOffset, char * msg) {
 	int i;
 	if (msg)
 		printf("%s: ", msg);
-	printf("<stack %p, size: %d, offset: %d>\n", (void *) self, self->top+1, stackOffset);
+	printf("<stack %p, size: %d, offset: %d>\n", (void *) self, self->top, stackOffset);
 	printf("___________________________________________________________\n");
 	printf("Velkost stacku: %d \n ", self->prealocated);
 	printf("Vypis poloziek staku:\n ");
@@ -35,7 +35,7 @@ void Interpret_run(Interpret * self) {
 	int stackOffset = 0;
 	self->instructions.actual = -1;
 	i = *InstrQueue_next(&self->instructions);
-	while (self->instructions.size > self->instructions.actual) {
+	while (self->instructions.top > self->instructions.actual) {
 		i = self->instructions.QueueArr[self->instructions.actual];
 		switch (i.code) {
 		case i_noop:
@@ -335,13 +335,8 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
-<<<<<<< HEAD
-			//iStack_debug(&self->stack, stackOffset, "before call");
-			pomA4.iInt = self->stack.top+1;
-=======
->>>>>>> 25e28791838247bd1a6b14dd520676f1caf1da1b
 			iStack_push(&self->stack, (iVal) 0);            // return value on 0
-			pomA4.iInt = self->stack.actualIndex;
+			pomA4.iInt = self->stack.top;
 			iStack_push(&self->stack, (iVal) i.a1->iInt);      // paramsCnt at 1
 			iStack_push(&self->stack, (iVal) (self->instructions.actual + 1)); // next instr after return  at 2
 			iStack_push(&self->stack, (iVal) (stackOffset)); // push old stack offset  at 3
@@ -350,11 +345,8 @@ void Interpret_run(Interpret * self) {
 			continue;
 
 		case i_return:
-<<<<<<< HEAD
-			while (self->stack.top+1  > stackOffset + 4) { //clear all fn mess
-=======
-			while (self->stack.size > stackOffset + 4) { //clear all fn mess
->>>>>>> 25e28791838247bd1a6b14dd520676f1caf1da1b
+
+			while (self->stack.top > stackOffset + 4) { //clear all fn mess
 				iStack_pop(&(self->stack));
 			}
 			stackOffset = iStack_pop(&self->stack).iInt;
@@ -375,7 +367,7 @@ void Interpret_run(Interpret * self) {
 			rt_error("Instruction with unknown type");
 		}
 		i = *InstrQueue_next(&self->instructions);
-		if (!self->instructions.actual == self->instructions.size - 1) {
+		if (!self->instructions.actual == self->instructions.top - 1) {
 			rt_error("Program was not properly finished");
 		}
 
