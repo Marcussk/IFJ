@@ -6,13 +6,12 @@
 #include <stdio.h>
 
 #include "error_handler.h"
-#include "ifj_types.h"
 #include "instruction.h"
 
 
 #define DECLARE_STACK(namePrefix, stackElementT) \
 typedef struct { \
-	stackElementT *StackArray; \
+	stackElementT * StackArray; \
 	int top; \
 	int prealocated; \
 } namePrefix##Stack; \
@@ -22,7 +21,7 @@ void namePrefix##Stack__dell__( namePrefix##Stack *self );\
 void namePrefix##Stack_push( namePrefix##Stack *self, stackElementT data );\
 stackElementT namePrefix##Stack_pop( namePrefix##Stack *self );\
 stackElementT *namePrefix##Stack_getAt( namePrefix##Stack *self, int index )
-//void namePrefix##Stack_debug( namePrefix##Stack *self)
+
 
 #define IMPLEMENT_STACK(namePrefix, stackElementT) \
 \
@@ -67,8 +66,8 @@ stackElementT *namePrefix##Stack_getAt(namePrefix##Stack *self, int index) { \
 \
 void namePrefix##Stack__dell__(namePrefix##Stack * self) {\
 	free(self->StackArray);\
-	self->top = 0;\
-	self->prealocated = 32;\
+	self->top = -1;\
+	self->prealocated = -1;\
 }
 
 /*void namePrefix##Stack_debug(namePrefix##Stack *self) {\
