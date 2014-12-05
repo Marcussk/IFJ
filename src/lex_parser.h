@@ -28,6 +28,7 @@ typedef struct {
 	Token preLastToken;
 	Token lastToken;
 	iVar * lastSymbol;
+	iFunction * lastFunction;
 	LexParser_jobPlan planedJob;
 	HashTable * symbolTable;
 	LexParser_mode idMode;
@@ -37,8 +38,7 @@ void LexParser__init__(LexParser * p, FILE * inFile);
 Token LexParser_next(LexParser * p);
 void LexParser__dell__(LexParser * p);
 void LexParser_fnParamsEnter(LexParser * self);
-void LexParser_fnDefEnter(LexParser * self, tIFJ fnReturnType);
 void LexParser_fnBodyLeave(LexParser * self);
-void LexParser_createFnSymbolTable(LexParser * self, iVar * fn);
+void LexParser_fnBodyEnter(LexParser * self, iVar * fn);
 
 #endif
