@@ -1,7 +1,7 @@
 #include "expr_parser.h"
 
 //#define EXPR_DEGUG
-
+ 
 #ifdef EXPR_DEBUG
 #define EXPR_DEBUGING(body) body
 #else
@@ -103,7 +103,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
-	*TopMost = stack->top->data;
+	*TopMost = stack->StackArray[stack->top];
 
 	if (TopMost->type == nonterminal) { // Got parameter
 		//printf("%s\n", iVar_type2str(paramNode->data->type));
@@ -112,7 +112,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 		if (result.datatype != paramNode->data->type)
 			sem_Error("Bad function parameter", tokenBuff->lp->lineNum);
 
-		*TopMost = stack->top->data;
+		*TopMost = stack->StackArray[stack->top];
 		if (TopMost->content == t_comma) { // this must be a function
 			exprStack_pop(stack); // pop comma
 
@@ -122,7 +122,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 
 		} else if (TopMost->content == t_lParenthessis) {
 			exprStack_pop(stack); // Pop '('
-			*TopMost = stack->top->data;
+			*TopMost = stack->StackArray[stack->top];
 			// There must be function id, an operator or nothing on the left from '('
 			if (TopMost->content == t_func) {
 				result.datatype = TopMost->id->val.fn->retVal.type;
@@ -146,10 +146,10 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 				exprStack_pop(stack); // pop t_func on stack
 			} else if (paramNode) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
-						getTokenName(stack->top->data.content));
+						getTokenName(stack->StackArray[stack->top].content));
 			exprStack_push(stack, result);
 
-			stack->top->data.type = nonterminal; // From now, function result must be considered as nonterminal
+			stack->StackArray[stack->top].type = nonterminal; // From now, function result must be considered as nonterminal
 			return;
 		} else if (Token_isOperator(TopMost->content)) // just a regular expression in brackets (maybe useless)
 			return;
@@ -252,7 +252,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - not enough operands",
 					tokenBuff->lp->lineNum, ",");
-		if (TopMostTerminal->content != stack->top->data.content) // ')' Must be on top of stack
+		if (TopMostTerminal->content != stack->StackArray[stack->top].content) // ')' Must be on top of stack
 			syntaxError("Expression syntax error - expected )",
 					tokenBuff->lp->lineNum, "");
 
@@ -428,8 +428,8 @@ tIFJ ExprParser_parse(ExprParser * self) {
 
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(&self->stack);
-		if (self->stack.size == 2
-				&& self->stack.top->data.type == nonterminal) { // only $ and S
+		if (self->stack.top == 2
+				&& self->stack.StackArray[self->stack.top].type == nonterminal) { // only $ and S
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
@@ -448,7 +448,7 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
 
 	TokenBuff_pushBack(self->tokenBuff, lastToken);
-	return self->stack.top->data.datatype;
+	return self->stack.StackArray[self->stack.top].datatype;
 }
 
 void ExprParser__dell__(ExprParser * self) {
