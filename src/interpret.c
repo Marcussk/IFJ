@@ -346,7 +346,7 @@ void Interpret_run(Interpret * self) {
 
 		case i_return:
 
-			while (self->stack.top > stackOffset + 4) { //clear all fn mess
+			while (self->stack.top > stackOffset + 3) { //clear all fn mess
 				iStack_pop(&(self->stack));
 			}
 			stackOffset = iStack_pop(&self->stack).iInt;
