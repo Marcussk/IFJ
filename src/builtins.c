@@ -68,7 +68,6 @@ int readLn(iVal *a1, tIFJ type) {
 			String_append(&str, ch);
 
 		a1->iString = str.buff;
-		// [TODO] 1. new string, 2. while ch != '\n'; String_append(ch); ch = getChar() // because strlen is unknown so array have to be dynamic
 		return 1;
 	case iBool:
 		sem_CondError("readLn not implemented for Bool");
