@@ -276,9 +276,10 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 					self->lp->lineNum, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
 		NEXT_TOK((tIFJ )param->data->type, "type from forward expected")
-		if (param->next)
+		if (param->next) {
 			NEXT_TOK(t_scolon,
 					"expected \";\" after type (and then next param)")
+		}
 		param = param->next;
 	}
 	NEXT_TOK(t_rParenthessis, "expected \")\"")
@@ -309,7 +310,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Function have to have same type as its forward declr.",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
-	LexParser_fnDefEnter(self->lp, lastToken);
+	self->lp->lastFunction->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
@@ -317,13 +318,12 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	if (lastToken == t_forward) {
 		NEXT_TOK(t_scolon, "expected \";\" after forward")
 		self->stackIndexCntr = stackCntrBackup;
-		LexParser_fnBodyLeave(self->lp);
 		self->lp->idMode = lp_searchOnly;
 		return;
 	} else {
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 	}
-	LexParser_createFnSymbolTable(self->lp, fn);
+	LexParser_fnBodyEnter(self->lp, fn);
 	lastToken = TokenBuff_next(&self->tokBuff);
 	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
 	switch (lastToken) {

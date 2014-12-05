@@ -5,6 +5,7 @@ iFunction * iFunction__init__() {
 	if (!self) {
 		memoryError("Can't allocate memory for iFunction");
 	}
+	//self->symbolTable;
 	self->bodyInstrIndex = -1;
 	self->params.First = NULL;
 	self->params.Last = NULL;

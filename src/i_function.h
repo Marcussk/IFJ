@@ -26,6 +26,7 @@ typedef struct s_iFunction{
 	iVar retVal;
 	char * name;
 	ParamsList params;
+//	HashTable * symbolTable;
 	int bodyInstrIndex;
 	Builtins builtin;
 } iFunction;
