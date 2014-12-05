@@ -89,7 +89,7 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 	default:
 		syntaxError("Unknown operator", -1, "");
 	}
-	sem_Error("Incompatible types", -1);
+	sem_TypeError("Incompatible types", -1);
 	return iUnknown;
 }
 
@@ -104,7 +104,7 @@ void reduceParams(ExprParser * self, int paramCount, ParamsListItem * paramNode)
 
 		result = exprStack_pop(&self->stack); // parameter
 		if (!paramNode || result.datatype != paramNode->data->type)
-			sem_Error("Bad function parameter", self->tokenBuff->lp->lineNum);
+			sem_TypeError("Bad function parameter", self->tokenBuff->lp->lineNum);
 
 		*TopMost = self->stack.StackArray[self->stack.top];
 		if (TopMost->content == t_comma) { // this must be a function
@@ -207,7 +207,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				if (!(TopMostTerminal->id->isInitialized))
-					sem_Error("Uninitialized variable", -1);
+					rt_notInitError("Uninitialized variable", -1);
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
@@ -309,7 +309,7 @@ void parseWrite(ExprParser * self) {
 				syntaxError("Function call cannot be in write call",
 						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 			if (!lastSymbol->isInitialized)
-				sem_Error("Use of uninitialized variable",
+				rt_notInitError("Use of uninitialized variable",
 						self->tokenBuff->lp->lineNum);
 
 			param->stackAddr = lastSymbol->stackIndex;
