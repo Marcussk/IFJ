@@ -1,17 +1,22 @@
 #include "interpret.h"
 
-IMPLEMENT_STACK(i, iVal)
+IMPLEMENT_STACK(i, iVal);
 
-void iStack_debug(iStack * s, int stackOffset, char * msg) {
+void iStack_debug(iStack *self, int stackOffset, char * msg) {
 	int i;
 	if (msg)
 		printf("%s: ", msg);
-	printf("<stack %p, size: %d, offset: %d>\n", (void *) s, s->size,
-			stackOffset);
-	for (i = 0; i < s->size; i++) {
-		printf("%d: %d\n", i, (*iStack_getAt(s, i)).iInt);
+	printf("<stack %p, size: %d, offset: %d>\n", (void *) self, self->top+1, stackOffset);
+	printf("___________________________________________________________\n");
+	printf("Velkost stacku: %d \n ", self->prealocated);
+	printf("Vypis poloziek staku:\n ");
+	for (i = 0; i <= self->top; i++) {
+		if (i == self->top) {
+			printf("top->");
+		}
+		printf("%d.pos -> %d \n ", i, (*iStack_getAt(self, i)).iInt);
 	}
-}
+}	
 
 void Interpret__init__(Interpret * self, InstrQueue instructions) {
 	self->instructions = instructions;
@@ -336,7 +341,7 @@ void Interpret_run(Interpret * self) {
 
 		case i_call:
 			//iStack_debug(&self->stack, stackOffset, "before call");
-			pomA4.iInt = self->stack.size;
+			pomA4.iInt = self->stack.top+1;
 			iStack_push(&self->stack, (iVal) 0);            // return value on 0
 			iStack_push(&self->stack, (iVal) i.a1->iInt);      // paramsCnt at 1
 			iStack_push(&self->stack, (iVal) (self->instructions.index + 1)); // next instr after return  at 2
@@ -347,7 +352,7 @@ void Interpret_run(Interpret * self) {
 			continue;
 
 		case i_return:
-			while (self->stack.size  > stackOffset + 4) { //clear all fn mess
+			while (self->stack.top+1  > stackOffset + 4) { //clear all fn mess
 				iStack_pop(&(self->stack));
 			}
 			stackOffset = iStack_pop(&self->stack).iInt;

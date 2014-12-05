@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "array_as_stack.h"
+#include "stack.h"
 #include "defs.h"
 #include "interpret.h"
 #include "ial.h"
