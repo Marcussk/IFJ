@@ -9,9 +9,10 @@
 #endif
 
 IMPLEMENT_STACK(expr, ExprToken);
-
+/*
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
+*/
 
 void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 		InstrQueue * instructions) {
@@ -25,7 +26,7 @@ void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 
 ExprToken * findTopMostTerminal(exprStack *s) {
 	int i;
-	for(i = s->size -1; i >0; i--){
+	for(i = s->top -1; i >0; i--){
 		if(s->StackArray[i].type == terminal)
 			return &(s->StackArray[i]);
 	}
@@ -34,7 +35,7 @@ ExprToken * findTopMostTerminal(exprStack *s) {
 
 int findHandle(exprStack * stack) {
 	int i = 0;
-	for(i = s->size -1; i >0; i--){
+	for(i = stack->top -1; i >0; i--){
 		if (stack->StackArray[i].shifted)
 			return i;
 	}
@@ -43,7 +44,7 @@ int findHandle(exprStack * stack) {
 
 iFunction * findFunction(exprStack * stack) {
 	int i = 0;
-	for(i = s->size -1; i >1; i--){
+	for(i = stack->top -1; i >1; i--){
 		if (stack->StackArray[i].content == t_lParenthessis &&
 				stack->StackArray[i-1].content == t_func) {
 			return stack->StackArray[i-1].id->val.fn;
@@ -96,7 +97,7 @@ void reduceParams(exprStack *stack, TokenBuff *tokenBuff, int paramCount,
 	ExprToken *TopMost;
 	ExprToken result;
 	TopMost = malloc(sizeof(ExprToken));
-	*TopMost = stack->stack->top->data;
+	*TopMost = stack->top->data;
 
 	if (TopMost->type == nonterminal) { // Got parameter
 		//printf("%s\n", iVar_type2str(paramNode->data->type));

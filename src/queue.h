@@ -14,13 +14,13 @@ typedef struct {                                                                
 	int prealocated;                                                            \
 } namePref##Queue;                                                            \
                                                                                 \
-void namePref##Queue__init__(namePref##Queue *self);                        \
-elementT* namePref##Queue_next(namePref##Queue* self);                      \
-void namePref##Queue_insert(namePref##Queue *self, Instruction i);          \
-elementT* namePref##Queue_atIndex(namePref##Queue* self, int index);
+void namePref##Queue__init__( namePref##Queue * self);                        \
+elementT * namePref##Queue_next( namePref##Queue * self);                      \
+void namePref##Queue_insert( namePref##Queue *self, Instruction i);          \
+elementT * namePref##Queue_atIndex( namePref##Queue * self, int index);
 
 #define QUEUE_DEFINE(namePref, elementT)                                    \
-void namePref##Queue__init__(namePref##Queue *self) {                     \
+void namePref##Queue__init__( namePref##Queue *self) {                     \
 	self->QueueArr = malloc( 32 * sizeof(elementT));            \
 	if (self->QueueArr == NULL)                                               \
 		memoryError("Can't allocate memory for QueueArr");                    \
@@ -29,7 +29,7 @@ void namePref##Queue__init__(namePref##Queue *self) {                     \
 	self->prealocated = 32;                                     \
 }                                                                             \
                                                                               \
-elementT* namePref##Queue_next(namePref##Queue* self) {                   \
+elementT* namePref##Queue_next( namePref##Queue * self) {                   \
 	if (self->actual >= self->size - 1) {                                     \
 		free(self->QueueArr);                                                 \
 		rt_error("Can't return next instruction , end of queue.");            \
@@ -38,7 +38,7 @@ elementT* namePref##Queue_next(namePref##Queue* self) {                   \
 	return &(self->QueueArr[self->actual]);                                   \
 }                                                                             \
                                                                               \
-void namePref##Queue_insert(namePref##Queue *self, Instruction i) {       \
+void namePref##Queue_insert( namePref##Queue *self, Instruction i) {       \
 	if (self->size >= self->prealocated) {                                    \
 		int newCapacity = self->prealocated * 2;                              \
 		Instruction *newArray = realloc(self->QueueArr,                       \
@@ -54,7 +54,7 @@ void namePref##Queue_insert(namePref##Queue *self, Instruction i) {       \
 	self->QueueArr[self->actual] = i;                                         \
 }                                                                             \
                                                                               \
-elementT* namePref##Queue_atIndex(namePref##Queue* self, int index) {         \
+elementT * namePref##Queue_atIndex( namePref##Queue * self, int index) {         \
 	if (index < 0 || self->size - 1 < index)                                  \
 		rt_error("InstrQueue_atIndex out of index");                          \
     self->actual = index;                                                     \

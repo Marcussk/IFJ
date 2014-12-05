@@ -3,7 +3,7 @@
 #define RANDOM_NUM 15
 #define REAL_NUM 17
 #define IND 6
-
+/*
 void test_stack1(void) {
 	int i;
 	StackArr s;
@@ -22,3 +22,4 @@ void test_stack1(void) {
 	int_StackArr_debug(&s);
 	StackArr__dell__(&s);
 }
+*/
