@@ -165,7 +165,7 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	}
 	ExprToken_Init(&result);
 
-	SemAnalyzer_typeconvert(instructions, operand1.datatype, operand2.datatype, operator.content);
+	SemAnalyzer_typeconvert(*(&self->instructions), operand1.datatype, operand2.datatype, operator.content);
 	operand1.datatype = iReal;
 	operand2.datatype = iReal;
 	result.datatype = getResultType(operand1.datatype, operand2.datatype,
