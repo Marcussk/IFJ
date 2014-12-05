@@ -42,6 +42,7 @@ char * func_copy(char *f_str, int i, int n) {
 		rt_error(
 				"Builtin function copy can't be performed because original string is too short\n");
 	}
+	
 	char * newStr = malloc(i + 1 * sizeof(char));
 	if (!newStr) {
 		memoryError("func_copy can't alloc memory for newStr\n");

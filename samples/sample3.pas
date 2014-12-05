@@ -1,7 +1,7 @@
 { Program 3: Prace s retezci a vestavenymi funkcemi }
 var
   str1 : string;
-  str2 : string;
+  str2 : string; 
   n : integer;
 begin
   str1 := 'Toto je nejaky text';
