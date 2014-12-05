@@ -26,7 +26,7 @@ void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 
 ExprToken * findTopMostTerminal(exprStack *s) {
 	int i;
-	for(i = s->top -1; i >0; i--){
+	for(i = s->top; i >=0; i--){
 		if(s->StackArray[i].type == terminal)
 			return &(s->StackArray[i]);
 	}
@@ -35,16 +35,16 @@ ExprToken * findTopMostTerminal(exprStack *s) {
 
 int findHandle(exprStack * stack) {
 	int i = 0;
-	for(i = stack->top -1; i >0; i--){
+	for(i = stack->top; i >=0; i--){
 		if (stack->StackArray[i].shifted)
-			return i;
+			return stack->top - i +1;
 	}
 	return 0;
 }
 
 iFunction * findFunction(exprStack * stack) {
 	int i = 0;
-	for(i = stack->top -1; i >1; i--){
+	for(i = stack->top; i >1; i--){
 		if (stack->StackArray[i].content == t_lParenthessis &&
 				stack->StackArray[i-1].content == t_func) {
 			return stack->StackArray[i-1].id->val.fn;
@@ -422,7 +422,7 @@ tIFJ ExprParser_parse(ExprParser * self) {
 
 	while (true) {
 		TopMostTerminal = findTopMostTerminal(&self->stack);
-		if (self->stack.top == 2
+		if (self->stack.top == 1
 				&& self->stack.StackArray[self->stack.top].type == nonterminal) { // only $ and S
 			break;
 		}
