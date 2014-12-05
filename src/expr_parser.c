@@ -167,7 +167,7 @@ void Expr_reduceBinaryOperator(exprStack *stack, TokenBuff *tokenBuff,
 				"nonterminal probably ','");
 	}
 	ExprToken_Init(&result);
-
+	SemAnalyzer_typeconvert(instructions, operand1.datatype, operand2.datatype);
 	result.datatype = getResultType(operand1.datatype, operand2.datatype,
 			operator.content);
 	InstrParam * paramCnt = malloc(sizeof(InstrParam));
