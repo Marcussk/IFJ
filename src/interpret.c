@@ -247,23 +247,15 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 
-			switch (i.type) {
-			case iInt:
-				if (pomA2.iInt == 0) {
-					rt_zeroDivisionError();
-				}
-				pomA3.iInt = pomA1.iInt / pomA2.iInt;
-				break;
-			case iReal:
+			if(i.type == iReal){
 				if (pomA2.iReal == 0) {
 					rt_zeroDivisionError();
 				}
 				pomA3.iReal = pomA1.iReal / pomA2.iReal;
-				break;
-			default:
+			}
+			else{
 				unimplementedError(
 						"Instr. div is not implemented for this type\n");
-				break;
 			}
 			if (i.dest != NULL)
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
