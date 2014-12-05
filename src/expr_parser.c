@@ -46,7 +46,7 @@ int findHandle(exprStack * stack) {
 }
 
 iFunction * findFunction(exprStack * stack) {
-	int i = 0;
+	/*	int i = 0;
 	exprStackNodeT * tmp = stack->top;
 	while (tmp != NULL) {
 		i++;
@@ -55,6 +55,14 @@ iFunction * findFunction(exprStack * stack) {
 			return tmp->next->data.id->val.fn;
 		}
 		tmp = tmp->next;
+	}
+	return NULL;
+	*/
+	int i;
+	for(i = 0; i <= stack->top; i++){
+		if( (stack->StackArray[i].content == t_lParenthessis) && (stack->StackArray[i+1]) && (stack->StackArray[i+1].content == t_func)) {
+			return stack->StackArray[i+1].id->val.fn;
+		} 
 	}
 	return NULL;
 }
