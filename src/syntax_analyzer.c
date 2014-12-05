@@ -108,11 +108,9 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			if (secTok == t_asigment) {
 				SyntaxAnalyzer_parseAsigment(self);
 			} else {
-				syntaxError("after id there must be a assignment", self->lp->lineNum, getTokenName(secTok));
-				/*
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
-				SyntaxAnalyzer_parseExpr(self);*/
+				SyntaxAnalyzer_parseExpr(self);
 			}
 			lastToken = TokenBuff_next(&self->tokBuff);
 			if (lastToken == t_end)
