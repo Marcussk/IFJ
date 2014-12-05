@@ -57,8 +57,7 @@ int readLn(iVal *a1, tIFJ type) {
 	char * str;
 	switch (type) {
 	case iInt:
-		a1->iInt = readint();
-		return (a1->iInt);
+		return scanf("%d", &(a1->iInt));
 	case iReal:
 		return scanf("%f", &(a1->iReal));
 	case iString:
@@ -115,19 +114,3 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	va_end(valist);
 }
 
-int readint()
-{
-		int tmp = 0;
-		int c;
-		while ((c = getchar()) != '\n')
-		{
-			if (!isdigit(c - '0'))
-			{
-				rt_readlnNumError();
-			}
-			tmp *= 10;
-			tmp += (c - '0');
-		}
-		printf("return %d \n", tmp);
-		return tmp;
-}
