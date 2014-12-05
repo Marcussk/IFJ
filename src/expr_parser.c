@@ -9,9 +9,10 @@
 #endif
 
 IMPLEMENT_STACK(expr, ExprToken);
-
+/*
 EXPR_DEBUGING(
 		void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
+*/
 
 void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 		InstrQueue * instructions) {
@@ -24,45 +25,30 @@ void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 }
 
 ExprToken * findTopMostTerminal(exprStack *s) {
-	exprStackNodeT * itr = s->top;
-	while (itr != NULL) {
-		if (itr->data.type == terminal)
-			return &(itr->data);
-		itr = itr->next;
+	int i;
+	for(i = s->top -1; i >0; i--){
+		if(s->StackArray[i].type == terminal)
+			return &(s->StackArray[i]);
 	}
 	return NULL;
 }
 
 int findHandle(exprStack * stack) {
 	int i = 0;
-	exprStackNodeT * tmp = stack->top;
-	while (tmp != NULL) {
-		i++;
-		if (tmp->data.shifted)
+	for(i = stack->top -1; i >0; i--){
+		if (stack->StackArray[i].shifted)
 			return i;
-		tmp = tmp->next;
 	}
 	return 0;
 }
 
 iFunction * findFunction(exprStack * stack) {
-	/*	int i = 0;
-	exprStackNodeT * tmp = stack->top;
-	while (tmp != NULL) {
-		i++;
-		if (tmp->data.content == t_lParenthessis && tmp->next
-				&& tmp->next->data.content == t_func) {
-			return tmp->next->data.id->val.fn;
+	int i = 0;
+	for(i = stack->top -1; i >1; i--){
+		if (stack->StackArray[i].content == t_lParenthessis &&
+				stack->StackArray[i-1].content == t_func) {
+			return stack->StackArray[i-1].id->val.fn;
 		}
-		tmp = tmp->next;
-	}
-	return NULL;
-	*/
-	int i;
-	for(i = 0; i <= stack->top; i++){
-		if( (stack->StackArray[i].content == t_lParenthessis) && (stack->StackArray[i+1]) && (stack->StackArray[i+1].content == t_func)) {
-			return stack->StackArray[i+1].id->val.fn;
-		} 
 	}
 	return NULL;
 }
@@ -250,7 +236,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
-		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
+		if (TopMostTerminal != &(stack->StackArray[stack->top-1])) // Check if TopMostTerminal is operator - terminal
 			syntaxError("Expression Error - Operator error",
 					tokenBuff->lp->lineNum, ",");
 

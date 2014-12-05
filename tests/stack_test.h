@@ -4,8 +4,8 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#include "../src/array_as_stack.h"
+//#include "../src/array_as_stack.h"
 
-void test_stack1(void);
+//void test_stack1(void);
 
 #endif
