@@ -55,7 +55,7 @@ iFunction * findFunction(exprStack * stack) {
 	return NULL;
 }
 
-tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
+tIFJ getResultType(ExprParser * self, tIFJ op1Type, tIFJ op2Type, Token operator) {
 	switch (operator) {
 	case t_plus:
 		if (op1Type == op2Type && (op1Type == iInt || op1Type == iString))
@@ -87,9 +87,9 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 			return iBool;
 		break;
 	default:
-		syntaxError("Unknown operator", -1, "");
+		syntaxError("Unknown operator", self->tokenBuff->lp->lineNum, "");
 	}
-	sem_TypeError("Incompatible types");
+	sem_TypeError("Incompatible types", self->tokenBuff->lp->lineNum);
 	return iUnknown;
 }
 
@@ -104,7 +104,7 @@ void reduceParams(ExprParser * self, int paramCount, ParamsListItem * paramNode)
 
 		result = exprStack_pop(&self->stack); // parameter
 		if (!paramNode || result.datatype != paramNode->data->type)
-			sem_TypeError("Bad function parameter");
+			sem_TypeError("Bad function parameter", self->tokenBuff->lp->lineNum);
 
 		*TopMost = self->stack.StackArray[self->stack.top];
 		if (TopMost->content == t_comma) { // this must be a function
@@ -166,7 +166,7 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	ExprToken_Init(&result);
 
 	SemAnalyzer_typeconvert(*(&self->instructions), operand1.datatype, operand2.datatype, operator.content);
-	result.datatype = getResultType(operand1.datatype, operand2.datatype,
+	result.datatype = getResultType(self, operand1.datatype, operand2.datatype,
 			operator.content);
 	InstrParam * paramCnt = malloc(sizeof(InstrParam));
 	paramCnt->iInt = 0;

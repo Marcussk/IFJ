@@ -27,13 +27,17 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	if (asigmentTo->type == iFn
-			&& asigmentTo == self->lp->symbolTable->masterItem) {
-		asigmentTo = &(asigmentTo->val.fn->retVal);
+	if (asigmentTo->type == iFn) {
+		if (asigmentTo == self->lp->symbolTable->masterItem) {
+			asigmentTo = &(asigmentTo->val.fn->retVal);
+		} else {
+			sem_Error("trying to assign to function", self->lp->lineNum);
+		}
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
 	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype, -1);
-	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
+	SemAnalyzer_checktypes(asigmentTo->type, exprtype,
+			self->tokBuff.lp->lineNum);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialized = true;

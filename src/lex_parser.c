@@ -244,16 +244,14 @@ void LexParser__dell__(LexParser * self) {
 void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 	ParamsListItem * param = fn->val.fn->params.First;
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
-	iVar * fnRecurse = NULL;
 
-	if (HashTable_insertNew(fnSymTable, self->str.buff, &fnRecurse)
+	if (HashTable_insert(fnSymTable, self->str.buff, fn)
 			!= ht_inserted) {
 		lexError("Error while creating symbol for function recurse",
 				self->str.buff, self->lineNum);
 	}
 	fnSymTable->masterTable = self->symbolTable;
-	fnSymTable->masterItem = self->lastSymbol;
-	*fnRecurse = *fnSymTable->masterItem;
+	fnSymTable->masterItem = fn;
 	self->symbolTable = fnSymTable;
 
 	while (param) {

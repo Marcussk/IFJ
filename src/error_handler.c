@@ -27,10 +27,10 @@ void sem_definitionError(int lineNum, char * varName) {
  vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
  dont forget about char * iVar_type2str(type)
  */
-void sem_TypeError(char * nameOfType) {
+void sem_TypeError(char * nameOfType, int lineNum) {
 	fprintf(stderr,
-			"ERROR(Semantic/Type): Variable or function of type %s does not fit to expression or function has bad parameters.\n",
-			nameOfType);
+			"ERROR(Semantic/Type) Line %d: Variable or function of type %s does not fit to expression or function has bad parameters.\n",
+			lineNum, nameOfType);
 	exit(4);
 }
 

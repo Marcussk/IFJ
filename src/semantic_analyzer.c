@@ -1,11 +1,11 @@
 #include "semantic_analyzer.h"
 
-void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2) {
+void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2, int lineNum) {
 	if (param1 == param2) {
 		return;
 	} else {
 		printf("%d %d \n", param1, param2);
-		sem_TypeError(iVar_type2str(param2));
+		sem_TypeError(iVar_type2str(param2), lineNum);
 	}
 }
 
