@@ -32,7 +32,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 		asigmentTo = &(asigmentTo->val.fn->retVal);
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype,-1);
+	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype, -1);
 	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
@@ -275,7 +275,7 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 			syntaxError("names of parameters have to be same as in forward",
 					self->lp->lineNum, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
-		NEXT_TOK(param->data->type, "type from forward expected")
+		NEXT_TOK((tIFJ )param->data->type, "type from forward expected")
 		if (param->next)
 			NEXT_TOK(t_scolon,
 					"expected \";\" after type (and then next param)")
@@ -323,7 +323,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	} else {
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 	}
-	// [TODO] check and implement forward
 	LexParser_createFnSymbolTable(self->lp, fn);
 	lastToken = TokenBuff_next(&self->tokBuff);
 	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
