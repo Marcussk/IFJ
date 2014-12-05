@@ -7,6 +7,7 @@
 //list of parameters for function
 typedef struct s_ParamsListItem {
 	iVar * data;
+	char * name;
 	struct s_ParamsListItem * next;
 	struct s_ParamsListItem * prev;
 } ParamsListItem;
@@ -23,6 +24,7 @@ typedef enum {
 //first n iVars in
 typedef struct s_iFunction{
 	iVar retVal;
+	char * name;
 	ParamsList params;
 	int bodyInstrIndex;
 	Builtins builtin;
@@ -31,7 +33,7 @@ typedef struct s_iFunction{
 
 iFunction * iFunction__init__();
 void iFunction_buildParamIndexes(iFunction * self);
-void iFunction_addParam(iFunction * self, iVar * var);
+void iFunction_addParam(iFunction * self, iVar * var, char * name);
 void iFunction__dell__(iFunction * self);
 
 #endif

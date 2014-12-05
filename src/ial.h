@@ -34,7 +34,8 @@ typedef struct sHashTable {
 
 HashTable * HashTable__init__(int size);
 HashTableItem * HashTable_lookup(HashTable *hashtable, char *str);
-int HashTable_insert(HashTable *hashtable, char *str, iVar ** newItem);
+int HashTable_insert(HashTable *self, char *str, iVar * item2insert);
+int HashTable_insertNew(HashTable *hashtable, char *str, iVar ** newItem);
 void HashTable__dell__(HashTable *hashtable);
 
 #endif

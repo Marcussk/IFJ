@@ -11,16 +11,19 @@
 #include "hash_table.h"
 #include "str_routines.h"
 #include "token_map.h"
+#include "i_function.h"
 
-
-typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;
-typedef enum { lp_searchOnly, lp_insertOnly, lp_fnSearch, lp_parseParams, lp_debug } LexParser_mode;
-
+typedef enum {
+	j_continue = 0, j_readStr, j_reset, j_readEscape
+} LexParser_jobPlan;
+typedef enum {
+	lp_searchOnly, lp_insertOnly, lp_fnSearch, lp_parseParams, lp_ignore
+} LexParser_mode;
 
 typedef struct {
 	BuffFile input;
 	TokenParser tParser;
-	String str;// alias buffer
+	String str; // alias buffer
 	int lineNum;
 	Token preLastToken;
 	Token lastToken;
@@ -36,6 +39,6 @@ void LexParser__dell__(LexParser * p);
 void LexParser_fnParamsEnter(LexParser * self);
 void LexParser_fnDefEnter(LexParser * self, tIFJ fnReturnType);
 void LexParser_fnBodyLeave(LexParser * self);
-
+void LexParser_createFnSymbolTable(LexParser * self, iVar * fn);
 
 #endif
