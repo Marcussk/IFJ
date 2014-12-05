@@ -45,8 +45,8 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	self->lp->idMode = lp_insertOnly;
 	// read all variable declarations
 	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken == t_begin) {    // ) - args are empty
-		syntaxError("Expected var declaration\n", self->lp->lineNum,
+	if (lastToken != t_id && lastToken != t_func) {    // ) - args are empty
+		syntaxError("Expected variable declarations\n", self->lp->lineNum,
 				getTokenName(lastToken));
 		return;
 	} else {
@@ -163,13 +163,13 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	//else:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
-	StackAddress->iInt = self->instr.index;
+	StackAddress->iInt = self->instr.actual;
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
-	StackAddrend->stackAddr = self->instr.index;
+	StackAddrend->stackAddr = self->instr.actual;
 	return;
 
 	//[TODO] instructions
@@ -189,7 +189,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	//Cond
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
-	StackAddrbegin->stackAddr = self->instr.index;
+	StackAddrbegin->stackAddr = self->instr.actual;
 	SyntaxAnalyzer_parseExpr(self);
 	//do
 	NEXT_TOK(t_do, "expected do")
@@ -206,7 +206,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	//end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
-	StackAddrend->stackAddr = self->instr.index;
+	StackAddrend->stackAddr = self->instr.actual;
 	//[TODO] instructions
 
 }
@@ -273,7 +273,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	fn = self->lp->lastSymbol;
 	fn->type = iFn;
 	fn->val.fn = iFunction__init__();
-	fn->val.fn->bodyInstrIndex = self->instr.index + 1;
+	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
 
 	SyntaxAnalyzer_parse_paramList(self);
 	// [TODO] check and implement forward
@@ -335,7 +335,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 			break;
 		case t_begin:
-			i->iInt = self->instr.index + 1;
+			i->iInt = self->instr.actual + 1;
 			SyntaxAnalyzer_parse_block(self);
 			break;
 		case t_func:

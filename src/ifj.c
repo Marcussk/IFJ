@@ -20,7 +20,6 @@
 #include "syntax_analyzer.h"
 
 int main(int argc, char *argv[]) {
-
 	LexParser lexParser;
 	SyntaxAnalyzer synAnalyzer;
 	Interpret interpret;

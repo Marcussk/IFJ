@@ -4,7 +4,6 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/array_as_queue.c \
 ../src/array_as_stack.c \
 ../src/buff_file.c \
 ../src/builtins.c \
@@ -27,7 +26,6 @@ C_SRCS += \
 ../src/token_map.c 
 
 OBJS += \
-./src/array_as_queue.o \
 ./src/array_as_stack.o \
 ./src/buff_file.o \
 ./src/builtins.o \
@@ -50,7 +48,6 @@ OBJS += \
 ./src/token_map.o 
 
 C_DEPS += \
-./src/array_as_queue.d \
 ./src/array_as_stack.d \
 ./src/buff_file.d \
 ./src/builtins.d \
