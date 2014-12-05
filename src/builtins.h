@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include <ctypes.h>
+#include <ctype.h>
 #include "ial.h"
 #include <stdarg.h>
 #include "error_handler.h"

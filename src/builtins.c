@@ -127,7 +127,6 @@ int readint()
 			}
 			tmp *= 10;
 			tmp += (c - '0');
-		//printf("Reading val: %d\n",tmp);
 		}
 		printf("return %d \n", tmp);
 		return tmp;
