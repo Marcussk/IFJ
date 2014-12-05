@@ -89,7 +89,7 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 	default:
 		syntaxError("Unknown operator", -1, "");
 	}
-	sem_TypeError("Incompatible types", -1);
+	sem_TypeError("Incompatible types");
 	return iUnknown;
 }
 
@@ -104,7 +104,7 @@ void reduceParams(ExprParser * self, int paramCount, ParamsListItem * paramNode)
 
 		result = exprStack_pop(&self->stack); // parameter
 		if (!paramNode || result.datatype != paramNode->data->type)
-			sem_TypeError("Bad function parameter", self->tokenBuff->lp->lineNum);
+			sem_TypeError("Bad function parameter");
 
 		*TopMost = self->stack.StackArray[self->stack.top];
 		if (TopMost->content == t_comma) { // this must be a function
