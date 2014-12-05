@@ -66,11 +66,7 @@ int readLn(iVal *a1, tIFJ type) {
 		// [TODO] 1. new string, 2. while ch != '\n'; String_append(ch); ch = getChar() // because strlen is unknown so array have to be dynamic
 		return scanf("%s", a1->iString);
 	case iBool: 
-		str = calloc(sizeof(char), 6);
-		a1->iString = str;
-		char * tmp;
-		tmp = scanf("%s", a1->iString);
-		unimplementedError("readLn not implemented for bool");
+		sem_CondError("readLn not implemented for Bool");
 		return 0;
 	default:
 		rt_readlnNumError();
