@@ -23,7 +23,6 @@ typedef enum {
 	iInt,
 	iReal,
 	iString,
-	iChar,
 	iFn,
 	iStackRef,
 } tIFJ;

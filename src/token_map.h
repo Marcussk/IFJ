@@ -42,6 +42,7 @@ typedef enum {
 	t_else,
 	t_end,
 	t_false,
+	t_forward,
 
 	t_if,
 	t_then,

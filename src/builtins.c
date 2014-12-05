@@ -19,9 +19,9 @@ void write(tIFJ type, iVal a1) {
 		break;
 	case iBool:
 		if (a1.iInt == 0) {
-			printf("FALSE");
+			printf("false");
 		} else {
-			printf("TRUE");
+			printf("true");
 		}
 		break;
 	default:
@@ -65,10 +65,8 @@ int readLn(iVal *a1, tIFJ type) {
 		a1->iString = str;
 		// [TODO] 1. new string, 2. while ch != '\n'; String_append(ch); ch = getChar() // because strlen is unknown so array have to be dynamic
 		return scanf("%s", a1->iString);
-	case iChar:
-		return scanf("%d", &(a1->iInt));
-	case iBool:
-		unimplementedError("readLn not implemented for bool");
+	case iBool: 
+		sem_CondError("readLn not implemented for Bool");
 		return 0;
 	default:
 		rt_readlnNumError();
@@ -94,7 +92,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	int i;
 	// becouse ht returns place where is variable created creates
 	iVar * item = NULL;
-	if ((HashTable_insert(ht, name, &item) != ht_inserted)) {
+	if ((HashTable_insertNew(ht, name, &item) != ht_inserted)) {
 		unimplementedError("Redefinition of builtin function");
 	}
 	item->type = iFn;
@@ -111,7 +109,8 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 		param->type = va_arg(valist, tIFJ);
 		param->isInitialized = true;
 		param->stackIndex = i;
-		iFunction_addParam(item->val.fn, param);
+		iFunction_addParam(item->val.fn, param, "");
 	}
 	va_end(valist);
 }
+

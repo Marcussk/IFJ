@@ -30,7 +30,7 @@ void Interpret_run(Interpret * self) {
 	iVal pomA2;
 	iVal pomA3;
 	iVal pomA4;
-	InstrQueue_debug(&self->instructions);
+	//InstrQueue_debug(&self->instructions);
 
 	int stackOffset = 0;
 	self->instructions.actual = -1;
@@ -345,8 +345,7 @@ void Interpret_run(Interpret * self) {
 			continue;
 
 		case i_return:
-
-			while (self->stack.top > stackOffset + 4) { //clear all fn mess
+			while (self->stack.top > stackOffset + 3) { //clear all fn mess
 				iStack_pop(&(self->stack));
 			}
 			stackOffset = iStack_pop(&self->stack).iInt;

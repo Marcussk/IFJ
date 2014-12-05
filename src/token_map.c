@@ -9,6 +9,7 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_end, "end" },
 		(TokenMeaning ) { t_false, "false" },
 		(TokenMeaning ) { t_func, "function" },
+		(TokenMeaning ) { t_forward, "forward" },
 		(TokenMeaning ) { t_if,	"if" },
 		(TokenMeaning ) { t_integer, "integer" },
 		(TokenMeaning ) { t_real, "real" },

@@ -35,7 +35,7 @@ void sem_CondError(char * nameOfType);
 void sem_Error(char * str, int lineNum);
 
 void rt_readlnNumError();
-void rt_notInitError(char * varName);
+void rt_notInitError();
 void rt_zeroDivisionError();
 void rt_error(char * str);
 

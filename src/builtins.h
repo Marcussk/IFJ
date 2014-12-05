@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include "ial.h"
 #include <stdarg.h>
 #include "error_handler.h"
@@ -23,4 +24,5 @@ char *func_copy(char *f_str, int i, int n);
 void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 		...);
 
+int readint();
 #endif

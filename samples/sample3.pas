@@ -13,10 +13,12 @@ begin
   'aby se pismena v posloupnosti neopakovala:');
   readln(str1);
   str2 := sort(str1);
+  write('sorted to:', str2, ''#10'')
   while str2 <> 'abcdefgh' do
   begin
-    write('Spatne zadana posloupnost, zkuste znovu:'#10'');
+    write('Spatne zadana posloupnost, zkuste znovu, zadano:',str2,''#10'');
     readln(str1);
-    str2 := sort(str1)
+    str2 := sort(str1);
+    write('sorted to:', str2, ''#10'')
   end
 end.

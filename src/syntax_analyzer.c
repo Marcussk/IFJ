@@ -32,7 +32,7 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 		asigmentTo = &(asigmentTo->val.fn->retVal);
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype);
+	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype,-1);
 	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
@@ -96,6 +96,9 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		switch (lastToken) {
 		case t_if:
 			SyntaxAnalyzer_parse_if(self);
+			break;
+		case t_begin:
+			SyntaxAnalyzer_parse_block(self);
 			break;
 		case t_while:
 			SyntaxAnalyzer_parse_while(self);
@@ -218,7 +221,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
  */
 void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	Token lastToken;
-	self->lp->idMode = lp_parseParams;
 
 	NEXT_TOK(t_lParenthessis, "expected \"(\"")
 	LexParser_fnParamsEnter(self->lp);
@@ -260,33 +262,71 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	}
 }
 
+// "function" and id already found , only chceck params, params types and return type
+void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
+		ParamsList paramsList) {
+	ParamsListItem * param = paramsList.First;
+	Token lastToken;
+	self->lp->idMode = lp_ignore;
+	NEXT_TOK(t_lParenthessis, "expected \"(\"")
+	while (param) {
+		NEXT_TOK(t_id, "id of param from forward expected")
+		if (strcmp(param->name, self->lp->str.buff))
+			syntaxError("names of parameters have to be same as in forward",
+					self->lp->lineNum, "id");
+		NEXT_TOK(t_colon, "expected \":\"")
+		NEXT_TOK(param->data->type, "type from forward expected")
+		if (param->next)
+			NEXT_TOK(t_scolon,
+					"expected \";\" after type (and then next param)")
+		param = param->next;
+	}
+	NEXT_TOK(t_rParenthessis, "expected \")\"")
+}
+
 //"function" already found
 void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	int stackCntrBackup = self->stackIndexCntr;
 	self->stackIndexCntr = 4; // because 0 is return val, ...
 	Token lastToken;
 	iVar * fn;
-	char * name;
-	self->lp->idMode = lp_insertOnly;
+	self->lp->idMode = lp_fnSearch;
 	NEXT_TOK(t_id, "id of function expected")
-	name = strdup(self->lp->str.buff);
-	fn = self->lp->lastSymbol;
-	fn->type = iFn;
-	fn->val.fn = iFunction__init__();
-	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
+	bool haveForward;
 
-	SyntaxAnalyzer_parse_paramList(self);
-	// [TODO] check and implement forward
+	fn = self->lp->lastSymbol;
+	haveForward = fn->val.fn->retVal.type != iUnknown;
+
+	if (haveForward) {
+		SyntaxAnalyzer_check_ParamsList(self, fn->val.fn->params);
+	} else {
+		SyntaxAnalyzer_parse_paramList(self);
+	}
 	NEXT_TOK(t_colon, "expected \":\"")
 
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
-
+	if (haveForward && fn->val.fn->retVal.type != (tIFJ) lastToken) {
+		syntaxError("Function have to have same type as its forward declr.",
+				self->lp->lineNum, getTokenName(lastToken));
+	}
 	LexParser_fnDefEnter(self->lp, lastToken);
-	fn->val.fn->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
 	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken == t_forward) {
+		NEXT_TOK(t_scolon, "expected \";\" after forward")
+		self->stackIndexCntr = stackCntrBackup;
+		LexParser_fnBodyLeave(self->lp);
+		self->lp->idMode = lp_searchOnly;
+		return;
+	} else {
+		TokenBuff_pushBack(&self->tokBuff, lastToken);
+	}
+	// [TODO] check and implement forward
+	LexParser_createFnSymbolTable(self->lp, fn);
+	lastToken = TokenBuff_next(&self->tokBuff);
+	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
@@ -306,7 +346,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;
-	free(name);
 	NEXT_TOK(t_scolon, "expected \";\" after function definition")
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_return, fn->val.fn->retVal.type, NULL,
