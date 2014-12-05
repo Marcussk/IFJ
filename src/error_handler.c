@@ -52,15 +52,9 @@ void rt_readlnNumError() {
 	exit(6);
 }
 
-void rt_notInitError(char * varName) {
-	if (varName) {
+void rt_notInitError() {
 		fprintf(stderr,
-				"ERROR(Runtime/notInit): Variable %s has to be initialized before it is used.\n",
-				varName);
-	} else {
-		fprintf(stderr,
-				"ERROR(Runtime/notInit): Attempt to use not itialized unnamed variable.\n");
-	}
+				"ERROR(Runtime/notInit): Attempt to use unitialized variable.\n");
 	exit(7);
 }
 

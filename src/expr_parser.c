@@ -199,7 +199,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				if (!(TopMostTerminal->id->isInitialized))
-					sem_Error("Uninitialized variable", -1);
+					rt_notInitError();
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
@@ -299,7 +299,7 @@ void parseWrite(ExprParser * self) {
 				syntaxError("Function call cannot be in write call",
 						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
 			if (!lastSymbol->isInitialized)
-				sem_Error("Use of uninitialized variable", self->tokenBuff->lp->lineNum);
+				rt_notInitError();
 
 			param->stackAddr = lastSymbol->stackIndex;
 			instr.type = iStackRef;
