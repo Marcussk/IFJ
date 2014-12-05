@@ -1,8 +1,8 @@
 { write int }
 { Hlavni telo programu }
 var
-	res : integer;
+	res : real;
 begin
-	res := 42 / 42;
+	res := 5 / 2;
     write(res)
 end.
