@@ -289,11 +289,7 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_len:
 			pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
-			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
-						pomA3;
-			else
-				iStack_push(&(self->stack), pomA3);
+			iStack_push(&(self->stack), pomA3);
 			break;
 
 		case i_push:
