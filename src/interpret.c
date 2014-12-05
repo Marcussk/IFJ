@@ -1,6 +1,6 @@
 #include "interpret.h"
 
-IMPLEMENT_STACK(i, iVal);
+IMPLEMENT_STACK(i, iVal)
 
 void iStack_debug(iStack *self, int stackOffset, char * msg) {
 	int i;

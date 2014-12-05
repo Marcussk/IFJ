@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "error_handler.h"
 
-DECLARE_STACK(i, iVal);
+DECLARE_STACK(i, iVal)
 
 typedef struct  {
 	InstrQueue instructions;
