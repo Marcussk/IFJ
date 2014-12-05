@@ -151,8 +151,30 @@ HashTableItem *HashTable_lookup(HashTable *self, char *str) {
 	return NULL;
 }
 
+int HashTable_insert(HashTable *self, char *str, iVar * item2insert){
+	HashTableItem *new_list;
+	HashTableItem *current_list;
+	unsigned int hashval = HashTable_hash(self, str);
+
+	current_list = HashTable_lookup(self, str);
+
+	if (current_list) {
+		return ht_found;
+	}
+	if ((new_list = malloc(sizeof(HashTableItem))) == NULL)
+		memoryError("Can't allocate new item in hash table\n");
+	new_list->var =item2insert;
+	new_list->str = strdup(str);
+
+	new_list->next = self->table[hashval];
+	self->table[hashval] = new_list;
+
+	return ht_inserted;
+
+}
+
 //insert string as iVar reference is gained thru newItem
-int HashTable_insert(HashTable *self, char *str, iVar ** newItem) {
+int HashTable_insertNew(HashTable *self, char *str, iVar ** newItem) {
 	HashTableItem *new_list;
 	HashTableItem *current_list;
 	unsigned int hashval = HashTable_hash(self, str);

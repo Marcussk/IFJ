@@ -1,6 +1,5 @@
 #include "i_function.h"
 
-
 iFunction * iFunction__init__() {
 	iFunction * self = malloc(sizeof(iFunction));
 	if (!self) {
@@ -13,16 +12,16 @@ iFunction * iFunction__init__() {
 	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
 	self->builtin = b_none;
+	self->name = NULL;
 	return self;
 }
-
-
 
 ParamsListItem * ParamsListItem__init__() {
 	ParamsListItem * self = malloc(sizeof(ParamsListItem));
 	if (!self) {
 		memoryError("Can't allocate memory for ParamsListItem");
 	}
+	self->name = NULL;
 	self->data = NULL;
 	self->next = NULL;
 	self->prev = NULL;
@@ -34,49 +33,35 @@ void iFunction_listInit(ParamsList *List) {
 	List->Last = NULL;
 }
 
-void iFunction_addParam(iFunction * self, iVar * var) {
+void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	ParamsListItem *newItem = NULL;
-
+	var->isInitialized = true;
 	newItem = malloc(sizeof(ParamsListItem));
-	if (newItem == NULL){
+	if (newItem == NULL) {
 		memoryError("Could not allocate memory for parameter");
 		return;
 	}
 
 	newItem->data = var;
 	newItem->next = NULL;
+	newItem->name = name;
 
-	if (self->params.First == NULL){
+	if (self->params.First == NULL) {
 		self->params.First = newItem;
 		newItem->prev = NULL;
-	}
-	else{
+	} else {
 		self->params.Last->next = newItem;
 		newItem->prev = self->params.Last;
 	}
 
 	self->params.Last = newItem;
 }
-/*
-void iFunction_addParam(iFunction * self, iVar * var) {
-	ParamsListItem * lastItem = self->params;
-	if (!lastItem) {
-		self->params = ParamsListItem__init__();
-		self->params->data = var;
-	} else {
-		while (lastItem->next){
-			lastItem = lastItem->next;
-		}
-		lastItem->next = ParamsListItem__init__();
-		lastItem->next->data = var;
-	}
-}
-*/
+
 
 void iFunction_buildParamIndexes(iFunction * self) {
 	int i = -1;
 	ParamsListItem * lastItem = self->params.Last;
-	while(lastItem){
+	while (lastItem) {
 		lastItem->data->stackIndex = i;
 		i--;
 		lastItem = lastItem->prev;
@@ -84,6 +69,7 @@ void iFunction_buildParamIndexes(iFunction * self) {
 }
 
 void ParamsListItem__dell__(ParamsListItem * self) {
+	free(self->name);
 	if (self->next)
 		ParamsListItem__dell__(self->next);
 	free(self);
