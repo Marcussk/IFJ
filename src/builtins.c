@@ -19,9 +19,9 @@ void write(tIFJ type, iVal a1) {
 		break;
 	case iBool:
 		if (a1.iInt == 0) {
-			printf("false");
+			printf("FALSE");
 		} else {
-			printf("true");
+			printf("TRUE");
 		}
 		break;
 	default:

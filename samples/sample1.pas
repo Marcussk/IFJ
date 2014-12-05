@@ -1,10 +1,8 @@
 {Test na cislicove literaly}
-var	a : integer;
-	b : integer;
+var	
+	result : boolean;
 
 begin
-	readln(b);
-	write(b)
-
-
+	result := ((2*(3+4*(5+6*(7+7))))) = (((((7+7)*6+5)*4+3)*2));
+	write(result)
 end.
