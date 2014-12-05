@@ -14,7 +14,7 @@
 
 
 typedef enum { j_continue =0, j_readStr, j_reset, j_readEscape } LexParser_jobPlan;
-typedef enum { lp_searchOnly, lp_insertOnly, lp_parseParams, lp_debug } LexParser_mode;
+typedef enum { lp_searchOnly, lp_insertOnly, lp_fnSearch, lp_parseParams, lp_debug } LexParser_mode;
 
 
 typedef struct {

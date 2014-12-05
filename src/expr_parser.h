@@ -12,6 +12,7 @@
 #include "token_buff.h"
 #include "token_map.h"
 #include "expr_token.h"
+#include "semantic_analyzer.h"
 
 //#define EXPR_DEBUG
 

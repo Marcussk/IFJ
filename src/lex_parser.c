@@ -100,7 +100,21 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 					&(self->lastSymbol)) != ht_inserted) {
 				sem_definitionError(self->lineNum, self->str.buff); // redefinition
 			}
-			iFunction_addParam(self->symbolTable->masterItem->val.fn, self->lastSymbol);
+			iFunction_addParam(self->symbolTable->masterItem->val.fn,
+					self->lastSymbol);
+			break;
+		case lp_fnSearch:
+			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+			if (!i) {
+				if (HashTable_insert(self->symbolTable, self->str.buff,
+						&(self->lastSymbol)) != ht_inserted) {
+					sem_definitionError(self->lineNum, self->str.buff); // redefinition
+				}
+			} else {
+				if(i->var->isInitialized == true || i->var->type != t_func)
+					sem_definitionError(self->lineNum, self->str.buff);
+			}
+			self->lastSymbol = i->var;
 			break;
 		case lp_searchOnly:
 			i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
@@ -109,11 +123,11 @@ void LexParser_syncLastVar(LexParser * self, Token t) {
 			}
 			self->lastSymbol = i->var;
 			break;
-		//case lp_debug:
-		//	i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
-		//	if (i)
-		//		self->lastSymbol = i->var;
-		//	break;
+			//case lp_debug:
+			//	i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
+			//	if (i)
+			//		self->lastSymbol = i->var;
+			//	break;
 
 		default:
 			lexError("LexParser don't know if search or insert new id\n",
@@ -218,8 +232,10 @@ void LexParser_fnParamsEnter(LexParser * self) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	iVar * fnRecurse = NULL;
 	self->idMode = lp_parseParams;
-	if( HashTable_insert(fnSymTable,self->str.buff, &fnRecurse) !=ht_inserted){
-		lexError("Error while creating symbol for function recurse",self->str.buff, self->lineNum);
+	if (HashTable_insert(fnSymTable, self->str.buff, &fnRecurse)
+			!= ht_inserted) {
+		lexError("Error while creating symbol for function recurse",
+				self->str.buff, self->lineNum);
 	}
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = self->lastSymbol;
