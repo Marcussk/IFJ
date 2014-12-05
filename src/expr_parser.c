@@ -236,7 +236,7 @@ void reduceRule(exprStack *stack, ExprToken *TopMostTerminal,
 		if (findHandle(stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					tokenBuff->lp->lineNum, ",");
-		if (TopMostTerminal != &(stack->top->next->data)) // Check if TopMostTerminal is operator - terminal
+		if (TopMostTerminal != &(stack->StackArray[stack->top-1])) // Check if TopMostTerminal is operator - terminal
 			syntaxError("Expression Error - Operator error",
 					tokenBuff->lp->lineNum, ",");
 
