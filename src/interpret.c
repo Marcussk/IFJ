@@ -35,7 +35,7 @@ void Interpret_run(Interpret * self) {
 	int stackOffset = 0;
 	self->instructions.actual = -1;
 	i = *InstrQueue_next(&self->instructions);
-	while (self->instructions.top > self->instructions.actual) {
+	while (self->instructions.size > self->instructions.actual) {
 		i = self->instructions.QueueArr[self->instructions.actual];
 		switch (i.code) {
 		case i_noop:
@@ -367,7 +367,7 @@ void Interpret_run(Interpret * self) {
 			rt_error("Instruction with unknown type");
 		}
 		i = *InstrQueue_next(&self->instructions);
-		if (!self->instructions.actual == self->instructions.top - 1) {
+		if (!self->instructions.actual == self->instructions.size - 1) {
 			rt_error("Program was not properly finished");
 		}
 
