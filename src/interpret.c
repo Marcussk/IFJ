@@ -39,8 +39,25 @@ void Interpret_run(Interpret * self) {
 	while (self->instructions.size > self->instructions.actual) {
 		i = self->instructions.QueueArr[self->instructions.actual];
 		switch (i.code) {
-		case i_noop:
+		case i_push:
+			if (i.type == iStackRef) {
+				iStack_push(&(self->stack),
+					*iStack_getAt(&self->stack,
+										i.a1->stackAddr + stackOffset));
+			} else {
+				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
+			}
 			break;
+		case i_assign:
+					pomA1 = iStack_pop(&(self->stack));
+					if (i.type != iString) {
+						*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
+								pomA1;
+					} else {
+						(*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)).iString =
+								strdup(pomA1.iString);
+					}
+					break;
 		case i_jmp:
 			self->instructions.actual = i.dest->iInt;
 			continue;
@@ -55,6 +72,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA2.iInt == pomA1.iInt);
 				break;
@@ -75,6 +93,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA2.iInt != pomA1.iInt);
 				break;
@@ -95,6 +114,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt > pomA2.iInt);
 				break;
@@ -115,6 +135,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = ((pomA1.iInt) < (pomA2.iInt));
 				break;
@@ -135,6 +156,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt >= pomA2.iInt);
 				break;
@@ -155,6 +177,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt <= pomA2.iInt);
 				break;
@@ -264,16 +287,7 @@ void Interpret_run(Interpret * self) {
 				iStack_push(&(self->stack), pomA3);
 
 			break;
-		case i_assign:
-			pomA1 = iStack_pop(&(self->stack));
-			if (i.type != iString) {
-				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
-						pomA1;
-			} else {
-				(*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)).iString =
-						strdup(pomA1.iString);
-			}
-			break;
+
 		case i_write:
 			write(i.type, iStack_pop(&(self->stack)));
 			break;
@@ -293,15 +307,7 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 
-		case i_push:
-			if (i.type == iStackRef) {
-				iStack_push(&(self->stack),
-						*iStack_getAt(&self->stack,
-								i.a1->stackAddr + stackOffset));
-			} else {
-				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
-			}
-			break;
+
 		case i_int2real:
 			(*iStack_getAt(&self->stack, self->stack.top + i.dest->stackAddr)).iReal =
 					(*iStack_getAt(&self->stack,
@@ -347,6 +353,8 @@ void Interpret_run(Interpret * self) {
 			}
 			iStack_push(&self->stack, pomA2);
 			continue;
+		case i_noop:
+				break;
 
 		case i_stop:
 			return;
