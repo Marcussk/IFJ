@@ -7,6 +7,6 @@ begin
     begin
         write(a);
 	    a := a - 1    
-         end
+         end;
     write('vysl:', a, ''#10'')
 end.

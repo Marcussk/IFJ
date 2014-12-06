@@ -118,11 +118,10 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_while(self);
 			ASSERT_NEXT_ISNOT_END()
 			break;
-		/////
 		case t_repeat:
 			SyntaxAnalyzer_parse_reapat(self);
-			ASSERT_NEXT_ISNOT_END()
-		/////	
+			ASSERT_NEXT_ISNOT_END()	
+			break;
 		case t_id:
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_asigment) {
@@ -237,7 +236,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 }
 
-//////////////////
 //"repeat" already found
 void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat 
 	Token lastToken;
@@ -275,11 +273,7 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 	//end
 	StackAddrend->stackAddr = self->instr.actual;
 
-	//free(StackAddrend);
-	//free(StackAddrbegin);	
 }
-
-//////////////////
 
 /*
  * ( params are in function declarations)
