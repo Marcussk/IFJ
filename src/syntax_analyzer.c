@@ -126,7 +126,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_end)
-				syntaxError("unexpected \";\" after block", self->lp->lineNum,
+				syntaxError("unexpected \";\" before last cmd in block", self->lp->lineNum,
 						";");
 			else
 				TokenBuff_pushBack(&self->tokBuff, secTok);
