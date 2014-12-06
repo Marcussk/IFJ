@@ -161,6 +161,7 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	ExprToken operator = exprStack_pop(&self->stack);
 	ExprToken operand1 = exprStack_pop(&self->stack);
 	ExprToken result;
+	tIFJ instrType;
 
 	if (operand2.type != nonterminal || operand1.type != nonterminal) {
 		syntaxError("Expression Error - Operands error",
@@ -174,11 +175,17 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 			operator.content);
 	InstrParam * paramCnt = malloc(sizeof(InstrParam));
 	paramCnt->iInt = 0;
+
+	if(operator.content >= t_less && operator.content <= t_notEqv  ){
+		instrType = operand1.datatype;
+	}else{
+		instrType = result.datatype;
+	}
+
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { Token2Instruction(operator.content),
-							result.datatype, paramCnt,
+							instrType, paramCnt,
 							NULL, NULL });
-
 	result.type = nonterminal;
 	result.content = t_id;
 	exprStack_push(&self->stack, result);

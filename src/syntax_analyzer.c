@@ -121,7 +121,6 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				return;
 			else
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
-
 			break;
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
