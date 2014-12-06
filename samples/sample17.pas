@@ -20,7 +20,7 @@ begin
 	end;
 	
 	if (val3 >= result) then begin
-		result := val3;
+		result := val3
 	end
 	else begin
 	end;

@@ -6,6 +6,14 @@
 	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));\
  }
 
+#define ASSERT_NEXT_ISNOT_END()                                                    \
+secTok = TokenBuff_next(&self->tokBuff);                                           \
+if (secTok == t_end ||secTok == t_scolon ) {                                       \
+	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
+}else{                                                                             \
+	syntaxError("Expected end after cmd", self->lp->lineNum, getTokenName(secTok));\
+}
+
 #define NEW_INSTR(code, types, a1, a2, dest)\
 	InstrQueue_insert(&self->instr,	(Instruction ) { code, types, a1, a2, dest});
 
@@ -100,12 +108,15 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		switch (lastToken) {
 		case t_if:
 			SyntaxAnalyzer_parse_if(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_begin:
 			SyntaxAnalyzer_parse_block(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_while:
 			SyntaxAnalyzer_parse_while(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_id:
 			secTok = TokenBuff_next(&self->tokBuff);
@@ -116,17 +127,16 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 				SyntaxAnalyzer_parseExpr(self);
 			}
-			lastToken = TokenBuff_next(&self->tokBuff);
-			if (lastToken == t_end)
-				return;
-			else
-				TokenBuff_pushBack(&self->tokBuff, lastToken);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
-			if (secTok == t_end)
-				syntaxError("unexpected \";\" before last cmd in block", self->lp->lineNum,
-						";");
+			if(secTok == t_scolon){
+				syntaxError("unexpected \";\" after \";\"",
+										self->lp->lineNum, ";");
+			}else if (secTok == t_end)
+				syntaxError("unexpected \";\" before last cmd in block",
+						self->lp->lineNum, ";");
 			else
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 			continue;

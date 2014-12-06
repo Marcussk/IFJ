@@ -198,7 +198,7 @@ void reduceParenthesis(ExprParser * self) {
 				self->tokenBuff->lp->lineNum, "");
 	}
 	if (exprStack_pop(&self->stack).content != t_lParenthessis) {
-		syntaxError("Expected left parenthessis ", self->tokenBuff->lp->lineNum,
+		syntaxError("Expected left parenthesis ", self->tokenBuff->lp->lineNum,
 				"");
 	}
 	exprStack_push(&self->stack, nonTerm);
