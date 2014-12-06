@@ -6,7 +6,7 @@
 	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));\
  }
 
-#define ASSERT_NEXT_ISNOT_END()                                                    \
+#define ASSERT_NEXT_IS_END_OR_SEMICOLON()                                          \
 secTok = TokenBuff_next(&self->tokBuff);                                           \
 if (secTok == t_end ||secTok == t_scolon ) {                                       \
 	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
@@ -108,19 +108,19 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		switch (lastToken) {
 		case t_if:
 			SyntaxAnalyzer_parse_if(self);
-			ASSERT_NEXT_ISNOT_END()
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_begin:
 			SyntaxAnalyzer_parse_block(self);
-			ASSERT_NEXT_ISNOT_END()
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_while:
 			SyntaxAnalyzer_parse_while(self);
-			ASSERT_NEXT_ISNOT_END()
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_repeat:
 			SyntaxAnalyzer_parse_reapat(self);
-			ASSERT_NEXT_ISNOT_END()	
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_id:
 			secTok = TokenBuff_next(&self->tokBuff);
@@ -131,7 +131,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 				SyntaxAnalyzer_parseExpr(self);
 			}
-			ASSERT_NEXT_ISNOT_END()
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
