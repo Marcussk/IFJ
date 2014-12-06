@@ -55,7 +55,8 @@ iFunction * findFunction(exprStack * stack) {
 	return NULL;
 }
 
-tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
+tIFJ getResultType(ExprParser * self, tIFJ op1Type, tIFJ op2Type,
+		Token operator) {
 	switch (operator) {
 	case t_plus:
 		if (op1Type == op2Type && (op1Type == iInt || op1Type == iString))
@@ -87,9 +88,9 @@ tIFJ getResultType(tIFJ op1Type, tIFJ op2Type, Token operator) {
 			return iBool;
 		break;
 	default:
-		syntaxError("Unknown operator", -1, "");
+		syntaxError("Unknown operator", self->tokenBuff->lp->lineNum, "");
 	}
-	sem_TypeError("Incompatible types");
+	sem_TypeError("Incompatible types", self->tokenBuff->lp->lineNum);
 	return iUnknown;
 }
 
@@ -104,7 +105,8 @@ void reduceParams(ExprParser * self, int paramCount, ParamsListItem * paramNode)
 
 		result = exprStack_pop(&self->stack); // parameter
 		if (!paramNode || result.datatype != paramNode->data->type)
-			sem_TypeError("Bad function parameter");
+			sem_TypeError("Bad function parameter",
+					self->tokenBuff->lp->lineNum);
 
 		*TopMost = self->stack.StackArray[self->stack.top];
 		if (TopMost->content == t_comma) { // this must be a function
@@ -127,18 +129,19 @@ void reduceParams(ExprParser * self, int paramCount, ParamsListItem * paramNode)
 
 				Builtins b = TopMost->id->val.fn->builtin;
 				if (b) {
-					InstrQueue_insert(self->instructions,
-							(Instruction ) { b, result.datatype, pCount,
+					InstrQueue_insert(self->instructions, (Instruction ) { b,
+									result.datatype, pCount,
 									NULL, p });
 
 				} else
-					InstrQueue_insert(self->instructions, (Instruction ) { i_call,
-									result.datatype, pCount,
+					InstrQueue_insert(self->instructions, (Instruction ) {
+									i_call, result.datatype, pCount,
 									NULL, p });
 				exprStack_pop(&self->stack); // pop t_func on stack
 			} else if (paramNode) //!(isOperator(TopMost->content)) && TopMost->Content != t_eof)
 				syntaxError("Expected function id", -1,
-						getTokenName(self->stack.StackArray[self->stack.top].content));
+						getTokenName(
+								self->stack.StackArray[self->stack.top].content));
 			exprStack_push(&self->stack, result);
 
 			self->stack.StackArray[self->stack.top].type = nonterminal; // From now, function result must be considered as nonterminal
@@ -158,6 +161,7 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	ExprToken operator = exprStack_pop(&self->stack);
 	ExprToken operand1 = exprStack_pop(&self->stack);
 	ExprToken result;
+	tIFJ instrType;
 
 	if (operand2.type != nonterminal || operand1.type != nonterminal) {
 		syntaxError("Expression Error - Operands error",
@@ -165,16 +169,23 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	}
 	ExprToken_Init(&result);
 
-	SemAnalyzer_typeconvert(*(&self->instructions), operand1.datatype, operand2.datatype, operator.content);
-	result.datatype = getResultType(operand1.datatype, operand2.datatype,
+	SemAnalyzer_typeconvert(*(&self->instructions), operand1.datatype,
+			operand2.datatype, operator.content);
+	result.datatype = getResultType(self, operand1.datatype, operand2.datatype,
 			operator.content);
 	InstrParam * paramCnt = malloc(sizeof(InstrParam));
 	paramCnt->iInt = 0;
+
+	if(operator.content >= t_less && operator.content <= t_notEqv  ){
+		instrType = operand1.datatype;
+	}else{
+		instrType = result.datatype;
+	}
+
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { Token2Instruction(operator.content),
-							operand1.datatype, paramCnt,
+							instrType, paramCnt,
 							NULL, NULL });
-
 	result.type = nonterminal;
 	result.content = t_id;
 	exprStack_push(&self->stack, result);
@@ -183,10 +194,12 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 void reduceParenthesis(ExprParser * self) {
 	ExprToken nonTerm = exprStack_pop(&self->stack);
 	if (nonTerm.content != t_id || nonTerm.type != nonterminal) {
-		syntaxError("parenthesis without expr inside", self->tokenBuff->lp->lineNum, "");
+		syntaxError("parenthesis without expr inside",
+				self->tokenBuff->lp->lineNum, "");
 	}
 	if (exprStack_pop(&self->stack).content != t_lParenthessis) {
-		syntaxError("Expected left parenthessis ", self->tokenBuff->lp->lineNum, "");
+		syntaxError("Expected left parenthesis ", self->tokenBuff->lp->lineNum,
+				"");
 	}
 	exprStack_push(&self->stack, nonTerm);
 }
@@ -244,8 +257,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 		if (findHandle(&self->stack) < 4)
 			syntaxError("Expression syntax error - missing operands",
 					self->tokenBuff->lp->lineNum, ",");
-		if (TopMostTerminal
-				!= &(self->stack.StackArray[self->stack.top - 1])) // Check if TopMostTerminal is operator - terminal
+		if (TopMostTerminal != &(self->stack.StackArray[self->stack.top - 1])) // Check if TopMostTerminal is operator - terminal
 			syntaxError("Expression Error - Operator error",
 					self->tokenBuff->lp->lineNum, ",");
 

@@ -6,7 +6,8 @@ void iStack_debug(iStack *self, int stackOffset, char * msg) {
 	int i;
 	if (msg)
 		printf("%s: ", msg);
-	printf("<stack %p, size: %d, offset: %d>\n", (void *) self, self->top, stackOffset);
+	printf("<stack %p, size: %d, offset: %d>\n", (void *) self, self->top,
+			stackOffset);
 	printf("___________________________________________________________\n");
 	printf("Velkost stacku: %d \n ", self->prealocated);
 	printf("Vypis poloziek staku:\n ");
@@ -16,7 +17,7 @@ void iStack_debug(iStack *self, int stackOffset, char * msg) {
 		}
 		printf("%d.pos -> %d \n ", i, (*iStack_getAt(self, i)).iInt);
 	}
-}	
+}
 
 void Interpret__init__(Interpret * self, InstrQueue instructions) {
 	self->instructions = instructions;
@@ -247,13 +248,12 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 
-			if(i.type == iReal){
+			if (i.type == iReal) {
 				if (pomA2.iReal == 0) {
 					rt_zeroDivisionError();
 				}
 				pomA3.iReal = pomA1.iReal / pomA2.iReal;
-			}
-			else{
+			} else {
 				unimplementedError(
 						"Instr. div is not implemented for this type\n");
 			}
@@ -284,16 +284,13 @@ void Interpret_run(Interpret * self) {
 				rt_readlnNumError();
 			break;
 		case i_sort:
-			pomA3.iString = strdup(func_sort((iStack_pop(&(self->stack)).iString)));
+			pomA3.iString = strdup(
+					func_sort((iStack_pop(&(self->stack)).iString)));
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_len:
 			pomA3.iInt = func_len((iStack_pop(&(self->stack)).iString));
-			if (i.dest != NULL)
-				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
-						pomA3;
-			else
-				iStack_push(&(self->stack), pomA3);
+			iStack_push(&(self->stack), pomA3);
 			break;
 
 		case i_push:
@@ -306,9 +303,9 @@ void Interpret_run(Interpret * self) {
 			}
 			break;
 		case i_int2real:
-			pomA1 = iStack_pop(&(self->stack));
-			pomA2.iReal = pomA1.iInt;
-			iStack_push(&(self->stack), pomA2);
+			(*iStack_getAt(&self->stack, self->stack.top + i.dest->stackAddr)).iReal =
+					(*iStack_getAt(&self->stack,
+							self->stack.top + i.a1->stackAddr)).iInt;
 			break;
 
 		case i_copy:

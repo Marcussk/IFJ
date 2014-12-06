@@ -1,11 +1,11 @@
 #include "semantic_analyzer.h"
 
-void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2) {
+void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2, int lineNum) {
 	if (param1 == param2) {
 		return;
 	} else {
 		printf("%d %d \n", param1, param2);
-		sem_TypeError(iVar_type2str(param2));
+		sem_TypeError(iVar_type2str(param2), lineNum);
 	}
 }
 
@@ -28,7 +28,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 			memoryError(
 					"Can't allocate memory for new instruction parameter\n");
 		}
-		instrparam1->stackAddr = 0;
+		instrparam1->stackAddr = 0; // Tady nesmi byt 0, ale vrchol zasobniku
 		InstrQueue_insert(self, (Instruction ) { i_int2real, iReal,
 						instrparam1, NULL, instrparam1 });
 
@@ -37,7 +37,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 			memoryError(
 					"Can't allocate memory for new instruction parameter\n");
 		}
-		instrparam2->stackAddr = -1;
+		instrparam2->stackAddr = -1; // Tady zase vrchol zasobniku - 1
 		InstrQueue_insert(self, (Instruction ) { i_int2real, iReal, instrparam2,
 							NULL, instrparam2 });
 		return;	

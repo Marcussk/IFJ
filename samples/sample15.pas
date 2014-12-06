@@ -5,7 +5,7 @@ var
   k: real;
 begin
   i:=42;
-  j:=0;
+  j:=8;
   k:=i/j;
   write(k)
 end.

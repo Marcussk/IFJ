@@ -36,14 +36,18 @@ void write(tIFJ type, iVal a1) {
 char * func_copy(char *f_str, int i, int n) {
 	int strIndex;
 	int offset = i - 1;
-	if (i < 1)
+	if (offset < 0)
 		rt_error("Builtin function copy does not support i < 1");
 	if (strlen(f_str) < (offset + n)) {
 		rt_error(
 				"Builtin function copy can't be performed because original string is too short\n");
 	}
+<<<<<<< HEAD
 	
 	char * newStr = malloc(i + 1 * sizeof(char));
+=======
+	char * newStr = malloc((n + 1) * sizeof(char));
+>>>>>>> c88bca06991c8122bf6fa59600e536b594fa8dac
 	if (!newStr) {
 		memoryError("func_copy can't alloc memory for newStr\n");
 	}

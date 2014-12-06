@@ -6,6 +6,14 @@
 	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));\
  }
 
+#define ASSERT_NEXT_ISNOT_END()                                                    \
+secTok = TokenBuff_next(&self->tokBuff);                                           \
+if (secTok == t_end ||secTok == t_scolon ) {                                       \
+	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
+}else{                                                                             \
+	syntaxError("Expected end after cmd", self->lp->lineNum, getTokenName(secTok));\
+}
+
 #define NEW_INSTR(code, types, a1, a2, dest)\
 	InstrQueue_insert(&self->instr,	(Instruction ) { code, types, a1, a2, dest});
 
@@ -27,13 +35,17 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
-	if (asigmentTo->type == iFn
-			&& asigmentTo == self->lp->symbolTable->masterItem) {
-		asigmentTo = &(asigmentTo->val.fn->retVal);
+	if (asigmentTo->type == iFn) {
+		if (asigmentTo == self->lp->symbolTable->masterItem) {
+			asigmentTo = &(asigmentTo->val.fn->retVal);
+		} else {
+			sem_Error("trying to assign to function", self->lp->lineNum);
+		}
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype,-1);
-	SemAnalyzer_checktypes(asigmentTo->type, exprtype);
+	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype, -1);
+	SemAnalyzer_checktypes(asigmentTo->type, exprtype,
+			self->tokBuff.lp->lineNum);
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
 	asigmentTo->isInitialized = true;
@@ -96,12 +108,15 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		switch (lastToken) {
 		case t_if:
 			SyntaxAnalyzer_parse_if(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_begin:
 			SyntaxAnalyzer_parse_block(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_while:
 			SyntaxAnalyzer_parse_while(self);
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_id:
 			secTok = TokenBuff_next(&self->tokBuff);
@@ -112,15 +127,18 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 				SyntaxAnalyzer_parseExpr(self);
 			}
-			lastToken = TokenBuff_next(&self->tokBuff);
-			if (lastToken == t_end)
-				return;
-			else if (lastToken == t_scolon) {
-			} else {
-				TokenBuff_pushBack(&self->tokBuff, lastToken);
-			}
+			ASSERT_NEXT_ISNOT_END()
 			break;
 		case t_scolon:
+			secTok = TokenBuff_next(&self->tokBuff);
+			if(secTok == t_scolon){
+				syntaxError("unexpected \";\" after \";\"",
+										self->lp->lineNum, ";");
+			}else if (secTok == t_end)
+				syntaxError("unexpected \";\" before last cmd in block",
+						self->lp->lineNum, ";");
+			else
+				TokenBuff_pushBack(&self->tokBuff, secTok);
 			continue;
 		case t_end:
 			return;
@@ -275,10 +293,11 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 			syntaxError("names of parameters have to be same as in forward",
 					self->lp->lineNum, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
-		NEXT_TOK(param->data->type, "type from forward expected")
-		if (param->next)
+		NEXT_TOK((tIFJ )param->data->type, "type from forward expected")
+		if (param->next) {
 			NEXT_TOK(t_scolon,
 					"expected \";\" after type (and then next param)")
+		}
 		param = param->next;
 	}
 	NEXT_TOK(t_rParenthessis, "expected \")\"")
@@ -309,7 +328,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Function have to have same type as its forward declr.",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
-	LexParser_fnDefEnter(self->lp, lastToken);
+	self->lp->lastFunction->retVal.type = lastToken;
 
 	NEXT_TOK(t_scolon, "expected \";\" after function declaration")
 
@@ -317,14 +336,12 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	if (lastToken == t_forward) {
 		NEXT_TOK(t_scolon, "expected \";\" after forward")
 		self->stackIndexCntr = stackCntrBackup;
-		LexParser_fnBodyLeave(self->lp);
 		self->lp->idMode = lp_searchOnly;
 		return;
 	} else {
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 	}
-	// [TODO] check and implement forward
-	LexParser_createFnSymbolTable(self->lp, fn);
+	LexParser_fnBodyEnter(self->lp, fn);
 	lastToken = TokenBuff_next(&self->tokBuff);
 	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
 	switch (lastToken) {
