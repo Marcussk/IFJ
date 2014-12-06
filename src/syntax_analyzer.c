@@ -119,12 +119,17 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			lastToken = TokenBuff_next(&self->tokBuff);
 			if (lastToken == t_end)
 				return;
-			else if (lastToken == t_scolon) {
-			} else {
+			else
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
-			}
+
 			break;
 		case t_scolon:
+			secTok = TokenBuff_next(&self->tokBuff);
+			if (secTok == t_end)
+				syntaxError("unexpected \";\" after block", self->lp->lineNum,
+						";");
+			else
+				TokenBuff_pushBack(&self->tokBuff, secTok);
 			continue;
 		case t_end:
 			return;
