@@ -41,6 +41,16 @@ void Interpret_run(Interpret * self) {
 		switch (i.code) {
 		case i_noop:
 			break;
+
+		case i_push:
+			if (i.type == iStackRef) {
+				iStack_push(&(self->stack),
+					*iStack_getAt(&self->stack,
+										i.a1->stackAddr + stackOffset));
+			} else {
+				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
+			}
+			break;
 		case i_jmp:
 			self->instructions.actual = i.dest->iInt;
 			continue;
@@ -55,6 +65,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA2.iInt == pomA1.iInt);
 				break;
@@ -75,6 +86,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA2.iInt != pomA1.iInt);
 				break;
@@ -95,6 +107,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt > pomA2.iInt);
 				break;
@@ -115,6 +128,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = ((pomA1.iInt) < (pomA2.iInt));
 				break;
@@ -135,6 +149,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt >= pomA2.iInt);
 				break;
@@ -155,6 +170,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			switch (i.type) {
+			case iBool:
 			case iInt:
 				pomA3.iInt = (pomA1.iInt <= pomA2.iInt);
 				break;
@@ -293,15 +309,7 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 
-		case i_push:
-			if (i.type == iStackRef) {
-				iStack_push(&(self->stack),
-						*iStack_getAt(&self->stack,
-								i.a1->stackAddr + stackOffset));
-			} else {
-				iStack_push(&(self->stack), InstrP2iVal(i.a1, i.type));
-			}
-			break;
+
 		case i_int2real:
 			(*iStack_getAt(&self->stack, self->stack.top + i.dest->stackAddr)).iReal =
 					(*iStack_getAt(&self->stack,
