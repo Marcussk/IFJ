@@ -1,1 +1,1 @@
-{"stderr": "ERROR(Syntax) Line 16: Expected end after cmd, got identificator\n", "stdin": "", "returns": 2, "stdout": ""}
+{"stderr": "", "returns": 0, "stdout": "Funkce abs:\nVysledek je: 5\n", "stdin": ""}

@@ -1,1 +1,1 @@
-{"stderr": "ERROR(Syntax) Line 3: Unexpected syntax in code block\n, got integer\n", "stdin": "", "returns": 2, "stdout": ""}
+{"stderr": "ERROR(Syntax) Line 3: Unexpected syntax in code block\n, got integer\n", "returns": 2, "stdout": "", "stdin": ""}

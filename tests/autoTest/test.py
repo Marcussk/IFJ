@@ -58,7 +58,10 @@ def createTest(testFileName):
         json.dump(result, f)
 
 def performTest(sampleFile, resultFileName):
-    prompt = "sampleFile : %s " % (sampleFile) 
+    prompt = "sampleFile : %s " % (sampleFile)
+    with open(sampleFile) as sf:
+        descr = sf.readline()
+        
     with open(resultFileName) as f:
         resultRef = json.load(f)
     result = {}
@@ -66,6 +69,8 @@ def performTest(sampleFile, resultFileName):
     result["stdout"], result["stderr"] = p.communicate(input=resultRef["stdin"])
     result["returns"] = p.returncode
     pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+  
+    result["result"] = descr
   
     valgrindOut = pValgrind.communicate(input=resultRef["stdin"])[1]
     result["valgrindErrors"] = int(findValgrindErr.search(valgrindOut.decode("utf-8")).group(1))
