@@ -72,22 +72,6 @@ typedef struct {
 	char * str;
 } TokenMeaning;
 
-typedef struct TokenMapElement TokenMapElement;
-struct TokenMapElement {
-	Token token;
-	TokenMapElement * next;
-};
-
-typedef struct {
-	TokenMapElement * map;
-	TokenMapElement * possition;
-} TokenParser;
-
-TokenParser TokenParser__init__();
-void TokenParser__dell__(TokenParser * p);
-Token TokenParser_push(TokenParser * p, char ch);
-void TokenParser_reset(TokenParser * p);
-
 bool Token_isType(Token t);
 bool Token_isKeyword(Token t);
 bool Token_isValue(Token t);
@@ -95,6 +79,5 @@ bool Token_isOperator(Token t);
 bool canContinueWithNonWordChar(Token t);
 
 char * getTokenName(Token t);
-void TokenMap_debug(TokenMapElement map[], int indent);
 
 #endif

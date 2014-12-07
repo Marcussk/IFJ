@@ -13,7 +13,6 @@ SOURCES=$(wildcard *.c )
 OBJECTS= $(SOURCES:.c=.o)
 
 EXECUTABLE=ifj.run
-#EXECUTABLE_WIN=ifj.exe
 
 all: $(EXECUTABLE) 
 	rm *.o
@@ -21,10 +20,5 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(LINK.o) $^ -o $@ $(LIBS)
 
-
-#$(EXECUTABLE_WIN): $(OBJECTS)
-#	$(LINK.o) $^ -o $@ $(LIBS)
-
 clean:
-	rm $(EXECUTABLE) $(OBJECTS) #$(EXECUTABLE_WIN)
-
+	-@rm -rf $(EXECUTABLE) $(OBJECTS) 2>/dev/null || true

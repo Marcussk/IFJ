@@ -53,6 +53,6 @@ begin
 	
 	maxresult := max(num1, num2, num3);
 	factresult := factorial(3);
-	write('Nejvetsi cislo je: ', maxresult, #10);
+	write('Nejvetsi cislo je: ', maxresult, ''#10'');
 	write('Factorial je: ', factresult)
 end.

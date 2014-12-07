@@ -11,7 +11,7 @@ secTok = TokenBuff_next(&self->tokBuff);                                        
 if (secTok == t_end ||secTok == t_scolon ) {                                       \
 	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
 }else{                                                                             \
-	syntaxError("Expected end after cmd", self->lp->lineNum, getTokenName(secTok));\
+	syntaxError("Expected end or ; after cmd", self->lp->lineNum, getTokenName(secTok));\
 }
 
 #define NEW_INSTR(code, types, a1, a2, dest)\
@@ -135,10 +135,10 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			break;
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
-			if(secTok == t_scolon){
-				syntaxError("unexpected \";\" after \";\"",
-										self->lp->lineNum, ";");
-			}else if (secTok == t_end)
+			if (secTok == t_scolon) {
+				syntaxError("unexpected \";\" after \";\"", self->lp->lineNum,
+						";");
+			} else if (secTok == t_end)
 				syntaxError("unexpected \";\" before last cmd in block",
 						self->lp->lineNum, ";");
 			else
@@ -196,8 +196,6 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
 	return;
-
-	//[TODO] instructions
 }
 
 //"while" already found
@@ -232,7 +230,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
-	//[TODO] instructions
 
 }
 
@@ -257,13 +254,13 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 
 	//until 
 	NEXT_TOK(t_until, "expected until");
-	
+
 	//Cond
 	SyntaxAnalyzer_parseExpr(self);
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
-					StackAddrend });			
+					StackAddrend });
 	//jmp begin
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL, NULL,
 					StackAddrbegin });
@@ -336,7 +333,7 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 			syntaxError("names of parameters have to be same as in forward",
 					self->lp->lineNum, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
-		NEXT_TOK((tIFJ )param->data->type, "type from forward expected")
+		NEXT_TOK((Token )param->data->type, "type from forward expected")
 		if (param->next) {
 			NEXT_TOK(t_scolon,
 					"expected \";\" after type (and then next param)")
@@ -420,13 +417,12 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
-		/*
-		 self->lp->idMode = lp_debug;
-		 printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
-		 if (tok == t_eof) {
-		 return;
-		 }*/
-
+#ifdef TOKENS_ONLY
+		self->lp->idMode = lp_ignore;
+		printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
+		if (tok == t_eof)
+			return;
+#else
 		switch (tok) {
 		case t_var:
 			SyntaxAnalyzer_parse_varDeclr(self);
@@ -459,6 +455,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			syntaxError("syntax corrupted", self->lp->lineNum,
 					getTokenName(tok));
 		}
+#endif
 	}
 }
 
