@@ -356,6 +356,8 @@ Token LexParser_next(LexParser *self) {
 				return t_asterisk;
 			case '/':
 				return t_slash;
+			case ',':
+				return t_comma;
 			case '=':
 				return t_eqv;
 			case '(':

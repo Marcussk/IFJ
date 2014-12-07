@@ -11,6 +11,7 @@
 #include "lex_parser.h"
 #include "semantic_analyzer.h"
 #include "token_buff.h"
+#include "defs.h"
 
 typedef struct {
 	LexParser * lp;

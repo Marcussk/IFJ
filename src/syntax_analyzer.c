@@ -426,13 +426,12 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
-/*
+#ifdef TOKENS_ONLY
 		self->lp->idMode = lp_ignore;
 		printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
-		if (tok == t_eof) {
+		if (tok == t_eof)
 			return;
-		}*/
-
+#else
 		switch (tok) {
 		case t_var:
 			SyntaxAnalyzer_parse_varDeclr(self);
@@ -465,6 +464,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			syntaxError("syntax corrupted", self->lp->lineNum,
 					getTokenName(tok));
 		}
+#endif
 	}
 }
 
