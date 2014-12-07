@@ -165,7 +165,7 @@ Token LexParser_keywordCheck(String * str) {
 			if (str->len == 8 && !strcmp(str->buff, "function"))
 				return t_func;
 			if (str->len == 7 && !strcmp(str->buff, "forward"))
-				return t_false;
+				return t_forward;
 			break;
 		case 'i':
 			if (str->len == 2 && str->buff[1] == 'f')
