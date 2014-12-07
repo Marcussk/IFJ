@@ -1,4 +1,4 @@
-{ pretypovanie }
+{ int leading zeroes }
 var
 	vysl : int;
 { Hlavni telo programu }

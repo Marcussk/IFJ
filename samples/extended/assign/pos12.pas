@@ -1,4 +1,4 @@
-{ nezaporne }
+{ vypis boolean:true }
 var
 	vysl : boolean;
 { Hlavni telo programu }

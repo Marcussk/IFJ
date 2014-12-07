@@ -1,4 +1,4 @@
-{ nedochadza k pretypovaniu }
+{ nedochadza k pretypovaniu int boolean}
 var
 	vysl : int;
 	assign : boolean;

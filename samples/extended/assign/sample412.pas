@@ -1,4 +1,4 @@
-{ nezaporne }
+{ priradenie -3.14 do real }
 var
 	vysl : real;
 { Hlavni telo programu }

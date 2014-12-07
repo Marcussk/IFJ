@@ -1,4 +1,4 @@
-{ nedochadza k pretypovaniu }
+{ nedochadza k pretypovaniu real string }
 var
 	vysl : real;
 	assign : string;

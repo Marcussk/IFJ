@@ -1,4 +1,4 @@
-{ nezaporne }
+{ ciarka v hodnote }
 var
 	vysl : real;
 { Hlavni telo programu }

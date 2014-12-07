@@ -1,4 +1,4 @@
-{ Program 2: Vypocet faktorialu (rekurzivne) }
+{ Nevhodny nazov boolean }
 var
     boolean : integer;
     vysl : integer;

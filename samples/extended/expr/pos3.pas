@@ -1,4 +1,4 @@
-{ write int }
+{ write real 5 / 2 }
 { Hlavni telo programu }
 var
 	res : real;

@@ -1,4 +1,4 @@
-{ write int }
+{ write boolean > }
 { Hlavni telo programu }
 var
 	res : boolean;

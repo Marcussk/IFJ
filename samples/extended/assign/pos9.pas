@@ -1,4 +1,4 @@
-{ nezaporne }
+{ vypis prazdneho stringu }
 var
 	vysl : string;
 { Hlavni telo programu }

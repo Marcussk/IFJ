@@ -1,4 +1,4 @@
-{ nedochadza k pretypovaniu }
+{ nedochadza k pretypovaniu boolean real}
 var
 	vysl : boolean;
 	assign : real;

@@ -1,4 +1,4 @@
-{ nedochadza k pretypovaniu }
+{ nedochadza k pretypovaniu string int}
 var
 	vysl : string;
 	assign : int;

@@ -1,4 +1,4 @@
-{ write int }
+{ write int 42 * 42 }
 { Hlavni telo programu }
 var
 	res : integer;

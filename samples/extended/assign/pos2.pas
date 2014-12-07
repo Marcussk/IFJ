@@ -1,4 +1,4 @@
-{ pretypovanie }
+{ real = int }
 var
 	vysl : real;
 { Hlavni telo programu }

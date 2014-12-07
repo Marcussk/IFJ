@@ -1,4 +1,4 @@
-{ nezaporne }
+{ leading zeroes e notacia }
 var
 	vysl : real;
 { Hlavni telo programu }

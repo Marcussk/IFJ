@@ -1,4 +1,4 @@
-{ write int }
+{ write 3.14 = 6e2 }
 { Hlavni telo programu }
 var
 	res : boolean;

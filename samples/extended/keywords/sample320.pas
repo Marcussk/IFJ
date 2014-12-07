@@ -1,4 +1,4 @@
-{ Program 2: Vypocet faktorialu (rekurzivne) }
+{Nevhodny nazov id}
 var
     WRITE : integer;
     vysl : integer;

@@ -1,4 +1,4 @@
-{ nezaporne }
+{ Enotation }
 var
 	vysl : real;
 { Hlavni telo programu }

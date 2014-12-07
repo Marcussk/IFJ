@@ -1,3 +1,4 @@
+{zakladny test if}
 begin
 	if false < true
 	then

@@ -1,4 +1,4 @@
-{ nedochadza k pretypovaniu }
+{ nedochadza k pretypovaniu boolean string}
 var
 	vysl : boolean;
 	assign : string;

@@ -1,4 +1,4 @@
-{ nezaporne }
+{ vypis #67 }
 var
 	vysl : string;
 { Hlavni telo programu }

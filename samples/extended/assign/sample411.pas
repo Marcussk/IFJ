@@ -1,4 +1,4 @@
-{ nezaporne }
+{ priradenie -42 do int}
 var
 	vysl : int;
 { Hlavni telo programu }

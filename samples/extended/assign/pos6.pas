@@ -1,4 +1,4 @@
-{ nezaporne }
+{ zaporna scientific notation }
 var
 	vysl : real;
 { Hlavni telo programu }

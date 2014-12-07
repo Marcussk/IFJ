@@ -1,3 +1,4 @@
+{zakaldny while}
 begin
 	while false
 	do

@@ -1,4 +1,4 @@
-{ nezaporne }
+{ vypis newline }
 var
 	vysl : string;
 { Hlavni telo programu }
