@@ -118,7 +118,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_while(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
-		/////
+			/////
 		case t_repeat:
 			SyntaxAnalyzer_parse_reapat(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
@@ -136,10 +136,10 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			break;
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
-			if(secTok == t_scolon){
-				syntaxError("unexpected \";\" after \";\"",
-										self->lp->lineNum, ";");
-			}else if (secTok == t_end)
+			if (secTok == t_scolon) {
+				syntaxError("unexpected \";\" after \";\"", self->lp->lineNum,
+						";");
+			} else if (secTok == t_end)
 				syntaxError("unexpected \";\" before last cmd in block",
 						self->lp->lineNum, ";");
 			else
@@ -259,13 +259,13 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 
 	//until 
 	NEXT_TOK(t_until, "expected until");
-	
+
 	//Cond
 	SyntaxAnalyzer_parseExpr(self);
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
-					StackAddrend });			
+					StackAddrend });
 	//jmp begin
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL, NULL,
 					StackAddrbegin });
@@ -426,12 +426,12 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 
 	while (true) {
 		tok = TokenBuff_next(&self->tokBuff);
-		/*
-		 self->lp->idMode = lp_debug;
-		 printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
-		 if (tok == t_eof) {
-		 return;
-		 }*/
+/*
+		self->lp->idMode = lp_ignore;
+		printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
+		if (tok == t_eof) {
+			return;
+		}*/
 
 		switch (tok) {
 		case t_var:

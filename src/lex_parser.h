@@ -14,22 +14,15 @@
 #include "i_function.h"
 
 typedef enum {
-	j_continue = 0, j_readStr, j_reset, j_readEscape
-} LexParser_jobPlan;
-typedef enum {
 	lp_searchOnly, lp_insertOnly, lp_fnSearch, lp_parseParams, lp_ignore
 } LexParser_mode;
 
 typedef struct {
 	BuffFile input;
-	TokenParser tParser;
 	String str; // alias buffer
 	int lineNum;
-	Token preLastToken;
-	Token lastToken;
 	iVar * lastSymbol;
 	iFunction * lastFunction;
-	LexParser_jobPlan planedJob;
 	HashTable * symbolTable;
 	LexParser_mode idMode;
 } LexParser;
