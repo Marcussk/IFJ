@@ -4,6 +4,7 @@ typedef enum {
 	np_int,
 	np_needAfterDot,
 	np_needExponent,
+	np_needExponent_gotSign,
 	np_real,
 	np_expReal,
 	np_expReal_needAfterDot,
@@ -12,7 +13,6 @@ typedef enum {
 
 void LexParser_readEscape(LexParser * self);
 void LexParser_readString(LexParser * self);
-
 void LexParser__init__(LexParser * self, FILE * inFile) {
 	String__init__(&self->str, 32);
 	BuffFile__init__(&(self->input), inFile);
@@ -23,7 +23,6 @@ void LexParser__init__(LexParser * self, FILE * inFile) {
 	self->symbolTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 	registrBuiltins(self->symbolTable);
 }
-
 void LexParser_readString(LexParser * self) {
 	char ch, ch2;
 	while (true) {
@@ -56,7 +55,6 @@ void LexParser_readString(LexParser * self) {
 	}
 	BuffFile_pushBack(&(self->input), ch);
 }
-
 void LexParser_readComment(LexParser * self) {
 	char ch;
 	while ((ch = BuffFile_get(&(self->input))) != '}') {
@@ -183,7 +181,7 @@ Token LexParser_keywordCheck(String * str) {
 			break;
 		case 's':
 			if (str->len == 6 && !strcmp(str->buff, "string"))
-				return t_real;
+				return t_string;
 			break;
 		case 't':
 			if (str->len == 4 && !strcmp(str->buff, "then"))
@@ -292,9 +290,19 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 		case np_needExponent:
 			if (isdigit(ch))
 				st = np_expReal;
+			else if (ch == '-' || ch == '+') {
+				st = np_needExponent_gotSign;
+			} else
+				lexError("expected number as exponent", self->str.buff,
+						self->lineNum);
+			break;
+		case np_needExponent_gotSign:
+			if (isdigit(ch))
+				st = np_expReal;
 			else
 				lexError("expected number as exponent", self->str.buff,
 						self->lineNum);
+			break;
 			break;
 		case np_real:
 			if (isdigit(ch)) {
