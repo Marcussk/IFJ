@@ -1,0 +1,107 @@
+<!doctype html>
+<head>
+<title>Err report</title>
+<meta charset="utf-8" />
+<link rel=stylesheet href="CodeMirror/doc/docs.css">
+<link rel=stylesheet href="CodeMirror/lib/codemirror.css">
+<link rel=stylesheet href="CodeMirror/addon/merge/merge.css">
+<script src="CodeMirror/lib/codemirror.js"></script>
+<script src="CodeMirror/mode/xml/xml.js"></script>
+<script src="CodeMirror/addon/merge/diff_match_patch.js"></script>
+<script src="CodeMirror/addon/merge/merge.js"></script>
+<script>
+	
+</script>
+<style>
+.horiz {
+	display: block;
+}
+
+.horiz span {
+	margin: 0;
+	display: inline-block;
+	width: 49%;
+}
+
+.result {
+	border: 1;
+	background-color: #FF9999;
+}
+</style>
+</head>
+<body>
+	<h1>Err report</h1>
+
+	<div id="template" class="result" style="visibility: hidden;">
+		<div class="horiz filenames"></div>
+		<div class="horiz">
+			<span><b>result</b></span> <span><b>resultRef</b></span>
+		</div>
+		<div class="retcode" style="visibility: hidden;">
+			<span>Return code:</span>
+			<div class="horiz"></div>
+		</div>
+		<span class="valgrinderrors">Valgrind errors:</span>
+		<span>stdout:</span>
+		<div class="stdoutdiff"></div>
+	</div>
+
+	<script>
+		var results = {{ results }};
+
+		function appendValAsSpan(parent, val) {
+			var valElm = document.createElement("span");
+			valElm.innerHTML = val;
+			parent.appendChild(valElm);
+		}
+
+		function initUI(result) {
+			var value = result.result.stdout;
+			var orig = result.resultRef.stdout;
+			var returned = result.result.returns;
+			var expectedReturn = result.resultRef.returns;
+			var template = document.getElementById('template').cloneNode(true);
+			var diffDiv = template.getElementsByClassName("stdoutdiff")[0];
+			var valgrindErrors = template.getElementsByClassName("valgrinderrors")[0]
+			template.removeAttribute("id");
+
+			var filenames = template.getElementsByClassName("filenames")[0];
+			appendValAsSpan(filenames, result.sampleFile);
+			appendValAsSpan(filenames, result.resultFile);
+
+			if (returned != expectedReturn) {
+				var resultWrap = template.getElementsByClassName("retcode")[0];
+				resultWrap.style.visibility = "visible";
+
+				var r = resultWrap.getElementsByClassName("horiz")[0];
+				appendValAsSpan(r, returned);
+				appendValAsSpan(r, expectedReturn);
+
+			}
+			valgrindErrors.innerHTML += result.valgrindErrors;
+			document.body.appendChild(template);
+			template.style.visibility = "visible";
+			if (value != orig) {
+				var dv = CodeMirror.MergeView(diffDiv, {
+					value : value,
+					orig : orig,
+					lineNumbers : true,
+					mode : "text",
+					highlightDifferences : true,
+					connect : true,
+					collapseIdentical : false
+				});
+			}
+
+		}
+
+		window.onload = function() {
+			var title = document.body.getElementsByTagName("h1")[0];
+			title.innerHTML += (", count: " + results.length );
+			for (var i = 0; i < results.length; i++)
+				initUI(results[i]);
+		};
+	</script>
+</body>
+
+</html>

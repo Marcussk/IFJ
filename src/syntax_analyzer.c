@@ -342,7 +342,7 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 			syntaxError("names of parameters have to be same as in forward",
 					self->lp->lineNum, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
-		NEXT_TOK((tIFJ )param->data->type, "type from forward expected")
+		NEXT_TOK((Token )param->data->type, "type from forward expected")
 		if (param->next) {
 			NEXT_TOK(t_scolon,
 					"expected \";\" after type (and then next param)")

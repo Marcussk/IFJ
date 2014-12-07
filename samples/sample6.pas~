@@ -12,6 +12,6 @@ begin
 	else
 	begin
 		a := a - a;
-		write('Vysledek je: ', a, ''#10'')
 	end
+        write('Vysledek je: ', a, ''#10'')
 end.

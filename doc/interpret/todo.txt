@@ -1,5 +1,0 @@
--inteligentní runtime kontroly
--inteligentní konverze typů
--předávání proměných z syntaktického analyzátoru
--zabudované funkce
-

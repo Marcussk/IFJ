@@ -11,7 +11,7 @@ begin
     else
     begin
         write('zaporne', ''#10'')
-    end
+    end;
  	
 	b := 5 - 10;
     if b > 0 then
