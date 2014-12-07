@@ -11,7 +11,7 @@ secTok = TokenBuff_next(&self->tokBuff);                                        
 if (secTok == t_end ||secTok == t_scolon ) {                                       \
 	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
 }else{                                                                             \
-	syntaxError("Expected end after cmd", self->lp->lineNum, getTokenName(secTok));\
+	syntaxError("Expected end or ; after cmd", self->lp->lineNum, getTokenName(secTok));\
 }
 
 #define NEW_INSTR(code, types, a1, a2, dest)\
@@ -118,7 +118,6 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_while(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
-			/////
 		case t_repeat:
 			SyntaxAnalyzer_parse_reapat(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
@@ -197,8 +196,6 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
 	return;
-
-	//[TODO] instructions
 }
 
 //"while" already found
@@ -233,7 +230,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
-	//[TODO] instructions
 
 }
 
@@ -275,8 +271,6 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 	//end
 	StackAddrend->stackAddr = self->instr.actual;
 
-	//free(StackAddrend);
-	//free(StackAddrbegin);	
 }
 
 //////////////////

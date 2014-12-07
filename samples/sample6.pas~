@@ -11,7 +11,7 @@ begin
 	end
 	else
 	begin
-		a := a - a;
+		a := a - a
 	end
         write('Vysledek je: ', a, ''#10'')
 end.
