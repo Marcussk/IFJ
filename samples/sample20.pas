@@ -1,6 +1,10 @@
+{ nedochadza k pretypovaniu string boolean }
 var
-	res : real;
+	vysl : string;
+	assign : boolean;
+{ Hlavni telo programu }
 begin
-	readln(res);
-	write(res);
+	assign := true;
+	vysl := assign;
+    write(vysl)
 end.

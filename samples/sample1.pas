@@ -1,8 +1,8 @@
-{Test na cislicove literaly}
-var	
-	result : boolean;
-
+{ vypis newline }
+var
+	vysl : string;
+{ Hlavni telo programu }
 begin
-	result := ((2*(3+4*(5+6*(7+7))))) = (((((7+7)*6+5)*4+3)*2));
-	write(result)
+	vysl := '#10';
+    write(vysl)
 end.

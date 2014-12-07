@@ -1,11 +1,10 @@
-{ Test interpretu - behova chyba deleni nulou (navratovy kod 8) }
+{ nedochadza k pretypovaniu real string }
 var
-  i: integer;
-  j: integer;
-  k: real;
+	vysl : real;
+	assign : string;
+{ Hlavni telo programu }
 begin
-  i:=42;
-  j:=8;
-  k:=i/j;
-  write(k)
+	assign := 'string val';
+	vysl := assign;
+    write(vysl)
 end.
