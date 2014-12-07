@@ -1,1 +1,1 @@
-{"returns": 2, "stdin": "", "stderr": "ERROR(Syntax) Line 6: unexpected \";\" before last cmd in block, got ;\n", "stdout": ""}
+{"returns": 4, "stdin": "", "stderr": "ERROR(Semantic/Type) Line 8: Variable or function of type unknown does not fit to expression or function has bad parameters.\n", "stdout": "19 16 \n"}

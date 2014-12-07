@@ -46,7 +46,7 @@
 		<div class="stdoutdiff"></div>
 	</div>
 	<script>
-		var results = [];
+		var results = [{"resultRef": {"returns": 0, "stdin": "", "stderr": "", "stdout": "Konkatenace"}, "result": {"valgrindErrors": 2, "returns": 0, "result": "{ write string + string }\n", "stderr": "", "stdout": "Konkatenace"}, "sampleFile": "../../samples/sample29.pas", "resultFile": "results/sample29.json"}, {"resultRef": {"returns": 6, "stdin": "", "stderr": "ERROR(Runtime/readln): Error while reading value from user input.\n", "stdout": "Zadejte cislo pro vypocet faktorialu: "}, "result": {"valgrindErrors": 0, "returns": 0, "result": "{Strednik naviac za endom}\n", "stderr": "", "stdout": "Zadejte cislo pro vypocet faktorialu: Vysledek je: 1\n"}, "sampleFile": "../../samples/sample96.pas", "resultFile": "results/sample96.json"}];
 
 		function appendValAsSpan(parent, val) {
 			var valElm = document.createElement("span");

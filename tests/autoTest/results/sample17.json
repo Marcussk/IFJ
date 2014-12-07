@@ -1,1 +1,1 @@
-{"stderr": "", "returns": 0, "stdout": "Nejvetsi cislo je: 3\nFactorial je: 6", "stdin": ""}
+{"returns": 4, "stdin": "", "stderr": "ERROR(Semantic/Type) Line 8: Variable or function of type string does not fit to expression or function has bad parameters.\n", "stdout": "16 19 \n"}

@@ -1,0 +1,1 @@
+{"returns": 4, "stdin": "", "stderr": "ERROR(Semantic/Type) Line 8: Variable or function of type unknown does not fit to expression or function has bad parameters.\n", "stdout": "18 16 \n"}

@@ -1,1 +1,1 @@
-{"stderr": "", "returns": 0, "stdout": "Hodnota a je: 60\nHodnota b je: 10\n", "stdin": ""}
+{"returns": 5, "stdin": "", "stderr": "ERROR(Semantic) Line: 4: trying to assign to function .\n", "stdout": ""}
