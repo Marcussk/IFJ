@@ -368,6 +368,7 @@ Token LexParser_next(LexParser *self) {
 				LexParser_readComment(self);
 				break;
 			case '\'':
+				String_clear(&self->str);
 				LexParser_readString(self);
 				return t_str_val;
 			case '.':
@@ -385,6 +386,7 @@ Token LexParser_next(LexParser *self) {
 				return LexParser_greaterFound(self);
 			default:
 				if (isdigit(ch)) {
+
 					return LexParser_parseNum(self, ch);
 				}
 				if (isalpha(ch) || ch == '_')
