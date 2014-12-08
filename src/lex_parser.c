@@ -74,7 +74,7 @@ void LexParser_readEscape(LexParser * self) {
 		String_append(&str, ch);
 	}
 	if (str.len < 1)
-		lexError("Uncomplet escape sequention.\n", str.buff, self->lineNum);
+		lexError("Uncomplete escape sequention.\n", str.buff, self->lineNum);
 	int escp = atoi(str.buff);
 	String__dell_(&str);
 	if (escp > 255)
