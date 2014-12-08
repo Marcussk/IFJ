@@ -1,4 +1,4 @@
-{Nevhodny nazov id}
+{redefinice builtin }
 var
     readln : integer;
     vysl : integer;

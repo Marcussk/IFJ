@@ -1,6 +1,7 @@
 var
 	res : real;
 begin
-	readln(res);
+	{readln(res);}
+	res:=132.135;
 	write(res);
 end.

@@ -1,1 +1,1 @@
-{"returns": 2, "stdin": "", "stderr": "ERROR(Syntax) Line 3: expected type name\n, got identificator\n", "stdout": ""}
+{"stdin": "", "stdout": "", "stderr": "ERROR(Syntax) Line 3: expected type name\n, got identificator\n", "returns": 2}

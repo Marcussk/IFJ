@@ -1,1 +1,1 @@
-{"returns": 6, "stdin": "", "stderr": "ERROR(Runtime/readln): Error while reading value from user input.\n", "stdout": "Zadejte cislo pro vypocet faktorialu: "}
+{"stdin": "", "stdout": "Zadejte cislo pro vypocet faktorialu: Vysledek je: 3628800\n", "stderr": "", "returns": 0}

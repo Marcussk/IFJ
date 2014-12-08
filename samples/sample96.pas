@@ -5,7 +5,8 @@ var
 begin
 	{ Program 1: Vypocet faktorialu (iterativne) }
 	write('Zadejte cislo pro vypocet faktorialu: ');
-	readln(a);
+	{readln(a);}
+	a:=10;
 	if a < 0 then
 	begin
 		write('Faktorial nelze spocitat'#10'')

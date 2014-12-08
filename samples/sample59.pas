@@ -12,7 +12,8 @@ end;
 { Hlavni telo programu }
 begin
     write('Zadejte cislo pro vypocet faktorialu: ');
-    readln(a);
+    {readln(a);}
+	a:=3531;
     vysl := factorial(a);
     write('Vysledek je: ', vysl, ''#10'')
     end

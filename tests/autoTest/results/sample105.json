@@ -1,1 +1,1 @@
-{"returns": 0, "stdin": "", "stderr": "", "stdout": "Hodnota a je: 2147483647\nHodnota a je: -2147483648\nHodnota a je: -2147483647\n"}
+{"stdin": "", "stdout": "Hodnota a je: 2147483647\nHodnota a je: -2147483648\nHodnota a je: -2147483647\n", "stderr": "", "returns": 0}
