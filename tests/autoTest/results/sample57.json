@@ -1,1 +1,1 @@
-{"stdin": "", "stderr": "ERROR(Syntax) Line 8: expected \";\"\n, got begin\n", "stdout": "", "returns": 2}
+{"returns": 2, "stdin": "", "stderr": "ERROR(Syntax) Line 8: expected \";\"\n, got begin\n", "stdout": ""}

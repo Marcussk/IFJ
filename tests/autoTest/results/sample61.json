@@ -1,1 +1,1 @@
-{"stdin": "", "stderr": "ERROR(Syntax) Line 5: expected id in argument list after semicolon, got )\n", "stdout": "", "returns": 2}
+{"returns": 2, "stdin": "", "stderr": "ERROR(Syntax) Line 5: expected id in argument list after semicolon, got )\n", "stdout": ""}

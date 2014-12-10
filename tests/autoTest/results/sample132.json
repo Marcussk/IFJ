@@ -1,1 +1,1 @@
-{"stdin": "", "stderr": "ERROR(Semantic/Definition) Line 4: variable \"a\" or function is undefined or you are atempting to redefine it.\n", "stdout": "", "returns": 3}
+{"returns": 3, "stdin": "", "stderr": "ERROR(Semantic/Definition) Line 4: variable \"a\" or function is undefined or you are atempting to redefine it.\n", "stdout": ""}
