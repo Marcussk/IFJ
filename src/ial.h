@@ -10,6 +10,7 @@
 
 //cardinality of alphabet - number of all poss. chars
 #define MAX_SIZE 255
+#define SUFFSIZE 255
 
 int func_find(char *txt, char *pat);
 //int func_find( char *src, char *search );
