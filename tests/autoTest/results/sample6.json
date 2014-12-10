@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "18 17 \n", "stderr": "ERROR(Semantic/Type) Line 6: Variable or function of type int does not fit to expression or function has bad parameters.\n", "returns": 4}
+{"stdin": "", "stderr": "ERROR(Semantic/Type) Line 6: Variable or function of type int does not fit to expression or function has bad parameters.\n", "stdout": "18 17 \n", "returns": 4}

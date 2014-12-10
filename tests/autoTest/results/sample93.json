@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "stderr": "ERROR(Semantic/Type): Variable type int does not fit to condition.\n", "returns": 4}
+{"stdin": "", "stderr": "ERROR(Semantic/Type): Variable type int does not fit to condition.\n", "stdout": "", "returns": 4}

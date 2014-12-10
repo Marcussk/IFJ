@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "stderr": "ERROR(Syntax) Line 7: Expression Error, error state from prTable, got identificator\n", "returns": 2}
+{"stdin": "", "stderr": "ERROR(Syntax) Line 7: Expression Error, error state from prTable, got identificator\n", "stdout": "", "returns": 2}

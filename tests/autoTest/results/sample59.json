@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "stderr": "ERROR(Syntax) Line 5: id of function expected, got boolean\n", "returns": 2}
+{"stdin": "", "stderr": "ERROR(Syntax) Line 5: id of function expected, got boolean\n", "stdout": "", "returns": 2}

@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "stderr": "ERROR(Syntax) Line 12: Expected end or ; after cmd, got .\n", "returns": 2}
+{"stdin": "", "stderr": "ERROR(Syntax) Line 12: Expected end or ; after cmd, got .\n", "stdout": "", "returns": 2}
