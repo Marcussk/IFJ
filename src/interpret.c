@@ -362,11 +362,11 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&self->stack, pomA1);            // return value on 0
 			pomA4.val.iInt = self->stack.top;
 			pomA1.val = (iVal) i.a1->iInt;
-			iStack_push(&self->stack, (sVal) pomA2); // paramsCnt at 1
+			iStack_push(&self->stack, (sVal) pomA1); // paramsCnt at 1
 			pomA1.val = (iVal) (self->instructions.actual + 1);
-			iStack_push(&self->stack, pomA3); // next instr after return  at 2
+			iStack_push(&self->stack, pomA1); // next instr after return  at 2
 			pomA1.val = (iVal) (stackOffset);
-			iStack_push(&self->stack, pomA4); // push old stack offset  at 3
+			iStack_push(&self->stack, pomA1); // push old stack offset  at 3
 			InstrQueue_atIndex(&(self->instructions), i.dest->iInt); // jmp to instr body
 			stackOffset = pomA4.val.iInt;
 			continue;
