@@ -1,1 +1,1 @@
-{"returns": 4, "stdin": "", "stderr": "ERROR(Semantic/Type) Line 6: Variable or function of type real does not fit to expression or function has bad parameters.\n", "stdout": ""}
+{"stdin": "", "stdout": "", "returns": 4, "stderr": "ERROR(Semantic/Type) Line 6: Variable or function of type real does not fit to expression or function has bad parameters.\n"}

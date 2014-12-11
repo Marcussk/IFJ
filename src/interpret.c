@@ -46,13 +46,12 @@ void Interpret_run(Interpret * self) {
 										i.a1->stackAddr + stackOffset));
 			} else {
 				pomA1.val = InstrP2iVal(i.a1, i.type);
-				pomA1.isInitialized = false;
+				pomA1.isInitialized = i.a1 != NULL;
 				iStack_push(&(self->stack), pomA1);
 			}
 			break;
 		case i_assign:
 					pomA1 = iStack_pop(&(self->stack));
-					pomA1.isInitialized = true;
 					if (i.type != iString) {
 						*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 								pomA1;

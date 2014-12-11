@@ -51,10 +51,12 @@ ORIGINAL_CWD = os.getcwd()
 REPORT_TEMPLATE = "test_report_template.html"
 REPORT_FILE = "results.html"
 MAX_THREADS = 16
-CHECK_VALGRIND = False # Consumes MOST OF TIME
+CHECK_VALGRIND = False  # Consumes MOST OF TIME
 
 
 findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")
+firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
+
 
 def makeBinary():
     os.chdir(SRC_FOLDER)    
@@ -100,16 +102,19 @@ def createTest(testFileName):
 
 def performTest(sampleFile, resultFileName):
     prompt = "sampleFile : %s " % (sampleFile)
+    result = {}
     with open(sampleFile) as sf:
-        descr = sf.readline()
-        
+        ex = sf.read()
+        comment = firstCommentRegex.search(ex)
+        if comment:
+            result["descr"] = comment.group(1)
+                   
     with open(resultFileName) as f:
         resultRef = json.load(f)
-    result = {}
+
     p = subprocess.Popen(["./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
     result["stdout"], result["stderr"] = p.communicate(input=resultRef["stdin"])
     result["returns"] = p.returncode
-    result["result"] = descr
     
     if CHECK_VALGRIND:
         pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)

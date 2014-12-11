@@ -41,6 +41,8 @@
 			<span>Return code:</span>
 			<div class="horiz"></div>
 		</div>
+		<span>StdErr: <span class="stderr" > </span></span>
+		</br>
 		<span class="valgrinderrors">Valgrind errors:</span>
 		<span>stdout:</span>
 		<div class="stdoutdiff"></div>
@@ -63,9 +65,11 @@
 			var diffDiv = template.getElementsByClassName("stdoutdiff")[0];
 			var valgrindErrors = template.getElementsByClassName("valgrinderrors")[0];
 			var descrElm = template.getElementsByClassName("descr")[0];
-			descrElm.innerHTML = result.descr;
+			var stdErrElm = template.getElementsByClassName("stderr")[0];
+			descrElm.innerHTML = result.result.descr;
 			template.removeAttribute("id");
-
+			stdErrElm.innerHTML = result.result.stderr;
+			
 			var filenames = template.getElementsByClassName("filenames")[0];
 			appendValAsSpan(filenames, result.sampleFile);
 			appendValAsSpan(filenames, result.resultFile);

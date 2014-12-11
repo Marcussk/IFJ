@@ -219,8 +219,8 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 			instr.a2 = NULL;
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
-				if (!(TopMostTerminal->id->isInitialized))
-					rt_notInitError("Uninitialized variable", -1);
+				//if (!(TopMostTerminal->id->isInitialized))
+				//	rt_notInitError("Uninitialized variable", -1);
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
 				instr.type = iStackRef;
@@ -320,9 +320,9 @@ void parseWrite(ExprParser * self) {
 			if (lastSymbol->type == iFn)
 				syntaxError("Function call cannot be in write call",
 						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
-			if (!lastSymbol->isInitialized)
-				rt_notInitError("Use of uninitialized variable",
-						self->tokenBuff->lp->lineNum);
+			//if (!lastSymbol->isInitialized)
+			//	rt_notInitError("Use of uninitialized variable",
+			//			self->tokenBuff->lp->lineNum);
 
 			param->stackAddr = lastSymbol->stackIndex;
 			instr.type = iStackRef;
