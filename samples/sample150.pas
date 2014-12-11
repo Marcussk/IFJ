@@ -1,11 +1,11 @@
 var
-	vysl : integer;
-	a : integer;
+	vysl : boolean;
+	a : real;
 	b : integer;
 { Hlavni telo programu }
 begin
-	a := 2;
-	{b := 2;}
-	vysl := a + b;
-    write(vysl)
+	a := 2.0;
+	b := 2;
+	
+    write(a)
 end.
