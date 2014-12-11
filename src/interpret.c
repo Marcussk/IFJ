@@ -52,7 +52,7 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_assign:
 					pomA1 = iStack_pop(&(self->stack));
-
+					pomA1.isInitialized = true;
 					if (i.type != iString) {
 						*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 								pomA1;
