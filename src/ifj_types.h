@@ -28,12 +28,16 @@ typedef enum {
 } tIFJ;
 
 typedef union {
-	float iReal;
+	double iReal;
 	int iInt;
 	char * iString;
 	struct s_iFunction * fn;
 } iVal;
 
+typedef struct s_sVal {
+	bool isInitialized;
+	iVal val;
+} sVal;
 
 // basic variable can represents everything, even function *
 typedef struct s_iVar {
