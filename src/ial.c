@@ -51,14 +51,17 @@ char * func_sort(char *str) {
 	return str;
 }
 
+/* 	
+Bad-character heurestic 	
+Initialize array so we can skip to the next occurence 	
+or skip the length of pattern 	
+Array is filled with distance of character from the end of pat 	
+*/
 void badcharfill(char *str, int length, int badchar[MAX_SIZE]) {
 	int i;
-	//initialize array
 	for (i = 0; i < MAX_SIZE; i++) {
 		badchar[i] = length;  
 	}
-	//fill array of patlength with last occurence of character
-	//array is rewritten during iterations and array[currentchar] = positioninpatter
 	for (i = 0; i < length; i++) {
 		badchar[(int) str[i]] = length -i -1;
 	}
@@ -68,6 +71,10 @@ int max(int a, int b) {
 	return (a > b) ? a : b;
 }
 
+/* 	
+Secondary function to Good-suffix heurestics
+Case when mismatch occurs 	
+*/
 void suffixes(char *str, int length, int *suff) {
 	int f, g, i;
 	suff[length -1] = length;
@@ -87,6 +94,12 @@ void suffixes(char *str, int length, int *suff) {
 	return;
 }
 
+/* 	
+Good-suffix function 	
+Fill two arrays with borders of substring and with all matching substrings 	
+Use that to skip to the next occurence of substring in text
+Case when char belongs to pat 	
+*/
 void processsuff(char *str, int length, int goodsuff[]) {
 	int i, j, suff[SUFFSIZE];
 	suffixes(str, length, suff);
@@ -105,6 +118,10 @@ void processsuff(char *str, int length, int goodsuff[]) {
 	return;
 }
 
+/* 	
+Boyer-Moore body function 	
+Uses Bad-characters and Good-Suffixes to minimize searches 	
+*/
 int func_find(char *txt, char *pat) {
 	
 	if (strcmp(pat, "") == 0)
