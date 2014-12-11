@@ -346,10 +346,12 @@ void Interpret_run(Interpret * self) {
 		case i_sort:
 			pomA3.val.iString = strdup(
 					func_sort((iStack_pop(&(self->stack)).val.iString)));
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_len:
 			pomA3.val.iInt = func_len((iStack_pop(&(self->stack)).val.iString));
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 
@@ -364,7 +366,9 @@ void Interpret_run(Interpret * self) {
 			pomA3 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
+
 			pomA4.val.iString = func_copy(pomA1.val.iString, pomA2.val.iInt, pomA3.val.iInt);
+			pomA4.isInitialized = true;
 			iStack_push(&(self->stack), pomA4);
 			break;
 
@@ -372,6 +376,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			pomA3.val.iInt = func_find(pomA1.val.iString, pomA2.val.iString);
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 
