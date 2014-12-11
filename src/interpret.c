@@ -71,6 +71,7 @@ void Interpret_run(Interpret * self) {
 				self->instructions.actual = i.dest->iInt;
 				continue;
 			}
+
 			break;
 		case i_equal:
 			pomA1 = iStack_pop(&(self->stack));
@@ -93,6 +94,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. equal is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_nequal:
@@ -116,6 +118,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. not equal is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_more:
@@ -139,6 +142,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. more is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_less:
@@ -162,6 +166,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. less is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_moreq:
@@ -185,6 +190,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. more or equal is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_loreq:
@@ -208,6 +214,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. less or equal is not implemented for this type\n");
 				break;
 			}
+			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_add:
@@ -242,6 +249,7 @@ void Interpret_run(Interpret * self) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 						pomA3;
 			else
+				pomA3.isInitialized = true;
 				iStack_push(&(self->stack), pomA3);
 
 			break;
@@ -268,6 +276,7 @@ void Interpret_run(Interpret * self) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 						pomA3;
 			else
+				pomA3.isInitialized = true;
 				iStack_push(&(self->stack), pomA3);
 
 			break;
@@ -292,6 +301,7 @@ void Interpret_run(Interpret * self) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 						pomA3;
 			else
+				pomA3.isInitialized = true;
 				iStack_push(&(self->stack), pomA3);
 
 			break;
@@ -313,6 +323,7 @@ void Interpret_run(Interpret * self) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 						pomA3;
 			else
+				pomA3.isInitialized = true;
 				iStack_push(&(self->stack), pomA3);
 
 			break;
