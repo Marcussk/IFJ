@@ -76,7 +76,7 @@ void Interpret_run(Interpret * self) {
 		case i_equal:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -99,7 +99,7 @@ void Interpret_run(Interpret * self) {
 		case i_nequal:
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -122,7 +122,7 @@ void Interpret_run(Interpret * self) {
 		case i_more:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -145,7 +145,7 @@ void Interpret_run(Interpret * self) {
 		case i_less:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -168,7 +168,7 @@ void Interpret_run(Interpret * self) {
 		case i_moreq:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -191,7 +191,7 @@ void Interpret_run(Interpret * self) {
 		case i_loreq:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iBool:
@@ -217,6 +217,8 @@ void Interpret_run(Interpret * self) {
 
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
 				rt_notInitError();
+			}
+
 
 			switch (i.type) {
 			case iInt:
@@ -248,7 +250,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 
 			switch (i.type) {
@@ -273,7 +275,7 @@ void Interpret_run(Interpret * self) {
 		case i_mul:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			switch (i.type) {
 			case iInt:
@@ -297,7 +299,7 @@ void Interpret_run(Interpret * self) {
 		case i_div:
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
 							rt_notInitError();
 			if (i.type == iReal) {
 				if (pomA2.val.iReal == 0) {
@@ -317,7 +319,12 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_write:
-			write(i.type, iStack_pop(&(self->stack)).val);
+			pomA1 = iStack_pop(&(self->stack));
+
+			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
+										rt_notInitError();
+
+			write(i.type, pomA1.val);
 			break;
 		case i_readln:
 			if (!(readLn(
