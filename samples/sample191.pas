@@ -8,7 +8,7 @@ var
 begin
     n := 0;
     factorial := res
-end
+end;
 
 begin
 res := factorial();
