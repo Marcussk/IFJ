@@ -321,7 +321,7 @@ void Interpret_run(Interpret * self) {
 		case i_write:
 			pomA1 = iStack_pop(&(self->stack));
 
-			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
+			if(!(pomA1.isInitialized))
 										rt_notInitError();
 
 			write(i.type, pomA1.val);
