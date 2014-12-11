@@ -28,7 +28,7 @@ typedef enum {
 } tIFJ;
 
 typedef union {
-	double iReal;
+	float iReal;
 	int iInt;
 	char * iString;
 	struct s_iFunction * fn;
