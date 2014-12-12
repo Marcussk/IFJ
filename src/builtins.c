@@ -103,7 +103,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 		unimplementedError("Redefinition of builtin function");
 	}
 	item->type = iFn;
-	item->isInitialized = true;
+	item->isGlobal = true;
 	item->val.fn = iFunction__init__();
 	item->val.fn->retVal.type = retTyp;
 	item->val.fn->builtin = b;
@@ -114,7 +114,7 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 			memoryError("Can't allocate memory for new parameter\n");
 		}
 		param->type = va_arg(valist, tIFJ);
-		param->isInitialized = true;
+		param->isGlobal = false;
 		param->stackIndex = i;
 		iFunction_addParam(item->val.fn, param, "");
 	}

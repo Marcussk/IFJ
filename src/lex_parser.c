@@ -116,7 +116,7 @@ void LexParser_syncLastVar(LexParser * self) {
 			self->lastSymbol->val.fn = iFunction__init__();
 			self->lastSymbol->val.fn->name = strdup(self->str.buff);
 		} else {
-			if (i->var->isInitialized == true || i->var->type != iFn)
+			if (i->var->val.fn->bodyInstrIndex > 0 || i->var->type != iFn)
 				sem_definitionError(self->lineNum, self->str.buff);
 			self->lastSymbol = i->var;
 		}

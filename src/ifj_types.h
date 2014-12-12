@@ -25,6 +25,7 @@ typedef enum {
 	iString,
 	iFn,
 	iStackRef,
+	iStackGRef
 } tIFJ;
 
 typedef union {
@@ -42,7 +43,7 @@ typedef struct s_sVal {
 // basic variable can represents everything, even function *
 typedef struct s_iVar {
 	tIFJ type;
-	bool isInitialized;
+	bool isGlobal;
 	int stackIndex;
 	iVal val;
 } iVar;

@@ -51,7 +51,7 @@ ORIGINAL_CWD = os.getcwd()
 REPORT_TEMPLATE = "test_report_template.html"
 REPORT_FILE = "results.html"
 MAX_THREADS = 16
-CHECK_VALGRIND = False  # Consumes MOST OF TIME
+CHECK_VALGRIND = True  # Consumes MOST OF TIME
 
 
 findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")

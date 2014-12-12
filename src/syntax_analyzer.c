@@ -35,6 +35,12 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
+	tIFJ globalOrLocal;
+	if (asigmentTo->isGlobal)
+		globalOrLocal = iStackGRef;
+	else
+		globalOrLocal = iStackRef;
+
 	if (asigmentTo->type == iFn) {
 		if (asigmentTo == self->lp->symbolTable->masterItem) {
 			asigmentTo = &(asigmentTo->val.fn->retVal);
@@ -46,9 +52,8 @@ void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype, -1);
 	SemAnalyzer_checktypes(asigmentTo->type, exprtype,
 			self->tokBuff.lp->lineNum);
-	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
+	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, globalOrLocal, NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
-	asigmentTo->isInitialized = true;
 }
 
 // t_var already found
@@ -119,7 +124,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_repeat:
-			SyntaxAnalyzer_parse_reapat(self);
+			SyntaxAnalyzer_parse_repeat(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_id:
@@ -235,7 +240,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 //////////////////
 //"repeat" already found
-void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat 
+void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat 
 	Token lastToken;
 	InstrParam * StackAddrbegin = malloc(sizeof(InstrParam));
 	if (!StackAddrbegin) {
@@ -293,7 +298,6 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 			syntaxError("expected id in argument list", self->lp->lineNum,
 					getTokenName(lastToken));
 		}
-		self->lp->lastSymbol->isInitialized = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
@@ -402,7 +406,6 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		syntaxError("Expected \"begin\" or \"var\" after function declaration",
 				self->lp->lineNum, getTokenName(lastToken));
 	}
-	fn->isInitialized = true;
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;
@@ -424,7 +427,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		self->lp->idMode = lp_ignore;
 		printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
 		if (tok == t_eof)
-			return;
+		return;
 #else
 		switch (tok) {
 		case t_var:

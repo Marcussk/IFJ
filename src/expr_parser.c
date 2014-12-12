@@ -176,9 +176,9 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	InstrParam * paramCnt = malloc(sizeof(InstrParam));
 	paramCnt->iInt = 0;
 
-	if(operator.content >= t_less && operator.content <= t_notEqv  ){
+	if (operator.content >= t_less && operator.content <= t_notEqv) {
 		instrType = operand1.datatype;
-	}else{
+	} else {
 		instrType = result.datatype;
 	}
 
@@ -219,11 +219,12 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 			instr.a2 = NULL;
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
-				//if (!(TopMostTerminal->id->isInitialized))
-				//	rt_notInitError("Uninitialized variable", -1);
 				p = malloc(sizeof(InstrParam));
 				p->stackAddr = TopMostTerminal->id->stackIndex;
-				instr.type = iStackRef;
+				if (TopMostTerminal->id->isGlobal)
+					instr.type = iStackGRef;
+				else
+					instr.type = iStackRef;
 			} else if (TopMostTerminal->value) {
 				p = malloc(sizeof(InstrParam));
 				*p = iVal2InstrP(*TopMostTerminal->value,
@@ -320,12 +321,12 @@ void parseWrite(ExprParser * self) {
 			if (lastSymbol->type == iFn)
 				syntaxError("Function call cannot be in write call",
 						self->tokenBuff->lp->lineNum, getTokenName(lastToken));
-			//if (!lastSymbol->isInitialized)
-			//	rt_notInitError("Use of uninitialized variable",
-			//			self->tokenBuff->lp->lineNum);
 
 			param->stackAddr = lastSymbol->stackIndex;
-			instr.type = iStackRef;
+			if (lastSymbol->isGlobal)
+				instr.type = iStackGRef;
+			else
+				instr.type = iStackRef;
 
 		} else if (Token_isValue(lastToken)) {
 			*param = iVal2InstrP(
@@ -339,7 +340,7 @@ void parseWrite(ExprParser * self) {
 		}
 		instr.a1 = param;
 		InstrQueue_insert(self->instructions, instr);
-		if (instr.type == iStackRef) {
+		if (instr.type == iStackRef ||instr.type == iStackGRef) {
 			instr.type = lastSymbol->type;
 		}
 		InstrQueue_insert(self->instructions,
@@ -368,7 +369,6 @@ void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
 	lastToken = TokenBuff_next(tokenBuff);
 	if (lastToken == t_id) {
 		lastSymbol = tokenBuff->lp->lastSymbol;
-		tokenBuff->lp->lastSymbol->isInitialized = true;
 		param = malloc(sizeof(InstrParam));
 		param->stackAddr = lastSymbol->stackIndex;
 	} else

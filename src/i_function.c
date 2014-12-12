@@ -9,7 +9,7 @@ iFunction * iFunction__init__() {
 	self->bodyInstrIndex = -1;
 	self->params.First = NULL;
 	self->params.Last = NULL;
-	self->retVal.isInitialized = false;
+	self->retVal.isGlobal = false;
 	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
 	self->builtin = b_none;
@@ -36,7 +36,6 @@ void iFunction_listInit(ParamsList *List) {
 
 void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	ParamsListItem *newItem = NULL;
-	var->isInitialized = true;
 	newItem = malloc(sizeof(ParamsListItem));
 	if (newItem == NULL) {
 		memoryError("Could not allocate memory for parameter");
