@@ -60,8 +60,8 @@ firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
 
 def makeBinary():
     os.chdir(SRC_FOLDER)    
-    subprocess.call(["make", "clean"])
-    subprocess.call("make")
+    subprocess.call(["make", "clean"], shell=True)
+    subprocess.call("make", shell=True)
     if not os.path.isfile(BIN_NAME):
         return False 
     shutil.copy2(BIN_NAME, os.path.join(ORIGINAL_CWD, BIN_NAME))
