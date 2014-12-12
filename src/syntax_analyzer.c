@@ -242,7 +242,6 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 }
 
-//////////////////
 //"repeat" already found
 void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat 
 	Token lastToken;
@@ -281,8 +280,6 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 	StackAddrend->stackAddr = self->instr.actual;
 
 }
-
-//////////////////
 
 /*
  * ( params are in function declarations)
