@@ -99,8 +99,7 @@ void LexParser_syncLastVar(LexParser * self) {
 		}
 		break;
 	case lp_parseParams:
-		v = malloc(sizeof(iVar));
-		iVar__init__(v);
+		v = iVar__init__();
 		self->lastSymbol = v;
 		iFunction_addParam(self->lastFunction, self->lastSymbol,
 				strdup(self->str.buff));

@@ -1,5 +1,12 @@
 #include "i_function.h"
 
+
+void ParamsList__init__(ParamsList *List) {
+	List->First = NULL;
+	List->Last = NULL;
+	List->size = 0;
+}
+
 iFunction * iFunction__init__() {
 	iFunction * self = malloc(sizeof(iFunction));
 	if (!self) {
@@ -10,8 +17,7 @@ iFunction * iFunction__init__() {
 		Error_memory("Can't allocate memory for bodyInstrIndex in iFunction");
 	}
 	self->bodyInstrIndex->iInt = -1;
-	self->params.First = NULL;
-	self->params.Last = NULL;
+	ParamsList__init__(&self->params);
 	self->retVal.isGlobal = false;
 	self->retVal.stackIndex = 0;
 	self->retVal.type = iUnknown;
@@ -34,11 +40,6 @@ ParamsListItem * ParamsListItem__init__() {
 	return self;
 }
 
-void iFunction_listInit(ParamsList *List) {
-	List->First = NULL;
-	List->Last = NULL;
-	List->size = 0;
-}
 
 void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	ParamsListItem *newItem = NULL;
@@ -61,7 +62,7 @@ void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	}
 
 	self->params.Last = newItem;
-	self->params.size++;
+	(self->params.size)++;
 }
 
 void iFunction_buildParamIndexes(iFunction * self) {

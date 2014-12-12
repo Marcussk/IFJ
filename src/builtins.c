@@ -111,15 +111,15 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	item->val.fn->forwardFound = true;
 
 	for (i = -1 * paramsCnt; i < 0; i++) {
+
 		param = malloc(sizeof(iVar));
 		if (!param) {
 			Error_memory("Can't allocate memory for new parameter\n");
 		}
+		iVar__init__(param);
 		param->type = va_arg(valist, tIFJ);
-		param->isGlobal = false;
 		param->stackIndex = i;
 		iFunction_addParam(item->val.fn, param, "");
 	}
 	va_end(valist);
 }
-

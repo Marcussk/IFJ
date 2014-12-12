@@ -169,18 +169,15 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 			operand2.datatype, operator.content);
 	result.datatype = getResultType(self, operand1.datatype, operand2.datatype,
 			operator.content);
-	InstrParam * paramCnt = malloc(sizeof(InstrParam));
-	paramCnt->iInt = 0;
 
 	if (operator.content >= t_less && operator.content <= t_notEqv) {
 		instrType = operand1.datatype;
 	} else {
 		instrType = result.datatype;
 	}
-
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { Token2Instruction(operator.content),
-							instrType, paramCnt,
+							instrType, NULL,
 							NULL, NULL });
 	result.type = nonterminal;
 	result.content = t_id;

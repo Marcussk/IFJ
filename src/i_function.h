@@ -19,7 +19,7 @@ typedef struct {
 } ParamsList;
 
 typedef enum {
-	b_none, b_readLn = 20, b_write, b_find,  b_copy, b_length, b_sort
+	b_none, b_readLn = 20, b_write, b_find, b_copy, b_length, b_sort
 } Builtins;
 
 typedef struct s_iFunction {
@@ -31,7 +31,6 @@ typedef struct s_iFunction {
 	InstrParam * bodyInstrIndex;
 	Builtins builtin;
 } iFunction;
-
 
 iFunction * iFunction__init__();
 void iFunction_buildParamIndexes(iFunction * self);
