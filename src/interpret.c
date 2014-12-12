@@ -243,8 +243,8 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iReal = pomA2.val.iReal + pomA1.val.iReal;
 				break;
 			case iString:
-				pomA3.val.iString = strdup(pomA1.val.iString);
-				strcat(pomA3.val.iString, pomA2.val.iString);
+				pomA3.val.iString = malloc(strlen(pomA1.val.iString) + strlen(pomA2.val.iString) + 1);
+				sprintf(pomA3.val.iString, "%s%s", pomA1.val.iString, pomA2.val.iString);
 				break;
 			default:
 				Error_unimplemented(
