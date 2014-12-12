@@ -1,5 +1,8 @@
-{ Jednoduchy test na write }
+{ vypis #67 }
+var
+	vysl : string;
+{ Hlavni telo programu }
 begin
-	write(5);
-	write(2)
+	vysl := '#67';
+    write(vysl)
 end.

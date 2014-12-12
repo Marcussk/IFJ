@@ -26,13 +26,14 @@
 .result {
 	border: 1;
 	background-color: #FF9999;
+	border: 1px solid black;
 }
 </style>
 </head>
 <body>
 	<h1>Err report</h1>
-
 	<div id="template" class="result" style="visibility: hidden;">
+		<span class="descr"></span>
 		<div class="horiz filenames"></div>
 		<div class="horiz">
 			<span><b>result</b></span> <span><b>resultRef</b></span>
@@ -41,11 +42,13 @@
 			<span>Return code:</span>
 			<div class="horiz"></div>
 		</div>
+		<span>StdErr: <span class="stderr" > </span></span>
+		</br>
 		<span class="valgrinderrors">Valgrind errors:</span>
+		</br>
 		<span>stdout:</span>
 		<div class="stdoutdiff"></div>
 	</div>
-
 	<script>
 		var results = [];
 
@@ -62,9 +65,13 @@
 			var expectedReturn = result.resultRef.returns;
 			var template = document.getElementById('template').cloneNode(true);
 			var diffDiv = template.getElementsByClassName("stdoutdiff")[0];
-			var valgrindErrors = template.getElementsByClassName("valgrinderrors")[0]
+			var valgrindErrors = template.getElementsByClassName("valgrinderrors")[0];
+			var descrElm = template.getElementsByClassName("descr")[0];
+			var stdErrElm = template.getElementsByClassName("stderr")[0];
+			descrElm.innerHTML = result.result.descr;
 			template.removeAttribute("id");
-
+			stdErrElm.innerHTML = result.result.stderr;
+			
 			var filenames = template.getElementsByClassName("filenames")[0];
 			appendValAsSpan(filenames, result.sampleFile);
 			appendValAsSpan(filenames, result.resultFile);
@@ -78,7 +85,7 @@
 				appendValAsSpan(r, expectedReturn);
 
 			}
-			valgrindErrors.innerHTML += result.valgrindErrors;
+			valgrindErrors.innerHTML += result.result.valgrindErrors;
 			document.body.appendChild(template);
 			template.style.visibility = "visible";
 			if (value != orig) {

@@ -1,0 +1,1 @@
+{"stdin": "", "stdout": "", "returns": 3, "stderr": "ERROR(Semantic/Definition) Line 17: variable \"vysl\" or function is undefined or you are atempting to redefine it.\n"}

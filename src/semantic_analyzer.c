@@ -1,17 +1,14 @@
 #include "semantic_analyzer.h"
 
 void SemAnalyzer_checktypes(tIFJ param1, tIFJ param2, int lineNum) {
-	if (param1 == param2) {
-		return;
-	} else {
-		printf("%d %d \n", param1, param2);
-		sem_TypeError(iVar_type2str(param2), lineNum);
+	if (param1 != param2) {
+		Error_sem_Type(iVar_type2str(param2), lineNum);
 	}
 }
 
 void SemAnalyzer_checkcond(tIFJ param) {
 	if(param != iBool ) {
-		sem_CondError(iVar_type2str(param));
+		Error_sem_Cond(iVar_type2str(param));
 	}
 }
 
@@ -25,7 +22,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 		//convert param1
 		instrparam1 = malloc(sizeof(iVar));
 		if (!instrparam1) {
-			memoryError(
+			Error_memory(
 					"Can't allocate memory for new instruction parameter\n");
 		}
 		instrparam1->stackAddr = 0; // Tady nesmi byt 0, ale vrchol zasobniku
@@ -34,7 +31,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 
 		instrparam2 = malloc(sizeof(iVar));
 		if (!instrparam2) {
-			memoryError(
+			Error_memory(
 					"Can't allocate memory for new instruction parameter\n");
 		}
 		instrparam2->stackAddr = -1; // Tady zase vrchol zasobniku - 1
@@ -47,7 +44,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 		//convert param1
 		instrparam1 = malloc(sizeof(iVar));
 		if (!instrparam1) {
-			memoryError(
+			Error_memory(
 					"Can't allocate memory for new instruction parameter\n");
 		}
 		instrparam1->stackAddr = 0;
@@ -59,7 +56,7 @@ void SemAnalyzer_typeconvert(InstrQueue * self, tIFJ param1, tIFJ param2, Token 
 	if ((param1 == iReal) && (param2 == iInt)) {
 		instrparam2 = malloc(sizeof(iVar));
 		if (!instrparam2) {
-			memoryError(
+			Error_memory(
 					"Can't allocate memory for new instruction parameter\n");
 		}
 		instrparam2->stackAddr = -1;

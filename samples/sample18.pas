@@ -1,8 +1,10 @@
-{Test na cislicove literaly}
-var	
-	result : integer;
-
+{ nedochadza k pretypovaniu boolean real}
+var
+	vysl : boolean;
+	assign : real;
+{ Hlavni telo programu }
 begin
-	result := length('ahoj');
-	write(result)
+	assign := 3.1415926;
+	vysl := assign;
+    write(vysl)
 end.

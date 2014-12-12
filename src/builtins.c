@@ -25,7 +25,7 @@ void write(tIFJ type, iVal a1) {
 		}
 		break;
 	default:
-		rt_error("instr write used with incompatible type");
+		Error_rt("instr write used with incompatible type");
 	}
 }
 
@@ -37,9 +37,9 @@ char * func_copy(char *f_str, int i, int n) {
 	int strIndex;
 	int offset = i - 1;
 	if (offset < 0)
-		rt_error("Builtin function copy does not support i < 1");
+		Error_rt("Builtin function copy does not support i < 1");
 	if (strlen(f_str) < (offset + n)) {
-		rt_error(
+		Error_rt(
 				"Builtin function copy can't be performed because original string is too short\n");
 	}
 
@@ -47,7 +47,7 @@ char * func_copy(char *f_str, int i, int n) {
 	char * newStr = malloc((n + 1) * sizeof(char));
 
 	if (!newStr) {
-		memoryError("func_copy can't alloc memory for newStr\n");
+		Error_memory("func_copy can't alloc memory for newStr\n");
 	}
 	for (strIndex = 0; strIndex < n; strIndex++) {
 		newStr[strIndex] = f_str[strIndex + offset];
@@ -73,10 +73,10 @@ int readLn(iVal *a1, tIFJ type) {
 		a1->iString = str.buff;
 		return 1;
 	case iBool:
-		sem_CondError("readLn not implemented for Bool");
+		Error_sem_Cond("readLn not implemented for Bool");
 		return 0;
 	default:
-		rt_readlnNumError();
+		Error_rt_readlnNum();
 		return 0;
 	}
 }
@@ -100,24 +100,26 @@ void regFn(HashTable * ht, char * name, Builtins b, tIFJ retTyp, int paramsCnt,
 	// becouse ht returns place where is variable created creates
 	iVar * item = NULL;
 	if ((HashTable_insertNew(ht, name, &item) != ht_inserted)) {
-		unimplementedError("Redefinition of builtin function");
+		Error_unimplemented("Redefinition of builtin function");
 	}
 	item->type = iFn;
-	item->isInitialized = true;
+	item->isGlobal = true;
 	item->val.fn = iFunction__init__();
 	item->val.fn->retVal.type = retTyp;
 	item->val.fn->builtin = b;
+	item->val.fn->bodyFound = true;
+	item->val.fn->forwardFound = true;
 
 	for (i = -1 * paramsCnt; i < 0; i++) {
+
 		param = malloc(sizeof(iVar));
 		if (!param) {
-			memoryError("Can't allocate memory for new parameter\n");
+			Error_memory("Can't allocate memory for new parameter\n");
 		}
+		iVar__init__(param);
 		param->type = va_arg(valist, tIFJ);
-		param->isInitialized = true;
 		param->stackIndex = i;
 		iFunction_addParam(item->val.fn, param, "");
 	}
 	va_end(valist);
 }
-

@@ -51,16 +51,19 @@ char * func_sort(char *str) {
 	return str;
 }
 
-void badcharfill(char *str, int size, int badchar[MAX_SIZE]) {
+/* 	
+Bad-character heurestic 	
+Initialize array so we can skip to the next occurence 	
+or skip the length of pattern 	
+Array is filled with distance of character from the end of pat 	
+*/
+void badcharfill(char *str, int length, int badchar[MAX_SIZE]) {
 	int i;
-	//initialize array
 	for (i = 0; i < MAX_SIZE; i++) {
-		badchar[i] = -1; // [TODO] replace with size 
+		badchar[i] = length;  
 	}
-	//fill array of patlength with last occurence of character
-	//array is rewritten during iterations and array[currentchar] = positioninpatter
-	for (i = 0; i < size; i++) {
-		badchar[(int) str[i]] = i;
+	for (i = 0; i < length; i++) {
+		badchar[(int) str[i]] = length -i -1;
 	}
 }
 
@@ -68,40 +71,84 @@ int max(int a, int b) {
 	return (a > b) ? a : b;
 }
 
+/* 	
+Secondary function to Good-suffix heurestics
+Case when mismatch occurs 	
+*/
+void suffixes(char *str, int length, int *suff) {
+	int f, g, i;
+	suff[length -1] = length;
+	g = length - 1;
+	for (i = length - 2;i >= 0;--i) {
+		if (i > g && suff[i + length - 1 - f] < i - g)
+			suff[i] = suff[i + length - 1 -f];
+		else {
+			if (i < g)
+				g = i;
+			f = i;
+			while (g >= 0 && str[g] == str[g + length - 1 - f])
+				--g;
+			suff[i] = f - g;
+		}
+	}
+	return;
+}
+
+/* 	
+Good-suffix function 	
+Fill two arrays with borders of substring and with all matching substrings 	
+Use that to skip to the next occurence of substring in text
+Case when char belongs to pat 	
+*/
+void processsuff(char *str, int length, int goodsuff[]) {
+	int i, j, suff[SUFFSIZE];
+	suffixes(str, length, suff);
+	for (i = 0; i<length; ++i)
+		goodsuff[i]=length;
+	j = 0;
+	for (i = length -1;i >= 0;--i)
+		if (suff[i] == i +1)
+			for (; j < length -1 -i;++j)
+				if (goodsuff[j] == length)
+					goodsuff[j] = length -1 - i;
+	for (i = 0; i < length - 2; ++i)
+	{
+		goodsuff[length -1 - suff[i]] = length -1 -i;
+	}
+	return;
+}
+
+/* 	
+Boyer-Moore body function 	
+Uses Bad-characters and Good-Suffixes to minimize searches 	
+*/
 int func_find(char *txt, char *pat) {
+	
+	if (strcmp(pat, "") == 0)
+	{
+		return 1;
+	}
 	int patlength = strlen(pat);
 	int txtlength = strlen(txt);
 	int shift = 0;
-
+	int matchindex;
 	int badchar[MAX_SIZE];
+	int goodsuff[SUFFSIZE];
+
 	badcharfill(pat, patlength, badchar);
+	processsuff(pat, patlength, goodsuff);
 
 	while (shift <= txtlength - patlength) {
-		int matchindex = patlength - 1;
-		//Check chars from right to left to see if we have pattern match
-		while ((matchindex >= 0) && (pat[matchindex] == txt[shift + matchindex])) {
-			matchindex--;
-		}
-		//Succesfully found match (patlength of chars are matching)
-		if (matchindex < 0) {
-			//printf("Finding: %d \n", shift + 1);
-			return shift + 1;
-			//if we can move shift so it aligns with text
-			if (shift + patlength < txtlength) {
-				shift += patlength - badchar[(int) txt[shift + patlength]];
+		matchindex = patlength - 1;
+		for (matchindex = patlength -1; matchindex >= 0 && pat[matchindex] == txt[matchindex + shift]; --matchindex);
+			if (matchindex < 0) {
+				return shift + 1;
+				shift += goodsuff[0];
 			}
-			//if not move just by one
 			else {
-				shift += 1;
+				shift += max(goodsuff[matchindex],badchar[(int)txt[matchindex + shift]] - patlength + 1 + matchindex);
 			}
 		}
-		//havent found match in text
-		else {
-			//move shift, if there is bigger skip choose it
-			shift += max(1,
-					matchindex - badchar[(int) txt[shift + matchindex]]);
-		}
-	}
 	return 0;
 }
 
@@ -113,10 +160,10 @@ HashTable * HashTable__init__(int size) {
 		return NULL;
 
 	if ((new_table = malloc(sizeof(HashTable))) == NULL)
-		memoryError("Can't allocate hash table\n");
+		Error_memory("Can't allocate hash table\n");
 
 	if ((new_table->table = malloc(sizeof(HashTableItem *) * size)) == NULL)
-		memoryError("Can't allocate content of hash table\n");
+		Error_memory("Can't allocate content of hash table\n");
 
 	for (i = 0; i < size; i++)
 		new_table->table[i] = NULL;
@@ -162,7 +209,7 @@ int HashTable_insert(HashTable *self, char *str, iVar * item2insert){
 		return ht_found;
 	}
 	if ((new_list = malloc(sizeof(HashTableItem))) == NULL)
-		memoryError("Can't allocate new item in hash table\n");
+		Error_memory("Can't allocate new item in hash table\n");
 	new_list->var =item2insert;
 	new_list->str = strdup(str);
 
@@ -188,7 +235,7 @@ int HashTable_insertNew(HashTable *self, char *str, iVar ** newItem) {
 		return ht_found;
 	}
 	if ((new_list = malloc(sizeof(HashTableItem))) == NULL)
-		memoryError("Can't allocate new item in hash table\n");
+		Error_memory("Can't allocate new item in hash table\n");
 	new_list->var = iVar__init__();
 	new_list->str = strdup(str);
 	if (newItem)

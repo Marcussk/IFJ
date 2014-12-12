@@ -1,12 +1,8 @@
-{ Jednoduchy test na while }
+{ Enotation }
 var
-    a : integer;
+	vysl : real;
+{ Hlavni telo programu }
 begin
-    a := 5 ;
-    while a > 0 do
-    begin
-        write(a);
-	    a := a - 1    
-         end;
-    write('vysl:', a, ''#10'')
+	vysl := 6e2;
+    write(vysl)
 end.

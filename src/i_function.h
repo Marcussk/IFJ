@@ -13,24 +13,24 @@ typedef struct s_ParamsListItem {
 } ParamsListItem;
 
 typedef struct {
+	int size;
 	ParamsListItem * First;
 	ParamsListItem * Last;
 } ParamsList;
 
 typedef enum {
-	b_none, b_readLn = 20, b_write, b_find,  b_copy, b_length, b_sort
+	b_none, b_readLn = 20, b_write, b_find, b_copy, b_length, b_sort
 } Builtins;
 
-//first n iVars in
-typedef struct s_iFunction{
+typedef struct s_iFunction {
+	bool forwardFound;
+	bool bodyFound;
 	iVar retVal;
 	char * name;
 	ParamsList params;
-//	HashTable * symbolTable;
-	int bodyInstrIndex;
+	InstrParam * bodyInstrIndex;
 	Builtins builtin;
 } iFunction;
-
 
 iFunction * iFunction__init__();
 void iFunction_buildParamIndexes(iFunction * self);

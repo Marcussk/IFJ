@@ -18,3 +18,6 @@
 
 #ignore gedit temp files
 *~
+
+#ignore python
+*.pyc

@@ -16,6 +16,6 @@ char BuffFile_get(BuffFile * self) {
 }
 void BuffFile_pushBack(BuffFile * self, char ch) {
 	if (self->backup != EOF)
-		memoryError("Canot push second char back to file\n");
+		Error_memory("Canot push second char back to file\n");
 	self->backup = ch;
 }
