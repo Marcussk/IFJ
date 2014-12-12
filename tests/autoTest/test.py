@@ -52,7 +52,7 @@ REPORT_TEMPLATE = "test_report_template.html"
 REPORT_FILE = "results.html"
 MAX_THREADS = 16
 CHECK_VALGRIND = True  # Consumes MOST OF TIME
-
+MAKECMD = "make"  # use cmake for windows
 
 findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")
 firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
@@ -60,8 +60,8 @@ firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
 
 def makeBinary():
     os.chdir(SRC_FOLDER)    
-    subprocess.call(["make", "clean"], shell=True)
-    subprocess.call("make", shell=True)
+    subprocess.call([MAKECMD, "clean"], shell=True)
+    subprocess.call(MAKECMD, shell=True)
     if not os.path.isfile(BIN_NAME):
         return False 
     shutil.copy2(BIN_NAME, os.path.join(ORIGINAL_CWD, BIN_NAME))
@@ -158,4 +158,4 @@ if __name__ == "__main__":
        testFiles = listTests()
        errors = pool.map(evalTest, testFiles)
        errors = list(filter(lambda x: x, errors))  # filter empty results
-    renderErrors(errors)
+       renderErrors(errors)
