@@ -20,7 +20,6 @@ typedef enum {
 typedef struct {
 	BuffFile input;
 	String str; // alias buffer
-	int lineNum;
 	iVar * lastSymbol;
 	iFunction * lastFunction;
 	HashTable * symbolTable;

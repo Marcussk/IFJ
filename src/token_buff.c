@@ -22,7 +22,7 @@ void TokenBuff_pushBack(TokenBuff * self, Token t) {
 			self->next2 = self->next1;
 			self->next1 = t;
 		} else
-			Error_syntax("Can't pushback so many tokens", self->lp->lineNum,
+			Error_syntax("Can't pushback so many tokens", self->lp->input.line,
 					getTokenName(t));
 	} else {
 		self->next1 = t;
@@ -31,6 +31,6 @@ void TokenBuff_pushBack(TokenBuff * self, Token t) {
 void TokenBuff__dell__(TokenBuff * self) {
 	if (self->next1 != t_empty || self->next2 != t_empty) {
 		Error_syntax("Trying to dispose token buffer which is not empty",
-				self->lp->lineNum, NULL);
+				self->lp->input.line, NULL);
 	}
 }

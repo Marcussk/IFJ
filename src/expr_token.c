@@ -51,7 +51,7 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	//free(Expr->value);
 	if (Token_isValue(token)) {
 		Expr->value = malloc(sizeof(iVal));
-		*Expr->value = str2iVal(lp->str.buff, token, lp->lineNum);
+		*Expr->value = str2iVal(lp->str.buff, token, lp->input.line);
 		Expr->datatype = Token_getType(token);
 	} else
 		Expr->value = NULL;

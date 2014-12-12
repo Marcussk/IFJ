@@ -16,7 +16,7 @@ void LexParser_readString(LexParser * self);
 void LexParser__init__(LexParser * self, FILE * inFile) {
 	String__init__(&self->str, 32);
 	BuffFile__init__(&(self->input), inFile);
-	self->lineNum = 1;
+	self->input.line = 1;
 	self->lastFunction = NULL;
 	self->lastSymbol = NULL;
 	self->idMode = lp_searchOnly;
@@ -29,9 +29,7 @@ void LexParser_readString(LexParser * self) {
 		ch = BuffFile_get(&(self->input));
 		if (ch == EOF)
 			Error_lex("String missing right ' (end of string).\n",
-					self->str.buff, self->lineNum);
-		else if (ch == '\n')
-			self->lineNum = self->lineNum + 1;
+					self->str.buff, self->input.line);
 		else if (ch == '\'') {
 			ch2 = BuffFile_get(&(self->input));
 			if (ch2 != '\'') {
@@ -60,9 +58,7 @@ void LexParser_readComment(LexParser * self) {
 	while ((ch = BuffFile_get(&(self->input))) != '}') {
 		if (ch == EOF)
 			Error_lex("String missing right } (end of comment).\n",
-					self->str.buff, self->lineNum);
-		else if (ch == '\n')
-			self->lineNum = self->lineNum + 1;
+					self->str.buff, self->input.line);
 	}
 }
 void LexParser_readEscape(LexParser * self) {
@@ -74,11 +70,11 @@ void LexParser_readEscape(LexParser * self) {
 		String_append(&str, ch);
 	}
 	if (str.len < 1)
-		Error_lex("Uncomplete escape sequention.\n", str.buff, self->lineNum);
+		Error_lex("Uncomplete escape sequention.\n", str.buff, self->input.line);
 	int escp = atoi(str.buff);
 	String__dell_(&str);
 	if (escp > 255)
-		Error_lex("Unknown escape sequention.\n", self->str.buff, self->lineNum);
+		Error_lex("Unknown escape sequention.\n", self->str.buff, self->input.line);
 	String_append(&(self->str), (char) escp);
 	if (ch == '\'')
 		LexParser_readString(self);
@@ -95,7 +91,7 @@ void LexParser_syncLastVar(LexParser * self) {
 	case lp_insertOnly:
 		if (HashTable_insertNew(self->symbolTable, self->str.buff,
 				&(self->lastSymbol)) != ht_inserted) {
-			Error_sem_definition(self->lineNum, self->str.buff); // redefinition
+			Error_sem_definition(self->input.line, self->str.buff); // redefinition
 		}
 		break;
 	case lp_parseParams:
@@ -109,14 +105,14 @@ void LexParser_syncLastVar(LexParser * self) {
 		if (!i) {
 			if (HashTable_insertNew(self->symbolTable, self->str.buff,
 					&(self->lastSymbol)) != ht_inserted) {
-				Error_sem_definition(self->lineNum, self->str.buff); // redefinition
+				Error_sem_definition(self->input.line, self->str.buff); // redefinition
 			}
 			self->lastSymbol->type = iFn;
 			self->lastSymbol->val.fn = iFunction__init__();
 			self->lastSymbol->val.fn->name = strdup(self->str.buff);
 		} else {
 			if (i->var->type != iFn || i->var->val.fn->bodyFound )
-				Error_sem_definition(self->lineNum, self->str.buff);
+				Error_sem_definition(self->input.line, self->str.buff);
 			self->lastSymbol = i->var;
 		}
 		self->lastFunction = self->lastSymbol->val.fn;
@@ -124,7 +120,7 @@ void LexParser_syncLastVar(LexParser * self) {
 	case lp_searchOnly:
 		i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
 		if (!i) {
-			Error_sem_definition(self->lineNum, self->str.buff);
+			Error_sem_definition(self->input.line, self->str.buff);
 		}
 		self->lastSymbol = i->var;
 		break;
@@ -132,7 +128,7 @@ void LexParser_syncLastVar(LexParser * self) {
 		break;
 	default:
 		Error_lex("LexParser don't know if search or insert new id\n",
-				self->str.buff, self->lineNum);
+				self->str.buff, self->input.line);
 	}
 }
 Token LexParser_keywordCheck(String * str) {
@@ -284,7 +280,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 				st = np_real;
 			else
 				Error_lex("expected number after dot", self->str.buff,
-						self->lineNum);
+						self->input.line);
 			break;
 		case np_needExponent:
 			if (isdigit(ch))
@@ -293,14 +289,14 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 				st = np_needExponent_gotSign;
 			} else
 				Error_lex("expected number as exponent", self->str.buff,
-						self->lineNum);
+						self->input.line);
 			break;
 		case np_needExponent_gotSign:
 			if (isdigit(ch))
 				st = np_expReal;
 			else
 				Error_lex("expected number as exponent", self->str.buff,
-						self->lineNum);
+						self->input.line);
 			break;
 			break;
 		case np_real:
@@ -328,7 +324,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 				st = np_expReal_realExp;
 			else
 				Error_lex("expected number after dot in exponent",
-						self->str.buff, self->lineNum);
+						self->str.buff, self->input.line);
 			break;
 		case np_expReal_realExp:
 			if (!isdigit(ch)) {
@@ -340,7 +336,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 		String_append(&self->str, ch);
 	}
 	Error_lex("Lex parser is not able to parse number", self->str.buff,
-			self->lineNum);
+			self->input.line);
 	return t_invalid;
 }
 
@@ -348,10 +344,7 @@ Token LexParser_next(LexParser *self) {
 	char ch;
 	char ch2;
 	while ((ch = BuffFile_get(&(self->input))) != EOF) {
-		if (isspace(ch)) {
-			if (ch == '\n')
-				self->lineNum++;
-		} else
+		if (!isspace(ch))
 			switch (ch) {
 			case ';':
 				return t_scolon;
@@ -377,6 +370,7 @@ Token LexParser_next(LexParser *self) {
 			case '\'':
 				String_clear(&self->str);
 				LexParser_readString(self);
+				String_append(&self->str, 0);
 				return t_str_val;
 			case '.':
 				ch2 = BuffFile_get(&(self->input));
@@ -400,7 +394,7 @@ Token LexParser_next(LexParser *self) {
 					return LexParser_readIdOrKeyword(self, ch);
 				else
 					Error_lex("Cannot resolve token from string", self->str.buff,
-							self->lineNum);
+							self->input.line);
 			}
 	}
 	return t_eof;
@@ -429,7 +423,7 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 
 	if (HashTable_insert(fnSymTable, self->str.buff, fn) != ht_inserted) {
 		Error_lex("Error while creating symbol for function recurse",
-				self->str.buff, self->lineNum);
+				self->str.buff, self->input.line);
 	}
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = fn;
@@ -438,7 +432,7 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 	while (param) {
 		if (HashTable_insert(self->symbolTable, param->name, param->data)
 				!= ht_inserted) {
-			Error_sem_definition(self->lineNum, self->str.buff); // redefinition of param
+			Error_sem_definition(self->input.line, self->str.buff); // redefinition of param
 		}
 		param = param->next;
 	}
