@@ -43,7 +43,11 @@ void Interpret_run(Interpret * self) {
 			if (i.type == iStackRef) {
 				iStack_push(&(self->stack),
 					*iStack_getAt(&self->stack,
-										i.a1->stackAddr + stackOffset));
+										i.a1->stackAddr + stackOffset));}
+			else if(i.type == iStackGRef) {
+								iStack_push(&(self->stack),
+									*iStack_getAt(&self->stack,
+														i.a1->stackAddr));
 			} else {
 				pomA1.val = InstrP2iVal(i.a1, i.type);
 				pomA1.isInitialized = i.a1 != NULL;
@@ -52,15 +56,15 @@ void Interpret_run(Interpret * self) {
 			break;
 		case i_assign:
 					pomA1 = iStack_pop(&(self->stack));
-					if (i.type != iString) {
+					if (i.type == iStackRef) {
 						*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 								pomA1;
-					} else {
-						(*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)).val.iString =
-								strdup(pomA1.val.iString);
-						(*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)).isInitialized =
-														true;
+					} else if(i.type == iStackGRef){
+						*iStack_getAt(&self->stack, i.dest->stackAddr) =
+														pomA1;
+
 					}
+
 					break;
 		case i_jmp:
 			self->instructions.actual = i.dest->iInt;
