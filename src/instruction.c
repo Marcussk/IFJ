@@ -53,7 +53,7 @@ InstrParam inline iVal2InstrP(iVal v, tIFJ type) {
 		p.iReal = v.iReal;
 		break;
 	default:
-		unimplementedError(
+		Error_unimplemented(
 				"Unimplemented cast in InstrP2iVal for the interpret\n");
 	}
 	return p;
@@ -77,7 +77,7 @@ iVal inline InstrP2iVal(InstrParam * a, tIFJ type) {
 		v.iReal = a->iReal;
 		break;
 	default:
-		unimplementedError(
+		Error_unimplemented(
 				"Unimplemented cast in InstrP2iVal for the interpret\n");
 	}
 

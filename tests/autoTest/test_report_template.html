@@ -45,6 +45,7 @@
 		<span>StdErr: <span class="stderr" > </span></span>
 		</br>
 		<span class="valgrinderrors">Valgrind errors:</span>
+		</br>
 		<span>stdout:</span>
 		<div class="stdoutdiff"></div>
 	</div>
@@ -84,7 +85,7 @@
 				appendValAsSpan(r, expectedReturn);
 
 			}
-			valgrindErrors.innerHTML += result.valgrindErrors;
+			valgrindErrors.innerHTML += result.result.valgrindErrors;
 			document.body.appendChild(template);
 			template.style.visibility = "visible";
 			if (value != orig) {

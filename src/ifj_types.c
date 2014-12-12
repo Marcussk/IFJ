@@ -3,7 +3,7 @@
 iVar * iVar__init__() {
 	iVar * self = malloc(sizeof(iVar));
 	if (!self) {
-		memoryError("Can't allocate memory for iVar");
+		Error_memory("Can't allocate memory for iVar");
 	}
 	self->isGlobal = false;
 	self->type = iUnknown;
@@ -27,7 +27,7 @@ tIFJ Token_getType(Token t) {
 	case t_false:
 		return iBool;
 	default:
-		unimplementedError("cannot convert token to type");
+		Error_unimplemented("cannot convert token to type");
 	}
 	return iUnknown;
 }
@@ -61,12 +61,8 @@ void iVar_debug(iVar * v) {
 }
 
 void iVar__dell__(iVar * self) {
-		if (self->type == iString)
-			free(self->val.iString);
-		/*else if (self->type == iFn)
-		 iFunction__dell__(self->val.fn);
-		 */
-
+	if (self->type == iString)
+		free(self->val.iString);
 	free(self);
 }
 
@@ -75,18 +71,18 @@ iVal str2iVal(char * str, Token token, int lineNum) {
 	switch (token) {
 	case t_num_int:
 		if (!sscanf(str, "%d", &(val.iInt)))
-			lexError("Cannot parse int num", str, lineNum);
+			Error_lex("Cannot parse int num", str, lineNum);
 		break;
 
 	case t_num_real:
 		if (!sscanf(str, "%f", &(val.iReal)))
-			lexError("Cannot parse real num", str, lineNum);
+			Error_lex("Cannot parse real num", str, lineNum);
 		break;
 
 	case t_str_val:
 		val.iString = strdup(str);
 		if (!val.iString)
-			lexError("Cannot parse string", str, lineNum);
+			Error_lex("Cannot parse string", str, lineNum);
 		break;
 	case t_true:
 		val.iInt = 1;
@@ -95,7 +91,7 @@ iVal str2iVal(char * str, Token token, int lineNum) {
 		val.iInt = 0;
 		break;
 	default:
-		lexError("cannot convert value", str, lineNum);
+		Error_lex("cannot convert value", str, lineNum);
 	}
 	return val;
 }

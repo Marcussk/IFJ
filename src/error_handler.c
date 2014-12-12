@@ -1,23 +1,23 @@
 #include "error_handler.h"
 
-void lexError(char * str, char * lexBuff, int lineNum) {
+void Error_lex(char * str, char * lexBuff, int lineNum) {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s\n", lineNum,
 			lexBuff, str);
 	exit(1);
 }
 
-void syntaxError(char * str, int lineNum, char * actualTokenName) {
+void Error_syntax(char * str, int lineNum, char * actualTokenName) {
 	fflush(stdout);
 	if (actualTokenName)
-		fprintf(stderr, "ERROR(Syntax) Line %d: %s, got %s\n", lineNum, str,
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s, got \"%s\"\n", lineNum, str,
 				actualTokenName);
 	else
 		fprintf(stderr, "ERROR(Syntax) Line %d: %s\n", lineNum, str);
 	exit(2);
 }
 
-void sem_definitionError(int lineNum, char * varName) {
+void Error_sem_definition(int lineNum, char * varName) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Definition) Line %d: variable \"%s\" or function is undefined or you are atempting to redefine it.\n",
@@ -28,7 +28,7 @@ void sem_definitionError(int lineNum, char * varName) {
  vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
  dont forget about char * iVar_type2str(type)
  */
-void sem_TypeError(char * nameOfType, int lineNum) {
+void Error_sem_Type(char * nameOfType, int lineNum) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Type) Line %d: Variable or function of type %s does not fit to expression or function has bad parameters.\n",
@@ -36,7 +36,7 @@ void sem_TypeError(char * nameOfType, int lineNum) {
 	exit(4);
 }
 
-void sem_CondError(char * nameOfType) {
+void Error_sem_Cond(char * nameOfType) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Type): Variable type %s does not fit to condition.\n",
@@ -44,44 +44,44 @@ void sem_CondError(char * nameOfType) {
 	exit(4);
 }
 
-void sem_Error(char * str, int lineNum) {
+void Error_sem(char * str, int lineNum) {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(Semantic) Line: %d: %s .\n", lineNum, str);
 	exit(5);
 }
 
-void rt_readlnNumError() {
+void Error_rt_readlnNum() {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Runtime/readln): Error while reading value from user input.\n");
 	exit(6);
 }
 
-void rt_notInitError() {
+void Error_rt_notInit() {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Runtime/notInit): Attempt to use unitialized variable.\n");
 	exit(7);
 }
 
-void rt_zeroDivisionError() {
+void Error_rt_zeroDivision() {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(Runtime/zeroDivision):.\n");
 	exit(8);
 }
-void rt_error(char * str) {
+void Error_rt(char * str) {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(Runtime): %s\n", str);
 	exit(9);
 }
 
-void unimplementedError(char * str) {
+void Error_unimplemented(char * str) {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(Not implemented): %s .\n", str);
 	exit(99);
 }
 
-void memoryError(char * str) {
+void Error_memory(char * str) {
 	fflush(stdout);
 	fprintf(stderr, "ERROR(MemoryAllocation): %s .\n", str);
 	exit(99);

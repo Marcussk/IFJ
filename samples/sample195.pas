@@ -11,6 +11,6 @@ begin
 end;
 
 begin
-res := factorial();
-write(res)
+	res := factorial();
+	write(res)
 end.

@@ -81,7 +81,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -94,7 +94,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) == 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. equal is not implemented for this type\n");
 				break;
 			}
@@ -105,7 +105,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 			pomA2 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -118,7 +118,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) != 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. not equal is not implemented for this type\n");
 				break;
 			}
@@ -129,7 +129,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -142,7 +142,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) > 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. more is not implemented for this type\n");
 				break;
 			}
@@ -153,7 +153,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -166,7 +166,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) < 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. less is not implemented for this type\n");
 				break;
 			}
@@ -177,7 +177,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -190,7 +190,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) >= 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. more or equal is not implemented for this type\n");
 				break;
 			}
@@ -201,7 +201,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -214,7 +214,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iInt = (strcmp(pomA1.val.iString, pomA2.val.iString) <= 0);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. less or equal is not implemented for this type\n");
 				break;
 			}
@@ -226,7 +226,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized)){
-				rt_notInitError();
+				Error_rt_notInit();
 			}
 
 
@@ -245,7 +245,7 @@ void Interpret_run(Interpret * self) {
 				strcat(pomA3.val.iString, pomA2.val.iString);
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. add is not implemented for this type\n");
 				break;
 			}
@@ -262,7 +262,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 
 			switch (i.type) {
 			case iInt:
@@ -272,7 +272,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iReal = pomA1.val.iReal - pomA2.val.iReal;
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. sub is not implemented for this type\n");
 				break;
 			}
@@ -288,7 +288,7 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			switch (i.type) {
 			case iInt:
 				pomA3.val.iInt = pomA1.val.iInt * pomA2.val.iInt;
@@ -297,7 +297,7 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iReal = pomA1.val.iReal * pomA2.val.iReal;
 				break;
 			default:
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. mul is not implemented for this type\n");
 				break;
 			}
@@ -313,14 +313,14 @@ void Interpret_run(Interpret * self) {
 			pomA2 = iStack_pop(&(self->stack));
 			pomA1 = iStack_pop(&(self->stack));
 			if(!(pomA1.isInitialized) || !(pomA2.isInitialized))
-							rt_notInitError();
+							Error_rt_notInit();
 			if (i.type == iReal) {
 				if (pomA2.val.iReal == 0) {
-					rt_zeroDivisionError();
+					Error_rt_zeroDivision();
 				}
 				pomA3.val.iReal = pomA1.val.iReal / pomA2.val.iReal;
 			} else {
-				unimplementedError(
+				Error_unimplemented(
 						"Instr. div is not implemented for this type\n");
 			}
 			if (i.dest != NULL)
@@ -336,7 +336,7 @@ void Interpret_run(Interpret * self) {
 			pomA1 = iStack_pop(&(self->stack));
 
 			if(!(pomA1.isInitialized))
-										rt_notInitError();
+										Error_rt_notInit();
 
 			write(i.type, pomA1.val);
 			break;
@@ -344,7 +344,7 @@ void Interpret_run(Interpret * self) {
 			if (!(readLn(
 					&((iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset))->val),
 					i.type)))
-				rt_readlnNumError();
+				Error_rt_readlnNum();
 			break;
 		case i_sort:
 			pomA3.val.iString = strdup(
@@ -418,11 +418,11 @@ void Interpret_run(Interpret * self) {
 			return;
 
 		default:
-			rt_error("Instruction with unknown type");
+			Error_rt("Instruction with unknown type");
 		}
 		i = *InstrQueue_next(&self->instructions);
 		if (!self->instructions.actual == self->instructions.size - 1) {
-			rt_error("Program was not properly finished");
+			Error_rt("Program was not properly finished");
 		}
 
 	}

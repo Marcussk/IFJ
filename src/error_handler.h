@@ -22,21 +22,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void memoryError(char * str);
-void unimplementedError(char * str);
+void Error_memory(char * str);
+void Error_unimplemented(char * str);
 
-void lexError(char * str,char * lexBuff, int lineNum);
+void Error_lex(char * str,char * lexBuff, int lineNum);
 
-void syntaxError(char * str, int lineNum, char * actualTokenName);
+void Error_syntax(char * str, int lineNum, char * actualTokenName);
 
-void sem_definitionError( int lineNum, char * varName);
-void sem_TypeError(char * nameOfType, int lineNum) ;
-void sem_CondError(char * nameOfType);
-void sem_Error(char * str, int lineNum);
+void Error_sem_definition( int lineNum, char * varName);
+void Error_sem_Type(char * nameOfType, int lineNum) ;
+void Error_sem_Cond(char * nameOfType);
+void Error_sem(char * str, int lineNum);
 
-void rt_readlnNumError();
-void rt_notInitError();
-void rt_zeroDivisionError();
-void rt_error(char * str);
+void Error_rt_readlnNum();
+void Error_rt_notInit();
+void Error_rt_zeroDivision();
+void Error_rt(char * str);
 
 #endif

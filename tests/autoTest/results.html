@@ -45,11 +45,12 @@
 		<span>StdErr: <span class="stderr" > </span></span>
 		</br>
 		<span class="valgrinderrors">Valgrind errors:</span>
+		</br>
 		<span>stdout:</span>
 		<div class="stdoutdiff"></div>
 	</div>
 	<script>
-		var results = [{"sampleFile": "../../samples/sample29.pas", "resultFile": "results/sample29.json", "result": {"descr": " Hlavni telo programu ", "valgrindErrors": 2, "stderr": "", "stdout": "Konkatenace", "returns": 0}, "resultRef": {"stderr": "", "stdout": "Konkatenace", "returns": 0, "stdin": ""}}, {"sampleFile": "../../samples/sample58.pas", "resultFile": "results/sample58.json", "result": {"descr": "readln(a);", "valgrindErrors": 1, "stderr": "ERROR(Semantic/Definition) Line 17: variable \"vysl\" or function is undefined or you are atempting to redefine it.\n", "stdout": "", "returns": 3}, "resultRef": {"stderr": "ERROR(Semantic/Definition) Line 17: variable \"vysl\" or function is undefined or you are atempting to redefine it.\n", "stdout": "", "returns": 3, "stdin": ""}}, {"sampleFile": "../../samples/sample108.pas", "resultFile": "results/sample108.json", "result": {"descr": " Hlavni telo ", "valgrindErrors": 8, "stderr": "", "stdout": "Nejvetsi cislo je: 3\nFactorial je: 6", "returns": 0}, "resultRef": {"stderr": "", "stdout": "Nejvetsi cislo je: 3\nFactorial je: 6", "returns": 0, "stdin": ""}}, {"sampleFile": "../../samples/sample190.pas", "resultFile": "results/sample190.json", "result": {"descr": " Definice funkce ", "valgrindErrors": 0, "stderr": "ERROR(Syntax) Line 15: parenthesis without expr inside, got \n", "stdout": "", "returns": 2}, "resultRef": {"stderr": "", "stdout": "5", "returns": 0, "stdin": ""}}, {"sampleFile": "../../samples/sample191.pas", "resultFile": "results/sample191.json", "result": {"descr": " Definice funkce ", "valgrindErrors": 0, "stderr": "ERROR(Syntax) Line 14: parenthesis without expr inside, got \n", "stdout": "", "returns": 2}, "resultRef": {"stderr": "ERROR(Runtime/notInit): Attempt to use unitialized variable.\n", "stdout": "", "returns": 7, "stdin": ""}}, {"sampleFile": "../../samples/sample196.pas", "resultFile": "results/sample196.json", "result": {"descr": " Definice funkce ", "valgrindErrors": 1, "stderr": "", "stdout": "15", "returns": 0}, "resultRef": {"stderr": "", "stdout": "15", "returns": 0, "stdin": ""}}, {"sampleFile": "../../samples/sample197.pas", "resultFile": "results/sample197.json", "result": {"descr": " Definice funkce ", "valgrindErrors": 0, "stderr": "ERROR(Syntax) Line 5: names of parameters have to be same as in forward, got id\n", "stdout": "", "returns": 2}, "resultRef": {"stderr": "ERROR(Semantic/Definition) Line 5: variable \"sort\" or function is undefined or you are atempting to redefine it.\n", "stdout": "", "returns": 3, "stdin": ""}}];
+		var results = [];
 
 		function appendValAsSpan(parent, val) {
 			var valElm = document.createElement("span");
@@ -84,7 +85,7 @@
 				appendValAsSpan(r, expectedReturn);
 
 			}
-			valgrindErrors.innerHTML += result.valgrindErrors;
+			valgrindErrors.innerHTML += result.result.valgrindErrors;
 			document.body.appendChild(template);
 			template.style.visibility = "visible";
 			if (value != orig) {

@@ -3,10 +3,13 @@
 iFunction * iFunction__init__() {
 	iFunction * self = malloc(sizeof(iFunction));
 	if (!self) {
-		memoryError("Can't allocate memory for iFunction");
+		Error_memory("Can't allocate memory for iFunction");
 	}
-	//self->symbolTable;
-	self->bodyInstrIndex = -1;
+	self->bodyInstrIndex = malloc(sizeof(InstrParam));
+	if (!self->bodyInstrIndex) {
+		Error_memory("Can't allocate memory for bodyInstrIndex in iFunction");
+	}
+	self->bodyInstrIndex->iInt = -1;
 	self->params.First = NULL;
 	self->params.Last = NULL;
 	self->retVal.isGlobal = false;
@@ -14,13 +17,15 @@ iFunction * iFunction__init__() {
 	self->retVal.type = iUnknown;
 	self->builtin = b_none;
 	self->name = NULL;
+	self->bodyFound = false;
+	self->forwardFound = false;
 	return self;
 }
 
 ParamsListItem * ParamsListItem__init__() {
 	ParamsListItem * self = malloc(sizeof(ParamsListItem));
 	if (!self) {
-		memoryError("Can't allocate memory for ParamsListItem");
+		Error_memory("Can't allocate memory for ParamsListItem");
 	}
 	self->name = NULL;
 	self->data = NULL;
@@ -32,13 +37,14 @@ ParamsListItem * ParamsListItem__init__() {
 void iFunction_listInit(ParamsList *List) {
 	List->First = NULL;
 	List->Last = NULL;
+	List->size = 0;
 }
 
 void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	ParamsListItem *newItem = NULL;
 	newItem = malloc(sizeof(ParamsListItem));
 	if (newItem == NULL) {
-		memoryError("Could not allocate memory for parameter");
+		Error_memory("Could not allocate memory for parameter");
 		return;
 	}
 
@@ -55,8 +61,8 @@ void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	}
 
 	self->params.Last = newItem;
+	self->params.size++;
 }
-
 
 void iFunction_buildParamIndexes(iFunction * self) {
 	int i = -1;
