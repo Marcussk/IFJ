@@ -37,12 +37,17 @@ char * func_copy(char *f_str, int i, int n) {
 	int strIndex;
 	int offset = i - 1;
 	if (offset < 0)
-		Error_rt("Builtin function copy does not support i < 1");
-	if (strlen(f_str) < (offset + n)) {
-		Error_rt(
-				"Builtin function copy can't be performed because original string is too short\n");
-	}
-
+		offset = 0;
+		//Error_rt("Builtin function copy does not support i < 1");
+	//if (strlen(f_str) < (offset + n)) {
+		//Error_rt("Builtin function copy can't be performed because original string is too short\n");
+	else if (offset > strlen(f_str) )
+		n = 0;
+	
+	if (n < 0) 
+		n = 0;
+	else if (n > strlen(f_str) - offset )
+		n = strlen(f_str) - offset;
 	
 	char * newStr = malloc((n + 1) * sizeof(char));
 

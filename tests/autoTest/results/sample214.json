@@ -1,1 +1,1 @@
-{"stderr": "../../samples/sample214.pas:8:20 ERROR(Syntax): expected \":\", got \"(\"\n", "returns": 2, "stdout": "", "stdin": ""}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample214.pas:8:20 ERROR(Syntax): expected \":\", got \"(\"\n", "stdin": ""}

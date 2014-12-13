@@ -162,7 +162,6 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
-	tIFJ condtype;
 	InstrParam * StackAddress = malloc(sizeof(InstrParam));
 	if (!StackAddress) {
 		Error_memory("Cannot allocate instrParam for Label ");
@@ -172,8 +171,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 		Error_memory("Cannot allocate instrParam for Label ");
 	}
 	//COND
-	condtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_checkcond(condtype, self->lp);
+	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self), self->lp);
 	//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
 					StackAddress });
@@ -183,22 +181,32 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	NEXT_TOK(t_begin, "expected begin for if block")
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
-	//jmp end
-	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
-					StackAddrend });
 	//else
-	NEXT_TOK(t_else, "expected else")
+	lastToken = TokenBuff_next(&self->tokBuff);                        
+ 	if(lastToken != t_else){                                         
+	TokenBuff_pushBack(&self->tokBuff, lastToken);
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
+	StackAddress->stackAddr = self->instr.actual;
+	return;
+	}
+	else {  //found else...
+		InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
+					StackAddrend });
+	}
+
 	//begin else block
 	NEXT_TOK(t_begin, "expected begin for if else block")
 	//else:
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
 	StackAddress->iInt = self->instr.actual;
 	//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
 	// end:
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
 	return;
 }
