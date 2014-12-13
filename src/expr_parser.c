@@ -190,6 +190,20 @@ void reduceParenthesis(ExprParser * self) {
 	exprStack_push(&self->stack, nonTerm);
 }
 
+void reduceUnaryMinus(ExprParser *self){
+	ExprToken operand = exprStack_pop(&self->stack);
+	if (operand.datatype != iInt && operand.datatype != iReal)
+		// Change this to semantic error
+		Syntax_err_throw_et(self, operand, "Unary minus datatype error");
+	//printf("Inserting instruction \"not\"\n");
+	InstrQueue_insert(self->instructions,
+			(Instruction ) { i_not,
+							operand.datatype, NULL,
+							NULL, NULL });
+	exprStack_pop(&self->stack); // Pop '-'
+	exprStack_push(&self->stack, operand); // push operand back on stack
+}
+
 void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	Instruction instr;
 	InstrParam * p = NULL;
@@ -239,9 +253,13 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
+		if (cont == t_minus && findHandle(&self->stack)){
+			reduceUnaryMinus(self);
+			break;
+		}
 		EXPR_DEBUGING(
 				printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n"); printf("STACK POSITION = %d\n", findHandle(stack));)
-		if (findHandle(&self->stack) < 4)
+		if (findHandle(&self->stack) != 4)
 			Syntax_err_throw_t(self, cont,
 					"Expression syntax error - missing operands");
 		if (TopMostTerminal != &(self->stack.StackArray[self->stack.top - 1])) // Check if TopMostTerminal is operator - terminal
