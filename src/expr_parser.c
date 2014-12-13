@@ -1,18 +1,6 @@
 #include "expr_parser.h"
 
-//#define EXPR_DEGUG
-
-#ifdef EXPR_DEBUG
-#define EXPR_DEBUGING(body) body
-#else
-#define EXPR_DEBUGING(body) ;
-#endif
-
 IMPLEMENT_STACK(expr, ExprToken);
-/*
- EXPR_DEBUGING(
- void printStack(exprStack *self) { exprStackNodeT *itr = self->top; int poss = self->size - 1; while (itr != NULL) { printf("<%d:content - %s, type - %d, datatype - %d, shifted - %d/ >\n", poss, getTokenName(itr->data.content), itr->data.type, itr->data.datatype, itr->data.shifted); itr = itr->next; poss--; } })
- */
 
 void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 		InstrQueue * instructions) {
@@ -209,8 +197,6 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	InstrParam * p = NULL;
 	Token cont = TopMostTerminal->content;
 
-	EXPR_DEBUGING(printf("-----%d\n", cont);)
-
 	switch (cont) {
 	case t_id: // kdyz var, tak push 1. parametr bude stackaddr
 		if (TopMostTerminal->type == terminal) {
@@ -253,12 +239,10 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-		if (cont == t_minus && findHandle(&self->stack) ==3){
+		if (cont == t_minus && findHandle(&self->stack) == 3){
 			reduceUnaryMinus(self);
 			break;
 		}
-		EXPR_DEBUGING(
-				printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n"); printf("STACK POSITION = %d\n", findHandle(stack));)
 		if (findHandle(&self->stack) != 4)
 			Syntax_err_throw_t(self, cont,
 					"Expression syntax error - missing operands");
@@ -396,17 +380,14 @@ tIFJ ExprParser_parse(ExprParser * self) {
 		default:
 			break;
 		}
-	}EXPR_DEBUGING(printf("<Expr Line: %d>\n", tokenBuff->lp->input.line);)
+	}
 	tokenToExpr(&ExprLastToken, lastToken, self->tokenBuff->lp); // "copy" content of LastToken to ExprLastToken
 
 	do {
 		TopMostTerminal = findTopMostTerminal(&self->stack);
-		EXPR_DEBUGING(
-				printStack(stack); printf("prtable indexes [%d][%d]\n", TopMostTerminal->content, ExprLastToken.content);)
 
 		switch (prTable[TopMostTerminal->content][ExprLastToken.content]) {
 		case shift:		// Vloz zacatek handle
-			EXPR_DEBUGING(printf("shift\n");)
 			TopMostTerminal->shifted = true;
 			exprStack_push(&self->stack, ExprLastToken);
 			lastToken = TokenBuff_next(self->tokenBuff);
@@ -414,14 +395,12 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			break;
 
 		case equal:	// push ExprLastToken
-			EXPR_DEBUGING(printf("equal\n");)
 			exprStack_push(&self->stack, ExprLastToken);
 			lastToken = TokenBuff_next(self->tokenBuff);
 			tokenToExpr(&ExprLastToken, lastToken, self->tokenBuff->lp);
 			break;
 
 		case reduce: // Search for handle on stack and reduce expression
-			EXPR_DEBUGING(printf("reduce\n");)
 			reduceRule(self, TopMostTerminal);
 			TopMostTerminal = findTopMostTerminal(&self->stack);
 			TopMostTerminal->shifted = false;
@@ -441,18 +420,14 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			break;
 		}
 		if (prTable[TopMostTerminal->content][t_eof] == reduce) {
-			EXPR_DEBUGING(printf("reduce\n");)
 			reduceRule(self, TopMostTerminal);
 			TopMostTerminal = findTopMostTerminal(&self->stack);
 			TopMostTerminal->shifted = false;
 		} else {
-			EXPR_DEBUGING(printStack(stack);)
 			Syntax_err_throw_et(self, ExprLastToken,
 					"Expression Error Everything read, can't reduce");
 		}
-	}EXPR_DEBUGING(
-			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
-
+	}
 	TokenBuff_pushBack(self->tokenBuff, lastToken);
 	return self->stack.StackArray[self->stack.top].datatype;
 }
