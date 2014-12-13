@@ -1,9 +1,10 @@
 {basic unary - test}
 var
 	a : integer;
-	b : integer;
+	b : real;
 begin
 	a:= -10;
+	write('a ', a);
 	b:= -10.0;
-	write('a ', a, ' b ', b, ''#10'' )
-end;
+	write(' b ', b, ''#10'' )
+end.

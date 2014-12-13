@@ -226,13 +226,14 @@ void Interpret_run(Interpret * self) {
 				pomA2.val.iInt = -pomA1.val.iInt;
 				break;
 			case iReal:
-				pomA2.val.iReal = -pomA2.val.iReal;
+				pomA2.val.iReal = -pomA1.val.iReal;
 				break;
 			default:
 				Error_unimplemented(
 						"Instr. neg is not implemented for this type\n");
 				break;
 			}
+			iStack_push(&(self->stack), pomA2);
 			break;
 		case i_add:
 			POP(pomA2)
