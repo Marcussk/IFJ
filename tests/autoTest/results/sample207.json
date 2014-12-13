@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample207.pas:4:0 ERROR(Semantic/Type): Variable of type string does not fit to condition.\n", "returns": 4}
+{"returns": 4, "stdout": "", "stderr": "../../samples/sample207.pas:4:0 ERROR(Semantic/Type): Variable of type string does not fit to condition.\n", "stdin": ""}

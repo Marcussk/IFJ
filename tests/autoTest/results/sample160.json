@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample160.pas:3:29 ERROR(Syntax): write call unexpected argument, got \"stringValue\"\n", "returns": 2}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample160.pas:3:29 ERROR(Syntax): write call unexpected argument, got \"stringValue\"\n", "stdin": ""}
