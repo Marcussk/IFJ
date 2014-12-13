@@ -72,11 +72,8 @@ int readLn(iVal *a1, tIFJ type) {
 
 		a1->iString = str.buff;
 		return 1;
-	case iBool:
-		Error_sem_Cond("readLn not implemented for Bool");
-		return 0;
 	default:
-		Error_rt_readlnNum();
+		Error_rt_readln();
 		return 0;
 	}
 }

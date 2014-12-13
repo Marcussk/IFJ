@@ -88,9 +88,9 @@ tIFJ getResultType(ExprParser * self, tIFJ op1Type, tIFJ op2Type,
 			return iBool;
 		break;
 	default:
-		Error_syntax("Unknown operator", self->tokenBuff->lp->input.line, "");
+		Syntax_err_throw_t(self, operator, "Unknown operator");
 	}
-	Error_sem_Type("Incompatible types", self->tokenBuff->lp->input.line);
+	Type_err_throw(self->tokenBuff->lp, "Incompatible types");
 	return iUnknown;
 }
 
@@ -102,35 +102,30 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 	for (i = 0; i < fn->params.size; i++) {
 		last = exprStack_pop(&self->stack);
 		if (last.type != nonterminal)
-			Error_syntax(
-					"expected nontermial got terminal (means bad parameter)",
-					self->tokenBuff->lp->input.line, getTokenName(last.content));
+			Syntax_err_throw_t(self, last.content,
+					"expected nontermial got terminal (means bad parameter)");
 		if (last.datatype != paramNode->data->type)
-			Error_syntax("argument of incompatible type",
-					self->tokenBuff->lp->input.line, getTokenName(last.content));
+			Syntax_err_throw_t(self, last.content,
+					"argument of incompatible type");
 		paramNode = paramNode->prev;
 
-		if (i < fn->params.size -1) { // berore first arg there is no ","
+		if (i < fn->params.size - 1) { // berore first arg there is no ","
 			last = exprStack_pop(&self->stack);
 			if (last.content != t_comma)
-				Error_syntax("expected , because function has more parameters",
-						self->tokenBuff->lp->input.line,
-						getTokenName(last.content));
+				Syntax_err_throw_t(self, last.content,
+						"expected , because function has more parameters");
 		}
 	}
 	last = exprStack_pop(&self->stack); // Pop '('
 	if (last.content != t_lParenthessis)
-		Error_syntax(
-				"expected \"(\" probably more arguments than it was expected",
-				self->tokenBuff->lp->input.line, getTokenName(last.content));
+		Syntax_err_throw_t(self, last.content,
+				"expected \"(\" probably more arguments than it was expected");
 	last = exprStack_pop(&self->stack); // function Id
 	if (last.content != t_func)
-		Error_syntax("Function id", self->tokenBuff->lp->input.line,
-				getTokenName(last.content));
+		Syntax_err_throw_t(self, last.content, "Function id");
 	if (last.id->val.fn != fn)
-		Error_syntax(
-				"Over-reduced, was reducing function call and got different function",
-				self->tokenBuff->lp->input.line, getTokenName(last.content));
+		Syntax_err_throw_t(self, last.content,
+				"Over-reduced, was reducing function call and got different function");
 
 	ExprToken_Init(&result);
 	result.datatype = fn->retVal.type;
@@ -159,10 +154,10 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	ExprToken result;
 	tIFJ instrType;
 
-	if (operand2.type != nonterminal || operand1.type != nonterminal) {
-		Error_syntax("Expression Error - Operands error",
-				self->tokenBuff->lp->input.line, "nonterminal probably ','");
-	}
+	if (operand2.type != nonterminal || operand1.type != nonterminal)
+		Syntax_err_throw_et(self, operand1,
+				"Expression Error - Operands error");
+
 	ExprToken_Init(&result);
 
 	SemAnalyzer_typeconvert(*(&self->instructions), operand1.datatype,
@@ -187,12 +182,10 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 void reduceParenthesis(ExprParser * self) {
 	ExprToken nonTerm = exprStack_pop(&self->stack);
 	if (nonTerm.content != t_id || nonTerm.type != nonterminal) {
-		Error_syntax("parenthesis without expr inside",
-				self->tokenBuff->lp->input.line, "");
+		Syntax_err_throw_et(self, nonTerm, "parenthesis without expr inside");
 	}
 	if (exprStack_pop(&self->stack).content != t_lParenthessis) {
-		Error_syntax("Expected left parenthesis ", self->tokenBuff->lp->input.line,
-				"");
+		Syntax_err_throw_et(self, nonTerm, "Expected left parenthesis ");
 	}
 	exprStack_push(&self->stack, nonTerm);
 }
@@ -232,8 +225,8 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 			InstrQueue_insert(self->instructions, instr);
 			TopMostTerminal->type = nonterminal;
 		} else {
-			Error_syntax("Reduction of token which was already reducted", -1,
-					ExprToken_getName(*TopMostTerminal));
+			Syntax_err_throw_et(self, *TopMostTerminal,
+					"Reduction of token which was already reducted");
 		}
 		break;
 	case t_plus:
@@ -249,27 +242,26 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 		EXPR_DEBUGING(
 				printf("Time to reduce binary operation (+,-,*,/,<,>,..)\n"); printf("STACK POSITION = %d\n", findHandle(stack));)
 		if (findHandle(&self->stack) < 4)
-			Error_syntax("Expression syntax error - missing operands",
-					self->tokenBuff->lp->input.line, ",");
+			Syntax_err_throw_t(self, cont,
+					"Expression syntax error - missing operands");
 		if (TopMostTerminal != &(self->stack.StackArray[self->stack.top - 1])) // Check if TopMostTerminal is operator - terminal
-			Error_syntax("Expression Error - Operator error",
-					self->tokenBuff->lp->input.line, ",");
+			Syntax_err_throw_t(self, cont, "Expression Error - Operator error");
 
 		Expr_reduceBinaryOperator(self);
 		break;
 	case t_rParenthessis:
 		if (findHandle(&self->stack) < 4)
-			Error_syntax("Expression syntax error - not enough operands",
-					self->tokenBuff->lp->input.line, ",");
+			Syntax_err_throw_t(self, cont,
+					"Expression syntax error - not enough operands");
 		if (TopMostTerminal->content
 				!= self->stack.StackArray[self->stack.top].content) // ')' Must be on top of stack
-			Error_syntax("Expression syntax error - expected )",
-					self->tokenBuff->lp->input.line, "");
+			Syntax_err_throw_t(self, cont,
+					"Expression syntax error - expected )");
 
 		ExprToken last = exprStack_pop(&self->stack);
 		if (last.content != t_rParenthessis)
-			Error_syntax("Trying to reduce braces but there are not",
-					self->tokenBuff->lp->input.line, "");
+			Syntax_err_throw_t(self, cont,
+					"Trying to reduce braces but there are not");
 
 		iFunction * func = findFunction(&self->stack);
 		if (func)
@@ -279,8 +271,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 
 		break;
 	default:
-		Error_syntax("unknown content of ExprToken",
-				self->tokenBuff->lp->input.line, "");
+		Syntax_err_throw_t(self, cont, "unknown content of ExprToken");
 	}
 
 }
@@ -292,8 +283,8 @@ void parseWrite(ExprParser * self) {
 	InstrParam * param;
 
 	if (lastToken != t_lParenthessis)
-		Error_syntax("writeCall expects '(' after write",
-				self->tokenBuff->lp->input.line, getTokenName(lastToken));
+		Syntax_err_throw_t(self, lastToken,
+				"writeCall expects '(' after write");
 	instr.code = i_push;
 	instr.a2 = NULL;
 	instr.dest = NULL;
@@ -304,8 +295,8 @@ void parseWrite(ExprParser * self) {
 		if (lastToken == t_id) {
 			lastSymbol = self->tokenBuff->lp->lastSymbol;
 			if (lastSymbol->type == iFn)
-				Error_syntax("Function call cannot be in write call",
-						self->tokenBuff->lp->input.line, getTokenName(lastToken));
+				Syntax_err_throw_t(self, lastToken,
+						"Function call cannot be in write call");
 
 			param->stackAddr = lastSymbol->stackIndex;
 			if (lastSymbol->isGlobal)
@@ -316,12 +307,11 @@ void parseWrite(ExprParser * self) {
 		} else if (Token_isValue(lastToken)) {
 			*param = iVal2InstrP(
 					str2iVal(self->tokenBuff->lp->str.buff, lastToken,
-							self->tokenBuff->lp->input.line),
-					Token_getType(lastToken));
+							self->tokenBuff->lp), Token_getType(lastToken));
 			instr.type = Token_getType(lastToken);
 		} else {
-			Error_syntax("write call unexpected argument",
-					self->tokenBuff->lp->input.line, getTokenName(lastToken));
+			Syntax_err_throw_t(self, lastToken,
+					"write call unexpected argument");
 		}
 		instr.a1 = param;
 		InstrQueue_insert(self->instructions, instr);
@@ -337,38 +327,36 @@ void parseWrite(ExprParser * self) {
 		else if (lastToken == t_rParenthessis)
 			return;
 		else
-			Error_syntax("write call unexpected argument",
-					self->tokenBuff->lp->input.line, getTokenName(lastToken));
+			Syntax_err_throw_t(self, lastToken,
+					"write call unexpected argument");
 	}
 }
 
-void parseReadLn(TokenBuff * tokenBuff, InstrQueue * instructions) {
-	Token lastToken = TokenBuff_next(tokenBuff);
+void parseReadLn(ExprParser * self) {
+	Token lastToken = TokenBuff_next(self->tokenBuff);
 	if (lastToken != t_lParenthessis)
-		Error_syntax("Expected (", tokenBuff->lp->input.line,
-				getTokenName(lastToken));
+		Syntax_err_throw_t(self, lastToken, "Expected (");
 
 	iVar * lastSymbol;
 	InstrParam * param;
 
-	lastToken = TokenBuff_next(tokenBuff);
+	lastToken = TokenBuff_next(self->tokenBuff);
 	if (lastToken == t_id) {
-		lastSymbol = tokenBuff->lp->lastSymbol;
+		lastSymbol = self->tokenBuff->lp->lastSymbol;
 		param = malloc(sizeof(InstrParam));
 		param->stackAddr = lastSymbol->stackIndex;
 	} else
-		Error_syntax("Expected identificator", tokenBuff->lp->input.line,
-				getTokenName(lastToken));
+		Syntax_err_throw_t(self, lastToken, "Expected identificator");
 
-	InstrQueue_insert(instructions, (Instruction ) { i_readln, lastSymbol->type,
-			NULL, NULL, param });
+	InstrQueue_insert(self->instructions,
+			(Instruction ) { i_readln, lastSymbol->type,
+					NULL, NULL, param });
 
-	lastToken = TokenBuff_next(tokenBuff);
+	lastToken = TokenBuff_next(self->tokenBuff);
 	if (lastToken == t_rParenthessis)
 		return;
 	else
-		Error_syntax("write call unexpected argument", tokenBuff->lp->input.line,
-				getTokenName(lastToken));
+		Syntax_err_throw_t(self, lastToken, "write call unexpected argument");
 }
 
 tIFJ ExprParser_parse(ExprParser * self) {
@@ -382,7 +370,7 @@ tIFJ ExprParser_parse(ExprParser * self) {
 		Builtins b = self->tokenBuff->lp->lastSymbol->val.fn->builtin;
 		switch (b) {
 		case b_readLn:
-			parseReadLn(self->tokenBuff, self->instructions);
+			parseReadLn(self);
 			return iVoid;
 		case b_write:
 			parseWrite(self);
@@ -422,8 +410,8 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			break;
 
 		case error:
-			Error_syntax("Expression Error, error state from prTable",
-					self->tokenBuff->lp->input.line, getTokenName(lastToken));
+			Syntax_err_throw_t(self, lastToken,
+					"Expression Error, error state from prTable");
 		};
 	} while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)); // cann't  require anything else
 
@@ -441,15 +429,32 @@ tIFJ ExprParser_parse(ExprParser * self) {
 			TopMostTerminal->shifted = false;
 		} else {
 			EXPR_DEBUGING(printStack(stack);)
-			Error_syntax("Expression Error Everything read, can't reduce",
-					self->tokenBuff->lp->input.line,
-					ExprToken_getName(ExprLastToken));
+			Syntax_err_throw_et(self, ExprLastToken,
+					"Expression Error Everything read, can't reduce");
 		}
 	}EXPR_DEBUGING(
 			printf("Last stack status\n"); printStack(stack); printf("</Expr lastToken:%d - %s >\n\n", lastToken, getTokenName(lastToken));)
 
 	TokenBuff_pushBack(self->tokenBuff, lastToken);
 	return self->stack.StackArray[self->stack.top].datatype;
+}
+
+void Syntax_err_throw_et(ExprParser * self, ExprToken lastToken, char * msg) {
+	Syntax_err_throw(self, ExprToken_getName(lastToken), msg);
+}
+// for token
+void Syntax_err_throw_t(ExprParser * self, Token lastToken, char * msg) {
+	Syntax_err_throw(self, getTokenName(lastToken), msg);
+}
+// for expression token
+void Syntax_err_throw(ExprParser * self, char * tokenName, char * msg) {
+	Err_syntax err;
+	err.actualTokenName = tokenName;
+	err.column = self->tokenBuff->lp->input.column;
+	err.filename = self->tokenBuff->lp->input.filename;
+	err.line = self->tokenBuff->lp->input.line;
+	err.msg = msg;
+	Error_syntax(err);
 }
 
 void ExprParser__dell__(ExprParser * self) {

@@ -1,63 +1,63 @@
 #include "error_handler.h"
 
-void Error_lex(char * str, char * lexBuff, int lineNum) {
+void Error_lex(Err_lex err) {
 	fflush(stdout);
-	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s\n", lineNum,
-			lexBuff, str);
+	fprintf(stderr, "ERROR(Lexical) Line %d: last read = \"%s\" %s\n", err.line,
+			err.lexBuff, err.msg);
 	exit(1);
 }
 
-void Error_syntax(char * str, int lineNum, char * actualTokenName) {
+void Error_syntax(Err_syntax err) {
 	fflush(stdout);
-	if (actualTokenName)
-		fprintf(stderr, "ERROR(Syntax) Line %d: %s, got \"%s\"\n", lineNum, str,
-				actualTokenName);
+	if (err.actualTokenName)
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s, got \"%s\"\n", err.line,
+				err.msg, err.actualTokenName);
 	else
-		fprintf(stderr, "ERROR(Syntax) Line %d: %s\n", lineNum, str);
+		fprintf(stderr, "ERROR(Syntax) Line %d: %s\n", err.line, err.msg);
 	exit(2);
 }
 
-void Error_sem_definition(int lineNum, char * varName) {
+void Error_sem_definition(Err_def err) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Definition) Line %d: variable \"%s\" or function is undefined or you are atempting to redefine it.\n",
-			lineNum, varName);
+			err.line, err.symbolName);
 	exit(3);
 }
 /*semanticka chyba typove kompatibility v aritmetickych, retezcových a relacnich
  vyrazech, prip. spatny pocet ci typ parametruu u volani funkce.
  dont forget about char * iVar_type2str(type)
  */
-void Error_sem_Type(char * nameOfType, int lineNum) {
+void Error_sem_Type(Err_type err) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Type) Line %d: Variable or function of type %s does not fit to expression or function has bad parameters.\n",
-			lineNum, nameOfType);
+			err.line, err.msg);
 	exit(4);
 }
 
-void Error_sem_Cond(char * nameOfType) {
+void Error_sem_Cond(Err_cond err) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Semantic/Type): Variable type %s does not fit to condition.\n",
-			nameOfType);
+			err.cndtTypeStr);
 	exit(4);
 }
 
-void Error_sem(char * str, int lineNum) {
+void Error_sem(Err_sem err) {
 	fflush(stdout);
-	fprintf(stderr, "ERROR(Semantic) Line: %d: %s .\n", lineNum, str);
+	fprintf(stderr, "ERROR(Semantic) Line: %d: %s .\n", err.line, err.msg);
 	exit(5);
 }
 
-void Error_rt_readlnNum() {
+void Error_rt_readln() {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Runtime/readln): Error while reading value from user input.\n");
 	exit(6);
 }
 
-void Error_rt_notInit() {
+void Error_rt_notInit(int stackAddr) {
 	fflush(stdout);
 	fprintf(stderr,
 			"ERROR(Runtime/notInit): Attempt to use unitialized variable.\n");

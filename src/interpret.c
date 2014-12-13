@@ -2,6 +2,12 @@
 
 IMPLEMENT_STACK(i, sVal)
 
+#define POP(pom)                     \
+pom = iStack_pop(&(self->stack));        \
+if (!(pom.isInitialized))                \
+	Error_rt_notInit(self->stack.top + 1); \
+
+
 void iStack_debug(iStack *self, int stackOffset, char * msg) {
 	int i;
 	if (msg)
@@ -54,9 +60,7 @@ void Interpret_run(Interpret * self) {
 			}
 			break;
 		case i_assign:
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized))
-				Error_rt_notInit();
+			POP(pomA1)
 			if (i.type == iStackRef) {
 				*iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset) =
 						pomA1;
@@ -70,7 +74,7 @@ void Interpret_run(Interpret * self) {
 			self->instructions.actual = i.dest->iInt;
 			continue;
 		case i_jmpz:
-			pomA1 = iStack_pop(&(self->stack));
+			POP(pomA1)
 			if (pomA1.val.iInt == 0) {
 				self->instructions.actual = i.dest->iInt;
 				continue;
@@ -78,10 +82,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_equal:
-			pomA1 = iStack_pop(&(self->stack));
-			pomA2 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA1)
+			POP(pomA2)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -103,10 +105,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_nequal:
-			pomA1 = iStack_pop(&(self->stack));
-			pomA2 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA1)
+			POP(pomA2)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -128,10 +128,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_more:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -153,10 +151,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_less:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -178,10 +174,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_moreq:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -203,10 +197,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_loreq:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iBool:
 			case iInt:
@@ -228,12 +220,8 @@ void Interpret_run(Interpret * self) {
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_add:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized)) {
-				Error_rt_notInit();
-			}
+			POP(pomA2)
+			POP(pomA1)
 
 			switch (i.type) {
 			case iInt:
@@ -243,8 +231,11 @@ void Interpret_run(Interpret * self) {
 				pomA3.val.iReal = pomA2.val.iReal + pomA1.val.iReal;
 				break;
 			case iString:
-				pomA3.val.iString = malloc(strlen(pomA1.val.iString) + strlen(pomA2.val.iString) + 1);
-				sprintf(pomA3.val.iString, "%s%s", pomA1.val.iString, pomA2.val.iString);
+				pomA3.val.iString = malloc(
+						strlen(pomA1.val.iString) + strlen(pomA2.val.iString)
+								+ 1);
+				sprintf(pomA3.val.iString, "%s%s", pomA1.val.iString,
+						pomA2.val.iString);
 				break;
 			default:
 				Error_unimplemented(
@@ -260,12 +251,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_sub:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
-
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iInt:
 				pomA3.val.iInt = pomA1.val.iInt - pomA2.val.iInt;
@@ -287,10 +274,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_mul:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			switch (i.type) {
 			case iInt:
 				pomA3.val.iInt = pomA1.val.iInt * pomA2.val.iInt;
@@ -312,10 +297,8 @@ void Interpret_run(Interpret * self) {
 
 			break;
 		case i_div:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
-			if (!(pomA1.isInitialized) || !(pomA2.isInitialized))
-				Error_rt_notInit();
+			POP(pomA2)
+			POP(pomA1)
 			if (i.type == iReal) {
 				if (pomA2.val.iReal == 0) {
 					Error_rt_zeroDivision();
@@ -335,10 +318,7 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_write:
-			pomA1 = iStack_pop(&(self->stack));
-
-			if (!(pomA1.isInitialized))
-				Error_rt_notInit();
+			POP(pomA1)
 
 			write(i.type, pomA1.val);
 			break;
@@ -346,16 +326,17 @@ void Interpret_run(Interpret * self) {
 			if (!(readLn(
 					&((iStack_getAt(&self->stack,
 							i.dest->stackAddr + stackOffset))->val), i.type)))
-				Error_rt_readlnNum();
+				Error_rt_readln();
 			break;
 		case i_sort:
-			pomA3.val.iString = strdup(
-					func_sort((iStack_pop(&(self->stack)).val.iString)));
+			POP(pomA1)
+			pomA3.val.iString = strdup(func_sort(pomA1.val.iString));
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
 		case i_len:
-			pomA3.val.iInt = func_len((iStack_pop(&(self->stack)).val.iString));
+			POP(pomA1)
+			pomA3.val.iInt = func_len((pomA1.val.iString));
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
@@ -367,9 +348,9 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_copy:
-			pomA3 = iStack_pop(&(self->stack));
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
+			POP(pomA3)
+			POP(pomA2)
+			POP(pomA1)
 
 			pomA4.val.iString = func_copy(pomA1.val.iString, pomA2.val.iInt,
 					pomA3.val.iInt);
@@ -378,8 +359,8 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_find:
-			pomA2 = iStack_pop(&(self->stack));
-			pomA1 = iStack_pop(&(self->stack));
+			POP(pomA2)
+			POP(pomA1)
 			pomA3.val.iInt = func_find(pomA1.val.iString, pomA2.val.iString);
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
@@ -407,7 +388,7 @@ void Interpret_run(Interpret * self) {
 			pomA4 = iStack_pop(&self->stack);                      // next instr
 			InstrQueue_atIndex(&(self->instructions), pomA4.val.iInt); // jmp back to caller
 			pomA1 = iStack_pop(&self->stack);                      // paramsCnt
-			pomA2 = iStack_pop(&self->stack);                      //  retval
+			POP(pomA1)
 			for (index = 0; index < pomA1.val.iInt; index++) { // pop params
 				iStack_pop(&self->stack);
 			}

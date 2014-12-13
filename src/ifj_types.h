@@ -53,7 +53,6 @@ iVar * iVar__init__();
 void iVar_debug(iVar * v);
 void iVar__dell__(iVar * self);
 tIFJ Token_getType(Token t);
-iVal str2iVal(char * str, Token token, int lineNum);
 char * iVar_type2str(tIFJ t);
 
 #endif

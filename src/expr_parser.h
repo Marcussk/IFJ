@@ -24,10 +24,12 @@ typedef struct {
 	exprStack stack;
 } ExprParser;
 
-
 void ExprParser__init__(ExprParser * self, TokenBuff * tokenBuff,
 		InstrQueue * instructions);
 tIFJ ExprParser_parse(ExprParser * self);
 void ExprParser__dell__(ExprParser * self);
+void Syntax_err_throw(ExprParser * self, char * tokenName, char * msg);
+void Syntax_err_throw_t(ExprParser * self, Token lastToken, char * msg);
+void Syntax_err_throw_et(ExprParser * self, ExprToken lastToken, char * msg);
 
 #endif

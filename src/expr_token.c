@@ -51,8 +51,39 @@ void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp) {
 	//free(Expr->value);
 	if (Token_isValue(token)) {
 		Expr->value = malloc(sizeof(iVal));
-		*Expr->value = str2iVal(lp->str.buff, token, lp->input.line);
+		*Expr->value = str2iVal(lp->str.buff, token, lp);
 		Expr->datatype = Token_getType(token);
 	} else
 		Expr->value = NULL;
+}
+
+
+iVal str2iVal(char * str, Token token, LexParser * lp) {
+	iVal val;
+	switch (token) {
+	case t_num_int:
+		if (!sscanf(str, "%d", &(val.iInt)))
+			Lex_throwError(lp, "Cannot parse int num");
+		break;
+
+	case t_num_real:
+		if (!sscanf(str, "%f", &(val.iReal)))
+			Lex_throwError(lp,"Cannot parse real num");
+		break;
+
+	case t_str_val:
+		val.iString = strdup(str);
+		if (!val.iString)
+			Lex_throwError(lp,"Cannot parse string");
+		break;
+	case t_true:
+		val.iInt = 1;
+		break;
+	case t_false:
+		val.iInt = 0;
+		break;
+	default:
+		Lex_throwError(lp,"cannot convert value");
+	}
+	return val;
 }

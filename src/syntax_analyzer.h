@@ -34,7 +34,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self);
 tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
-
+void Syntax_err_throw_s(SyntaxAnalyzer * self, Token t, char * msg);
 
 
 #endif

@@ -65,34 +65,3 @@ void iVar__dell__(iVar * self) {
 		free(self->val.iString);
 	free(self);
 }
-
-iVal str2iVal(char * str, Token token, int lineNum) {
-	iVal val;
-	switch (token) {
-	case t_num_int:
-		if (!sscanf(str, "%d", &(val.iInt)))
-			Error_lex("Cannot parse int num", str, lineNum);
-		break;
-
-	case t_num_real:
-		if (!sscanf(str, "%f", &(val.iReal)))
-			Error_lex("Cannot parse real num", str, lineNum);
-		break;
-
-	case t_str_val:
-		val.iString = strdup(str);
-		if (!val.iString)
-			Error_lex("Cannot parse string", str, lineNum);
-		break;
-	case t_true:
-		val.iInt = 1;
-		break;
-	case t_false:
-		val.iInt = 0;
-		break;
-	default:
-		Error_lex("cannot convert value", str, lineNum);
-	}
-	return val;
-}
-

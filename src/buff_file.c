@@ -1,10 +1,15 @@
 #include "buff_file.h"
 
-void BuffFile__init__(BuffFile * self, FILE * f) {
+int BuffFile__init__(BuffFile * self, char * filename) {
+	self->filename = filename;
+	self->input = fopen(filename, "r");
+	if(!self->input )
+		return false;
+
 	self->backup = EOF;
-	self->input = f;
 	self->line = 0;
 	self->column = 0;
+	return true;
 }
 char BuffFile_get(BuffFile * self) {
 	char ret;
@@ -14,9 +19,10 @@ char BuffFile_get(BuffFile * self) {
 	} else {
 		ret = fgetc(self->input);
 	}
-	if (ret == '\n')
+	if (ret == '\n'){
 		self->line++;
-	else
+		self->column = 0;
+	}else
 		self->column++;
 	return ret;
 }
@@ -28,4 +34,8 @@ void BuffFile_pushBack(BuffFile * self, char ch) {
 		self->line--;
 	else
 		self->column--;
+}
+
+void BuffFile__dell__(BuffFile * self) {
+	fclose(self->input);
 }

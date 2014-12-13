@@ -21,21 +21,22 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include "errors_structs.h"
 
 void Error_memory(char * str);
 void Error_unimplemented(char * str);
 
-void Error_lex(char * str,char * lexBuff, int lineNum);
+void Error_lex(Err_lex err);
 
-void Error_syntax(char * str, int lineNum, char * actualTokenName);
+void Error_syntax(Err_syntax err);
 
-void Error_sem_definition( int lineNum, char * varName);
-void Error_sem_Type(char * nameOfType, int lineNum) ;
-void Error_sem_Cond(char * nameOfType);
-void Error_sem(char * str, int lineNum);
+void Error_sem_definition( Err_def err);
+void Error_sem_Type(Err_type err) ;
+void Error_sem_Cond(Err_cond err);
+void Error_sem(Err_sem err);
 
-void Error_rt_readlnNum();
-void Error_rt_notInit();
+void Error_rt_readln();
+void Error_rt_notInit( int stackAddr);
 void Error_rt_zeroDivision();
 void Error_rt(char * str);
 

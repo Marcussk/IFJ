@@ -13,9 +13,9 @@ typedef enum {
 
 void LexParser_readEscape(LexParser * self);
 void LexParser_readString(LexParser * self);
-void LexParser__init__(LexParser * self, FILE * inFile) {
+void LexParser__init__(LexParser * self, BuffFile input) {
 	String__init__(&self->str, 32);
-	BuffFile__init__(&(self->input), inFile);
+	self->input = input;
 	self->input.line = 1;
 	self->lastFunction = NULL;
 	self->lastSymbol = NULL;
@@ -28,8 +28,7 @@ void LexParser_readString(LexParser * self) {
 	while (true) {
 		ch = BuffFile_get(&(self->input));
 		if (ch == EOF)
-			Error_lex("String missing right ' (end of string).\n",
-					self->str.buff, self->input.line);
+			Lex_throwError(self, "String missing right ' (end of string).\n");
 		else if (ch == '\'') {
 			ch2 = BuffFile_get(&(self->input));
 			if (ch2 != '\'') {
@@ -57,8 +56,7 @@ void LexParser_readComment(LexParser * self) {
 	char ch;
 	while ((ch = BuffFile_get(&(self->input))) != '}') {
 		if (ch == EOF)
-			Error_lex("String missing right } (end of comment).\n",
-					self->str.buff, self->input.line);
+			Lex_throwError(self, "String missing right } (end of comment).\n");
 	}
 }
 void LexParser_readEscape(LexParser * self) {
@@ -70,11 +68,11 @@ void LexParser_readEscape(LexParser * self) {
 		String_append(&str, ch);
 	}
 	if (str.len < 1)
-		Error_lex("Uncomplete escape sequention.\n", str.buff, self->input.line);
+		Lex_throwError(self, "Uncomplete escape sequention.\n");
 	int escp = atoi(str.buff);
 	String__dell_(&str);
 	if (escp > 255)
-		Error_lex("Unknown escape sequention.\n", self->str.buff, self->input.line);
+		Lex_throwError(self, "Unknown escape sequention.\n");
 	String_append(&(self->str), (char) escp);
 	if (ch == '\'')
 		LexParser_readString(self);
@@ -91,7 +89,7 @@ void LexParser_syncLastVar(LexParser * self) {
 	case lp_insertOnly:
 		if (HashTable_insertNew(self->symbolTable, self->str.buff,
 				&(self->lastSymbol)) != ht_inserted) {
-			Error_sem_definition(self->input.line, self->str.buff); // redefinition
+			Definition_err_throw(self); // redefinition
 		}
 		break;
 	case lp_parseParams:
@@ -105,14 +103,14 @@ void LexParser_syncLastVar(LexParser * self) {
 		if (!i) {
 			if (HashTable_insertNew(self->symbolTable, self->str.buff,
 					&(self->lastSymbol)) != ht_inserted) {
-				Error_sem_definition(self->input.line, self->str.buff); // redefinition
+				Definition_err_throw(self);  // redefinition
 			}
 			self->lastSymbol->type = iFn;
 			self->lastSymbol->val.fn = iFunction__init__();
 			self->lastSymbol->val.fn->name = strdup(self->str.buff);
 		} else {
-			if (i->var->type != iFn || i->var->val.fn->bodyFound )
-				Error_sem_definition(self->input.line, self->str.buff);
+			if (i->var->type != iFn || i->var->val.fn->bodyFound)
+				Definition_err_throw(self);
 			self->lastSymbol = i->var;
 		}
 		self->lastFunction = self->lastSymbol->val.fn;
@@ -120,15 +118,15 @@ void LexParser_syncLastVar(LexParser * self) {
 	case lp_searchOnly:
 		i = HashTable_lookupEverywhere(self->symbolTable, self->str.buff);
 		if (!i) {
-			Error_sem_definition(self->input.line, self->str.buff);
+			Definition_err_throw(self);
 		}
 		self->lastSymbol = i->var;
 		break;
 	case lp_ignore:
 		break;
 	default:
-		Error_lex("LexParser don't know if search or insert new id\n",
-				self->str.buff, self->input.line);
+		Lex_throwError(self,
+				"LexParser don't know if search or insert new id\n");
 	}
 }
 Token LexParser_keywordCheck(String * str) {
@@ -279,8 +277,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 			if (isdigit(ch))
 				st = np_real;
 			else
-				Error_lex("expected number after dot", self->str.buff,
-						self->input.line);
+				Lex_throwError(self, "expected number after dot");
 			break;
 		case np_needExponent:
 			if (isdigit(ch))
@@ -288,15 +285,13 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 			else if (ch == '-' || ch == '+') {
 				st = np_needExponent_gotSign;
 			} else
-				Error_lex("expected number as exponent", self->str.buff,
-						self->input.line);
+				Lex_throwError(self, "expected number as exponent");
 			break;
 		case np_needExponent_gotSign:
 			if (isdigit(ch))
 				st = np_expReal;
 			else
-				Error_lex("expected number as exponent", self->str.buff,
-						self->input.line);
+				Lex_throwError(self, "expected number as exponent");
 			break;
 			break;
 		case np_real:
@@ -323,8 +318,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 			if (isdigit(ch))
 				st = np_expReal_realExp;
 			else
-				Error_lex("expected number after dot in exponent",
-						self->str.buff, self->input.line);
+				Lex_throwError(self, "expected number after dot in exponent");
 			break;
 		case np_expReal_realExp:
 			if (!isdigit(ch)) {
@@ -335,8 +329,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 
 		String_append(&self->str, ch);
 	}
-	Error_lex("Lex parser is not able to parse number", self->str.buff,
-			self->input.line);
+	Lex_throwError(self, "Lex parser is not able to parse number");
 	return t_invalid;
 }
 
@@ -374,8 +367,8 @@ Token LexParser_next(LexParser *self) {
 				return t_str_val;
 			case '.':
 				ch2 = BuffFile_get(&(self->input));
+				BuffFile_pushBack(&(self->input), ch2);
 				if (isdigit(ch2)) {
-					BuffFile_pushBack(&(self->input), ch2);
 					return LexParser_parseNum(self, ch);
 				}
 				return t_period;
@@ -387,14 +380,12 @@ Token LexParser_next(LexParser *self) {
 				return LexParser_greaterFound(self);
 			default:
 				if (isdigit(ch)) {
-
 					return LexParser_parseNum(self, ch);
 				}
 				if (isalpha(ch) || ch == '_')
 					return LexParser_readIdOrKeyword(self, ch);
 				else
-					Error_lex("Cannot resolve token from string", self->str.buff,
-							self->input.line);
+					Lex_throwError(self, "Cannot resolve token from string");
 			}
 	}
 	return t_eof;
@@ -422,8 +413,8 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 
 	if (HashTable_insert(fnSymTable, self->str.buff, fn) != ht_inserted) {
-		Error_lex("Error while creating symbol for function recurse",
-				self->str.buff, self->input.line);
+		Lex_throwError(self,
+				"Error while creating symbol for function recurse");
 	}
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = fn;
@@ -432,10 +423,54 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 	while (param) {
 		if (HashTable_insert(self->symbolTable, param->name, param->data)
 				!= ht_inserted) {
-			Error_sem_definition(self->input.line, self->str.buff); // redefinition of param
+			Definition_err_throw(self); // redefinition of param
 		}
 		param = param->next;
 	}
+}
 
+void Semantic_err_throw(LexParser * lp, char * msg) {
+	Err_sem err;
+	err.column = lp->input.column;
+	err.line = lp->input.line;
+	err.filename = lp->input.filename;
+	err.msg = msg;
+	Error_sem(err);
+}
+
+void Type_err_throw(LexParser * lp, char * msg) {
+	Err_type err;
+	err.column = lp->input.column;
+	err.line = lp->input.line;
+	err.filename = lp->input.filename;
+	err.msg = msg;
+	Error_sem_Type(err);
+}
+
+void Definition_err_throw(LexParser * lp) {
+	Err_def err;
+	err.column = lp->input.column;
+	err.line = lp->input.line;
+	err.symbolName = lp->str.buff;
+	err.filename = lp->input.filename;
+	Error_sem_definition(err);
+}
+
+Err_syntax Syntax_err_create(LexParser * lp) {
+	Err_syntax err;
+	err.column = lp->input.column;
+	err.line = lp->input.line;
+	err.filename = lp->input.filename;
+	return err;
+}
+
+void Lex_throwError(LexParser * self, char * msg) {
+	Err_lex err;
+	err.filename = self->input.filename;
+	err.column = self->input.column;
+	err.line = self->input.line;
+	err.lexBuff = self->str.buff;
+	err.msg = msg;
+	Error_lex(err);
 }
 

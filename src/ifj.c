@@ -18,7 +18,7 @@
 #include "ial.h"
 #include "lex_parser.h"
 #include "syntax_analyzer.h"
-
+#include "buff_file.h"
 
 int main(int argc, char *argv[]) {
 	LexParser lexParser;
@@ -27,14 +27,14 @@ int main(int argc, char *argv[]) {
 	if (argc != 2) {
 		printf("usage: %s filename\n", argv[0]);
 	} else {
-		FILE *file = fopen(argv[1], "r");
-		if (file == 0) {
-			printf("ERROR: Could not open file!\n");
+		BuffFile input;
+		if (!BuffFile__init__(&input, argv[1])) {
+			printf("ERROR: Could not open file! (%s)\n", argv[1]);
 		} else {
-			LexParser__init__(&lexParser, file);
+			LexParser__init__(&lexParser, input);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
 			SyntaxAnalyzer_parse(&synAnalyzer);
-			fclose(file);
+			BuffFile__dell__(&input);
 			Interpret__init__(&interpret, synAnalyzer.instr);
 			Interpret_run(&interpret);
 			//Interpret__dell__(&interpret);

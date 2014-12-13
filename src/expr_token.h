@@ -24,5 +24,6 @@ char * ExprToken_getName(ExprToken t);
 Token Token_getContent(Token token, iVar* var);
 void ExprToken_Init(ExprToken *token);
 void tokenToExpr(ExprToken *Expr, Token token, LexParser * lp);
+iVal str2iVal(char * str, Token token, LexParser * lp);
 
 #endif
