@@ -1,1 +1,0 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample57.pas:6:0 ERROR(Syntax): Multiple var sections on global level are not allowed, got \"var\"\n", "returns": 2}

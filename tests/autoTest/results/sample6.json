@@ -1,1 +1,0 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample6.pas:6:12 ERROR(Semantic/Type): Variable or function of type int does not fit to expression or function has bad parameters.\n", "returns": 4}

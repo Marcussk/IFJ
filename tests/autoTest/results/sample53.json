@@ -1,1 +1,0 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample53.pas:10:31 ERROR(Semantic/Type): Variable or function of type Incompatible types does not fit to expression or function has bad parameters.\n", "returns": 4}
