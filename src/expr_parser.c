@@ -181,19 +181,17 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 
 void reduceParenthesis(ExprParser * self) {
 	ExprToken nonTerm = exprStack_pop(&self->stack);
-	if (nonTerm.content != t_id || nonTerm.type != nonterminal) {
+	if (nonTerm.content != t_id || nonTerm.type != nonterminal)
 		Syntax_err_throw_et(self, nonTerm, "parenthesis without expr inside");
-	}
-	if (exprStack_pop(&self->stack).content != t_lParenthessis) {
+	if (exprStack_pop(&self->stack).content != t_lParenthessis)
 		Syntax_err_throw_et(self, nonTerm, "Expected left parenthesis ");
-	}
+
 	exprStack_push(&self->stack, nonTerm);
 }
 
 void reduceUnaryMinus(ExprParser *self){
 	ExprToken operand = exprStack_pop(&self->stack);
 	if (operand.datatype != iInt && operand.datatype != iReal)
-		// Change this to semantic error
 		Type_err_throw(self->tokenBuff->lp, "Unary minus datatype error");
 
 	operand.type = nonterminal;
