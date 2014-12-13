@@ -3,7 +3,6 @@
 
 import os, re, subprocess, shutil
 import json, glob, ntpath, sys
-from jinja2 import Template
 from multiprocessing.dummy import Pool  # use threads
 
 """
@@ -135,11 +134,11 @@ def performTest(sampleFile, resultFileName):
         
 def renderErrors(errors):
     with open(REPORT_TEMPLATE) as f:
-        template = Template(f.read())
+        template = f.read()
 
     with open(REPORT_FILE, "w") as outF:
         errorsDump = json.dumps(errors)
-        outF.write(template.render(results=errorsDump))
+        outF.write(template.replace("{{ results }}",errorsDump))
 
 def evalTest(testFileName):
     resultFileName = getTestResPath(testFileName)
