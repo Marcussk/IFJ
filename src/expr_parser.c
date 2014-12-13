@@ -197,7 +197,7 @@ void reduceUnaryMinus(ExprParser *self){
 		Syntax_err_throw_et(self, operand, "Unary minus datatype error");
 	//printf("Inserting instruction \"not\"\n");
 	InstrQueue_insert(self->instructions,
-			(Instruction ) { i_not,
+			(Instruction ) { i_neg,
 							operand.datatype, NULL,
 							NULL, NULL });
 	exprStack_pop(&self->stack); // Pop '-'
