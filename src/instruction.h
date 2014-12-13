@@ -29,7 +29,7 @@ typedef enum {
 	i_neg,
 
 	//funkce ze zadani
-	i_readln = 20,
+	i_readln = 21,
 	i_write,
 	i_find,
 	i_copy,
