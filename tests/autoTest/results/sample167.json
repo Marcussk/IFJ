@@ -1,0 +1,1 @@
+{"stdout": "", "stdin": "", "stderr": "ERROR(Runtime): Builtin function copy can't be performed because original string is too short\n\n", "returns": 9}
