@@ -23,7 +23,6 @@ void InstrQueue_debug(InstrQueue * self) {
 		printf("%d code %s type %s, ", i, instr2Str(instr.code),
 				iVar_type2str(instr.type));
 		InstrParamDebug(instr.a1, "a1");
-		InstrParamDebug(instr.a2, ", a2");
 		InstrParamDebug(instr.dest, ", a2");
 		printf("\n");
 	}

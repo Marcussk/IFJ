@@ -49,7 +49,6 @@ typedef struct s_Instruction {
 	InstrCode code;      //kod instrukcie z InstrCode
 	tIFJ type;           //datovy typ
 	union u_InstrParam * a1;     //operand1
-	union u_InstrParam * a2;     //operand2
 	union u_InstrParam * dest;   //vysledok operace
 } Instruction;
 

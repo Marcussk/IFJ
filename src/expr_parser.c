@@ -125,11 +125,11 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 	if (b) {
 		InstrQueue_insert(self->instructions,
 				(Instruction ) { b, result.datatype, paramsCnt,
-						NULL, NULL });
+						NULL });
 	} else {
 		InstrQueue_insert(self->instructions,
 				(Instruction ) { i_call, result.datatype, paramsCnt,
-						NULL, fn->bodyInstrIndex });
+								fn->bodyInstrIndex });
 	}
 	result.type = nonterminal;
 	exprStack_push(&self->stack, result);
@@ -161,7 +161,7 @@ void Expr_reduceBinaryOperator(ExprParser * self) {
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { Token2Instruction(operator.content),
 							instrType, NULL,
-							NULL, NULL });
+							NULL });
 	result.type = nonterminal;
 	result.content = t_id;
 	exprStack_push(&self->stack, result);
@@ -177,7 +177,7 @@ void reduceParenthesis(ExprParser * self) {
 	exprStack_push(&self->stack, nonTerm);
 }
 
-void reduceUnaryMinus(ExprParser *self){
+void reduceUnaryMinus(ExprParser *self) {
 	ExprToken operand = exprStack_pop(&self->stack);
 	if (operand.datatype != iInt && operand.datatype != iReal)
 		Type_err_throw(self->tokenBuff->lp, "Unary minus datatype error");
@@ -187,9 +187,8 @@ void reduceUnaryMinus(ExprParser *self){
 	exprStack_push(&self->stack, operand); // push operand back on stack
 
 	InstrQueue_insert(self->instructions,
-			(Instruction ) { i_neg,
-							operand.datatype, NULL,
-							NULL, NULL });
+			(Instruction ) { i_neg, operand.datatype, NULL,
+					NULL });
 }
 
 void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
@@ -202,7 +201,6 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 		if (TopMostTerminal->type == terminal) {
 			instr.code = i_push;
 			instr.a1 = NULL;
-			instr.a2 = NULL;
 			instr.dest = NULL;
 			if (TopMostTerminal->id) {
 				p = malloc(sizeof(InstrParam));
@@ -239,7 +237,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-		if (cont == t_minus && findHandle(&self->stack) == 3){
+		if (cont == t_minus && findHandle(&self->stack) == 3) {
 			reduceUnaryMinus(self);
 			break;
 		}
@@ -288,7 +286,6 @@ void parseWrite(ExprParser * self) {
 		Syntax_err_throw_t(self, lastToken,
 				"writeCall expects '(' after write");
 	instr.code = i_push;
-	instr.a2 = NULL;
 	instr.dest = NULL;
 
 	while (true) {
@@ -322,7 +319,7 @@ void parseWrite(ExprParser * self) {
 		}
 		InstrQueue_insert(self->instructions,
 				(Instruction ) { i_write, instr.type,
-						NULL, NULL, NULL });
+						NULL, NULL });
 		lastToken = TokenBuff_next(self->tokenBuff);
 		if (lastToken == t_comma)
 			continue;
@@ -352,7 +349,7 @@ void parseReadLn(ExprParser * self) {
 
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { i_readln, lastSymbol->type,
-					NULL, NULL, param });
+					NULL, param });
 
 	lastToken = TokenBuff_next(self->tokenBuff);
 	if (lastToken == t_rParenthessis)
