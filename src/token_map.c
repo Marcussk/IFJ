@@ -52,7 +52,7 @@ bool Token_isType(Token t) {
 }
 
 bool Token_isKeyword(Token t) {
-	return  (t >= t_begin && t <= t_while);
+	return  (t >= t_begin && t <= t_until);
 }
 bool Token_isValue(Token t) {
 	return t == t_num_int || t == t_num_real || t == t_str_val || t == t_true

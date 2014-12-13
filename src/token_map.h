@@ -37,20 +37,22 @@ typedef enum {
 	t_string,
 	t_char,
 
+
+	t_true,
+	t_false,
+
 	t_begin, //keywords
 	t_do,
 	t_else,
 	t_end,
-	t_false,
 	t_forward,
-
 	t_if,
 	t_then,
-	t_true, 
 	t_var, //30
 	t_while,
 	t_repeat,
 	t_until,
+
 	t_period,
 	t_colon,
 	t_scolon,

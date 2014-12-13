@@ -1,1 +1,1 @@
-{"stdout": "abcdefghij\nklmnoprs", "stdin": "", "stderr": "", "returns": 0}
+{"stdin": "", "returns": 1, "stdout": "", "stderr": "../../samples/sample151.pas:6:0 ERROR(Lexical): Last read = \"abcdefghij\" Invalid char in string.\n\n"}
