@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 7, "stdout": "7.00649e-455", "stderr": "ERROR(Runtime/notInit): Attempt to use unitialized variable.\n"}

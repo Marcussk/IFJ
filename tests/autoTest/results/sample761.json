@@ -1,0 +1,1 @@
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample761.pas:5:26 ERROR(Lexical): Last read = \"Zadejte text kter\" Invalid char in string.\n\n", "returns": 1}

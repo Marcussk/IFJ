@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample704.pas:11:66 ERROR(Syntax): Multiple forwards are not allowed, got \"forward\"\n"}

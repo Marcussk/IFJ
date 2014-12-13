@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample709.pas:11:22 ERROR(Syntax): names of parameters have to be the same as in forward, got \"identificator\"\n"}
