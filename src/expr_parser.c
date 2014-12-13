@@ -236,7 +236,6 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 				break;
 				//is on stack
 			}
-			printf("nonterm on stack\n");
 			TopMostTerminal->type = nonterminal;
 			instr.a1 = p;
 			InstrQueue_insert(self->instructions, instr);
@@ -256,7 +255,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 	case t_greaterOrEqv:
 	case t_eqv:
 	case t_notEqv:
-		if (cont == t_minus && findHandle(&self->stack)){
+		if (cont == t_minus && findHandle(&self->stack) ==3){
 			reduceUnaryMinus(self);
 			break;
 		}

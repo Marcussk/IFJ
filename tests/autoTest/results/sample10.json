@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample10.pas:6:14 ERROR(Syntax): Expression syntax error - missing operands, got \"-\"\n", "returns": 2}
+{"stdin": "", "stdout": "-600", "returns": 0, "stderr": ""}
