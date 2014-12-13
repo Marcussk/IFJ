@@ -192,16 +192,20 @@ void reduceParenthesis(ExprParser * self) {
 
 void reduceUnaryMinus(ExprParser *self){
 	ExprToken operand = exprStack_pop(&self->stack);
+	printf("%d", operand.content);
 	if (operand.datatype != iInt && operand.datatype != iReal)
 		// Change this to semantic error
 		Syntax_err_throw_et(self, operand, "Unary minus datatype error");
-	//printf("Inserting instruction \"not\"\n");
+	printf("Inserting instruction \"not\"\n");
+	operand.type = nonterminal;
+
+	exprStack_pop(&self->stack); // Pop '-'
+	exprStack_push(&self->stack, operand); // push operand back on stack
+
 	InstrQueue_insert(self->instructions,
 			(Instruction ) { i_neg,
 							operand.datatype, NULL,
 							NULL, NULL });
-	exprStack_pop(&self->stack); // Pop '-'
-	exprStack_push(&self->stack, operand); // push operand back on stack
 }
 
 void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
