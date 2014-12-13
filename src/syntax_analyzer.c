@@ -157,7 +157,6 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 //"if" already found
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
-	tIFJ condtype;
 	InstrParam * StackAddress = malloc(sizeof(InstrParam));
 	if (!StackAddress) {
 		memoryError("Cannot allocate instrParam for Label ");
@@ -167,8 +166,7 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 		memoryError("Cannot allocate instrParam for Label ");
 	}
 	//COND
-	condtype = SyntaxAnalyzer_parseExpr(self);
-	SemAnalyzer_checkcond(condtype);
+	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self));
 	//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
 					StackAddress });
@@ -213,7 +211,7 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
 	StackAddrbegin->stackAddr = self->instr.actual;
-	SyntaxAnalyzer_parseExpr(self);
+	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self));
 	//do
 	NEXT_TOK(t_do, "expected do");
 	//begin:
@@ -257,7 +255,7 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 	NEXT_TOK(t_until, "expected until");
 
 	//Cond
-	SyntaxAnalyzer_parseExpr(self);
+	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self));
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,

@@ -10,6 +10,5 @@ begin {no semicolon}
  {readln(Num2);}
 	Num2:=464;
  Sum := Num1 + Num2; {addition} 
- write(Sum);
- readln;
+ write(Sum)
 end.
