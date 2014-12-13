@@ -219,6 +219,21 @@ void Interpret_run(Interpret * self) {
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
+		case i_neg:
+			POP(pomA1)
+			switch (i.type) {
+			case iInt:
+				pomA2.val.iInt = -pomA1.val.iInt;
+				break;
+			case iReal:
+				pomA2.val.iReal = -pomA2.val.iReal;
+				break;
+			default:
+				Error_unimplemented(
+						"Instr. neg is not implemented for this type\n");
+				break;
+			}
+			break;
 		case i_add:
 			POP(pomA2)
 			POP(pomA1)
@@ -327,7 +342,7 @@ void Interpret_run(Interpret * self) {
 							i.dest->stackAddr + stackOffset))->val), i.type)))
 				Error_rt_readln();
 			iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)->isInitialized =
-					true;
+			true;
 			break;
 		case i_sort:
 			POP(pomA1)

@@ -26,6 +26,7 @@ typedef enum {
 	i_moreq,
 	i_call,
 	i_return,
+	i_neg,
 
 	//funkce ze zadani
 	i_readln = 20,
