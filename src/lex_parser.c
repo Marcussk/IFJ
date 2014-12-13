@@ -36,6 +36,8 @@ void LexParser_readString(LexParser * self) {
 				break;
 			}
 		}
+		if(ch <= 30)
+			Lex_throwError(self, "Invalid char in string.\n");
 		String_append(&(self->str), ch);
 	}
 	/*BuffFile_pushBack(&(self->input), ch);

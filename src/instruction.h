@@ -34,7 +34,9 @@ typedef enum {
 	i_find,
 	i_copy,
 	i_len,
-	i_sort
+	i_sort,
+
+	i_not
 
 } InstrCode;
 

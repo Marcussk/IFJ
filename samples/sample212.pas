@@ -12,7 +12,6 @@ end;
 
 begin
 	num := 5 ;
-
 	vysl := read(num);
 	write('cislo: ', vysl, ''#10'')
 

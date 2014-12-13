@@ -1,1 +1,1 @@
-{"stderr": "", "returns": 0, "stdout": "cislo: 5\ncislo: 0\n", "stdin": ""}
+{"stdout": "cislo: 5\n", "stdin": "", "returns": 7, "stderr": "ERROR(Runtime/notInit): Attempt to use unitialized variable.\n"}

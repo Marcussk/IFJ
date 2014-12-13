@@ -236,6 +236,12 @@ void Interpret_run(Interpret * self) {
 			pomA2.isInitialized = pomA1.isInitialized;
 			iStack_push(&(self->stack), pomA2);
 			break;
+		case i_not:
+			POP(pomA1)
+			pomA2.val.iInt = !pomA1.val.iInt;
+			pomA2.isInitialized = pomA1.isInitialized;
+			iStack_push(&(self->stack), pomA2);
+			break;
 		case i_add:
 			POP(pomA2)
 			POP(pomA1)
@@ -386,7 +392,7 @@ void Interpret_run(Interpret * self) {
 			break;
 
 		case i_call:
-			pomA1.val = (iVal) 0;
+			pomA1.isInitialized = false;
 			iStack_push(&self->stack, pomA1);            // return value on 0
 			pomA4.val.iInt = self->stack.top;
 			pomA1.val = (iVal) i.a1->iInt;

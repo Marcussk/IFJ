@@ -263,6 +263,8 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 
 	//Cond
 	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self), self->lp);
+	InstrQueue_insert(&self->instr, (Instruction ) { i_not, iBool, NULL, NULL,
+			NULL });
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL, NULL,
