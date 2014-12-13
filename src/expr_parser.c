@@ -103,29 +103,29 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 		last = exprStack_pop(&self->stack);
 		if (last.type != nonterminal)
 			Syntax_err_throw_t(self, last.content,
-					"expected nontermial got terminal (means bad parameter)");
+					"Expected nontermial got terminal (meaning bad parameter)");
 		if (last.datatype != paramNode->data->type)
 			Syntax_err_throw_t(self, last.content,
-					"argument of incompatible type");
+					"Argument of incompatible type");
 		paramNode = paramNode->prev;
 
 		if (i < fn->params.size - 1) { // berore first arg there is no ","
 			last = exprStack_pop(&self->stack);
 			if (last.content != t_comma)
 				Syntax_err_throw_t(self, last.content,
-						"expected , because function has more parameters");
+						"Expected , because function has more parameters");
 		}
 	}
 	last = exprStack_pop(&self->stack); // Pop '('
 	if (last.content != t_lParenthessis)
 		Syntax_err_throw_t(self, last.content,
-				"expected \"(\" probably more arguments than it was expected");
+				"Expected \"(\" probably received more arguments than expected");
 	last = exprStack_pop(&self->stack); // function Id
 	if (last.content != t_func)
 		Syntax_err_throw_t(self, last.content, "Function id");
 	if (last.id->val.fn != fn)
 		Syntax_err_throw_t(self, last.content,
-				"Over-reduced, was reducing function call and got different function");
+				"Over-reduced, attempt to reduce function call resulted in finding different function");
 
 	ExprToken_Init(&result);
 	result.datatype = fn->retVal.type;
@@ -271,7 +271,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 
 		break;
 	default:
-		Syntax_err_throw_t(self, cont, "unknown content of ExprToken");
+		Syntax_err_throw_t(self, cont, "Unknown content of ExprToken");
 	}
 
 }
@@ -296,7 +296,7 @@ void parseWrite(ExprParser * self) {
 			lastSymbol = self->tokenBuff->lp->lastSymbol;
 			if (lastSymbol->type == iFn)
 				Syntax_err_throw_t(self, lastToken,
-						"Function call cannot be in write call");
+						"Function call can't be in write call");
 
 			param->stackAddr = lastSymbol->stackIndex;
 			if (lastSymbol->isGlobal)

@@ -1,6 +1,9 @@
 \documentclass[a4paper]{article}
+\usepackage[left=2cm,right=2cm,top=2.5cm,bottom=2.5cm,footnotesep=0.5cm]{geometry}
 \usepackage[utf8x]{inputenc}
 \usepackage[czech]{babel}
+\usepackage{pdflscape}
+\usepackage{graphicx}
 
 
 \begin{document}
@@ -12,36 +15,244 @@
 \vspace{\stretch{0.382}}
 \Large{Dokumentácia  k projektu IFJ2014}\\
 \medskip
-\Huge{Tým 076, varianta b/2/II}\\
+\Huge{Tím 076, varianta b/2/II}\\
 \vspace{\stretch{0.618}}
 \end{center}
 
+%TODO rozsirenia a percenta
 \noindent
-Rozšírenia:\\
-
-Tým:\\
-{\large Michal Orsák (xorsak01)  (vedúci)\\
-Milan Skála (xskala09)\\ 
-Marek Beňo (xbenom01)\\
-Zuzana Studená (xstude22)\\
-Roman Sichkaruk (xsichk00)}
+Rozšírenia: \\
+FUNEXP, REPEAT
+\newline
+Tím:\\
+Michal Orsák (xorsak01) : 20\%  (vedúci) \\
+Milan Skála (xskala09) : 20\% \\
+Marek Beňo (xbenom01) : 20\% \\
+Zuzana Studená (xstude22) : 20\% \\
+Roman Sichkaruk (xsichk00) : 20\% 
 \end{titlepage}
+\indent
 
-\newpage
 \tableofcontents
 
 \newpage
 \section{Úvod}
+Táto dokumentácia popisuje projekt IFJ2014 (varianta b/2/II) k predmetu Formální jazyky a prekladače.\\
+V rámcií tejto varianty sme implementovali:
+\begin{itemize}
+\item{Hashovacia tabuľka}
+\item{Algoritmus Heap sort}
+\item{Algoritmus Boyer-Moore}
+\end{itemize} 
+Samotná implementácia je ďalej rozdelená na nasledovné časti:
+\begin{itemize}
+\item{Lexikálna analýza}
+\item{Syntaktická a sémantická analýza}
+\item{Interpretácia}
+\end{itemize}
+Všetky tieto časti budú ďalej spomenuté a rozšírené.
 
-\newpage
 \section{Lexikálna analýza}
+Lexikálny analyzátor je reprezentovaný konečným automatom, ktorý pomocou aktuálneho stavu a načítaného znaku vracia buď lexikálnu chybu alebo token. Úloha lexikálnej analýzy spočíva v:
+\begin{itemize}
+\item{Odstránenie komentárov}
+\item{Rozdelenie vstupu na tokeny pre ďalšie spracovanie syntaktickou analýzou}
+\end{itemize}
+Lexikálny analyzátor pijíma ako vstup zdrojový program, ktorý spracováva. Počas spracovávania programu vždy syntaktická analýza žiada o ďalší token na spracovanie.
 
-\newpage
-\section{Syntaktická analýza}
+Pre potreby implementácie obsahuje lexikálny analyzér možnosť vrátiť spracovaný token a uložiť ho do bufferu. Spracovávanie ďalej nepokračuje načítavaním zo súboru ale z tohoto bufferu.
 
-\newpage
+\section{Syntaktická a sémantická analýza}
+Úlohou syntaktickej analýzi je skontrolovať konštrukcie vstupného súboru a detekovať nesúlady so zadaním.\\
+Syntaktickú analýzu delíme na dve časti kvôli rozdielnemu spôsobu spracovania.
+
+\subsection{Metóda rekurzívneho zostupu}
+Rekurzívny zostup je jadrom syntaktickej analýzy. Zhora nadol spracováva tokeny z lexikálnej analýzy pomocou pravidiel LL gramatiky. \\
+Implementácia spočíva z hlavnej funkcie, ktorá podľa prijatého tokenu vyberie typ konštrukcie na spracovanie. Nasleduje volanie funkcie v ktorej sa spracováva daný blok programu. Týmto spôsobom sa rekurzívne spracuje program.\\
+V prípade potreby spracovávať výrazy nastáva prepnutie do spracovávania precedenčnou analýzou. Nastáva volanie funkcie a následné spracovávanie ďalších tokenov až po návrat z tejto funkcie.
+
+\subsubsection{LL gramatika}
+LL gramatika predstavuje súbor pravidiel podľa ktorých pracuje syntaktická analýza. LL predstavuje anglicky: left-to-right a leftmost, teda spracovávanie zľava doprava a zpracovávanie najľavejšieho neterminálu.\\
+V tomto projekte je konkrétne využitá LL(1) gramatika, ktorá vyžaduje tieto vlastnosti:
+\begin{enumerate}
+\item{Neobsahuje nejednoznačnosť\\
+Pri každom pravidle je teda nutné aby bolo na základe aktuálneho stavu možno spracovávať práve jedno pravidlo}
+\item{Nemá ľavú rekurziu\\
+Pri nahrádzaní najľavejšieho neterminálu nesmie dôjsť k nekonečnému cyklu a to priamo alebo nepriamo}
+\item{Je lookahead(1)\\
+Rozvoj pravidiel závisí od nasledujúceho tokenu a nemožno sa rozhodovať podľa viacerých tokenov z budúcnosti}
+\end{enumerate}
+
+\subsubsection{LL tabuľka}
+Tabuľka založená na LL gramatike pre výber pravidla.\\
+Stĺpce predstavujú nasledujúci token a riadky najľavejší neterminál. Prienikom aktuálneho stavu je identifikátor pravidla, ktoré sa použije.
+
+%TODO doplnit precedencnu analyzu
+\subsection{Metóda precedenčnej analýzy}
+Spracováva výrazy syntaktickou analýzou zdola nahor. Metóda využíva precedenčnú tabulku pri výbere redukčného pravidla podľa priority (precedencie) symbolov.
+
+\subsubsection{Precedenčná tabuľka}
+Precedenčná tabuľka slúži na výber operácie shift alebo reduce. Je vytvorená na základe precedencie operátorov daného jazyka.
+
+\subsection{Sémantická analýza}
+Úlohou Semantickej analýzy je kontrola dátových typov pri operáciách s premennými a ich prípadné pretypovanie.
+
+Funkcia checktypes je využívaná na kontrolu dátových typov pri priraďovaní.\\
+Funkcia checkcond sa používa na kontrolu správneho typu podmienky.\\
+Funkcia typeconvert sa používa na pretypovanie v prípade operácie delenia.\\
+Kontrola inicializácie premmenej je spracovaná kontrolou príznaku inicializácie v štruktúre premennej.
+
+
 \section{Interpretácia}
+Samotný Interpret je reprezentovaný štruktúrou, ktorá pozostáva z fronty pre inštrukcie a zásobníku pre vlastné spracovanie. Interpret prijíma trojadresný kód vo forme inštrukcií zoradených vo fronte a pomocou vlastného zásobníku ich spracováva. V prípade, že nenastane behová chyba výsledkom je program v~jazyku C.
 
+Interpret spracováva typ inštrukcie a jej kód podľa výčtových typov a jednotlivé operandy funkcie a cieľ ako odkazy na parametre. Pre prípad zanorenia sa do funkcií je riešená relatívna pozícia pomocou offsetu na zásobníku.
+
+\section{Algoritmy}
+Zadanie projektu vyžaduje implementáciu tabulky symbolov rovnako ako aj algoritmov pre vyhľadávanie a radenie. Implementácie týchto častí sú popísané nižšie. 
+
+\subsection{Hashovacia tabuľka}
+Hashovacia tabuľka je abstraktný dátový typ, ktorý využívame na implementáciu tabuľky symbolov. \\
+Hashovacia tabuľka sa vyznačuje náročnoťou na pamäť $\mathcal{O}(n)$ avšak vykazuje priemernú náročnosť pre vkladanie a vyhľadávanie záznamov $\mathcal{O}(1)$. Pri zaplnení tabuľky symbolov je potreba túto tabuľku zväčšiť a následne realokovať. Implementácia tabuľky využíva velkosť mocniny $2$ kvôli zníženiu nároku alokovania v prípade nedostatku pamäti.\\
+Tabuľka slúži na ukladanie a následné vyhľadávanie symbolov pomocou hashovacej funkcie. Funkcia slúži na priradenie unikátnej hodnoty pre akýkoľvek daný klúč. Pomocou hodnoty vrátenej hashovaciou funkciou sa vyhľadáva alebo vkladá na danú pozíciu tabuľky.\\ 
+Tabuľka rozširuje lokálne a globálne symboly pomocou zanorovaňia sa do novej úrovne tejto tabuľky. Zanorovanie a vynorovanie prebieha pri definícií/deklarácií funkcie alebo návratu z nej. 
+%TODO top down? bottom up?
+\subsection{Heap sort}
+Využili sme pole pre implementáciu vyhľadávania v halde. Napriek nutnosti spravovať haldu a jeho nestabilnosti sa algoritmus vyznačuje malými nárokmi. Vyznačuje sa najhoršou maximálnou náročnosťou $\mathcal{O}N\log{N}$.
+Pri tejto implementácií považujeme prvok str[0] za vrchol haldy. Potom platí: str[2i+1] pre ľavého potomka a str[2i+2] pre pravého potomka. 
+\subsubsection{Implementácia}
+V prvom priebehu využitie funkcie Sift na zostavenie hromady. Vytvára sa teda $N / 2$ uzlov a následne sa do všetkých N prvkov vloží hodnota. Do koreňového uzlu sa vloží najväčšia hodnota. \\
+V nasledujúcich priebehoch sa využíva striedavé volanie funkcií Sift a Change na zoradenie prvku s najvyššou hodnotou a následné vytvorenie hromady. 
+\subsection{Boyer-Moore} 
+V tomto projekte bol implementovaný vyhľadávací algoritmus Boyer-Moore. Medzi jeho hlavné črty patrí:
+\begin{itemize}
+\item{Vyhľadávanie zprava doľava}
+\item{Počet hľadaní v najlepšom prípade: $\mathcal{O}(n / m)$}
+\item{Počet hľadaní v najhoršom prípade: 3n pri neperiodickom vzore}
+\end{itemize}
+
+Hlavná funkcia používa dve heurestiky na predpočítanie. Využíva  sa čas použitý na predpočítanie k zrýchleniu behu samotnéhu vyhľadávania. Používanie vzoru pri predpočítavaní znamená nákladnosť programu. Funkcia vyberá vyššiu hodnotu z obidvoch heurestík pre minimalizáciu počtu hľadaní.
+
+\subsubsection{Heurestiky}
+Bad Character\\
+Predpočítava pole znakov pre každý znak abecedy. Toto pole sa naplní dĺžkou reťazca, ktorá sa využíva v~prípade, že nastane nezhoda znaku a textu. V prípade že nájdený znak patrí hľadanému reťazcu uloží sa do pola jeho vzdialenosť od konca vzorca. Na konci predpočítavania je pole naplnené hodnotami s~možnou dĺžkou skoku v prípade že sa reťazec a text po prvom hľadaní nezhodujú.
+
+Good Suffix\\
+Používa dve polia pre prípady kedy nastane a nenastane zhoda v hľadanom vzorci a texte. Heurestika využíva znalosť všetkých možných suffixov daného vzoru a ukladá si hranice daného substringu. V prípade že vznikne rozdiel medzi subreťazcami posunie sa na ďalší výskyt subreťazca, ktorému prechádzca znak, ktorý sa nezhoduje. Pokiaľ taký segment neexistuje, zarovná sa najdlhší zhodujúci sa suffix reťazca a prefix vzoru.
+
+\section{Práca v tíme}
+Keďže projekt sa vypracováva ako skupinový je potreba komunikácie a spolupráce v tíme. Rýchla komunikácia a možnosť spolupráce aj bez vlastného osobného stretnutia boli pre prácu na tomto projekte klúčové.
+
+\subsection{Verzovací systém}
+Pred samotným zahájením práce na projekte bol ustanovený verzovací systém git a vytvorený repozitár na stránkach github. Nasledujúce zoznámenie tímu s princípami verzovacieho systému bolo základom pre ďalšiu prácu na projekte. Výhodou tohoto riešenia bola nielen možnosť pracovať na rovnakých súboroch a s jednoduchosťou riešiť kolízie ale aj vlastné zálohovanie už dokončenej práce.
+ 
+\subsection{Rozdelenie práce}
+Pre potreby projektu sme využili osobné stretnutia vďaka ktorým sme v tíme dostali celkovú predstavu ako si prácu predstavujeme, ustanovili zásady práce do budúcna a začali získavať vedomosti potrebné pre samotné programovanie. Neskôr boli využité hlavne skupinové konverzácie a skupinové hovory cez internet. Toto sa ukázalo ako efektívna voľba, ktorá šetrila čas cestovaním a umožňovala rýchlu deľbu práce a možnosť opravovať a riešiť aktuálne problémy.
+
+Rozdelenie práce na 4 samostatné rovnaké celky sa nám nepodarilo aplikovať a využívali sme teda dynamické prideľovanie úloh a rozdelenie práce podľa akútnych problémov. Neraz nastávala situácia keď na jednom probléme pracovalo viac ludí spoločne alebo dokonca celý tím a preto je problematické ustanoviť presný zoznam rozdelenia práce.
+
+\clearpage
+\begin{landscape}
+\section{Model konečného automatu}
+%\resizebox{\textwidth}{!}{\includegraphics{lexparser}}
+%0.42 0.35
+\scalebox{0.40}[0.38]{\includegraphics{lexparser}}
+\end{landscape}
+\clearpage
+
+\newpage
+\section{LL gramatika}
+%\noindent
+\begin{enumerate}
+\item{START $\rightarrow $ var VARINIT FUNCDECLARE PROGRAM}
+\item{START $\rightarrow $ FUNCDECLARE PROGRAM}
+\item{VARINIT $\rightarrow $ VARDECLARE VARDECLARES } 
+\item{VARDECLARES $\rightarrow $ id : TYP ; } 
+\item{VARDECLARES $\rightarrow \epsilon$ } 
+\item{VARDECLARES $\rightarrow$ VARDECLARE VARDECLARES } 
+\item{PROGRAM $\rightarrow$ begin S end. } 
+\item{S $\rightarrow$ IF } 
+\item{S $\rightarrow$ WHILE } 
+\item{S $\rightarrow$ id := E } 
+\item{S $\rightarrow$ STMTLIST } 
+\item{VYRAZ $\rightarrow$ id := E } 
+\item{VYRAZ $\rightarrow$ E } 
+\item{STMTLIST $\rightarrow$ begin INIT end } 
+\item{INIT $\rightarrow$ VYRAZ POSTVYRAZ } 
+\item{INIT $\rightarrow$ BLOCK INIT } 
+\item{INIT $\rightarrow \epsilon$ } 
+\item{BLOCK $\rightarrow$ IF } 
+\item{BLOCK $\rightarrow$ WHILE }  
+\item{POSTVYRAZ $\rightarrow$ ; POSTSTREDNIK } 
+\item{POSTVYRAZ $\rightarrow \epsilon$  } 
+\item{POSTSTREDNIK $\rightarrow$ BLOCK INIT } 
+\item{POSTSTREDNIK $\rightarrow$ VYRAZ POSTVYRAZ } 
+\item{IF $\rightarrow$ if E then STMTLIST else STMTLIST } 
+\item{WHILE $\rightarrow$ while EXPR do STMTLIST } 
+\item{FUNCDECLARE $\rightarrow \epsilon$ } 
+\item{FUNCDECLARE $\rightarrow$ FUNC FUNCDECLARE } 
+\item{FUNC $\rightarrow$ function fcid ( PARAMS ) : T; FORWARD VARINIT FLIST } 
+\item{FORWARD $\rightarrow$ forward ; } 
+\item{FORWARD $\rightarrow \epsilon$ } 
+\item{PARAMS $\rightarrow \epsilon$ } 
+\item{PARAMS $\rightarrow$ VARINIT } 
+\item{FLIST $\rightarrow$ begin INIT end; }
+\end{enumerate}
+
+%\newpage
+\begin{landscape}
+\section{LL tabuľka}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+             & var & id & : & T & ; & begin & end. & := & E & end & if & then & else & while & do & function & fcid & ( & )  & forward & end; & \$ \\ \hline
+START        & 1   &    &   &     &   & 2     &      &    &      &     &    &      &      &       &    & 2        &      &   &    &         &      &  \\ \hline
+VARINIT      &     & 3  &   &     &   &       &      &    &      &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+VARDECLARE   &     & 4  &   &     &   &       &      &    &      &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+VARDECLARES  &     & 6  &   &     &   & 5     &      &    &      &     &    &      &      &       &    & 5        &      &   & 5  &         &      &  \\ \hline
+PROGRAM      &     &    &   &     &   & 7     &      &    &      &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+S            &     & 10 &   &     &   & 11    &      &    &      &     & 8  &      &      & 9     &    &          &      &   &    &         &      &  \\ \hline
+VYRAZ        &     & 12 &   &     &   &       &      &    & 13   &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+STMTLIST     &     &    &   &     &   & 14    &      &    &      &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+INIT         &     & 15 &   &     &   &       &      &    & 15   & 17  & 16 &      &      & 16    &    &          &      &   &    &         & 17   &  \\ \hline
+BLOCK        &     &    &   &     &   &       &      &    &      &     & 18 &      &      & 19    &    &          &      &   &    &         &      &  \\ \hline
+POSTVYRAZ    &     & 23 &   &     &   &       &      &    &      & 21  &    &      &      &       &    &          &      &   &    &         & 21   &  \\ \hline
+POSTSTREDNIK &     &    &   &     &   &       &      &    & 23   &     & 22 &      &      & 22    &    &          &      &   &    &         &      &  \\ \hline
+IF           &     &    &   &     &   &       &      &    &      &     & 24 &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+WHILE        &     &    &   &     &   &       &      &    &      &     &    &      &      & 25    &    &          &      &   &    &         &      &  \\ \hline
+FUNCDECLARE  &     &    &   &     &   & 26    &      &    &      &     &    &      &      &       &    & 27       &      &   &    &         &      &  \\ \hline
+FUNC         &     &    &   &     &   &       &      &    &      &     &    &      &      &       &    & 28       &      &   &    &         &      &  \\ \hline
+FORWARD      &     & 30 &   &     &   &       &      &    &      &     &    &      &      &       &    &          &      &   &    & 29      &      &  \\ \hline
+PARAMS       &     & 32 &   &     &   &       &      &    &      &     &    &      &      &       &    &          &      &   & 31 &         &      &  \\ \hline
+FLIST        &     &    &   &     &   & 33    &      &    &      &     &    &      &      &       &    &          &      &   &    &         &      &  \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
+
+\section{Precedenčná tabuľka}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+                      & + & - & * & / & \textless & \textgreater & \textless= & \textgreater= & = & \textless\textgreater & ( & ) & , & \$ & i & f \\ \hline
++                     & R & R & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+-                     & R & R & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+*                     & R & R & R & R & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+/                     & R & R & R & R & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textless             & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textgreater          & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textless=            & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textgreater=         & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+=                     & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textless\textgreater & S & S & S & S &           & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+(                     & S & S & S & S & S         & S            & S          & S             & S & S                     & E & R & R & R & X & R \\ \hline
+)                     & R & R & R & R & R         & R            & R          & R             & R & R                     & E & R & R & R & X & R \\ \hline
+,                     & S & S & S & S & S         & S            & S          & S             & S & S                     & S & E & E & X & S & S \\ \hline
+\$                     & S & S & S & S & S         & S            & S          & S             & S & S                     & S & X & X & X & S & S \\ \hline
+i                     & R & R & R & R & R         & R            & R          & R             & R & R                     & X & R & R & R & X & X \\ \hline
+f                     & X & X & X & X & X         & X            & X          & X             & X & X                     & E & X & X & X & X & X \\ \hline
+\end{tabular}
+\end{table}
 \end{document}
-
 

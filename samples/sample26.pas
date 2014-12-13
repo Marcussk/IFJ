@@ -1,4 +1,4 @@
-{ priradenie -3.14 do real }
+{ priradenie -3.14 do real (unární mínus) }
 var
 	vysl : real;
 { Hlavni telo programu }

@@ -27,7 +27,7 @@ tIFJ Token_getType(Token t) {
 	case t_false:
 		return iBool;
 	default:
-		Error_unimplemented("cannot convert token to type");
+		Error_unimplemented("Can't convert token to type");
 	}
 	return iUnknown;
 }

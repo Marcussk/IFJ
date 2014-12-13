@@ -53,6 +53,7 @@ REPORT_FILE = "results.html"
 MAX_THREADS = 16
 CHECK_VALGRIND = True  # Consumes MOST OF TIME
 MAKECMD = "make"  # use cmake for windows
+ENCODING = "ascii"
 
 findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")
 firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
@@ -86,9 +87,9 @@ def loadTestResults(testFileName):
 
 def encodingFix(result):
     if result["stdout"] != None:
-        result["stdout"] = result["stdout"].decode("utf-8")
+        result["stdout"] = result["stdout"].decode(ENCODING)
     if result["stderr"] != None:
-        result["stderr"] = result["stderr"].decode("utf-8")
+        result["stderr"] = result["stderr"].decode(ENCODING)
 
 def createTest(testFileName):
     resultFileName = getTestResPath(testFileName)
@@ -119,7 +120,7 @@ def performTest(sampleFile, resultFileName):
     if CHECK_VALGRIND:
         pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         valgrindOut = pValgrind.communicate(input=resultRef["stdin"])[1]
-        result["valgrindErrors"] = int(findValgrindErr.search(valgrindOut.decode("utf-8")).group(1))
+        result["valgrindErrors"] = int(findValgrindErr.search(valgrindOut.decode(ENCODING)).group(1))
     else:
         result["valgrindErrors"] = -1
     

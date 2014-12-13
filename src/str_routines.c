@@ -3,7 +3,7 @@
 void String__init__(String * self, int prealocatedLen) {
 	self->buff = calloc(prealocatedLen, sizeof(char));
 	if (!self->buff)
-		Error_memory("Can't alloc memory for string");
+		Error_memory("Can't allocate memory for string");
 
 	self->len = 0;
 	self->prealloc = prealocatedLen;
@@ -25,7 +25,7 @@ void String_append(String * self, char ch) {
 		int newPrealloc = self->prealloc * 2;
 		self->buff = realloc(self->buff, newPrealloc);
 		if (!self->buff)
-			Error_memory("Can't realloc string buffer while appending char");
+			Error_memory("Can't reallocate string buffer while appending char");
 
 		for (i = self->prealloc; i < newPrealloc; i++)
 			self->buff[i] = 0;

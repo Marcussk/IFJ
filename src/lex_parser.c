@@ -68,11 +68,11 @@ void LexParser_readEscape(LexParser * self) {
 		String_append(&str, ch);
 	}
 	if (str.len < 1)
-		Lex_throwError(self, "Uncomplete escape sequention.\n");
+		Lex_throwError(self, "Incomplete escape sequence.\n");
 	int escp = atoi(str.buff);
 	String__dell_(&str);
 	if (escp > 255)
-		Lex_throwError(self, "Unknown escape sequention.\n");
+		Lex_throwError(self, "Unknown escape sequence.\n");
 	String_append(&(self->str), (char) escp);
 	if (ch == '\'')
 		LexParser_readString(self);
@@ -126,7 +126,7 @@ void LexParser_syncLastVar(LexParser * self) {
 		break;
 	default:
 		Lex_throwError(self,
-				"LexParser don't know if search or insert new id\n");
+				"LexParser doesn't know whether to search or insert new id\n");
 	}
 }
 Token LexParser_keywordCheck(String * str) {
@@ -329,7 +329,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 
 		String_append(&self->str, ch);
 	}
-	Lex_throwError(self, "Lex parser is not able to parse number");
+	Lex_throwError(self, "Lex parser is unable to parse number");
 	return t_invalid;
 }
 
@@ -385,7 +385,7 @@ Token LexParser_next(LexParser *self) {
 				if (isalpha(ch) || ch == '_')
 					return LexParser_readIdOrKeyword(self, ch);
 				else
-					Lex_throwError(self, "Cannot resolve token from string");
+					Lex_throwError(self, "Can't resolve token from string");
 			}
 	}
 	return t_eof;
@@ -414,7 +414,7 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 
 	if (HashTable_insert(fnSymTable, self->str.buff, fn) != ht_inserted) {
 		Lex_throwError(self,
-				"Error while creating symbol for function recurse");
+				"Error while creating symbol for function recursion");
 	}
 	fnSymTable->masterTable = self->symbolTable;
 	fnSymTable->masterItem = fn;

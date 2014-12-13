@@ -25,7 +25,7 @@ void write(tIFJ type, iVal a1) {
 		}
 		break;
 	default:
-		Error_rt("instr write used with incompatible type");
+		Error_rt("Instruction write used with incompatible type");
 	}
 }
 
@@ -47,7 +47,7 @@ char * func_copy(char *f_str, int i, int n) {
 	char * newStr = malloc((n + 1) * sizeof(char));
 
 	if (!newStr) {
-		Error_memory("func_copy can't alloc memory for newStr\n");
+		Error_memory("func_copy can't allocate memory for newStr\n");
 	}
 	for (strIndex = 0; strIndex < n; strIndex++) {
 		newStr[strIndex] = f_str[strIndex + offset];
