@@ -194,7 +194,7 @@ void reduceUnaryMinus(ExprParser *self){
 	ExprToken operand = exprStack_pop(&self->stack);
 	if (operand.datatype != iInt && operand.datatype != iReal)
 		// Change this to semantic error
-		Syntax_err_throw_et(self, operand, "Unary minus datatype error");
+		Type_err_throw(self->tokenBuff->lp, "Unary minus datatype error");
 
 	operand.type = nonterminal;
 	exprStack_pop(&self->stack); // Pop '-'
