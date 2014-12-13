@@ -233,6 +233,7 @@ void Interpret_run(Interpret * self) {
 						"Instr. neg is not implemented for this type\n");
 				break;
 			}
+			pomA2.isInitialized = pomA1.isInitialized;
 			iStack_push(&(self->stack), pomA2);
 			break;
 		case i_add:

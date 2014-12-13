@@ -238,6 +238,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 				break;
 				//is on stack
 			}
+			printf("nonterm on stack\n");
 			TopMostTerminal->type = nonterminal;
 			instr.a1 = p;
 			InstrQueue_insert(self->instructions, instr);
