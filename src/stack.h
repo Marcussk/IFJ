@@ -45,8 +45,6 @@ void namePrefix##Stack_push(namePrefix##Stack *self, stackElementT data) {      
                                                                                                     \
 stackElementT namePrefix##Stack_pop( namePrefix##Stack *self) {                                     \
 	stackElementT data;                                                                             \
-	if (self->top < 0)                                                                              \
-		Error_rt("Stack underflow");                                                                \
                                                                                                     \
 	data = self->StackArray[self->top];                                                             \
 	self->top--;                                                                                    \
@@ -54,9 +52,6 @@ stackElementT namePrefix##Stack_pop( namePrefix##Stack *self) {                 
 }                                                                                                   \
                                                                                                     \
 stackElementT * namePrefix##Stack_getAt(namePrefix##Stack *self, int index) {                        \
-	if (index > self->top || index < 0) {                                                           \
-		Error_rt("Stack invalid access");                                                           \
-	}                                                                                               \
 	return &self->StackArray[index];                                                                \
 }                                                                                                   \
                                                                                                     \

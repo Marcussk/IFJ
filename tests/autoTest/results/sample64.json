@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample64.pas:5:29 ERROR(Syntax): expected type name, got \"identificator\"\n", "returns": 2}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample64.pas:5:29 ERROR(Syntax): expected type name, got \"identificator\"\n", "stdin": ""}

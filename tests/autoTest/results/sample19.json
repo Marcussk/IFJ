@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample19.pas:8:16 ERROR(Semantic/Type): Variable or function of type real does not fit to expression or function has bad parameters.\n", "returns": 4}
+{"returns": 4, "stdout": "", "stderr": "../../samples/sample19.pas:8:16 ERROR(Semantic/Type): Variable or function of type real does not fit to expression or function has bad parameters.\n", "stdin": ""}

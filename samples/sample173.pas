@@ -3,5 +3,5 @@ var
 return : string;
 begin
 return := copy('',0,0);
-write(return)
+write('retazec: ',return)
 end.

@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample101.pas:3:7 ERROR(Syntax): Unexpected syntax in code block\n, got \"integer\"\n", "returns": 2}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample101.pas:3:7 ERROR(Syntax): Unexpected syntax in code block\n, got \"integer\"\n", "stdin": ""}

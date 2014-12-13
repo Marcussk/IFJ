@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample27.pas:6:12 ERROR(Syntax): Expression syntax error - missing operands, got \"-\"\n", "returns": 2}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample27.pas:6:12 ERROR(Syntax): Expression Error, error state from prTable, got \",\"\n", "stdin": ""}

@@ -1,1 +1,1 @@
-{"stdout": "", "stdin": "", "stderr": "../../samples/sample76.pas:3:9 ERROR(Syntax): Expected variable declarations\n, got \"false\"\n", "returns": 2}
+{"returns": 2, "stdout": "", "stderr": "../../samples/sample76.pas:3:9 ERROR(Syntax): Expected variable declarations\n, got \"false\"\n", "stdin": ""}
