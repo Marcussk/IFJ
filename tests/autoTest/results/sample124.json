@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 8: Expected end or ; after cmd, got identificator\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample124.pas:8:6 ERROR(Syntax): Expected end or ; after statement, got \"identificator\"\n", "returns": 2}

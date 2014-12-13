@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 8: expected \";\"\n, got begin\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample57.pas:6:0 ERROR(Syntax): Multiple var sections on global level are not allowed, got \"var\"\n", "returns": 2}

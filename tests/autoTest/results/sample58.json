@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 3, "stderr": "ERROR(Semantic/Definition) Line 17: variable \"vysl\" or function is undefined or you are atempting to redefine it.\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample58.pas:17:8 ERROR(Semantic/Definition): Variable \"vysl\" or function is undefined or you are atempting to redefine it.\n", "returns": 3}

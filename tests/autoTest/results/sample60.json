@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 5: expected \":\", got ;\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample60.pas:5:22 ERROR(Syntax): expected \":\", got \";\"\n", "returns": 2}

@@ -1,1 +1,1 @@
-{"stdout": "", "stderr": "ERROR(Syntax) Line 6: Multiple forward is not allowed, got \"forward\"\n", "stdin": "", "returns": 2}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample68.pas:6:39 ERROR(Syntax): Multiple forwards are not allowed, got \"forward\"\n", "returns": 2}

@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 12: Expression Error, error state from prTable, got identificator\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample103.pas:12:6 ERROR(Syntax): Expression Error, error state from prTable, got \"identificator\"\n", "returns": 2}

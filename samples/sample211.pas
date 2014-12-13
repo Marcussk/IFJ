@@ -8,11 +8,13 @@ var
 	a : integer;
 	sum : integer;
 	num1 : integer;
+	num2 : integer;
 begin
 	a := 0 ;
+	num2 := 200;
 	while 0 < n do 
 	begin
-		readln(num1);
+		num1 := 113;
 		sum := num1 + n;
 		write('cislo: ', sum, ''#10'');
 		n := n -1

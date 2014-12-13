@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 7: unexpected \";\" before last cmd in block, got ;\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample56.pas:7:3 ERROR(Syntax): unexpected \";\" before last statement in block, got \"end\"\n", "returns": 2}

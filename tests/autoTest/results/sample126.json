@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 2, "stderr": "ERROR(Syntax) Line 3: No input expected after end of program, got begin\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample126.pas:4:5 ERROR(Syntax): No input expected after end of the program, got \"begin\"\n", "returns": 2}

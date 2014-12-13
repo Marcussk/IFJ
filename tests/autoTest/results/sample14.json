@@ -1,1 +1,1 @@
-{"stdin": "", "stdout": "", "returns": 5, "stderr": "ERROR(Semantic) Line: 4: trying to assign to function .\n"}
+{"stdout": "", "stdin": "", "stderr": "../../samples/sample14.pas:4:9 ERROR(Semantic): trying to assign to function .\n", "returns": 5}
