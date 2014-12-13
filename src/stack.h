@@ -24,7 +24,7 @@ void namePrefix##Stack__dell__( namePrefix##Stack *self );
 void namePrefix##Stack__init__(namePrefix##Stack *self) {                                           \
 	self->StackArray = malloc( 32 * sizeof(stackElementT));                                         \
 	if (self->StackArray == NULL)                                                                   \
-		memoryError("Can't allocate memory for Stack");                                             \
+		Error_memory("Can't allocate memory for Stack");                                             \
                                                                                                     \
 	self->top = -1;                                                                                 \
 	self->prealocated = 32;                                                                         \
@@ -35,7 +35,7 @@ void namePrefix##Stack_push(namePrefix##Stack *self, stackElementT data) {      
 		int newCapacity = self->prealocated * 2;                                                    \
 		stackElementT *newArray = realloc(self->StackArray, newCapacity * sizeof(stackElementT));   \
 		if (newArray == NULL)                                                                       \
-			memoryError("Cano't reallocate memory for stack ");                                     \
+			Error_memory("Cano't reallocate memory for stack ");                                     \
 		self->StackArray = newArray;                                                                \
 		self->prealocated = newCapacity;                                                            \
 	}                                                                                               \
@@ -46,7 +46,7 @@ void namePrefix##Stack_push(namePrefix##Stack *self, stackElementT data) {      
 stackElementT namePrefix##Stack_pop( namePrefix##Stack *self) {                                     \
 	stackElementT data;                                                                             \
 	if (self->top < 0)                                                                              \
-		rt_error("Stack underflow");                                                                \
+		Error_rt("Stack underflow");                                                                \
                                                                                                     \
 	data = self->StackArray[self->top];                                                             \
 	self->top--;                                                                                    \
@@ -55,7 +55,7 @@ stackElementT namePrefix##Stack_pop( namePrefix##Stack *self) {                 
                                                                                                     \
 stackElementT * namePrefix##Stack_getAt(namePrefix##Stack *self, int index) {                        \
 	if (index > self->top || index < 0) {                                                           \
-		rt_error("Stack invalid access");                                                           \
+		Error_rt("Stack invalid access");                                                           \
 	}                                                                                               \
 	return &self->StackArray[index];                                                                \
 }                                                                                                   \

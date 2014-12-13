@@ -9,6 +9,8 @@
 
 typedef struct {
 	FILE * input;
+	int line;
+	int column;
 	char backup;
 }BuffFile;
 

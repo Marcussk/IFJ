@@ -1,1 +1,1 @@
-{"returns": 2, "stdin": "", "stderr": "ERROR(Syntax) Line 10: expected \";\"\n, got begin\n", "stdout": ""}
+{"stdout": "", "stderr": "ERROR(Syntax) Line 6: Multiple forward is not allowed, got \"forward\"\n", "stdin": "", "returns": 2}

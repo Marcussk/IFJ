@@ -3,7 +3,7 @@
 #define NEXT_TOK(expected, errMsg)                                  \
  lastToken = TokenBuff_next(&self->tokBuff);                        \
  if(lastToken != expected){                                         \
-	 syntaxError(errMsg,self->lp->lineNum, getTokenName(lastToken));\
+	 Error_syntax(errMsg,self->lp->input.line, getTokenName(lastToken));\
  }
 
 #define ASSERT_NEXT_IS_END_OR_SEMICOLON()                                          \
@@ -11,7 +11,7 @@ secTok = TokenBuff_next(&self->tokBuff);                                        
 if (secTok == t_end ||secTok == t_scolon ) {                                       \
 	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
 }else{                                                                             \
-	syntaxError("Expected end or ; after cmd", self->lp->lineNum, getTokenName(secTok));\
+	Error_syntax("Expected end or ; after cmd", self->lp->input.line, getTokenName(secTok));\
 }
 
 #define NEW_INSTR(code, types, a1, a2, dest)\
@@ -22,6 +22,8 @@ void SyntaxAnalyzer__init__(SyntaxAnalyzer * self, LexParser * lp) {
 	TokenBuff__init__(&self->tokBuff, lp);
 	InstrQueue__init__(&(self->instr));
 	self->stackIndexCntr = 0;
+	self->isInGlobals = true;
+	self->mainBodyParsed = false;
 }
 
 tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
@@ -35,20 +37,26 @@ tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self) {
 
 void SyntaxAnalyzer_parseAsigment(SyntaxAnalyzer * self) {
 	iVar * asigmentTo = self->lp->lastSymbol;
+	tIFJ globalOrLocal;
+	if (asigmentTo->isGlobal)
+		globalOrLocal = iStackGRef;
+	else
+		globalOrLocal = iStackRef;
+
 	if (asigmentTo->type == iFn) {
 		if (asigmentTo == self->lp->symbolTable->masterItem) {
 			asigmentTo = &(asigmentTo->val.fn->retVal);
 		} else {
-			sem_Error("trying to assign to function", self->lp->lineNum);
+			Error_sem("trying to assign to function", self->lp->input.line);
 		}
 	}
 	tIFJ exprtype = SyntaxAnalyzer_parseExpr(self);
 	SemAnalyzer_typeconvert((&self->instr), asigmentTo->type, exprtype, -1);
 	SemAnalyzer_checktypes(asigmentTo->type, exprtype,
-			self->tokBuff.lp->lineNum);
-	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, iStackRef, NULL,
+			self->tokBuff.lp->input.line);
+	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, globalOrLocal,
+			NULL,
 			NULL, (InstrParam*) &(asigmentTo->stackIndex) });
-	asigmentTo->isInitialized = true;
 }
 
 // t_var already found
@@ -58,7 +66,7 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	// read all variable declarations
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken != t_id && lastToken != t_func) {    // ) - args are empty
-		syntaxError("Expected variable declarations\n", self->lp->lineNum,
+		Error_syntax("Expected variable declarations\n", self->lp->input.line,
 				getTokenName(lastToken));
 		return;
 	} else {
@@ -76,11 +84,12 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (!Token_isType(lastToken)) {
-			syntaxError("expected type name\n", self->lp->lineNum,
+			Error_syntax("expected type name\n", self->lp->input.line,
 					getTokenName(lastToken));
 			return;
 		}
 		self->lp->lastSymbol->type = lastToken;
+		self->lp->lastSymbol->isGlobal = self->isInGlobals;
 
 		NEXT_TOK(t_scolon, "expected \";\"\n");
 
@@ -119,7 +128,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_repeat:
-			SyntaxAnalyzer_parse_reapat(self);
+			SyntaxAnalyzer_parse_repeat(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
 		case t_id:
@@ -136,18 +145,18 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 		case t_scolon:
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_scolon) {
-				syntaxError("unexpected \";\" after \";\"", self->lp->lineNum,
+				Error_syntax("unexpected \";\" after \";\"", self->lp->input.line,
 						";");
 			} else if (secTok == t_end)
-				syntaxError("unexpected \";\" before last cmd in block",
-						self->lp->lineNum, ";");
+				Error_syntax("unexpected \";\" before last cmd in block",
+						self->lp->input.line, ";");
 			else
 				TokenBuff_pushBack(&self->tokBuff, secTok);
 			continue;
 		case t_end:
 			return;
 		default:
-			syntaxError("Unexpected syntax in code block\n", self->lp->lineNum,
+			Error_syntax("Unexpected syntax in code block\n", self->lp->input.line,
 					getTokenName(lastToken));
 			return;
 		}
@@ -159,11 +168,11 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	Token lastToken;
 	InstrParam * StackAddress = malloc(sizeof(InstrParam));
 	if (!StackAddress) {
-		memoryError("Cannot allocate instrParam for Label ");
+		Error_memory("Cannot allocate instrParam for Label ");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
 	if (!StackAddrend) {
-		memoryError("Cannot allocate instrParam for Label ");
+		Error_memory("Cannot allocate instrParam for Label ");
 	}
 	//COND
 	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self));
@@ -201,11 +210,11 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	Token lastToken;
 	InstrParam * StackAddrbegin = malloc(sizeof(InstrParam));
 	if (!StackAddrbegin) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam for writeFn");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
 	if (!StackAddrend) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam for writeFn");
 	}
 	//Cond
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
@@ -231,17 +240,16 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 
 }
 
-//////////////////
 //"repeat" already found
-void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat 
+void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat 
 	Token lastToken;
 	InstrParam * StackAddrbegin = malloc(sizeof(InstrParam));
 	if (!StackAddrbegin) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam for writeFn");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
 	if (!StackAddrend) {
-		memoryError("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam for writeFn");
 	}
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL, NULL,
 			NULL });
@@ -271,8 +279,6 @@ void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self) { //repeat
 
 }
 
-//////////////////
-
 /*
  * ( params are in function declarations)
  During definition of user function
@@ -288,15 +294,14 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 		if (lastToken == t_rParenthessis) {            // ) - params are empty
 			return;
 		} else if (lastToken != t_id) {
-			syntaxError("expected id in argument list", self->lp->lineNum,
+			Error_syntax("expected id in argument list", self->lp->input.line,
 					getTokenName(lastToken));
 		}
-		self->lp->lastSymbol->isInitialized = true;
 		NEXT_TOK(t_colon, "expected \":\"")
 
 		lastToken = TokenBuff_next(&self->tokBuff);			//typ
 		if (!Token_isType(lastToken)) {
-			syntaxError("expected type name", self->lp->lineNum,
+			Error_syntax("expected type name", self->lp->input.line,
 					getTokenName(lastToken));
 			return;
 		}
@@ -305,15 +310,15 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 		lastToken = TokenBuff_next(&self->tokBuff);
 		if (lastToken != t_scolon) {
 			if (lastToken != t_rParenthessis) {			// )
-				syntaxError("expected \";\" or \")\" at the end of ",
-						self->lp->lineNum, getTokenName(lastToken));
+				Error_syntax("expected \";\" or \")\" at the end of ",
+						self->lp->input.line, getTokenName(lastToken));
 			}
 			return;
 		} else {											 // ;
 			lastToken = TokenBuff_next(&self->tokBuff);
 			if (lastToken != t_id) {
-				syntaxError("expected id in argument list after semicolon",
-						self->lp->lineNum, getTokenName(lastToken));\
+				Error_syntax("expected id in argument list after semicolon",
+						self->lp->input.line, getTokenName(lastToken));\
 			} else {
 				TokenBuff_pushBack(&self->tokBuff, lastToken);
 			}
@@ -331,8 +336,8 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 	while (param) {
 		NEXT_TOK(t_id, "id of param from forward expected")
 		if (strcmp(param->name, self->lp->str.buff))
-			syntaxError("names of parameters have to be same as in forward",
-					self->lp->lineNum, "id");
+			Error_syntax("names of parameters have to be same as in forward",
+					self->lp->input.line, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
 		NEXT_TOK((Token )param->data->type, "type from forward expected")
 		if (param->next) {
@@ -352,12 +357,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	iVar * fn;
 	self->lp->idMode = lp_fnSearch;
 	NEXT_TOK(t_id, "id of function expected")
-	bool haveForward;
 
 	fn = self->lp->lastSymbol;
-	haveForward = fn->val.fn->retVal.type != iUnknown;
 
-	if (haveForward) {
+	if (fn->val.fn->forwardFound) {
 		SyntaxAnalyzer_check_ParamsList(self, fn->val.fn->params);
 	} else {
 		SyntaxAnalyzer_parse_paramList(self);
@@ -365,9 +368,10 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	NEXT_TOK(t_colon, "expected \":\"")
 
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
-	if (haveForward && fn->val.fn->retVal.type != (tIFJ) lastToken) {
-		syntaxError("Function have to have same type as its forward declr.",
-				self->lp->lineNum, getTokenName(lastToken));
+	if (fn->val.fn->forwardFound
+			&& fn->val.fn->retVal.type != (tIFJ) lastToken) {
+		Error_syntax("Function have to have same type as its forward declr.",
+				self->lp->input.line, getTokenName(lastToken));
 	}
 	self->lp->lastFunction->retVal.type = lastToken;
 
@@ -375,16 +379,20 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken == t_forward) {
+		if (fn->val.fn->forwardFound)
+			Error_syntax("Multiple forward is not allowed", self->lp->input.line,
+					getTokenName(lastToken));
 		NEXT_TOK(t_scolon, "expected \";\" after forward")
 		self->stackIndexCntr = stackCntrBackup;
 		self->lp->idMode = lp_searchOnly;
+		fn->val.fn->forwardFound = true;
 		return;
 	} else {
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 	}
 	LexParser_fnBodyEnter(self->lp, fn);
 	lastToken = TokenBuff_next(&self->tokBuff);
-	fn->val.fn->bodyInstrIndex = self->instr.actual + 1;
+	fn->val.fn->bodyInstrIndex->iInt = self->instr.actual + 1;
 	switch (lastToken) {
 	case t_var:
 		SyntaxAnalyzer_parse_varDeclr(self);
@@ -397,14 +405,14 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 		SyntaxAnalyzer_parse_block(self);
 		break;
 	default:
-		syntaxError("Expected \"begin\" or \"var\" after function declaration",
-				self->lp->lineNum, getTokenName(lastToken));
+		Error_syntax("Expected \"begin\" or \"var\" after function declaration",
+				self->lp->input.line, getTokenName(lastToken));
 	}
-	fn->isInitialized = true;
 	self->stackIndexCntr = stackCntrBackup;
 	LexParser_fnBodyLeave(self->lp);
 	self->lp->idMode = lp_searchOnly;
 	NEXT_TOK(t_scolon, "expected \";\" after function definition")
+	fn->val.fn->bodyFound = true;
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_return, fn->val.fn->retVal.type, NULL,
 					NULL, NULL });
@@ -420,19 +428,27 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		tok = TokenBuff_next(&self->tokBuff);
 #ifdef TOKENS_ONLY
 		self->lp->idMode = lp_ignore;
-		printf("line %d: %s\n", self->lp->lineNum, getTokenName(tok));
+		printf("line %d: %s\n", self->lp->input.line, getTokenName(tok));
 		if (tok == t_eof)
-			return;
+		return;
 #else
 		switch (tok) {
 		case t_var:
+			if (!self->isInGlobals)
+				Error_syntax(
+						"Multiple var section on global level is not allowed",
+						self->lp->input.line, getTokenName(tok));
 			SyntaxAnalyzer_parse_varDeclr(self);
 			InstrQueue_insert(&self->instr, jmpToMainBody);
-
+			self->isInGlobals = false;
 			break;
 		case t_begin:
-			i->iInt = self->instr.actual + 1;
+			if (self->mainBodyParsed)
+				Error_syntax("Redefinition of main body is not allowed",
+						self->lp->input.line, getTokenName(tok));
+			i->iInt = self->instr.actual + 1; // save jmp after vars allocation to main body
 			SyntaxAnalyzer_parse_block(self);
+			self->mainBodyParsed = true;
 			break;
 		case t_func:
 			SyntaxAnalyzer_parse_func(self);
@@ -444,16 +460,16 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			if (tok == t_eof)
 				return;
 			else {
-				syntaxError("No input expected after end of program",
-						self->lp->lineNum, getTokenName(tok));
+				Error_syntax("No input expected after end of program",
+						self->lp->input.line, getTokenName(tok));
 				return;
 			}
 		case t_eof:
-			syntaxError("Expected \".\" at the end of program",
-					self->lp->lineNum, getTokenName(tok));
+			Error_syntax("Expected \".\" at the end of program",
+					self->lp->input.line, getTokenName(tok));
 			return;
 		default:
-			syntaxError("syntax corrupted", self->lp->lineNum,
+			Error_syntax("syntax corrupted", self->lp->input.line,
 					getTokenName(tok));
 		}
 #endif

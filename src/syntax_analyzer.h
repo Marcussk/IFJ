@@ -1,6 +1,7 @@
 #ifndef SYNTAX_ANALYZER_h
 #define SYNTAX_ANALYZER_h
 
+#include <stdbool.h>
 #include "error_handler.h"
 #include "expr_parser.h"
 #include "expr_parser.h"
@@ -13,11 +14,14 @@
 #include "token_buff.h"
 #include "defs.h"
 
+
 typedef struct {
 	LexParser * lp;
 	TokenBuff tokBuff;
 	InstrQueue instr;
 	int stackIndexCntr;
+	bool isInGlobals;
+	bool mainBodyParsed;
 } SyntaxAnalyzer;
 
 
@@ -28,7 +32,7 @@ void SyntaxAnalyzer_parseCond(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self);
 void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self);
-void SyntaxAnalyzer_parse_reapat(SyntaxAnalyzer * self);
+void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self);
 tIFJ SyntaxAnalyzer_parseExpr(SyntaxAnalyzer * self);
 
 
