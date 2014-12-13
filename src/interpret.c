@@ -319,7 +319,6 @@ void Interpret_run(Interpret * self) {
 
 		case i_write:
 			POP(pomA1)
-
 			write(i.type, pomA1.val);
 			break;
 		case i_readln:
@@ -327,16 +326,19 @@ void Interpret_run(Interpret * self) {
 					&((iStack_getAt(&self->stack,
 							i.dest->stackAddr + stackOffset))->val), i.type)))
 				Error_rt_readln();
+			iStack_getAt(&self->stack, i.dest->stackAddr + stackOffset)->isInitialized =
+					true;
 			break;
 		case i_sort:
 			POP(pomA1)
-			pomA3.val.iString = strdup(func_sort(pomA1.val.iString));
+			pomA3.val.iString = func_sort(strdup(pomA1.val.iString));
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
+			break;
 		case i_len:
 			POP(pomA1)
-			pomA3.val.iInt = func_len((pomA1.val.iString));
+			pomA3.val.iInt = func_len(pomA1.val.iString);
 			pomA3.isInitialized = true;
 			iStack_push(&(self->stack), pomA3);
 			break;
@@ -388,7 +390,7 @@ void Interpret_run(Interpret * self) {
 			pomA4 = iStack_pop(&self->stack);                      // next instr
 			InstrQueue_atIndex(&(self->instructions), pomA4.val.iInt); // jmp back to caller
 			pomA1 = iStack_pop(&self->stack);                      // paramsCnt
-			POP(pomA1)
+			POP(pomA2)
 			for (index = 0; index < pomA1.val.iInt; index++) { // pop params
 				iStack_pop(&self->stack);
 			}
