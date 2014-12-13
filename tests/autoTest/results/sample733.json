@@ -1,1 +1,1 @@
-{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample733.pas:10:5 ERROR(Syntax): expected else, got \";\"\n"}
+{"returns": 0, "stdin": "", "stdout": "1", "stderr": ""}

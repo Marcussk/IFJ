@@ -5,7 +5,7 @@ var
 begin
 	
 	repeat
-		readln(i);
+		i := 3;
 		write(i);
 	until i=3
 end.

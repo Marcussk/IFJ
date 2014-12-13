@@ -6,7 +6,7 @@ begin
 	
 	repeat
 	begin
-		readln(i);
+		i := 3;
 		write(i)
 	end
 	until i=3

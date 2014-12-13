@@ -9,7 +9,7 @@ begin
 	c := a + b;
 	write('a je :', a, '       b je :', b, ''#10'');
 	write('suma ab je :', c,''#10'', 'wtite new a:');
-	readln(a);
+	a := 300;
 	c := a + b;
 	write(''#10'','new suma je = ',  c)
 end.
