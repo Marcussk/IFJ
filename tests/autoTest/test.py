@@ -4,6 +4,7 @@
 import os, re, subprocess, shutil
 import json, glob, ntpath, sys
 from multiprocessing.dummy import Pool  # use threads
+from datetime import datetime
 
 """
 Testing script by group 76
@@ -58,6 +59,8 @@ findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")
 firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
 
 
+TotalTime = 0
+
 def makeBinary():
     os.chdir(SRC_FOLDER)    
     subprocess.call([MAKECMD, "clean"], shell=True)
@@ -101,6 +104,7 @@ def createTest(testFileName):
         json.dump(result, f)
 
 def performTest(sampleFile, resultFileName):
+    global TotalTime
     prompt = "sampleFile : %s " % (sampleFile)
     result = {}
     with open(sampleFile) as sf:
@@ -112,9 +116,12 @@ def performTest(sampleFile, resultFileName):
     with open(resultFileName) as f:
         resultRef = json.load(f)
 
+    start = datetime.now()
     p = subprocess.Popen(["./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
     result["stdout"], result["stderr"] = p.communicate(input=resultRef["stdin"])
     result["returns"] = p.returncode
+    result["time"] = (datetime.now() - start).total_seconds()
+    TotalTime += result["time"]
     
     if CHECK_VALGRIND:
         pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -129,16 +136,17 @@ def performTest(sampleFile, resultFileName):
        print(prompt + "[ \033[0;31mFAILED\033[0m ] for more see %s" % REPORT_FILE)
        return { "result" : result, "sampleFile": sampleFile, "resultFile":resultFileName, "resultRef": resultRef }
     else:
-       print(prompt + "\033[92mPASSED\033[0m")
+       print(prompt + "\033[92mPASSED\033[0m " + str(result['time']) +"s")
         
         
 def renderErrors(errors):
+    global TotalTime
     with open(REPORT_TEMPLATE) as f:
         template = f.read()
 
     with open(REPORT_FILE, "w") as outF:
         errorsDump = json.dumps(errors)
-        outF.write(template.replace("{{ results }}",errorsDump))
+        outF.write(template.replace("{{ results }}", errorsDump).replace("{{ totalTime }}", str(TotalTime)))
 
 def evalTest(testFileName):
     resultFileName = getTestResPath(testFileName)

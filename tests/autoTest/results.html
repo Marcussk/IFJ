@@ -32,9 +32,11 @@
 </head>
 <body>
 	<h1>Err report</h1>
+<h2>TotalTime :3.370205999999998 s</h2>
 	<div id="template" class="result" style="visibility: hidden;">
 		<span class="descr"></span>
 		<div class="horiz filenames"></div>
+		<span class="time">Time: </span> </br>
 		<div class="horiz">
 			<span><b>result</b></span> <span><b>resultRef</b></span>
 		</div>
@@ -68,9 +70,12 @@
 			var valgrindErrors = template.getElementsByClassName("valgrinderrors")[0];
 			var descrElm = template.getElementsByClassName("descr")[0];
 			var stdErrElm = template.getElementsByClassName("stderr")[0];
+			var timeElm = template.getElementsByClassName("time")[0];
+			
 			descrElm.innerHTML = result.result.descr;
 			template.removeAttribute("id");
 			stdErrElm.innerHTML = result.result.stderr;
+			timeElm.innerHTML = result.time;
 			
 			var filenames = template.getElementsByClassName("filenames")[0];
 			appendValAsSpan(filenames, result.sampleFile);
