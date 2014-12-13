@@ -25,11 +25,11 @@ int main(int argc, char *argv[]) {
 	SyntaxAnalyzer synAnalyzer;
 	Interpret interpret;
 	if (argc != 2) {
-		printf("usage: %s filename\n", argv[0]);
+		printf("Usage: %s filename\n", argv[0]);
 	} else {
 		FILE *file = fopen(argv[1], "r");
 		if (file == 0) {
-			printf("ERROR: Could not open file!\n");
+			printf("ERROR: Couldn't open file!\n");
 		} else {
 			LexParser__init__(&lexParser, file);
 			SyntaxAnalyzer__init__(&synAnalyzer, &lexParser);
@@ -37,9 +37,6 @@ int main(int argc, char *argv[]) {
 			fclose(file);
 			Interpret__init__(&interpret, synAnalyzer.instr);
 			Interpret_run(&interpret);
-			//Interpret__dell__(&interpret);
-			//InstrQueue__dell__(&(synAnalyzer.instr));
-			//SyntaxAnalyzer__dell__(&synAnalyzer);
 		}
 	}
 

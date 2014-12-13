@@ -22,7 +22,7 @@ char BuffFile_get(BuffFile * self) {
 }
 void BuffFile_pushBack(BuffFile * self, char ch) {
 	if (self->backup != EOF)
-		Error_memory("Canot push second char back to file\n");
+		Error_memory("Can't push second char back to file\n");
 	self->backup = ch;
 	if (ch == '\n')
 		self->line--;

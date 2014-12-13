@@ -11,7 +11,7 @@ secTok = TokenBuff_next(&self->tokBuff);                                        
 if (secTok == t_end ||secTok == t_scolon ) {                                       \
 	TokenBuff_pushBack(&self->tokBuff, secTok);                                    \
 }else{                                                                             \
-	Error_syntax("Expected end or ; after cmd", self->lp->input.line, getTokenName(secTok));\
+	Error_syntax("Expected end or ; after statement", self->lp->input.line, getTokenName(secTok));\
 }
 
 #define NEW_INSTR(code, types, a1, a2, dest)\
@@ -148,7 +148,7 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 				Error_syntax("unexpected \";\" after \";\"", self->lp->input.line,
 						";");
 			} else if (secTok == t_end)
-				Error_syntax("unexpected \";\" before last cmd in block",
+				Error_syntax("unexpected \";\" before last statement in block",
 						self->lp->input.line, ";");
 			else
 				TokenBuff_pushBack(&self->tokBuff, secTok);
@@ -336,13 +336,13 @@ void SyntaxAnalyzer_check_ParamsList(SyntaxAnalyzer * self,
 	while (param) {
 		NEXT_TOK(t_id, "id of param from forward expected")
 		if (strcmp(param->name, self->lp->str.buff))
-			Error_syntax("names of parameters have to be same as in forward",
+			Error_syntax("names of parameters have to be the same as in forward",
 					self->lp->input.line, "id");
 		NEXT_TOK(t_colon, "expected \":\"")
 		NEXT_TOK((Token )param->data->type, "type from forward expected")
 		if (param->next) {
 			NEXT_TOK(t_scolon,
-					"expected \";\" after type (and then next param)")
+					"expected \";\" after type (follows by param)")
 		}
 		param = param->next;
 	}
@@ -370,7 +370,7 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	lastToken = TokenBuff_next(&self->tokBuff); // typ
 	if (fn->val.fn->forwardFound
 			&& fn->val.fn->retVal.type != (tIFJ) lastToken) {
-		Error_syntax("Function have to have same type as its forward declr.",
+		Error_syntax("Function's type has to be the same as its forward declration.",
 				self->lp->input.line, getTokenName(lastToken));
 	}
 	self->lp->lastFunction->retVal.type = lastToken;
@@ -380,9 +380,9 @@ void SyntaxAnalyzer_parse_func(SyntaxAnalyzer * self) {
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken == t_forward) {
 		if (fn->val.fn->forwardFound)
-			Error_syntax("Multiple forward is not allowed", self->lp->input.line,
+			Error_syntax("Multiple forwards are not allowed", self->lp->input.line,
 					getTokenName(lastToken));
-		NEXT_TOK(t_scolon, "expected \";\" after forward")
+		NEXT_TOK(t_scolon, "expected \";\" following forward")
 		self->stackIndexCntr = stackCntrBackup;
 		self->lp->idMode = lp_searchOnly;
 		fn->val.fn->forwardFound = true;
@@ -436,7 +436,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_var:
 			if (!self->isInGlobals)
 				Error_syntax(
-						"Multiple var section on global level is not allowed",
+						"Multiple var sections on global level are not allowed",
 						self->lp->input.line, getTokenName(tok));
 			SyntaxAnalyzer_parse_varDeclr(self);
 			InstrQueue_insert(&self->instr, jmpToMainBody);
@@ -460,7 +460,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 			if (tok == t_eof)
 				return;
 			else {
-				Error_syntax("No input expected after end of program",
+				Error_syntax("No input expected after the end of program",
 						self->lp->input.line, getTokenName(tok));
 				return;
 			}
@@ -469,7 +469,7 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 					self->lp->input.line, getTokenName(tok));
 			return;
 		default:
-			Error_syntax("syntax corrupted", self->lp->input.line,
+			Error_syntax("Syntax corrupted", self->lp->input.line,
 					getTokenName(tok));
 		}
 #endif

@@ -27,7 +27,7 @@ tIFJ Token_getType(Token t) {
 	case t_false:
 		return iBool;
 	default:
-		Error_unimplemented("cannot convert token to type");
+		Error_unimplemented("Can't convert token to type");
 	}
 	return iUnknown;
 }
@@ -71,18 +71,18 @@ iVal str2iVal(char * str, Token token, int lineNum) {
 	switch (token) {
 	case t_num_int:
 		if (!sscanf(str, "%d", &(val.iInt)))
-			Error_lex("Cannot parse int num", str, lineNum);
+			Error_lex("Can't parse int num", str, lineNum);
 		break;
 
 	case t_num_real:
 		if (!sscanf(str, "%f", &(val.iReal)))
-			Error_lex("Cannot parse real num", str, lineNum);
+			Error_lex("Can't parse real num", str, lineNum);
 		break;
 
 	case t_str_val:
 		val.iString = strdup(str);
 		if (!val.iString)
-			Error_lex("Cannot parse string", str, lineNum);
+			Error_lex("Can't parse string", str, lineNum);
 		break;
 	case t_true:
 		val.iInt = 1;
@@ -91,7 +91,7 @@ iVal str2iVal(char * str, Token token, int lineNum) {
 		val.iInt = 0;
 		break;
 	default:
-		Error_lex("cannot convert value", str, lineNum);
+		Error_lex("Can't convert value", str, lineNum);
 	}
 	return val;
 }

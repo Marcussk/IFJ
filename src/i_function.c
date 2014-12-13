@@ -45,7 +45,7 @@ void iFunction_addParam(iFunction * self, iVar * var, char * name) {
 	ParamsListItem *newItem = NULL;
 	newItem = malloc(sizeof(ParamsListItem));
 	if (newItem == NULL) {
-		Error_memory("Could not allocate memory for parameter");
+		Error_memory("Can't allocate memory for parameter");
 		return;
 	}
 

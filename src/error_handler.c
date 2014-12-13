@@ -39,7 +39,7 @@ void Error_sem_Type(char * nameOfType, int lineNum) {
 void Error_sem_Cond(char * nameOfType) {
 	fflush(stdout);
 	fprintf(stderr,
-			"ERROR(Semantic/Type): Variable type %s does not fit to condition.\n",
+			"ERROR(Semantic/Type): Variable of type %s does not fit to condition.\n",
 			nameOfType);
 	exit(4);
 }
@@ -77,7 +77,7 @@ void Error_rt(char * str) {
 
 void Error_unimplemented(char * str) {
 	fflush(stdout);
-	fprintf(stderr, "ERROR(Not implemented): %s .\n", str);
+	fprintf(stderr, "ERROR(Unimplemented): %s .\n", str);
 	exit(99);
 }
 

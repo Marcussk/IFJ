@@ -70,11 +70,11 @@ void LexParser_readEscape(LexParser * self) {
 		String_append(&str, ch);
 	}
 	if (str.len < 1)
-		Error_lex("Uncomplete escape sequention.\n", str.buff, self->input.line);
+		Error_lex("Incomplete escape sequence.\n", str.buff, self->input.line);
 	int escp = atoi(str.buff);
 	String__dell_(&str);
 	if (escp > 255)
-		Error_lex("Unknown escape sequention.\n", self->str.buff, self->input.line);
+		Error_lex("Unknown escape sequence.\n", self->str.buff, self->input.line);
 	String_append(&(self->str), (char) escp);
 	if (ch == '\'')
 		LexParser_readString(self);
@@ -127,7 +127,7 @@ void LexParser_syncLastVar(LexParser * self) {
 	case lp_ignore:
 		break;
 	default:
-		Error_lex("LexParser don't know if search or insert new id\n",
+		Error_lex("LexParser doesn't know whether to search or insert new id\n",
 				self->str.buff, self->input.line);
 	}
 }
@@ -335,7 +335,7 @@ Token LexParser_parseNum(LexParser * self, char ch) {
 
 		String_append(&self->str, ch);
 	}
-	Error_lex("Lex parser is not able to parse number", self->str.buff,
+	Error_lex("Lex parser is unable to parse number", self->str.buff,
 			self->input.line);
 	return t_invalid;
 }
@@ -393,7 +393,7 @@ Token LexParser_next(LexParser *self) {
 				if (isalpha(ch) || ch == '_')
 					return LexParser_readIdOrKeyword(self, ch);
 				else
-					Error_lex("Cannot resolve token from string", self->str.buff,
+					Error_lex("Cannot distinguish token from string", self->str.buff,
 							self->input.line);
 			}
 	}
@@ -422,7 +422,7 @@ void LexParser_fnBodyEnter(LexParser * self, iVar * fn) {
 	HashTable * fnSymTable = HashTable__init__(SYMBOL_TABLE_SIZE);
 
 	if (HashTable_insert(fnSymTable, self->str.buff, fn) != ht_inserted) {
-		Error_lex("Error while creating symbol for function recurse",
+		Error_lex("Error while creating symbol for function recursion",
 				self->str.buff, self->input.line);
 	}
 	fnSymTable->masterTable = self->symbolTable;

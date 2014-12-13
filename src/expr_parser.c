@@ -103,17 +103,17 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 		last = exprStack_pop(&self->stack);
 		if (last.type != nonterminal)
 			Error_syntax(
-					"expected nontermial got terminal (means bad parameter)",
+					"Expected nontermial got terminal (meaning bad parameter)",
 					self->tokenBuff->lp->input.line, getTokenName(last.content));
 		if (last.datatype != paramNode->data->type)
-			Error_syntax("argument of incompatible type",
+			Error_syntax("Argument of incompatible type",
 					self->tokenBuff->lp->input.line, getTokenName(last.content));
 		paramNode = paramNode->prev;
 
 		if (i < fn->params.size -1) { // berore first arg there is no ","
 			last = exprStack_pop(&self->stack);
 			if (last.content != t_comma)
-				Error_syntax("expected , because function has more parameters",
+				Error_syntax("Expected , because function has more parameters",
 						self->tokenBuff->lp->input.line,
 						getTokenName(last.content));
 		}
@@ -121,7 +121,7 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 	last = exprStack_pop(&self->stack); // Pop '('
 	if (last.content != t_lParenthessis)
 		Error_syntax(
-				"expected \"(\" probably more arguments than it was expected",
+				"Expected \"(\" probably received more arguments than expected",
 				self->tokenBuff->lp->input.line, getTokenName(last.content));
 	last = exprStack_pop(&self->stack); // function Id
 	if (last.content != t_func)
@@ -129,7 +129,7 @@ void reduceParams(ExprParser * self, iFunction * fn) { // ')' already found and 
 				getTokenName(last.content));
 	if (last.id->val.fn != fn)
 		Error_syntax(
-				"Over-reduced, was reducing function call and got different function",
+				"Over-reduced, attempt to reduce function call resulted in finding different function",
 				self->tokenBuff->lp->input.line, getTokenName(last.content));
 
 	ExprToken_Init(&result);
@@ -279,7 +279,7 @@ void reduceRule(ExprParser *self, ExprToken *TopMostTerminal) {
 
 		break;
 	default:
-		Error_syntax("unknown content of ExprToken",
+		Error_syntax("Unknown content of ExprToken",
 				self->tokenBuff->lp->input.line, "");
 	}
 
@@ -304,7 +304,7 @@ void parseWrite(ExprParser * self) {
 		if (lastToken == t_id) {
 			lastSymbol = self->tokenBuff->lp->lastSymbol;
 			if (lastSymbol->type == iFn)
-				Error_syntax("Function call cannot be in write call",
+				Error_syntax("Function call can't be in write call",
 						self->tokenBuff->lp->input.line, getTokenName(lastToken));
 
 			param->stackAddr = lastSymbol->stackIndex;
