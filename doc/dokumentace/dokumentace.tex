@@ -52,34 +52,36 @@ Samotná implementácia je ďalej rozdelená na nasledovné časti:
 Všetky tieto časti budú ďalej spomenuté a rozšírené.
 
 \section{Lexikálna analýza}
-Lexikálny analyzátor je reprezentovaný konečným automatom, ktorý pomocou aktuálneho stavu a načítaného znaku vracia buď lexikálnu chybu alebo token. Úloha lexikálnej analýzy spočíva v:
+Lexikálna analyzáa je reprezentovaná konečným automatom, ktorý pomocou aktuálneho stavu a načítaného znaku vracia buď lexikálnu chybu alebo token. Úloha lexikálnej analýzy spočíva v:
 \begin{itemize}
 \item{Odstránenie komentárov}
 \item{Rozdelenie vstupu na tokeny pre ďalšie spracovanie syntaktickou analýzou}
 \end{itemize}
-Lexikálny analyzátor pijíma ako vstup zdrojový program, ktorý spracováva. Počas spracovávania programu vždy syntaktická analýza žiada o ďalší token na spracovanie.
+Lexikálny analyzátor prijíma ako vstup zdrojový program, ktorý spracováva. Počas spracovávania programu syntaktická analýza vždy žiada o ďalší token na spracovanie.
 
-Pre potreby implementácie obsahuje lexikálny analyzér možnosť vrátiť spracovaný token a uložiť ho do bufferu. Spracovávanie ďalej nepokračuje načítavaním zo súboru ale z tohoto bufferu.
+Pre potreby implementácie obsahuje lexikálny analyzér možnosť vrátiť spracovaný token a uložiť ho do bufferu. Spracovávanie ďalej nepokračuje načítavaním zo súboru, ale z tohoto bufferu.
+
+V rámci lexikálnej analýzy prebieha konkatenácia reťazcov a konvertovanie hodnôt. 
 
 \section{Syntaktická a sémantická analýza}
-Úlohou syntaktickej analýzi je skontrolovať konštrukcie vstupného súboru a detekovať nesúlady so zadaním.\\
+Úlohou syntaktickej analýzy je skontrolovať konštrukcie vstupného súboru a detekovať nesúlady so zadaním.\\
 Syntaktickú analýzu delíme na dve časti kvôli rozdielnemu spôsobu spracovania.
 
 \subsection{Metóda rekurzívneho zostupu}
-Rekurzívny zostup je jadrom syntaktickej analýzy. Zhora nadol spracováva tokeny z lexikálnej analýzy pomocou pravidiel LL gramatiky. \\
+Rekurzívny zostup je jadrom syntaktickej analýzy. Zhora nadol spracováva tokeny z lexikálnej analýzy pomocou pravidiel LL gramatiky. V prípade potreby priamo genereuje inštrukcie.\\
 Implementácia spočíva z hlavnej funkcie, ktorá podľa prijatého tokenu vyberie typ konštrukcie na spracovanie. Nasleduje volanie funkcie v ktorej sa spracováva daný blok programu. Týmto spôsobom sa rekurzívne spracuje program.\\
 V prípade potreby spracovávať výrazy nastáva prepnutie do spracovávania precedenčnou analýzou. Nastáva volanie funkcie a následné spracovávanie ďalších tokenov až po návrat z tejto funkcie.
 
 \subsubsection{LL gramatika}
-LL gramatika predstavuje súbor pravidiel podľa ktorých pracuje syntaktická analýza. LL predstavuje anglicky: left-to-right a leftmost, teda spracovávanie zľava doprava a zpracovávanie najľavejšieho neterminálu.\\
+LL gramatika predstavuje súbor pravidiel podľa, ktorých pracuje syntaktická analýza. LL predstavuje anglicky: left-to-right a leftmost, teda spracovávanie zľava doprava a zpracovávanie najľavejšieho neterminálu.\\
 V tomto projekte je konkrétne využitá LL(1) gramatika, ktorá vyžaduje tieto vlastnosti:
 \begin{enumerate}
-\item{Neobsahuje nejednoznačnosť\\
-Pri každom pravidle je teda nutné aby bolo na základe aktuálneho stavu možno spracovávať práve jedno pravidlo}
+\item{Neobsahuje nejednoznačnosť.\\
+Pri každom pravidle je teda nutné, aby bolo na základe aktuálneho stavu možno spracovávať práve jedno pravidlo.}
 \item{Nemá ľavú rekurziu\\
-Pri nahrádzaní najľavejšieho neterminálu nesmie dôjsť k nekonečnému cyklu a to priamo alebo nepriamo}
+Pri nahrádzaní najľavejšieho neterminálu nesmie dôjsť k~nekonečnému cyklu a to priamo alebo nepriamo.}
 \item{Je lookahead(1)\\
-Rozvoj pravidiel závisí od nasledujúceho tokenu a nemožno sa rozhodovať podľa viacerých tokenov z budúcnosti}
+Rozvoj pravidiel závisí od nasledujúceho tokenu a nemožno sa rozhodovať podľa viacerých tokenov z~budúcnosti}
 \end{enumerate}
 
 \subsubsection{LL tabuľka}
@@ -87,7 +89,7 @@ Tabuľka založená na LL gramatike pre výber pravidla.\\
 Stĺpce predstavujú nasledujúci token a riadky najľavejší neterminál. Prienikom aktuálneho stavu je identifikátor pravidla, ktoré sa použije.
 
 \subsection{Metóda precedenčnej analýzy}
-Spracováva výrazy syntaktickou analýzou zdola nahor. K spracovávaniu výrazov dochádza pri prepnutí sa z syntaktickej analýzy a končí sa pri načítaní tokenu nepatriacemu výrazu. Pre svoje fungovanie využíva výrazová analýza svoj vlastný zásobník a simuluje redukčné pravidlá:
+Spracováva výrazy syntaktickou analýzou zdola nahor. K spracovávaniu výrazov dochádza pri prepnutí sa z~syntaktickej analýzy a končí sa pri načítaní tokenu nepatriacemu výrazu. Pre svoje fungovanie využíva výrazová analýza svoj vlastný zásobník a simuluje redukčné pravidlá:
 \begin{itemize}
 \item{E $\rightarrow$ E + E}
 \item{E $\rightarrow$ E - E}
@@ -104,41 +106,42 @@ Spracováva výrazy syntaktickou analýzou zdola nahor. K spracovávaniu výrazo
 \item{E $\rightarrow$ f(e)}
 \item{E $\rightarrow$ f(E, E, ..., E)}
 \end{itemize}
-Pravidlá nie sú pevne implementované ale prebieha ich simulácia pomocou výberu redukčného pravidla.
-Výber redukčného pravidla prebieha podľa priority (precedencie) symbolov.
+Pravidlá nie sú pevne implementované, ale prebieha ich simulácia pomocou výberu redukčného pravidla.
+Výber redukčného pravidla prebieha podľa priority (precedencie) symbolov a využíva sa priame vytváranie inštrukcií pre interpret. Precedenčná analýza vracia návratový typ inštrukcie, ktorá slúži pre sémantickú analýzu.
+
 
 \subsubsection{Precedenčná tabuľka}
-Precedenčná tabuľka slúži na výber operácie shift alebo reduce. Je vytvorená na základe precedencie operátorov daného jazyka. Pozostáva zo všetkých možných operátorov nad danými výrazmi a príznakmi pre operáciu nad zásobníkom: shift,reduce,equal a chybový stav.
+Precedenčná tabuľka slúži na výber operácie shift alebo reduce. Je vytvorená na základe precedencie operátorov daného jazyka. Pozostáva zo všetkých možných operátorov nad danými výrazmi a príznakmi pre operáciu nad zásobníkom: shift, reduce, equal a chybový stav.
 
 \subsection{Sémantická analýza}
-Úlohou Semantickej analýzy je kontrola dátových typov pri operáciách s premennými a ich prípadné pretypovanie.
+Úlohou Sémantickej analýzy je kontrola dátových typov pri operáciách s premennými a ich prípadné pretypovanie.
 
 Funkcia checktypes je využívaná na kontrolu dátových typov pri priraďovaní.\\
 Funkcia checkcond sa používa na kontrolu správneho typu podmienky.\\
 Funkcia typeconvert sa používa na pretypovanie v prípade operácie delenia.\\
-Kontrola inicializácie premmenej je spracovaná kontrolou príznaku inicializácie v štruktúre premennej.
+Kontrola inicializácie premennej je spracovaná kontrolou príznaku inicializácie v štruktúre premennej.
 
 
 \section{Interpretácia}
-Samotný Interpret je reprezentovaný štruktúrou, ktorá pozostáva z fronty pre inštrukcie a zásobníku pre vlastné spracovanie. Interpret prijíma trojadresný kód vo forme inštrukcií zoradených vo fronte a pomocou vlastného zásobníku ich spracováva. V prípade, že nenastane behová chyba výsledkom je program v~jazyku C.
+Samotný Interpret je reprezentovaný štruktúrou, ktorá pozostáva z poľa ukazateľov na inštrukcie a zásobníku pre vlastné spracovanie premenných v pamäti. Interpret prijíma trojadresný kód vo forme inštrukcií zoradených vo fronte a pomocou vlastného zásobníku ich spracováva vzhľadom na vrchol zásobníku. V prípade, že nenastane behová chyba výsledkom je program v~jazyku C.
 
-Interpret spracováva typ inštrukcie a jej kód podľa výčtových typov a jednotlivé operandy funkcie a cieľ ako odkazy na parametre. Pre prípad zanorenia sa do funkcií je riešená relatívna pozícia pomocou offsetu na zásobníku.
+Interpret spracováva typ inštrukcie, jej kód podľa výčtových typov a jednotlivé operandy funkcie a cieľ ako odkazy na parametre. Pre prípad zanorenia sa do funkcií je riešená relatívna pozícia pomocou offsetu na zásobníku.
 
 \section{Algoritmy}
-Zadanie projektu vyžaduje implementáciu tabulky symbolov rovnako ako aj algoritmov pre vyhľadávanie a radenie. Implementácie týchto častí sú popísané nižšie. 
+Zadanie projektu vyžaduje implementáciu tabuľky symbolov rovnako ako aj algoritmov pre vyhľadávanie a radenie. Implementácie týchto častí sú popísané nižšie. 
 
 \subsection{Hashovacia tabuľka}
 Hashovacia tabuľka je abstraktný dátový typ, ktorý využívame na implementáciu tabuľky symbolov. \\
-Hashovacia tabuľka sa vyznačuje náročnoťou na pamäť $\mathcal{O}(n)$ avšak vykazuje priemernú náročnosť pre vkladanie a vyhľadávanie záznamov $\mathcal{O}(1)$. Pri zaplnení tabuľky symbolov je potreba túto tabuľku zväčšiť a následne realokovať. Implementácia tabuľky využíva velkosť mocniny $2$ kvôli zníženiu nároku alokovania v prípade nedostatku pamäti.\\
-Tabuľka slúži na ukladanie a následné vyhľadávanie symbolov pomocou hashovacej funkcie. Funkcia slúži na priradenie unikátnej hodnoty pre akýkoľvek daný klúč. Pomocou hodnoty vrátenej hashovaciou funkciou sa vyhľadáva alebo vkladá na danú pozíciu tabuľky.\\ 
-Tabuľka rozširuje lokálne a globálne symboly pomocou zanorovaňia sa do novej úrovne tejto tabuľky. Zanorovanie a vynorovanie prebieha pri definícií/deklarácií funkcie alebo návratu z nej. 
+Hashovacia tabuľka sa vyznačuje náročnosťou na pamäť $\mathcal{O}(n)$, avšak vykazuje priemernú náročnosť pre vkladanie a vyhľadávanie záznamov $\mathcal{O}(1)$. Pri zaplnení tabuľky symbolov je potreba túto tabuľku zväčšiť a následne realokovať. Implementácia tabuľky využíva veľkosť mocniny $2$ kôli zníženiu nároku alokovania v~prípade nedostatku pamäti.\\
+Tabuľka slúži na ukladanie a následné vyhľadávanie symbolov pomocou hashovacej funkcie. Funkcia slúži na~priradenie unikátnej hodnoty pre akýkoľvek daný kľúč. Pomocou hodnoty vrátenej hashovaciou funkciou sa vyhľadáva, alebo vkladá na danú pozíciu tabuľky.\\ 
+Tabuľka rozširuje lokálne a globálne symboly pomocou zanorovania sa do novej úrovne tejto tabuľky. Zanorovanie a vynorovanie prebieha pri definícií/deklarácií funkcie alebo návratu z nej. 
 
 \subsection{Heap sort}
 Využili sme pole pre implementáciu vyhľadávania v halde. Napriek nutnosti spravovať haldu a jeho nestabilnosti sa algoritmus vyznačuje malými nárokmi. Vyznačuje sa najhoršou maximálnou náročnosťou $\mathcal{O}N\log{N}$.
 Pri tejto implementácií považujeme prvok str[0] za vrchol haldy. Potom platí: str[2i+1] pre ľavého potomka a str[2i+2] pre pravého potomka. 
 \subsubsection{Implementácia}
 V prvom priebehu využitie funkcie Sift na zostavenie hromady. Vytvára sa teda $N / 2$ uzlov a následne sa do všetkých N prvkov vloží hodnota. Do koreňového uzlu sa vloží najväčšia hodnota. \\
-V nasledujúcich priebehoch sa využíva striedavé volanie funkcií Sift a Change na zoradenie prvku s najvyššou hodnotou a následné vytvorenie hromady. 
+V nasledujúcich priebehoch sa využíva striedavé volanie funkcií Sift a Change na zoradenie prvku s~najvyššou hodnotou a následné vytvorenie hromady. 
 \subsection{Boyer-Moore} 
 V tomto projekte bol implementovaný vyhľadávací algoritmus Boyer-Moore. Medzi jeho hlavné črty patrí:
 \begin{itemize}
@@ -151,10 +154,9 @@ Hlavná funkcia používa dve heurestiky na predpočítanie. Využíva  sa čas 
 
 \subsubsection{Heurestiky}
 Bad Character\\
-Predpočítava pole znakov pre každý znak abecedy. Toto pole sa naplní dĺžkou reťazca, ktorá sa využíva v~prípade, že nastane nezhoda znaku a textu. V prípade že nájdený znak patrí hľadanému reťazcu uloží sa do pola jeho vzdialenosť od konca vzorca. Na konci predpočítavania je pole naplnené hodnotami s~možnou dĺžkou skoku v prípade že sa reťazec a text po prvom hľadaní nezhodujú.
-
+Predpočítava pole znakov pre každý znak abecedy. Toto pole sa naplní dĺžkou reťazca, ktorá sa využíva v~prípade, že nastane nezhoda znaku a textu. V prípade, že nájdený znak patrí hľadanému reťazcu uloží sa do pola jeho vzdialenosť od konca vzorca. Na konci predpočítavania je pole naplnené hodnotami s~možnou dĺžkou skoku v prípade že sa reťazec a text po prvom hľadaní nezhodujú.
 Good Suffix\\
-Používa dve polia pre prípady kedy nastane a nenastane zhoda v hľadanom vzorci a texte. Heurestika využíva znalosť všetkých možných suffixov daného vzoru a ukladá si hranice daného substringu. V prípade že vznikne rozdiel medzi subreťazcami posunie sa na ďalší výskyt subreťazca, ktorému prechádzca znak, ktorý sa nezhoduje. Pokiaľ taký segment neexistuje, zarovná sa najdlhší zhodujúci sa suffix reťazca a prefix vzoru.
+Používa dve polia pre prípady, kedy nastane a nenastane zhoda v hľadanom vzorci a texte. Heurestika využíva znalosť všetkých možných suffixov daného vzoru a ukladá si hranice daného substringu. V prípade že vznikne rozdiel medzi subreťazcami posunie sa na ďalší výskyt subreťazca, ktorému prechádza znak, ktorý sa nezhoduje. Pokiaľ taký segment neexistuje, zarovná sa najdlhší zhodujúci sa suffix reťazca a prefix vzoru.
 
 \section{Práca v tíme}
 Keďže projekt sa vypracováva ako skupinový je potreba komunikácie a spolupráce v tíme. Rýchla komunikácia a možnosť spolupráce aj bez vlastného osobného stretnutia boli pre prácu na tomto projekte klúčové.
@@ -173,12 +175,14 @@ Zpočátku se zdálo, že bude možné rozdělit si jednotlivé části interpre
 	\item TDD - od fáze kdy byl sestaven první spustitelný interpret (neznáme nikoho, kdo by se nám v této oblasti vůbec přibyližoval) naše testovací sada je sice jen 300+ příkladů, ale všechny jsou automatiky paralelně testovány i za pomocí valgrindu a dalších nástrojů, s výstupem do webového prohlížeče a další vymoženosti
 \end{itemize}
 
+\subsubsection{Modul pre hlásenie chyb}
+Každá chyba je spracovávaná podobne ako výnimka, má svoju funkciu, ktorá slúži k priechodu k zbieraniu dát o chybe a vedie k skončeniu programu s návratovým kódom programu. Tento modul bol využitý pri písaní programu, ošetrovaní chybových stavov a bol základom pre rozšírenie MSG.
 
 \subsection{Verzovací systém}
 Pred samotným zahájením práce na projekte bol ustanovený verzovací systém git a vytvorený repozitár na stránkach github. Nasledujúce zoznámenie tímu s princípami verzovacieho systému bolo základom pre ďalšiu prácu na projekte. Výhodou tohoto riešenia bola nielen možnosť pracovať na rovnakých súboroch a s jednoduchosťou riešiť kolízie ale aj vlastné zálohovanie už dokončenej práce.
  
 \subsection{Rozdelenie práce}
-Pre potreby projektu sme využili osobné stretnutia vďaka ktorým sme v tíme dostali celkovú predstavu ako si prácu predstavujeme, ustanovili zásady práce do budúcna a začali získavať vedomosti potrebné pre samotné programovanie. Neskôr boli využité hlavne skupinové konverzácie a skupinové hovory cez internet. Toto sa ukázalo ako efektívna voľba, ktorá šetrila čas cestovaním a umožňovala rýchlu deľbu práce a možnosť opravovať a riešiť aktuálne problémy.
+Pre potreby projektu sme využili osobné stretnutia, vďaka ktorým sme v tíme dostali celkovú predstavu ako si prácu predstavujeme, ustanovili zásady práce do budúcna a začali získavať vedomosti potrebné pre samotné programovanie. Neskôr boli využité hlavne skupinové konverzácie a skupinové hovory cez internet. Toto sa ukázalo ako efektívna voľba, ktorá šetrila čas cestovaním a umožňovala rýchlu deľbu práce a možnosť opravovať a riešiť aktuálne problémy.
 
 Rozdelenie práce na 4 samostatné rovnaké celky sa nám nepodarilo aplikovať a využívali sme teda dynamické prideľovanie úloh a rozdelenie práce podľa akútnych problémov. Neraz nastávala situácia keď na jednom probléme pracovalo viac ludí spoločne alebo dokonca celý tím a preto je problematické ustanoviť presný zoznam rozdelenia práce.
 
@@ -288,35 +292,6 @@ i                     & R & R & R & R & R         & R            & R          & 
 f                     & X & X & X & X & X         & X            & X          & X             & X & X                     & E & X & X & X & X & X \\ \hline
 \end{tabular}
 \end{table}
-
-\section{Návrhové detaily}
-
-\subsection{Zásobníky}
-Všechny zásobníky jsou řešeny dynamickým polem.
-
-\subsection{Lexikální analyzator}
-Konečný stavový automat pacující s abstrakcí souboru, do kterého jde vrátit jeden znak.
-Při každém zavolání vrací další token. Uchovává tabulku symbolů a má přepínače kterými se řídí způsob vyhledávání v tabulce symbolů. Konvertuje hodnoty, konkatenuje řetězce.
-
-\subsection{Syntaktický analyzarot}
-Používá rekurzivní sestup, přímo tvoří instrukce v případě, že očekává výraz předá řízení analyzátoru výrazů
-
-\subsection{Výrazový analyzator}
-Používá precedenční analýzu s LL1 gramatikou, taktéž přímo tvoří instrukce a navrací datavý typ výrazu. Zpacovává i příkazy read a write protože jsme se snažily o co největší univerzálnost návrhu ano readln a write je v IFJ14 příkaz ale ze své podstaty je funkce.
-
-\subsection{Semantický anylyzator}
-Tvoří ho jen soubor funkcí pro syntaktickou kontrolu a pro přetypování ve výrazech.
-
-
-\subsection{Modul pro hlášení chyb}
-Každá chyba je zpracovávána podobně jako vyjímka, má svojí funkci která slouží k přechodu ke sbírání dat o chybě ale od tohoto stavu již není vyjímka zastavitelná a skončí vždy ukončením programu s příslušným návratovým kodem a hláškou.
-
-\subsection{Interpret}
-\begin{itemize}
-	\item Pole příkazů s ukazatelem na aktuální příkaz
-	\item Zásobník pro jednotlivé paměťové místa (alias proměné) nikoly rámce funkcí
-	\item Instrukce ve většině případů pracují s vrcholem zásobníku 
-\end{itemize}
 
 \end{document}
 
