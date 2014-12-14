@@ -113,6 +113,9 @@ void SyntaxAnalyzer_parse_statement(SyntaxAnalyzer * self) {
 	case t_repeat:
 		SyntaxAnalyzer_parse_repeat(self);
 		break;
+	case t_for:
+		SyntaxAnalyzer_parse_for(self);
+		break;
 	case t_id:
 		secTok = TokenBuff_next(&self->tokBuff);
 		if (secTok == t_asigment) {
