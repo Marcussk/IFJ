@@ -158,7 +158,8 @@ Používa dve polia pre prípady kedy nastane a nenastane zhoda v hľadanom vzor
 
 \section{Práca v tíme}
 Keďže projekt sa vypracováva ako skupinový je potreba komunikácie a spolupráce v tíme. Rýchla komunikácia a možnosť spolupráce aj bez vlastného osobného stretnutia boli pre prácu na tomto projekte klúčové.
-Komunikace:
+
+\subsection{Formy komunikace}
 \begin{itemize}
 	\item Wiki
 	\item Git, issues
@@ -168,13 +169,14 @@ Komunikace:
 \end{itemize}
 
 \subsection{Řízení týmu}
-Zpočátku se zdálo, že bude možné rozdělit si jednotlivé části interpretu a navrhnout jen jejich rozhraní. Již druhý týden semestru se to ukázalo jako šeredný omyl, protože nikomu se nechtělo psát na holé louce, a proto byl bez aktivního vědomí zbytku týmu sestaven lexekální analyzátor jako vstup do pohodlného psaní zbytku interpretu. Nevyváženost v týmu byla z počátku značná, ale členové, kteří se potřebovaly dostat znovu do C dostaly jedodušší úkoly, popřípadě jim byla navržena kostra jejich části na kterou postupně nabalovaly funkční kod.
+V 1. - 4. se po projítí si všech přednášek z předmětu IFJ a po zběžném prohlédnutí IAL byly ujasněny moduly ze kterých se bude náš iterpret skládat a na jakém principu bude pracovat. Dále byly do kodu přidány prototypy většiny ADT, které se později použily.
+Zpočátku se zdálo, že bude možné rozdělit si jednotlivé části interpretu a navrhnout jen jejich rozhraní. Již 3. týden semestru se to ukázalo jako šeredný omyl, protože nikomu se nechtělo psát na holé louce, a proto byl bez aktivního vědomí zbytku týmu sestaven lexekální analyzátor jako vstup do pohodlného psaní zbytku interpretu. Nevyváženost v týmu byla z počátku značná, ale členové, kteří se potřebovaly dostat znovu do C dostaly jedodušší úkoly, popřípadě jim byla navržena kostra jejich části, na kterou postupně nabalovaly funkční kod.
 
 \subsection{Techniky aktivně používané v tomto projektu}
 \begin{itemize}
-	\item Gamifikace
+	\item Gamifikace, nebo spíše pokus o ni 
 	\item Párové programování
-	\item TDD - od fáze kdy interpret začal fungovat (neznáme nikoho, kdo by se nám v této oblasti vůbec přibyližoval) naše testovací sada je sice jen 300+ příkladů, ale všechny jsou automatiky paralelně testovány i za pomocí valgrindu a dalších nástrojů, s výstupem do webového prohlížeče a další vymoženosti
+	\item TDD - od fáze kdy byl sestaven první spustitelný interpret (neznáme nikoho, kdo by se nám v této oblasti vůbec přibyližoval) naše testovací sada je sice jen 300+ příkladů, ale všechny jsou automatiky paralelně testovány i za pomocí valgrindu a dalších nástrojů, s výstupem do webového prohlížeče a další vymoženosti
 \end{itemize}
 
 
@@ -194,6 +196,9 @@ Rozdelenie práce na 4 samostatné rovnaké celky sa nám nepodarilo aplikovať 
 \scalebox{0.40}[0.38]{\includegraphics{lexparser}}
 \end{landscape}
 \clearpage
+Stavy označené zeleně jsou koncové, s tímže každý znak, který není zaznačen způsobí přechod do t\textunderscore empty.
+Stavy označené červeně jsou chybové stavy, automat se do těchto stavů může dostávat, ale nesmí v nich skončit, ze stavu t\textunderscore invalid není návratu.
+
 
 \newpage
 \section{LL gramatika}

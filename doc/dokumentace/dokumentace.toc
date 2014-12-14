@@ -16,9 +16,12 @@
 \contentsline {subsection}{\numberline {5.3}Boyer-Moore}{4}
 \contentsline {subsubsection}{\numberline {5.3.1}Heurestiky}{4}
 \contentsline {section}{\numberline {6}Pr\IeC {\'a}ca v t\IeC {\'\i }me}{5}
-\contentsline {subsection}{\numberline {6.1}Verzovac\IeC {\'\i } syst\IeC {\'e}m}{5}
-\contentsline {subsection}{\numberline {6.2}Rozdelenie pr\IeC {\'a}ce}{5}
+\contentsline {subsection}{\numberline {6.1}Formy komunikace}{5}
+\contentsline {subsection}{\numberline {6.2}\IeC {\v R}\IeC {\'\i }zen\IeC {\'\i } t\IeC {\'y}mu}{5}
+\contentsline {subsection}{\numberline {6.3}Techniky aktivn\IeC {\v e} pou\IeC {\v z}\IeC {\'\i }van\IeC {\'e} v tomto projektu}{5}
+\contentsline {subsection}{\numberline {6.4}Verzovac\IeC {\'\i } syst\IeC {\'e}m}{5}
+\contentsline {subsection}{\numberline {6.5}Rozdelenie pr\IeC {\'a}ce}{5}
 \contentsline {section}{\numberline {7}Model kone\IeC {\v c}n\IeC {\'e}ho automatu}{6}
-\contentsline {section}{\numberline {8}LL gramatika}{7}
-\contentsline {section}{\numberline {9}LL tabu\IeC {\v l}ka}{8}
-\contentsline {section}{\numberline {10}Preceden\IeC {\v c}n\IeC {\'a} tabu\IeC {\v l}ka}{9}
+\contentsline {section}{\numberline {8}LL gramatika}{8}
+\contentsline {section}{\numberline {9}LL tabu\IeC {\v l}ka}{9}
+\contentsline {section}{\numberline {10}Preceden\IeC {\v c}n\IeC {\'a} tabu\IeC {\v l}ka}{10}
