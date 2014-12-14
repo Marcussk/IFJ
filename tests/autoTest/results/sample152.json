@@ -1,1 +1,0 @@
-{"returns": 1, "stdout": "", "stderr": "../../samples/sample152.pas:5:19 ERROR(Lexical): Last read = \"abcdefghij\" String missing right ' (end of string).\n\n", "stdin": ""}

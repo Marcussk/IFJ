@@ -1,0 +1,14 @@
+#!/bin/bash
+for file in *.pas
+do
+	echo $file
+	head -n 1 $file  
+	#grep "readln" "$file"
+done
+#for file in *.pas
+#do
+#	echo $file 
+#	grep "readln" "$file"
+#done
+echo "Finished"
+
