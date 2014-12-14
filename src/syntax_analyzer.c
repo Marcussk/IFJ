@@ -319,15 +319,11 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 
 	secTok = TokenBuff_next(&self->tokBuff);
 	if (secTok == t_asigment) {
-		//lastToken = TokenBuff_next(&self->tokBuff);
-		TokenBuff_pushBack(&self->tokBuff, secTok);
-		TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 		SyntaxAnalyzer_parseAsigment(self);
 	} else {
 		Syntax_err_throw_s(self, lastToken,
 				"expected assignment in for initialization");
 	}
-	printf("assignment presiel\n");
 
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken != t_to && lastToken != t_downto) {
@@ -341,8 +337,6 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	param->iInt = step;
 
 	//lastToken = TokenBuff_next(&self->tokBuff);
-	TokenBuff_pushBack(&self->tokBuff, secTok);
-	TokenBuff_pushBack(&self->tokBuff, lastToken);
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
 	if (Uboundtype != iInt) {
 		Error_unimplemented(
