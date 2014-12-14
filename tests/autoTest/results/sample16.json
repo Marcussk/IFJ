@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample16.pas:3:11 ERROR(Syntax): expected type name\n, got \"identificator\"\n"}

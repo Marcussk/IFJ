@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample99.pas:7:5 ERROR(Syntax): No input expected after end of the program, got \"identificator\"\n"}

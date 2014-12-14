@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample59.pas:5:16 ERROR(Syntax): id of function expected, got \"boolean\"\n"}

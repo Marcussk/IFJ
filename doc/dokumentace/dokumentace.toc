@@ -1,5 +1,0 @@
-\select@language {czech}
-\contentsline {section}{\numberline {1}\IeC {\'U}vod}{2}
-\contentsline {section}{\numberline {2}Lexik\IeC {\'a}lna anal\IeC {\'y}za}{3}
-\contentsline {section}{\numberline {3}Syntaktick\IeC {\'a} anal\IeC {\'y}za}{4}
-\contentsline {section}{\numberline {4}Interpret\IeC {\'a}cia}{5}

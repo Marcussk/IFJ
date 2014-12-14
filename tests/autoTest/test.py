@@ -10,8 +10,12 @@ from datetime import datetime
 Testing script by group 76
 
 Autors:
-    script : Michal Orsák, xorsak01 
-    samples: Marek  Beňo , xbenom01
+    script : Michal Orsák,   xorsak01 
+    samples: Marek  Beňo ,   xbenom01
+             Zuzana Studena, xstude22
+             Pavel Filgas
+             Roman Sičkaruk, xsichk00
+             Milan Skála,    xskala09
 
 Why use rather this:
 - Who else checks all tests with valgrind?
@@ -54,6 +58,8 @@ MAX_THREADS = 16
 CHECK_VALGRIND = True  # Consumes MOST OF TIME
 MAKECMD = "make"  # use cmake for windows
 ENCODING = "ascii"
+TIMEOUT = 10  # s
+
 
 findValgrindErr = re.compile("==\d*== ERROR SUMMARY: (\d)")
 firstCommentRegex = re.compile(".*{([^}]*)}.*", re.MULTILINE | re.DOTALL)
@@ -97,7 +103,7 @@ def createTest(testFileName):
     resultFileName = getTestResPath(testFileName)
     result = { "stdin": "" }
     p = subprocess.Popen(["./" + BIN_NAME, testFileName], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result["stdout"], result["stderr"] = p.communicate()
+    result["stdout"], result["stderr"] = p.communicate(timeout=TIMEOUT)
     result["returns"] = p.returncode
     encodingFix(result)
     with open(resultFileName, "w") as f:
@@ -116,28 +122,30 @@ def performTest(sampleFile, resultFileName):
     with open(resultFileName) as f:
         resultRef = json.load(f)
 
-    start = datetime.now()
-    p = subprocess.Popen(["./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-    result["stdout"], result["stderr"] = p.communicate(input=resultRef["stdin"])
-    result["returns"] = p.returncode
-    result["time"] = (datetime.now() - start).total_seconds()
-    TotalTime += result["time"]
+    try:
+       start = datetime.now()
+       p = subprocess.Popen(["./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+       result["stdout"], result["stderr"] = p.communicate(input=resultRef["stdin"], timeout=TIMEOUT)
+       result["returns"] = p.returncode
+       result["time"] = (datetime.now() - start).total_seconds()
+       TotalTime += result["time"]
+       
+       if CHECK_VALGRIND:
+           pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+           valgrindOut = pValgrind.communicate(input=resultRef["stdin"], timeout=TIMEOUT)[1]
+           result["valgrindErrors"] = int(findValgrindErr.search(valgrindOut.decode(ENCODING)).group(1))
+       else:
+           result["valgrindErrors"] = -1
+       
+       encodingFix(result)  
     
-    if CHECK_VALGRIND:
-        pValgrind = subprocess.Popen(["valgrind" , "./" + BIN_NAME, sampleFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        valgrindOut = pValgrind.communicate(input=resultRef["stdin"])[1]
-        result["valgrindErrors"] = int(findValgrindErr.search(valgrindOut.decode(ENCODING)).group(1))
-    else:
-        result["valgrindErrors"] = -1
-    
-    encodingFix(result)  
-
-    if resultRef["stdout"] != result["stdout"] or resultRef["returns"] != result["returns"] or result["valgrindErrors"] > 0:
-       print(prompt + "[ \033[0;31mFAILED\033[0m ] for more see %s" % REPORT_FILE)
-       return { "result" : result, "sampleFile": sampleFile, "resultFile":resultFileName, "resultRef": resultRef }
-    else:
-       print(prompt + "\033[92mPASSED\033[0m " + str(result['time']) +"s")
-        
+       if resultRef["stdout"] != result["stdout"] or resultRef["returns"] != result["returns"] or result["valgrindErrors"] > 0:
+          print(prompt + "[ \033[0;31mFAILED\033[0m ] for more see %s" % REPORT_FILE)
+          return { "result" : result, "sampleFile": sampleFile, "resultFile":resultFileName, "resultRef": resultRef }
+       else:
+          print(prompt + "\033[92mPASSED\033[0m " + str(result['time']) + "s")
+    except subprocess.TimeoutExpired as e:    
+          print(prompt + "[ \033[0;31mFAILED - TIMEOUT\033[0m ] ")
         
 def renderErrors(errors):
     global TotalTime
