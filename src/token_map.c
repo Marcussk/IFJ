@@ -20,10 +20,10 @@ TokenMeaning tokenMeanings[] = {
 		(TokenMeaning ) { t_var, "var" },
 		(TokenMeaning ) { t_while, "while" },
 		(TokenMeaning ) { t_repeat, "repeat"},
-		(TokenMeaning ) { t_until, "until"},
 		(TokenMeaning ) { t_for, "for"},
 		(TokenMeaning ) { t_downto, "downto"},
 		(TokenMeaning ) { t_to, "to"},
+		(TokenMeaning ) { t_until, "until"},
 	
 		(TokenMeaning ) { t_plus, "+" }, // operators
 		(TokenMeaning ) { t_minus, "-" },

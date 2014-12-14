@@ -51,10 +51,11 @@ typedef enum {
 	t_var, //30
 	t_while,
 	t_repeat,
-	t_until,
 	t_for,
 	t_to,
 	t_downto,
+	t_until,
+	
 
 	t_period,
 	t_colon,

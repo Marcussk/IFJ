@@ -127,6 +127,10 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			SyntaxAnalyzer_parse_repeat(self);
 			ASSERT_NEXT_IS_END_OR_SEMICOLON()
 			break;
+		case t_for:
+			SyntaxAnalyzer_parse_for(self);
+			ASSERT_NEXT_IS_END_OR_SEMICOLON()
+			break;
 		case t_id:
 			secTok = TokenBuff_next(&self->tokBuff);
 			if (secTok == t_asigment) {
@@ -285,6 +289,97 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 	//end
 	StackAddrend->stackAddr = self->instr.actual;
 
+}
+
+void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
+	tIFJ Uboundtype;
+	Token lastToken, secTok;
+	int step;
+	InstrParam * param;
+	InstrParam * StackAddrcond = malloc(sizeof(InstrParam));
+	if (!StackAddrcond) {
+		Error_memory("Cannot allocate instrParam for writeFn");
+	}
+	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
+	if (!StackAddrend) {
+		Error_memory("Cannot allocate instrParam for writeFn");
+	}
+	param = malloc(sizeof(InstrParam));
+    if (!param) {
+     		Error_memory("Can't allocate memory for Instrparam in for");
+	}
+
+	//initialize
+	NEXT_TOK(t_id, "expected id in for initialization")
+ 	
+ 	secTok = TokenBuff_next(&self->tokBuff);
+	if (secTok == t_asigment) {
+		//lastToken = TokenBuff_next(&self->tokBuff);
+		TokenBuff_pushBack(&self->tokBuff, secTok);
+		TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
+		SyntaxAnalyzer_parseAsigment(self);
+	} else {
+	Syntax_err_throw_s(self, lastToken,"expected assignment in for initialization");
+	}
+	printf("assignment presiel\n");
+
+	lastToken = TokenBuff_next(&self->tokBuff);
+		if (lastToken != t_to && lastToken != t_downto)
+		{
+			Syntax_err_throw_s(self, lastToken,"expected to/downto in for initialization");	
+		} else if (lastToken == t_to) {
+			step = +1;
+		}
+		else if (lastToken == t_downto) {
+			step = -1;
+		}
+	param->iInt = step;
+
+	//lastToken = TokenBuff_next(&self->tokBuff);
+	TokenBuff_pushBack(&self->tokBuff, secTok);
+	TokenBuff_pushBack(&self->tokBuff, lastToken);
+	Uboundtype = SyntaxAnalyzer_parseExpr(self);
+	if (Uboundtype != iInt)
+	{
+		Error_unimplemented("Other types than int in condition not implemented\n");
+	}
+	NEXT_TOK(t_do, "expected do in for Statement block")
+	
+	//condition
+	// downto: a < b
+	// to : a > b
+	InstrQueue_insert(&self->instr,
+			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	StackAddrcond->stackAddr = self->instr.actual;
+	//TODO:
+	//pop a
+	//pop b
+	//parse cond
+
+	//jmpz end
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
+					StackAddrend });
+	//Code
+	NEXT_TOK(t_begin, "expected begin for block in for cycle")
+	SyntaxAnalyzer_parse_block(self);
+	//increment
+	// downto : a--
+	// to a+
+	InstrQueue_insert(&self->instr,
+				(Instruction ) { i_push, iInt,
+						param, NULL });
+	InstrQueue_insert(&self->instr,
+				(Instruction ) { i_add, iInt,
+						NULL, NULL });					
+	//jmpcnd
+	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
+					StackAddrcond });
+	//End
+	InstrQueue_insert(&self->instr,
+			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	StackAddrend->stackAddr = self->instr.actual;
+	
+	//Error_unimplemented("For not implemented yet\n");
 }
 
 /*
