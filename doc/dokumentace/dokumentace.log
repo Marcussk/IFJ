@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.12.10)  14 DEC 2014 19:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.12.10)  14 DEC 2014 21:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -268,28 +268,29 @@ ie k zr^^Sychleniu
 File: lexparser.png Graphic file (type png)
 
 <use lexparser.png>
-Package pdftex.def Info: lexparser.png used on input line 196.
+Package pdftex.def Info: lexparser.png used on input line 190.
 (pdftex.def)             Requested size: 1635.10478pt x 1171.3734pt.
  [6
 
 
  <./lexparser.png>] [7
 
+] [8
 
-] [8] [9
+] [9
 
 ]
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 278.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 272.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 278.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 272.
  [10
 
-]
+] [11]
 (./dokumentace.aux) ) 
 Here is how much of TeX's memory you used:
  3914 strings out of 493104
@@ -307,10 +308,10 @@ usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on dokumentace.pdf (11 pages, 218298 bytes).
+Output written on dokumentace.pdf (12 pages, 221379 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
- 51 compressed objects within 1 object stream
+ 78 PDF objects out of 1000 (max. 8388607)
+ 53 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

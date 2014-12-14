@@ -160,13 +160,7 @@ Používa dve polia pre prípady kedy nastane a nenastane zhoda v hľadanom vzor
 Keďže projekt sa vypracováva ako skupinový je potreba komunikácie a spolupráce v tíme. Rýchla komunikácia a možnosť spolupráce aj bez vlastného osobného stretnutia boli pre prácu na tomto projekte klúčové.
 
 \subsection{Formy komunikace}
-\begin{itemize}
-	\item Wiki
-	\item Git, issues
-	\item Co nejstručnější a nejvýstižnější komunikace
-	\item Komunikace v reálném čase
-	\item Pravidelné schůzky pro zvyšování nadšení z projektu	
-\end{itemize}
+Snažily jsme se o to aby základem naší komunikace byla wiky a tím omezit vzájemné zdržování. Dalším základním kamenem byly inspirační schůzky a neustálá komunikace přes skype a git issues. Avšak kladly jsme velký důraz na to, aby kod mluvil sám za sebe.
 
 \subsection{Řízení týmu}
 V 1. - 4. se po projítí si všech přednášek z předmětu IFJ a po zběžném prohlédnutí IAL byly ujasněny moduly ze kterých se bude náš iterpret skládat a na jakém principu bude pracovat. Dále byly do kodu přidány prototypy většiny ADT, které se později použily.
@@ -195,10 +189,10 @@ Rozdelenie práce na 4 samostatné rovnaké celky sa nám nepodarilo aplikovať 
 %0.42 0.35
 \scalebox{0.40}[0.38]{\includegraphics{lexparser}}
 \end{landscape}
-\clearpage
+
 Stavy označené zeleně jsou koncové, s tímže každý znak, který není zaznačen způsobí přechod do t\textunderscore empty.
 Stavy označené červeně jsou chybové stavy, automat se do těchto stavů může dostávat, ale nesmí v nich skončit, ze stavu t\textunderscore invalid není návratu.
-
+\clearpage
 
 \newpage
 \section{LL gramatika}
@@ -285,7 +279,7 @@ FLIST        &     &    &   &     &   & 33    &      &    &      &     &    &   
 \textless=            & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
 \textgreater=         & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
 =                     & S & S & S & S & R         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
-\textless\textgreater & S & S & S & S &           & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
+\textless\textgreater & S & S & S & S & S         & R            & R          & R             & R & R                     & S & R & R & R & S & S \\ \hline
 (                     & S & S & S & S & S         & S            & S          & S             & S & S                     & E & R & R & R & X & R \\ \hline
 )                     & R & R & R & R & R         & R            & R          & R             & R & R                     & E & R & R & R & X & R \\ \hline
 ,                     & S & S & S & S & S         & S            & S          & S             & S & S                     & S & E & E & X & S & S \\ \hline
@@ -294,5 +288,35 @@ i                     & R & R & R & R & R         & R            & R          & 
 f                     & X & X & X & X & X         & X            & X          & X             & X & X                     & E & X & X & X & X & X \\ \hline
 \end{tabular}
 \end{table}
+
+\section{Návrhové detaily}
+
+\subsection{Zásobníky}
+Všechny zásobníky jsou řešeny dynamickým polem.
+
+\subsection{Lexikální analyzator}
+Konečný stavový automat pacující s abstrakcí souboru, do kterého jde vrátit jeden znak.
+Při každém zavolání vrací další token. Uchovává tabulku symbolů a má přepínače kterými se řídí způsob vyhledávání v tabulce symbolů. Konvertuje hodnoty, konkatenuje řetězce.
+
+\subsection{Syntaktický analyzarot}
+Používá rekurzivní sestup, přímo tvoří instrukce v případě, že očekává výraz předá řízení analyzátoru výrazů
+
+\subsection{Výrazový analyzator}
+Používá precedenční analýzu s LL1 gramatikou, taktéž přímo tvoří instrukce a navrací datavý typ výrazu. Zpacovává i příkazy read a write protože jsme se snažily o co největší univerzálnost návrhu ano readln a write je v IFJ14 příkaz ale ze své podstaty je funkce.
+
+\subsection{Semantický anylyzator}
+Tvoří ho jen soubor funkcí pro syntaktickou kontrolu a pro přetypování ve výrazech.
+
+
+\subsection{Modul pro hlášení chyb}
+Každá chyba je zpracovávána podobně jako vyjímka, má svojí funkci která slouží k přechodu ke sbírání dat o chybě ale od tohoto stavu již není vyjímka zastavitelná a skončí vždy ukončením programu s příslušným návratovým kodem a hláškou.
+
+\subsection{Interpret}
+\begin{itemize}
+	\item Pole příkazů s ukazatelem na aktuální příkaz
+	\item Zásobník pro jednotlivé paměťové místa (alias proměné) nikoly rámce funkcí
+	\item Instrukce ve většině případů pracují s vrcholem zásobníku 
+\end{itemize}
+
 \end{document}
 
