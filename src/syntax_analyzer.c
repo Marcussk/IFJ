@@ -349,6 +349,12 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 
 	// [TODO] insert cmpr
 
+	//condition
+	// downto: a < b
+	// to : a > b
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
+	StackAddrcond->stackAddr = self->instr.actual;
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
 	if (Uboundtype != iInt) {
 		Error_unimplemented(
@@ -356,16 +362,16 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	}
 	NEXT_TOK(t_do, "expected do in for Statement block")
 
-	//condition
-	// downto: a < b
-	// to : a > b
-	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
-			NULL });
-	StackAddrcond->stackAddr = self->instr.actual;
+
 	//TODO:
 	//pop a
 	//pop b
 	//parse cond
+
+
+	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iStackGRef, condtValAddr,
+			NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_more, iInt, NULL, NULL});
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
@@ -376,7 +382,7 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	//increment
 	// downto : a--
 	// to a+
-	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, condtValAddr,
+	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iStackGRef, condtValAddr,
 			NULL });
 	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, param,
 			NULL });
@@ -385,6 +391,8 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 
 	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, globalOrLocal,
 				NULL, condtValAddr });
+
+
 
 	//jmpcnd
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
