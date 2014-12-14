@@ -406,6 +406,10 @@ tIFJ ExprParser_parse(ExprParser * self) {
 		case error:
 			Syntax_err_throw_t(self, lastToken,
 					"Expression Error, error state from prTable");
+			break;
+		default:
+			Syntax_err_throw_t(self, lastToken,
+					"Expression Error, unexpected token");
 		};
 	} while (!(Token_isKeyword(lastToken) || lastToken == t_scolon)); // cann't  require anything else
 

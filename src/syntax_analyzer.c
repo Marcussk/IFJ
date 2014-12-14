@@ -139,64 +139,8 @@ bool statRequired) {
 	TokenBuff_pushBack(&self->tokBuff, lastToken);
 	if (lastToken != t_end) {
 		lastToken = t_scolon;
-	}else{
+	} else {
 		return;
-<<<<<<< HEAD
-	else
-		TokenBuff_pushBack(&self->tokBuff, lastToken);
-
-	while (1) {
-		lastToken = TokenBuff_next(&self->tokBuff);
-		switch (lastToken) {
-		case t_if:
-			SyntaxAnalyzer_parse_if(self);
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_begin:
-			SyntaxAnalyzer_parse_block(self);
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_while:
-			SyntaxAnalyzer_parse_while(self);
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_repeat:
-			SyntaxAnalyzer_parse_repeat(self);
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_for:
-			SyntaxAnalyzer_parse_for(self);
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_id:
-			secTok = TokenBuff_next(&self->tokBuff);
-			if (secTok == t_asigment) {
-				SyntaxAnalyzer_parseAsigment(self);
-			} else {
-				TokenBuff_pushBack(&self->tokBuff, secTok);
-				TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
-				SyntaxAnalyzer_parseExpr(self);
-			}
-			ASSERT_NEXT_IS_END_OR_SEMICOLON()
-			break;
-		case t_scolon:
-			secTok = TokenBuff_next(&self->tokBuff);
-			if (secTok == t_scolon) {
-				Syntax_err_throw_s(self, secTok,
-						"unexpected \";\" after \";\"");
-			} else if (secTok == t_end)
-				Syntax_err_throw_s(self, secTok,
-						"unexpected \";\" before last statement in block");
-			else
-				TokenBuff_pushBack(&self->tokBuff, secTok);
-			continue;
-		case t_end:
-			return;
-		default:
-			Syntax_err_throw_s(self, lastToken,
-					"Unexpected syntax in code block\n");
-			return;
-=======
 	}
 	while (lastToken == t_scolon) {
 		if (statRequired) {
@@ -206,7 +150,6 @@ bool statRequired) {
 						"one or more statements are required");
 			TokenBuff_pushBack(&self->tokBuff, lastToken);
 			statRequired = false;
->>>>>>> b731eee252b94642b70d0f72e135921c9ee4d010
 		}
 		SyntaxAnalyzer_parse_statement(self);
 		lastToken = TokenBuff_next(&self->tokBuff);
@@ -357,53 +300,53 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	InstrParam * param;
 	InstrParam * StackAddrcond = malloc(sizeof(InstrParam));
 	if (!StackAddrcond) {
-		Error_memory("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam in for");
 	}
 	InstrParam * StackAddrend = malloc(sizeof(InstrParam));
 	if (!StackAddrend) {
-		Error_memory("Cannot allocate instrParam for writeFn");
+		Error_memory("Cannot allocate instrParam in for");
 	}
 	param = malloc(sizeof(InstrParam));
-    if (!param) {
-     		Error_memory("Can't allocate memory for Instrparam in for");
+	if (!param) {
+		Error_memory("Can't allocate memory for Instrparam in for");
 	}
 
 	//initialize
 	NEXT_TOK(t_id, "expected id in for initialization")
- 	
- 	secTok = TokenBuff_next(&self->tokBuff);
+
+	secTok = TokenBuff_next(&self->tokBuff);
 	if (secTok == t_asigment) {
 		//lastToken = TokenBuff_next(&self->tokBuff);
 		TokenBuff_pushBack(&self->tokBuff, secTok);
 		TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
 		SyntaxAnalyzer_parseAsigment(self);
 	} else {
-	Syntax_err_throw_s(self, lastToken,"expected assignment in for initialization");
+		Syntax_err_throw_s(self, lastToken,
+				"expected assignment in for initialization");
 	}
 	printf("assignment presiel\n");
 
 	lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken != t_to && lastToken != t_downto)
-		{
-			Syntax_err_throw_s(self, lastToken,"expected to/downto in for initialization");	
-		} else if (lastToken == t_to) {
-			step = +1;
-		}
-		else if (lastToken == t_downto) {
-			step = -1;
-		}
+	if (lastToken != t_to && lastToken != t_downto) {
+		Syntax_err_throw_s(self, lastToken,
+				"expected to/downto in for initialization");
+	} else if (lastToken == t_to) {
+		step = +1;
+	} else if (lastToken == t_downto) {
+		step = -1;
+	}
 	param->iInt = step;
 
 	//lastToken = TokenBuff_next(&self->tokBuff);
 	TokenBuff_pushBack(&self->tokBuff, secTok);
 	TokenBuff_pushBack(&self->tokBuff, lastToken);
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
-	if (Uboundtype != iInt)
-	{
-		Error_unimplemented("Other types than int in condition not implemented\n");
+	if (Uboundtype != iInt) {
+		Error_unimplemented(
+				"Other types than int in condition not implemented\n");
 	}
 	NEXT_TOK(t_do, "expected do in for Statement block")
-	
+
 	//condition
 	// downto: a < b
 	// to : a > b
@@ -425,11 +368,9 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	// downto : a--
 	// to a+
 	InstrQueue_insert(&self->instr,
-				(Instruction ) { i_push, iInt,
-						param, NULL });
-	InstrQueue_insert(&self->instr,
-				(Instruction ) { i_add, iInt,
-						NULL, NULL });					
+			(Instruction ) { i_push, iInt, param, NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_add, iInt,
+			NULL, NULL });
 	//jmpcnd
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrcond });
@@ -437,7 +378,7 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_noop, iVoid, NULL, NULL });
 	StackAddrend->stackAddr = self->instr.actual;
-	
+
 	//Error_unimplemented("For not implemented yet\n");
 }
 
