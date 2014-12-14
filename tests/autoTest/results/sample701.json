@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 1, "stdout": "", "stderr": "../../samples/sample701.pas:5:0 ERROR(Lexical): Last read = \"12.\" expected number after dot\n"}

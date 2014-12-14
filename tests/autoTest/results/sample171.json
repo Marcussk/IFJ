@@ -1,1 +1,1 @@
-{"returns": 9, "stdout": "", "stderr": "ERROR(Runtime): Builtin function copy can't be performed because original string is too short\n\n", "stdin": ""}
+{"returns": 0, "stdin": "", "stdout": "", "stderr": ""}

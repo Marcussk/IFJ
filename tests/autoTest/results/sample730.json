@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample730.pas:6:13 ERROR(Syntax): Expression syntax error - missing operands, got \"*\"\n"}

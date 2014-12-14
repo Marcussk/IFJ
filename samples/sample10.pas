@@ -1,4 +1,4 @@
-{ zaporna scientific notation }
+{ zaporna scientific notation "MINUS" }
 var
 	vysl : real;
 { Hlavni telo programu }

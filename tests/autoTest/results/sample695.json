@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 1, "stdout": "", "stderr": "../../samples/sample695.pas:6:20 ERROR(Lexical): Last read = \"1.2e+\" expected number as exponent\n"}

@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 1, "stdout": "", "stderr": "../../samples/sample731.pas:26:9 ERROR(Lexical): Last read = \"foo\" Can't resolve token from string\n"}

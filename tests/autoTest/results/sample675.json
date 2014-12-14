@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 1, "stdout": "", "stderr": "../../samples/sample675.pas:30:1 ERROR(Lexical): Last read = \"end\" String missing right } (end of comment).\n\n"}
