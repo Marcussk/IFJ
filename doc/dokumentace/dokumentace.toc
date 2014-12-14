@@ -1,0 +1,24 @@
+\select@language {czech}
+\contentsline {section}{\numberline {1}\IeC {\'U}vod}{2}
+\contentsline {section}{\numberline {2}Lexik\IeC {\'a}lna anal\IeC {\'y}za}{2}
+\contentsline {section}{\numberline {3}Syntaktick\IeC {\'a} a s\IeC {\'e}mantick\IeC {\'a} anal\IeC {\'y}za}{2}
+\contentsline {subsection}{\numberline {3.1}Met\IeC {\'o}da rekurz\IeC {\'\i }vneho zostupu}{2}
+\contentsline {subsubsection}{\numberline {3.1.1}LL gramatika}{2}
+\contentsline {subsubsection}{\numberline {3.1.2}LL tabu\IeC {\v l}ka}{3}
+\contentsline {subsection}{\numberline {3.2}Met\IeC {\'o}da preceden\IeC {\v c}nej anal\IeC {\'y}zy}{3}
+\contentsline {subsubsection}{\numberline {3.2.1}Preceden\IeC {\v c}n\IeC {\'a} tabu\IeC {\v l}ka}{3}
+\contentsline {subsection}{\numberline {3.3}S\IeC {\'e}mantick\IeC {\'a} anal\IeC {\'y}za}{3}
+\contentsline {section}{\numberline {4}Interpret\IeC {\'a}cia}{3}
+\contentsline {section}{\numberline {5}Algoritmy}{4}
+\contentsline {subsection}{\numberline {5.1}Hashovacia tabu\IeC {\v l}ka}{4}
+\contentsline {subsection}{\numberline {5.2}Heap sort}{4}
+\contentsline {subsubsection}{\numberline {5.2.1}Implement\IeC {\'a}cia}{4}
+\contentsline {subsection}{\numberline {5.3}Boyer-Moore}{4}
+\contentsline {subsubsection}{\numberline {5.3.1}Heurestiky}{4}
+\contentsline {section}{\numberline {6}Pr\IeC {\'a}ca v t\IeC {\'\i }me}{5}
+\contentsline {subsection}{\numberline {6.1}Verzovac\IeC {\'\i } syst\IeC {\'e}m}{5}
+\contentsline {subsection}{\numberline {6.2}Rozdelenie pr\IeC {\'a}ce}{5}
+\contentsline {section}{\numberline {7}Model kone\IeC {\v c}n\IeC {\'e}ho automatu}{6}
+\contentsline {section}{\numberline {8}LL gramatika}{7}
+\contentsline {section}{\numberline {9}LL tabu\IeC {\v l}ka}{8}
+\contentsline {section}{\numberline {10}Preceden\IeC {\v c}n\IeC {\'a} tabu\IeC {\v l}ka}{9}
