@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample112.pas:7:3 ERROR(Syntax): unexpected \";\" before last statement in block, got \"end\"\n"}

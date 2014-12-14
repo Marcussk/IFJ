@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample189.pas:3:20 ERROR(Syntax): Expected \"(\" probably received more arguments than expected, got \",\"\n"}

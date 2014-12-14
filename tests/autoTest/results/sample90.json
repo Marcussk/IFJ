@@ -1,0 +1,1 @@
+{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample90.pas:3:8 ERROR(Syntax): Expected variable declarations\n, got \"true\"\n"}
