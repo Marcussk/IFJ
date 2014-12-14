@@ -299,7 +299,6 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	tIFJ Uboundtype;
 	Token lastToken, secTok;
-	int step;
 	InstrParam * param;
 	InstrParam * StackAddrcond = malloc(sizeof(InstrParam));
 	if (!StackAddrcond) {
@@ -318,31 +317,21 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	NEXT_TOK(t_id, "expected id in for initialization")
 
 	secTok = TokenBuff_next(&self->tokBuff);
-	if (secTok == t_asigment) {
-		//lastToken = TokenBuff_next(&self->tokBuff);
-		TokenBuff_pushBack(&self->tokBuff, secTok);
-		TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
-		SyntaxAnalyzer_parseAsigment(self);
-	} else {
+	if (secTok != t_asigment)
 		Syntax_err_throw_s(self, lastToken,
 				"expected assignment in for initialization");
-	}
-	printf("assignment presiel\n");
+
+	SyntaxAnalyzer_parseAsigment(self);
 
 	lastToken = TokenBuff_next(&self->tokBuff);
-	if (lastToken != t_to && lastToken != t_downto) {
+	if (lastToken == t_to) {
+		param->iInt = +1;
+	} else if (lastToken == t_downto) {
+		param->iInt = -1;
+	} else
 		Syntax_err_throw_s(self, lastToken,
 				"expected to/downto in for initialization");
-	} else if (lastToken == t_to) {
-		step = +1;
-	} else if (lastToken == t_downto) {
-		step = -1;
-	}
-	param->iInt = step;
 
-	//lastToken = TokenBuff_next(&self->tokBuff);
-	TokenBuff_pushBack(&self->tokBuff, secTok);
-	TokenBuff_pushBack(&self->tokBuff, lastToken);
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
 	if (Uboundtype != iInt) {
 		Error_unimplemented(
@@ -353,8 +342,8 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	//condition
 	// downto: a < b
 	// to : a > b
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
 	StackAddrcond->stackAddr = self->instr.actual;
 	//TODO:
 	//pop a
@@ -370,16 +359,16 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	//increment
 	// downto : a--
 	// to a+
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_push, iInt, param, NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, param,
+			NULL });
 	InstrQueue_insert(&self->instr, (Instruction ) { i_add, iInt,
 			NULL, NULL });
 	//jmpcnd
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrcond });
 	//End
-	InstrQueue_insert(&self->instr,
-			(Instruction ) { i_noop, iVoid, NULL, NULL });
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
 
 	//Error_unimplemented("For not implemented yet\n");
@@ -397,7 +386,7 @@ void SyntaxAnalyzer_parse_paramList(SyntaxAnalyzer * self) {
 	LexParser_fnParamsEnter(self->lp);
 	while (true) {
 		lastToken = TokenBuff_next(&self->tokBuff);
-		if (lastToken == t_rParenthessis) {            // ) - params are empty
+		if (lastToken == t_rParenthessis) {          // ) - params are empty
 			return;
 		} else if (lastToken != t_id) {
 			Syntax_err_throw_s(self, lastToken, "expected id in argument list");
@@ -558,7 +547,8 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_period:
 			self->lp->idMode = lp_ignore;
 			tok = TokenBuff_next(&self->tokBuff);
-			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL,
+			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0,
+					NULL,
 					NULL });
 			if (tok == t_eof)
 				return;
