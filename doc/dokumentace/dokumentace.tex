@@ -19,7 +19,6 @@
 \vspace{\stretch{0.618}}
 \end{center}
 
-%TODO rozsirenia a percenta
 \noindent
 Rozšírenia: \\
 FUNEXP, REPEAT, MSG, MINUS
@@ -87,12 +86,29 @@ Rozvoj pravidiel závisí od nasledujúceho tokenu a nemožno sa rozhodovať pod
 Tabuľka založená na LL gramatike pre výber pravidla.\\
 Stĺpce predstavujú nasledujúci token a riadky najľavejší neterminál. Prienikom aktuálneho stavu je identifikátor pravidla, ktoré sa použije.
 
-%TODO doplnit precedencnu analyzu
 \subsection{Metóda precedenčnej analýzy}
-Spracováva výrazy syntaktickou analýzou zdola nahor. Metóda využíva precedenčnú tabulku pri výbere redukčného pravidla podľa priority (precedencie) symbolov.
+Spracováva výrazy syntaktickou analýzou zdola nahor. K spracovávaniu výrazov dochádza pri prepnutí sa z syntaktickej analýzy a končí sa pri načítaní tokenu nepatriacemu výrazu. Pre svoje fungovanie využíva výrazová analýza svoj vlastný zásobník a simuluje redukčné pravidlá:
+\begin{itemize}
+\item{E $\rightarrow$ E + E}
+\item{E $\rightarrow$ E - E}
+\item{E $\rightarrow$ E * E}
+\item{E $\rightarrow$ E / E}
+\item{E $\rightarrow$ E $<$ E}
+\item{E $\rightarrow$ E $>$ E}
+\item{E $\rightarrow$ E $<=$ E}
+\item{E $\rightarrow$ E $>=$ E}
+\item{E $\rightarrow$ E = E}
+\item{E $\rightarrow$ ( E )}
+\item{E $\rightarrow$ i}
+\item{E $\rightarrow$ f()}
+\item{E $\rightarrow$ f(e)}
+\item{E $\rightarrow$ f(E, E, ..., E)}
+\end{itemize}
+Pravidlá nie sú pevne implementované ale prebieha ich simulácia pomocou výberu redukčného pravidla.
+Výber redukčného pravidla prebieha podľa priority (precedencie) symbolov.
 
 \subsubsection{Precedenčná tabuľka}
-Precedenčná tabuľka slúži na výber operácie shift alebo reduce. Je vytvorená na základe precedencie operátorov daného jazyka.
+Precedenčná tabuľka slúži na výber operácie shift alebo reduce. Je vytvorená na základe precedencie operátorov daného jazyka. Pozostáva zo všetkých možných operátorov nad danými výrazmi a príznakmi pre operáciu nad zásobníkom: shift,reduce,equal a chybový stav.
 
 \subsection{Sémantická analýza}
 Úlohou Semantickej analýzy je kontrola dátových typov pri operáciách s premennými a ich prípadné pretypovanie.
@@ -116,7 +132,7 @@ Hashovacia tabuľka je abstraktný dátový typ, ktorý využívame na implement
 Hashovacia tabuľka sa vyznačuje náročnoťou na pamäť $\mathcal{O}(n)$ avšak vykazuje priemernú náročnosť pre vkladanie a vyhľadávanie záznamov $\mathcal{O}(1)$. Pri zaplnení tabuľky symbolov je potreba túto tabuľku zväčšiť a následne realokovať. Implementácia tabuľky využíva velkosť mocniny $2$ kvôli zníženiu nároku alokovania v prípade nedostatku pamäti.\\
 Tabuľka slúži na ukladanie a následné vyhľadávanie symbolov pomocou hashovacej funkcie. Funkcia slúži na priradenie unikátnej hodnoty pre akýkoľvek daný klúč. Pomocou hodnoty vrátenej hashovaciou funkciou sa vyhľadáva alebo vkladá na danú pozíciu tabuľky.\\ 
 Tabuľka rozširuje lokálne a globálne symboly pomocou zanorovaňia sa do novej úrovne tejto tabuľky. Zanorovanie a vynorovanie prebieha pri definícií/deklarácií funkcie alebo návratu z nej. 
-%TODO top down? bottom up?
+
 \subsection{Heap sort}
 Využili sme pole pre implementáciu vyhľadávania v halde. Napriek nutnosti spravovať haldu a jeho nestabilnosti sa algoritmus vyznačuje malými nárokmi. Vyznačuje sa najhoršou maximálnou náročnosťou $\mathcal{O}N\log{N}$.
 Pri tejto implementácií považujeme prvok str[0] za vrchol haldy. Potom platí: str[2i+1] pre ľavého potomka a str[2i+2] pre pravého potomka. 
