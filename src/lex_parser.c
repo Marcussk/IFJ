@@ -147,6 +147,8 @@ Token LexParser_keywordCheck(String * str) {
 		case 'd':
 			if (str->len == 2 && str->buff[1] == 'o')
 				return t_do;
+			if (str->len == 6 && !strcmp(str->buff, "downto"))
+				return t_downto;
 			break;
 		case 'e':
 			if (str->len == 4 && !strcmp(str->buff, "else"))
@@ -155,12 +157,14 @@ Token LexParser_keywordCheck(String * str) {
 				return t_end;
 			break;
 		case 'f':
+			if (str->len == 3 && !strcmp(str->buff, "for"))
+				return t_for;
 			if (str->len == 5 && !strcmp(str->buff, "false"))
 				return t_false;
-			if (str->len == 8 && !strcmp(str->buff, "function"))
-				return t_func;
 			if (str->len == 7 && !strcmp(str->buff, "forward"))
 				return t_forward;
+			if (str->len == 8 && !strcmp(str->buff, "function"))
+				return t_func;
 			break;
 		case 'i':
 			if (str->len == 2 && str->buff[1] == 'f')
@@ -179,6 +183,8 @@ Token LexParser_keywordCheck(String * str) {
 				return t_string;
 			break;
 		case 't':
+			if (str->len == 2 && str->buff[1] == 'o')
+				return t_to;
 			if (str->len == 4 && !strcmp(str->buff, "then"))
 				return t_then;
 			if (str->len == 4 && !strcmp(str->buff, "true"))
