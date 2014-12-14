@@ -12,6 +12,18 @@
 #define MAX_SIZE 255
 #define SUFFSIZE 255
 
+#define max(a, b) ((a < b) ? b : a)
+#define min(a, b) ((a > b) ? b : a)
+#define MAX_LENGTH 256
+
+void ComputeJumps(char * P);
+void ComputeMatch(char *P);
+int BMA(char * P, char * T);
+
+
+int CharJump[MAX_LENGTH];
+int MatchJump[MAX_LENGTH];
+
 int func_find(char *txt, char *pat);
 //int func_find( char *src, char *search );
 char * func_sort(char *str);
