@@ -299,8 +299,13 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	tIFJ Uboundtype;
 	Token lastToken, secTok;
+	iVar * condtVal;
 	InstrParam * param;
 	InstrParam * StackAddrcond = malloc(sizeof(InstrParam));
+	if (!StackAddrcond) {
+		Error_memory("Cannot allocate instrParam in for");
+	}
+	InstrParam * condtValAddr = malloc(sizeof(InstrParam));
 	if (!StackAddrcond) {
 		Error_memory("Cannot allocate instrParam in for");
 	}
@@ -315,13 +320,23 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 
 	//initialize
 	NEXT_TOK(t_id, "expected id in for initialization")
+	condtVal = self->lp->lastSymbol;
+	condtValAddr->stackAddr = condtVal->stackIndex;
+	tIFJ globalOrLocal;
+	if (condtVal->isGlobal)
+		globalOrLocal = iStackGRef;
+	else
+		globalOrLocal = iStackRef;
+
 
 	secTok = TokenBuff_next(&self->tokBuff);
 	if (secTok != t_asigment)
 		Syntax_err_throw_s(self, lastToken,
 				"expected assignment in for initialization");
-
+	//TokenBuff_pushBack(&self->tokBuff, lastToken);
 	SyntaxAnalyzer_parseAsigment(self);
+
+
 
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken == t_to) {
@@ -331,6 +346,8 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	} else
 		Syntax_err_throw_s(self, lastToken,
 				"expected to/downto in for initialization");
+
+	// [TODO] insert cmpr
 
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
 	if (Uboundtype != iInt) {
@@ -359,10 +376,16 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	//increment
 	// downto : a--
 	// to a+
+	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, condtValAddr,
+			NULL });
 	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, param,
 			NULL });
 	InstrQueue_insert(&self->instr, (Instruction ) { i_add, iInt,
 			NULL, NULL });
+
+	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, globalOrLocal,
+				NULL, condtValAddr });
+
 	//jmpcnd
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrcond });
