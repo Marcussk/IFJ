@@ -1,1 +1,1 @@
-{"stdin": "", "returns": 2, "stdout": "", "stderr": "../../samples/sample228.pas:9:8 ERROR(Syntax): Unexpected syntax in code block\n, got \":=\"\n"}
+{"stderr": "", "returns": 0, "stdin": "", "stdout": "bcdefghij\ncdefghij\ndefghij\nefghij\nfghij\nghij\nhij\nij\nj\n\n45"}

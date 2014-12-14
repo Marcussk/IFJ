@@ -97,14 +97,51 @@ void SyntaxAnalyzer_parse_varDeclr(SyntaxAnalyzer * self) {
 	}
 }
 
-//(begin ... end) ("begin" already found)
-void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
-	Token lastToken;
-	Token secTok = t_empty;
-	lastToken = TokenBuff_next(&self->tokBuff);
-
-	if (lastToken == t_end)
+void SyntaxAnalyzer_parse_statement(SyntaxAnalyzer * self) {
+	Token secTok;
+	Token lastToken = TokenBuff_next(&self->tokBuff);
+	switch (lastToken) {
+	case t_if:
+		SyntaxAnalyzer_parse_if(self);
+		break;
+	case t_begin:
+		SyntaxAnalyzer_parse_block(self);
+		break;
+	case t_while:
+		SyntaxAnalyzer_parse_while(self);
+		break;
+	case t_repeat:
+		SyntaxAnalyzer_parse_repeat(self);
+		break;
+	case t_id:
+		secTok = TokenBuff_next(&self->tokBuff);
+		if (secTok == t_asigment) {
+			SyntaxAnalyzer_parseAsigment(self);
+		} else {
+			TokenBuff_pushBack(&self->tokBuff, secTok);
+			TokenBuff_pushBack(&self->tokBuff, lastToken); //t_id
+			SyntaxAnalyzer_parseExpr(self);
+		}
+		break;
+	default:
+		Syntax_err_throw_s(self, lastToken, "Unexpected syntax in statement\n");
 		return;
+	}
+}
+bool isStatementEnd(Token t) {
+	return t == t_until || t == t_end;
+}
+
+void SyntaxAnalyzer_parse_statementlist(SyntaxAnalyzer * self,
+bool statRequired) {
+	Token lastToken;
+	lastToken = TokenBuff_next(&self->tokBuff);
+	TokenBuff_pushBack(&self->tokBuff, lastToken);
+	if (lastToken != t_end) {
+		lastToken = t_scolon;
+	}else{
+		return;
+<<<<<<< HEAD
 	else
 		TokenBuff_pushBack(&self->tokBuff, lastToken);
 
@@ -159,8 +196,33 @@ void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
 			Syntax_err_throw_s(self, lastToken,
 					"Unexpected syntax in code block\n");
 			return;
-		}
+=======
 	}
+	while (lastToken == t_scolon) {
+		if (statRequired) {
+			lastToken = TokenBuff_next(&self->tokBuff);
+			if (isStatementEnd(lastToken))
+				Syntax_err_throw_s(self, lastToken,
+						"one or more statements are required");
+			TokenBuff_pushBack(&self->tokBuff, lastToken);
+			statRequired = false;
+>>>>>>> b731eee252b94642b70d0f72e135921c9ee4d010
+		}
+		SyntaxAnalyzer_parse_statement(self);
+		lastToken = TokenBuff_next(&self->tokBuff);
+	}
+	TokenBuff_pushBack(&self->tokBuff, lastToken);
+}
+
+//(begin ... end) ("begin" already found)
+void SyntaxAnalyzer_parse_block(SyntaxAnalyzer * self) {
+	Token lastToken;
+	Token secTok = t_empty;
+
+	SyntaxAnalyzer_parse_statementlist(self, false);
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_end)
+		Syntax_err_throw_s(self, secTok, "missing end of block");
 }
 
 //"if" already found
@@ -174,41 +236,40 @@ void SyntaxAnalyzer_parse_if(SyntaxAnalyzer * self) {	//if
 	if (!StackAddrend) {
 		Error_memory("Cannot allocate instrParam for Label ");
 	}
-	//COND
+//COND
 	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self), self->lp);
-	//jmpz else
+//jmpz else
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
 					StackAddress });
-	//then
+//then
 	NEXT_TOK(t_then, "expected then")
-	//begin then block
+//begin then block
 	NEXT_TOK(t_begin, "expected begin for if block")
-	//block
+//block
 	SyntaxAnalyzer_parse_block(self);					//STMTLIST
-	//else
-	lastToken = TokenBuff_next(&self->tokBuff);                        
- 	if(lastToken != t_else){                                         
-	TokenBuff_pushBack(&self->tokBuff, lastToken);
-	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
-			NULL });
-	StackAddress->stackAddr = self->instr.actual;
-	return;
-	}
-	else {  //found else...
+//else
+	lastToken = TokenBuff_next(&self->tokBuff);
+	if (lastToken != t_else) {
+		TokenBuff_pushBack(&self->tokBuff, lastToken);
+		InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+				NULL });
+		StackAddress->stackAddr = self->instr.actual;
+		return;
+	} else {  //found else...
 		InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
-					StackAddrend });
+						StackAddrend });
 	}
 
-	//begin else block
+//begin else block
 	NEXT_TOK(t_begin, "expected begin for if else block")
-	//else:
+//else:
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
 			NULL });
 	StackAddress->iInt = self->instr.actual;
-	//block
-	SyntaxAnalyzer_parse_block(self);					//STMTLIST			
-	// end:
-	
+//block
+	SyntaxAnalyzer_parse_block(self);					//STMTLIST
+// end:
+
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
 			NULL });
 	StackAddrend->stackAddr = self->instr.actual;
@@ -226,24 +287,24 @@ void SyntaxAnalyzer_parse_while(SyntaxAnalyzer * self) {   //while
 	if (!StackAddrend) {
 		Error_memory("Cannot allocate instrParam for writeFn");
 	}
-	//Cond
+//Cond
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_noop, iVoid, NULL, NULL });
 	StackAddrbegin->stackAddr = self->instr.actual;
 	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self), self->lp);
-	//do
+//do
 	NEXT_TOK(t_do, "expected do");
-	//begin:
+//begin:
 
-	//jmpz end
+//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
 					StackAddrend });
 	lastToken = TokenBuff_next(&self->tokBuff);		//begin
 	SyntaxAnalyzer_parse_block(self);				//STMTLIST
-	//jmp begin
+//jmp begin
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrbegin });
-	//end
+//end
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_noop, iVoid, NULL, NULL });
 	StackAddrend->stackAddr = self->instr.actual;
@@ -263,30 +324,28 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 	}
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_noop, iVoid, NULL, NULL });
-	//begin
+//begin
 	StackAddrbegin->stackAddr = self->instr.actual;
 
-	lastToken = TokenBuff_next(&self->tokBuff);		//begin
-	SyntaxAnalyzer_parse_block(self);				//STMTLIST
+	SyntaxAnalyzer_parse_statementlist(self, true);
 
-	//until 
 	NEXT_TOK(t_until, "expected until");
 
-	//Cond
+//Cond
 	SemAnalyzer_checkcond(SyntaxAnalyzer_parseExpr(self), self->lp);
 	InstrQueue_insert(&self->instr,
 			(Instruction ) { i_not, iBool, NULL, NULL });
 
-	//jmpz end
+//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
 					StackAddrend });
-	//jmp begin
+//jmp begin
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrbegin });
 
 	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
 			NULL });
-	//end
+//end
 	StackAddrend->stackAddr = self->instr.actual;
 
 }
@@ -555,7 +614,8 @@ void SyntaxAnalyzer_parse(SyntaxAnalyzer * self) {
 		case t_period:
 			self->lp->idMode = lp_ignore;
 			tok = TokenBuff_next(&self->tokBuff);
-			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL, NULL });
+			InstrQueue_insert(&self->instr, (Instruction ) { i_stop, 0, NULL,
+					NULL });
 			if (tok == t_eof)
 				return;
 			else {

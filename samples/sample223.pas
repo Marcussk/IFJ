@@ -7,5 +7,6 @@ begin
 
 	repeat
 		a := a - 1
-	until (a = 4)
+	until (a = 4);
+	write(a)
 end.
