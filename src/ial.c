@@ -67,10 +67,6 @@ void badcharfill(char *str, int length, int badchar[MAX_SIZE]) {
 	}
 }
 
-int max(int a, int b) {
-	return (a > b) ? a : b;
-}
-
 /* 	
 Secondary function to Good-suffix heurestics
 Case when mismatch occurs 	
@@ -118,38 +114,97 @@ void processsuff(char *str, int length, int goodsuff[]) {
 	return;
 }
 
-/* 	
-Boyer-Moore body function 	
-Uses Bad-characters and Good-Suffixes to minimize searches 	
-*/
-int func_find(char *txt, char *pat) {
-	
-	if (strcmp(pat, "") == 0)
-	{
+int func_find(char *T, char *P) {
+	if (!strlen(P))
 		return 1;
-	}
-	int patlength = strlen(pat);
-	int txtlength = strlen(txt);
-	int shift = 0;
-	int matchindex;
-	int badchar[MAX_SIZE];
-	int goodsuff[SUFFSIZE];
+	ComputeJumps(P);
+	ComputeMatch(P);
 
-	badcharfill(pat, patlength, badchar);
-	processsuff(pat, patlength, goodsuff);
+	int i = BMA(P, T) + 1;
+	return i;
+}
 
-	while (shift <= txtlength - patlength) {
-		matchindex = patlength - 1;
-		for (matchindex = patlength -1; matchindex >= 0 && pat[matchindex] == txt[matchindex + shift]; --matchindex);
-			if (matchindex < 0) {
-				return shift + 1;
-				shift += goodsuff[0];
-			}
-			else {
-				shift += max(goodsuff[matchindex],badchar[(int)txt[matchindex + shift]] - patlength + 1 + matchindex);
-			}
-		}
-	return 0;
+void ComputeJumps(char * P)
+{
+    int ch;
+    int k;
+
+    for(ch = 0; ch < MAX_LENGTH; ch++)
+    {
+        CharJump[ch] = strlen(P);
+    }
+    for(k=0; k < strlen(P)-1; k++)
+    {
+        CharJump[P[k]] = strlen(P) -1 - k;
+    }
+}
+void ComputeMatch(char *P)
+{
+    int k, q, qq;
+    int Backup[MAX_LENGTH];
+    int m = (strlen(P))-1;
+    for(k = 0; k <= m; k++)
+    {
+        MatchJump[k] = 2*m - k;
+    }
+    k = m;
+    q = m +1;
+
+    while(k>=0)
+    {
+        Backup[k] = q;
+        while((q<=m) && (P[k] != P[q]))
+        {
+            MatchJump[q] = min(MatchJump[q],(m-k));
+            q = Backup[q];
+        }
+        k--;
+        q--;
+    }
+
+    for(k = 0; k <= q; k++)
+    {
+        MatchJump[k] =  min(MatchJump[k],(m +q-k+1));
+    }
+
+    qq = Backup[q];
+    while(q<m)
+    {
+        while(q<=qq)
+        {
+            MatchJump[q] = min(MatchJump[q],(qq-q+m+1));
+            q++;
+        }
+        qq =Backup[qq];
+    }
+}
+
+int BMA(char * P, char * T)
+{
+
+    int k = strlen(P)-1;
+    int j = strlen(P)-1;
+
+    while((j <= strlen(T)) && (k>=0))
+    {
+        if(T[j] == P[k])
+        {
+            j--;
+            k--;
+        }
+        else
+        {
+           j = j + max(MatchJump[k], CharJump[T[j]]);
+           k = strlen(P)-1;
+        }
+    }
+
+    if(k < 0)
+    {
+        return (j+1);
+    }
+    else
+        return -1;
 }
 
 HashTable * HashTable__init__(int size) {
