@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.12.10)  16 DEC 2014 17:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.12.10)  16 DEC 2014 18:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -990,19 +990,33 @@ LaTeX Info: Redefining \includegraphics on input line 55.
 (/usr/share/texlive/texmf-dist/tex/latex/ucs/ucsencs.def
 File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
 ) (./prez.nav)
+Overfull \hbox (4.2028pt too wide) detected at line 55
+  [] [] [] [] [] [] [] []  
+ []
+
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <4> not available
 (Font)              size <5> substituted on input line 59.
 
+
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  <./fit_logo.jpg>]
-<mainGraph.png, id=95, 675.52374pt x 436.63126pt>
+<mainGraph.png, id=102, 692.5875pt x 433.62pt>
 File: mainGraph.png Graphic file (type png)
  <use mainGraph.png>
 Package pdftex.def Info: mainGraph.png used on input line 66.
-(pdftex.def)             Requested size: 236.43684pt x 152.82323pt.
- [2
+(pdftex.def)             Requested size: 242.40926pt x 151.76927pt.
+
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
+[2
 
  <./mainGraph.png>]
 LaTeX Font Info:    Try loading font information for U+msa on input line 78.
@@ -1010,24 +1024,55 @@ LaTeX Font Info:    Try loading font information for U+msa on input line 78.
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 78.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [3
+)
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
 
-] [4
+[3
 
-] [5
+]
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
 
-] [6
+[4
+
+]
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
+[5
+
+]
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
+[6
+
+]
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
+[7
 
 ]
 
 Package hyperref Warning: Composite letter `\textasciicaron+c'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textasciicaron' on input line 118.
+(hyperref)                removing `\textasciicaron' on input line 131.
 
-[7
+
+Overfull \hbox (4.2028pt too wide) has occurred while \output is active
+  [] [] [] [] [] [] [] []  
+ []
+
+[8
 
 ]
 \tf@nav=\write6
@@ -1039,25 +1084,25 @@ Package hyperref Warning: Composite letter `\textasciicaron+c'
 \tf@snm=\write8
 \openout8 = `prez.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 134.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 134.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 147.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 147.
  (./prez.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 134.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 134.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 147.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 147.
 Package rerunfilecheck Info: File `prez.out' has not changed.
-(rerunfilecheck)             Checksum: 5F7903C2627F9C19FC3EF28A39019088;334.
+(rerunfilecheck)             Checksum: D39DEEE4F5EAF6D0415A111A77EC89FA;397.
 
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 134.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 147.
  ) 
 Here is how much of TeX's memory you used:
- 21255 strings out of 493104
- 407185 string characters out of 6136931
- 494033 words of memory out of 5000000
- 24222 multiletter control sequences out of 15000+600000
+ 21264 strings out of 493104
+ 407264 string characters out of 6136931
+ 495033 words of memory out of 5000000
+ 24228 multiletter control sequences out of 15000+600000
  9957 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  48i,16n,54p,405b,585s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1065,10 +1110,10 @@ Here is how much of TeX's memory you used:
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on prez.pdf (7 pages, 105451 bytes).
+Output written on prez.pdf (8 pages, 108173 bytes).
 PDF statistics:
- 310 PDF objects out of 1000 (max. 8388607)
- 274 compressed objects within 3 object streams
- 21 named destinations out of 1000 (max. 500000)
- 125 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 356 PDF objects out of 1000 (max. 8388607)
+ 317 compressed objects within 4 object streams
+ 24 named destinations out of 1000 (max. 500000)
+ 133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

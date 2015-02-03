@@ -3,6 +3,7 @@
 \beamer@sectionintoc {1}{\IeC {\'U}vod}{2}{0}{1}
 \beamer@sectionintoc {2}{Lexik\IeC {\'a}ln\IeC {\'\i } analyz\IeC {\'a}tor}{3}{0}{2}
 \beamer@sectionintoc {3}{Syntaktick\IeC {\'y} analyz\IeC {\'a}tor}{4}{0}{3}
-\beamer@sectionintoc {4}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{5}{0}{4}
-\beamer@sectionintoc {5}{Interpret}{6}{0}{5}
-\beamer@sectionintoc {6}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{7}{0}{6}
+\beamer@sectionintoc {4}{V\IeC {\'y}razov\IeC {\'y} analyz\IeC {\'a}tor}{5}{0}{4}
+\beamer@sectionintoc {5}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{6}{0}{5}
+\beamer@sectionintoc {6}{Interpret}{7}{0}{6}
+\beamer@sectionintoc {7}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{8}{0}{7}

@@ -16,23 +16,28 @@
 \headcommand {\beamer@subsectionpages {3}{3}}
 \headcommand {\slideentry {3}{0}{4}{4/4}{}{0}}
 \headcommand {\beamer@framepages {4}{4}}
-\headcommand {\sectionentry {4}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{5}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{0}}
+\headcommand {\sectionentry {4}{V\IeC {\'y}razov\IeC {\'y} analyz\IeC {\'a}tor}{5}{V\IeC {\'y}razov\IeC {\'y} analyz\IeC {\'a}tor}{0}}
 \headcommand {\beamer@sectionpages {4}{4}}
 \headcommand {\beamer@subsectionpages {4}{4}}
 \headcommand {\slideentry {4}{0}{5}{5/5}{}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\sectionentry {5}{Interpret}{6}{Interpret}{0}}
+\headcommand {\sectionentry {5}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{6}{Semantick\IeC {\'y} analyz\IeC {\'a}tor}{0}}
 \headcommand {\beamer@sectionpages {5}{5}}
 \headcommand {\beamer@subsectionpages {5}{5}}
 \headcommand {\slideentry {5}{0}{6}{6/6}{}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\sectionentry {6}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{7}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{0}}
+\headcommand {\sectionentry {6}{Interpret}{7}{Interpret}{0}}
 \headcommand {\beamer@sectionpages {6}{6}}
 \headcommand {\beamer@subsectionpages {6}{6}}
 \headcommand {\slideentry {6}{0}{7}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\beamer@partpages {1}{7}}
-\headcommand {\beamer@subsectionpages {7}{7}}
+\headcommand {\sectionentry {7}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{8}{Implementa\IeC {\v c}n\IeC {\'\i } detaily}{0}}
 \headcommand {\beamer@sectionpages {7}{7}}
-\headcommand {\beamer@documentpages {7}}
-\headcommand {\def \inserttotalframenumber {7}}
+\headcommand {\beamer@subsectionpages {7}{7}}
+\headcommand {\slideentry {7}{0}{8}{8/8}{}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@partpages {1}{8}}
+\headcommand {\beamer@subsectionpages {8}{8}}
+\headcommand {\beamer@sectionpages {8}{8}}
+\headcommand {\beamer@documentpages {8}}
+\headcommand {\def \inserttotalframenumber {8}}
