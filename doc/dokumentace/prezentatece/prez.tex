@@ -1,0 +1,147 @@
+\documentclass{beamer}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{
+		    colorlinks = true,
+            linkcolor = white,
+            urlcolor  = blue
+}
+ 
+\mode<presentation>
+{
+\usetheme{VUTBR}
+\setbeamercovered{transparent}
+}
+
+
+\usepackage[czech]{babel}
+\usepackage[utf8x]{inputenc}
+
+
+\title{ IFJ14 - Skupina 76 }
+\subtitle{Vývoj našeho interpterpretu}
+
+\author{xorsak01, xskala09, xbenom01, xstude22, xsichk00 } 
+
+\institute[VUTBR]
+{
+{\Large Vysoké učení technické v Brně}\\
+{\large Fakulta informačních technologií}
+}
+
+\date{\today}
+
+\subject{Subject}
+
+\pgfdeclareimage[height=1cm]{fit-logo}{fit_logo.jpg}
+\logo{\pgfuseimage{fit-logo}}
+\newenvironment{fitbox}[1]
+  {\begin{beamerboxesrounded}[upper=upper,shadow=true]
+  {#1}}
+  {\end{beamerboxesrounded}}
+\newcommand{\putat}[3]{\begin{picture}(0,0)(0,0)\put(#1,#2){#3}\end{picture}}
+
+\newcommand{\setbackgr}[2]{ % opacity, file
+\usebackgroundtemplate{
+	\begin{tikzpicture}
+		\node[opacity=#1]{
+			\includegraphics[width=\paperwidth]{#2}};
+	\end{tikzpicture}}
+	}
+
+
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\section{Úvod}
+\begin{frame}
+\begin{fitbox}{Struktura interpretu}
+	\includegraphics[scale=0.35]{mainGraph.png}
+\end{fitbox}
+\end{frame}
+
+
+\section{Lexikální analyzátor}
+\begin{frame}
+\begin{fitbox}{Lexikální analyzátor}
+\begin{itemize}
+	\item Konečný stavový automat
+	\item Automaticky synchronizuje poslední id s tabulkou symbolů
+	\item Konkatenuje řetězce
+\end{itemize}
+\end{fitbox}
+\end{frame}
+
+
+\section{Syntaktický analyzátor}
+\begin{frame}
+\begin{fitbox}{Syntaktický analyzátor}
+\begin{itemize}
+	\item Rekurzivní sestup.
+	\item Vytváří instrukce
+	\item Volá výrazový a semantický analyzátor 
+\end{itemize}
+\end{fitbox}
+
+\end{frame}
+
+
+\section{Výrazový analyzátor}
+\begin{frame}
+\begin{fitbox}{Výrazový analyzátor}
+\begin{itemize}
+	\item Precedenční tabulka
+	\item Vlastní zásobník
+	\item Vytváří instrukce pro volání a výrazy
+\end{itemize}
+\end{fitbox}
+
+\end{frame}
+
+\section{Semantický analyzátor}
+\begin{frame}
+\begin{fitbox}{Semantický analyzátor}
+\begin{itemize}
+	\item Typová kontrola podmínek
+	\item Typová kontrola výrazů při přiřazení a volání funkcí
+	\item Přidává instrukce přetypování při dělení
+\end{itemize}
+\end{fitbox}
+\end{frame}
+
+
+\section{Interpret}
+\begin{frame}
+\begin{fitbox}{Interpret}
+\begin{itemize}
+	\item Runtime kontroly.
+	\item Používá zásobník pro jednotlivé proměnné, nepoužívá rámce funkcí
+	\item V případě, že instrukce neobsahuje adresy, je použit vrchol zásobníku.
+\end{itemize}
+\end{fitbox}
+\end{frame}
+
+
+
+\section{Implementační detaily}
+\begin{frame}
+
+\begin{fitbox}{Implementační detaily}
+\begin{itemize}
+	\item Chybový modul
+	\item Dynamické testování
+	\item Efektivní implementace ADT
+	\item Objektový návrh, dobré programátorské praktiky
+\end{itemize}
+\end{fitbox}
+
+\end{frame}
+
+
+
+\end{document}

@@ -299,14 +299,8 @@ void SyntaxAnalyzer_parse_repeat(SyntaxAnalyzer * self) { //repeat
 void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	tIFJ Uboundtype;
 	Token lastToken, secTok;
-	iVar * condtVal;
 	InstrParam * param;
-
 	InstrParam * StackAddrcond = malloc(sizeof(InstrParam));
-	if (!StackAddrcond) {
-		Error_memory("Cannot allocate instrParam in for");
-	}
-	InstrParam * condtValAddr = malloc(sizeof(InstrParam));
 	if (!StackAddrcond) {
 		Error_memory("Cannot allocate instrParam in for");
 	}
@@ -321,19 +315,22 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 
 	//initialize
 	NEXT_TOK(t_id, "expected id in for initialization")
-	condtVal = self->lp->lastSymbol;
-	condtValAddr->stackAddr = condtVal->stackIndex;
-	tIFJ globalOrLocal;
-	if (condtVal->isGlobal)
-		globalOrLocal = iStackGRef;
-	else
-		globalOrLocal = iStackRef;
 
 	secTok = TokenBuff_next(&self->tokBuff);
+<<<<<<< HEAD
 	if (secTok != t_asigment)
 		Syntax_err_throw_s(self, lastToken,
 				"expected assignment in for initialization");
+
 	SyntaxAnalyzer_parseAsigment(self);
+=======
+	if (secTok == t_asigment) {
+		SyntaxAnalyzer_parseAsigment(self);
+	} else {
+		Syntax_err_throw_s(self, lastToken,
+				"expected assignment in for initialization");
+	}
+>>>>>>> b09f376fde3c706d7a2935fdb048865e96492ff6
 
 	lastToken = TokenBuff_next(&self->tokBuff);
 	if (lastToken == t_to) {
@@ -344,11 +341,10 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 		Syntax_err_throw_s(self, lastToken,
 				"expected to/downto in for initialization");
 
-	// downto: a < b
-	// to : a > b
-	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
-			NULL });
-	StackAddrcond->stackAddr = self->instr.actual;
+<<<<<<< HEAD
+=======
+	//lastToken = TokenBuff_next(&self->tokBuff);
+>>>>>>> b09f376fde3c706d7a2935fdb048865e96492ff6
 	Uboundtype = SyntaxAnalyzer_parseExpr(self);
 	if (Uboundtype != iInt) {
 		Error_unimplemented(
@@ -356,20 +352,16 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	}
 	NEXT_TOK(t_do, "expected do in for Statement block")
 
+	//condition
+	// downto: a < b
+	// to : a > b
+	InstrQueue_insert(&self->instr, (Instruction ) { i_noop, iVoid, NULL,
+			NULL });
+	StackAddrcond->stackAddr = self->instr.actual;
 	//TODO:
 	//pop a
 	//pop b
 	//parse cond
-
-	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iStackGRef,
-					condtValAddr,
-					NULL });
-	if (lastToken == t_to)
-		InstrQueue_insert(&self->instr, (Instruction ) { i_less, Uboundtype,
-				NULL, NULL });
-	else
-		InstrQueue_insert(&self->instr, (Instruction ) { i_more, Uboundtype,
-				NULL, NULL });
 
 	//jmpz end
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmpz, iVoid, NULL,
@@ -380,17 +372,10 @@ void SyntaxAnalyzer_parse_for(SyntaxAnalyzer * self) {
 	//increment
 	// downto : a--
 	// to a+
-	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iStackGRef,
-					condtValAddr,
-					NULL });
-	InstrQueue_insert(&self->instr, (Instruction ) { i_push, Uboundtype, param,
+	InstrQueue_insert(&self->instr, (Instruction ) { i_push, iInt, param,
 			NULL });
-	InstrQueue_insert(&self->instr, (Instruction ) { i_add, Uboundtype,
+	InstrQueue_insert(&self->instr, (Instruction ) { i_add, iInt,
 			NULL, NULL });
-
-	InstrQueue_insert(&self->instr, (Instruction ) { i_assign, globalOrLocal,
-			NULL, condtValAddr });
-
 	//jmpcnd
 	InstrQueue_insert(&self->instr, (Instruction ) { i_jmp, iVoid, NULL,
 					StackAddrcond });

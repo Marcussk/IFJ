@@ -8,7 +8,9 @@ void change(char *str, int right) {
 	return;
 }
 
-/* *str - zoradovany retazec */
+/* *str - zoradovany retazec
+ * treseme stromem tak, aby se maximum dostalo az do korenoveho uzlu stromu
+ *  */
 void Sift(char *str, int left, int right) {
 	int i = left;
 	int j = (2 * i) + 1; /* lavy syn */

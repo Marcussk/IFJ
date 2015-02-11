@@ -1,0 +1,1 @@
+{"stdin": "", "stderr": "../../samples/sample805.pas:5:4 ERROR(Semantic/Definition): Variable \"for\" or function is undefined or you are atempting to redefine it.\n", "returns": 3, "stdout": ""}
