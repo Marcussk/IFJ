@@ -1,0 +1,36 @@
+Hodnocené části:
+ 1) Automatické testy a manuální hodnocení implementace:
+      zahrnuje automatické testy včetně testů registrovaných rozšíření
+               hodnocení implementace předepsané metody syntaktické analýzy,
+               dodržení varianty zadání v implementaci (ial.c),
+               přehlednost a kvalita kódu.
+    Následuje orientační ceník za nejčastější chyby a prohřešky včetně několika zkratek, které se mohou vyskytovat v komentářích hodnocení implementace:
+      NOHEAD = chybí záhlaví ve zdroj. souborech: -0,50 b
+      NOAUTHORS = chybí jména autorů v záhlaví: -0,20 b
+      PMGP = nadměrné množství globálních proměnných: -0,20 b (tolerována globální proměnná pro chybu, tabulku symbolů a seznam instrukcí)
+      HEADCODE = kód v hlavičkových souborech místo v .c souborech: -0,15 b
+      LCOM++ = téměř žádné komentáře: -0,30 b
+      LCOM = málo komentářů: -0,10 b
+      GCOM = příliš mnoho komentářů: -0,10 b
+      VUL = vulgarismy: -0,30 b
+      NORS/PA = SA analýza chybí: -0,60 b
+      NOPSA = SA analýza výrazů chybí: -0,60 b
+      SYA = použitý Shunting-Yardův algoritmus: bez postihu
+      Označení IAL částí: IALa, IALb, IAL1, IAL2, IAL3, IAL4, IALI, IALII
+        + = metoda jinde: -0,12 b (za každou)
+        ++ = metoda chybí: -0,30 b (za každou)
+ 2) Prémiové body, korekce, malus: rychlostní soutěž, aktivita na fóru,
+                                   pozdní odevzdání, formální nedostatky.
+ 3) Dokumentace (viz zadání a seznam zkratek níže).
+    Následuje seznam zkratek, které se mohou vyskytnout v komentářích k hodnocení dokumentace:
+      RP = chybějící popis rozdělení práce
+      PT = chybějící, chybná nebo nečitelná precedenční tabulka (až -0,5 b)
+      IAL = chybějící nebo nedostatečný popis algoritmů z předmětu IAL
+      PSA = chybějící nebo nedostatečný popis precedenční syntaktické analýzy
+      KA = chyby v KA, především větší míra nedeterminismu, chybějící důležité lexémy (např. ošetření komentářů atp.)
+      LL = jiné chyby v LL gramatice, zejména levá rekurze, absence rekurze atp.
+      TS, FS, SS = chybějící/nedostatečný popis tabulky symbolů, vestavěné funkce find_string, vestavěné funkce sort_string
+      LA, SA, INT = nedostatečný/chybějící popis lex. analýzy, synt. analýzy, interpretace
+      GCH = gramatické chyby
+      TU = typografická úprava, vč. několika dalších chyb. Např. pokud chybí úvod a závěr, text je nelogicky členěn, ryze amatérsky vysázen atp.
+
